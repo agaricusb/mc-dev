@@ -3,52 +3,86 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-public class BlockEnderPortalFrame extends Block {
-
-    public BlockEnderPortalFrame(int i) {
-        super(i, 159, Material.STONE);
+public class BlockEnderPortalFrame extends Block
+{
+    public BlockEnderPortalFrame(int par1)
+    {
+        super(par1, 159, Material.STONE);
     }
 
-    public int a(int i, int j) {
-        return i == 1 ? this.textureId - 1 : (i == 0 ? this.textureId + 16 : this.textureId);
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
+        return par1 == 1 ? this.textureId - 1 : (par1 == 0 ? this.textureId + 16 : this.textureId);
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 26;
     }
 
-    public void f() {
+    /**
+     * Sets the block's bounds for rendering it as an item
+     */
+    public void f()
+    {
         this.a(0.0F, 0.0F, 0.0F, 1.0F, 0.8125F, 1.0F);
     }
 
-    public void a(World world, int i, int j, int k, AxisAlignedBB axisalignedbb, List list, Entity entity) {
+    /**
+     * if the specified block is in the given AABB, add its collision bounding box to the given list
+     */
+    public void a(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB, List par6List, Entity par7Entity)
+    {
         this.a(0.0F, 0.0F, 0.0F, 1.0F, 0.8125F, 1.0F);
-        super.a(world, i, j, k, axisalignedbb, list, entity);
-        int l = world.getData(i, j, k);
+        super.a(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+        int var8 = par1World.getData(par2, par3, par4);
 
-        if (e(l)) {
+        if (e(var8))
+        {
             this.a(0.3125F, 0.8125F, 0.3125F, 0.6875F, 1.0F, 0.6875F);
-            super.a(world, i, j, k, axisalignedbb, list, entity);
+            super.a(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
         }
 
         this.f();
     }
 
-    public static boolean e(int i) {
-        return (i & 4) != 0;
+    /**
+     * checks if an ender eye has been inserted into the frame block. parameters: metadata
+     */
+    public static boolean e(int par0)
+    {
+        return (par0 & 4) != 0;
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return 0;
     }
 
-    public void postPlace(World world, int i, int j, int k, EntityLiving entityliving) {
-        int l = ((MathHelper.floor((double) (entityliving.yaw * 4.0F / 360.0F) + 0.5D) & 3) + 2) % 4;
-
-        world.setData(i, j, k, l);
+    /**
+     * Called when the block is placed in the world.
+     */
+    public void postPlace(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving)
+    {
+        int var6 = ((MathHelper.floor((double) (par5EntityLiving.yaw * 4.0F / 360.0F) + 0.5D) & 3) + 2) % 4;
+        par1World.setData(par2, par3, par4, var6);
     }
 }

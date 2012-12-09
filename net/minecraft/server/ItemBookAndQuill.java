@@ -1,37 +1,55 @@
 package net.minecraft.server;
 
-public class ItemBookAndQuill extends Item {
-
-    public ItemBookAndQuill(int i) {
-        super(i);
+public class ItemBookAndQuill extends Item
+{
+    public ItemBookAndQuill(int par1)
+    {
+        super(par1);
         this.d(1);
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        entityhuman.d(itemstack);
-        return itemstack;
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        par3EntityPlayer.d(par1ItemStack);
+        return par1ItemStack;
     }
 
-    public boolean q() {
+    /**
+     * If this function returns true (or the item is damageable), the ItemStack's NBT tag will be sent to the client.
+     */
+    public boolean q()
+    {
         return true;
     }
 
-    public static boolean a(NBTTagCompound nbttagcompound) {
-        if (nbttagcompound == null) {
+    public static boolean a(NBTTagCompound par0NBTTagCompound)
+    {
+        if (par0NBTTagCompound == null)
+        {
             return false;
-        } else if (!nbttagcompound.hasKey("pages")) {
+        }
+        else if (!par0NBTTagCompound.hasKey("pages"))
+        {
             return false;
-        } else {
-            NBTTagList nbttaglist = (NBTTagList) nbttagcompound.get("pages");
+        }
+        else
+        {
+            NBTTagList var1 = (NBTTagList)par0NBTTagCompound.get("pages");
 
-            for (int i = 0; i < nbttaglist.size(); ++i) {
-                NBTTagString nbttagstring = (NBTTagString) nbttaglist.get(i);
+            for (int var2 = 0; var2 < var1.size(); ++var2)
+            {
+                NBTTagString var3 = (NBTTagString)var1.get(var2);
 
-                if (nbttagstring.data == null) {
+                if (var3.data == null)
+                {
                     return false;
                 }
 
-                if (nbttagstring.data.length() > 256) {
+                if (var3.data.length() > 256)
+                {
                     return false;
                 }
             }

@@ -7,128 +7,173 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class MethodProfiler {
-
+public class MethodProfiler
+{
+    /** List of parent sections */
     private final List b = new ArrayList();
+
+    /** List of timestamps (System.nanoTime) */
     private final List c = new ArrayList();
+
+    /** Flag profiling enabled */
     public boolean a = false;
+
+    /** Current profiling section */
     private String d = "";
+
+    /** Profiling map */
     private final Map e = new HashMap();
 
-    public MethodProfiler() {}
-
-    public void a() {
+    /**
+     * Clear profiling.
+     */
+    public void a()
+    {
         this.e.clear();
         this.d = "";
         this.b.clear();
     }
 
-    public void a(String s) {
-        if (this.a) {
-            if (this.d.length() > 0) {
+    /**
+     * Start section
+     */
+    public void a(String par1Str)
+    {
+        if (this.a)
+        {
+            if (this.d.length() > 0)
+            {
                 this.d = this.d + ".";
             }
 
-            this.d = this.d + s;
+            this.d = this.d + par1Str;
             this.b.add(this.d);
             this.c.add(Long.valueOf(System.nanoTime()));
         }
     }
 
-    public void b() {
-        if (this.a) {
-            long i = System.nanoTime();
-            long j = ((Long) this.c.remove(this.c.size() - 1)).longValue();
-
+    /**
+     * End section
+     */
+    public void b()
+    {
+        if (this.a)
+        {
+            long var1 = System.nanoTime();
+            long var3 = ((Long)this.c.remove(this.c.size() - 1)).longValue();
             this.b.remove(this.b.size() - 1);
-            long k = i - j;
+            long var5 = var1 - var3;
 
-            if (this.e.containsKey(this.d)) {
-                this.e.put(this.d, Long.valueOf(((Long) this.e.get(this.d)).longValue() + k));
-            } else {
-                this.e.put(this.d, Long.valueOf(k));
+            if (this.e.containsKey(this.d))
+            {
+                this.e.put(this.d, Long.valueOf(((Long)this.e.get(this.d)).longValue() + var5));
+            }
+            else
+            {
+                this.e.put(this.d, Long.valueOf(var5));
             }
 
-            if (k > 100000000L) {
-                System.out.println("Something\'s taking too long! \'" + this.d + "\' took aprox " + (double) k / 1000000.0D + " ms");
+            if (var5 > 100000000L)
+            {
+                System.out.println("Something\'s taking too long! \'" + this.d + "\' took aprox " + (double)var5 / 1000000.0D + " ms");
             }
 
-            this.d = !this.b.isEmpty() ? (String) this.b.get(this.b.size() - 1) : "";
+            this.d = !this.b.isEmpty() ? (String)this.b.get(this.b.size() - 1) : "";
         }
     }
 
-    public List b(String s) {
-        if (!this.a) {
+    /**
+     * Get profiling data
+     */
+    public List b(String par1Str)
+    {
+        if (!this.a)
+        {
             return null;
-        } else {
-            long i = this.e.containsKey("root") ? ((Long) this.e.get("root")).longValue() : 0L;
-            long j = this.e.containsKey(s) ? ((Long) this.e.get(s)).longValue() : -1L;
-            ArrayList arraylist = new ArrayList();
+        }
+        else
+        {
+            long var3 = this.e.containsKey("root") ? ((Long)this.e.get("root")).longValue() : 0L;
+            long var5 = this.e.containsKey(par1Str) ? ((Long)this.e.get(par1Str)).longValue() : -1L;
+            ArrayList var7 = new ArrayList();
 
-            if (s.length() > 0) {
-                s = s + ".";
+            if (par1Str.length() > 0)
+            {
+                par1Str = par1Str + ".";
             }
 
-            long k = 0L;
-            Iterator iterator = this.e.keySet().iterator();
+            long var8 = 0L;
+            Iterator var10 = this.e.keySet().iterator();
 
-            while (iterator.hasNext()) {
-                String s1 = (String) iterator.next();
+            while (var10.hasNext())
+            {
+                String var11 = (String)var10.next();
 
-                if (s1.length() > s.length() && s1.startsWith(s) && s1.indexOf(".", s.length() + 1) < 0) {
-                    k += ((Long) this.e.get(s1)).longValue();
+                if (var11.length() > par1Str.length() && var11.startsWith(par1Str) && var11.indexOf(".", par1Str.length() + 1) < 0)
+                {
+                    var8 += ((Long)this.e.get(var11)).longValue();
                 }
             }
 
-            float f = (float) k;
+            float var21 = (float)var8;
 
-            if (k < j) {
-                k = j;
+            if (var8 < var5)
+            {
+                var8 = var5;
             }
 
-            if (i < k) {
-                i = k;
+            if (var3 < var8)
+            {
+                var3 = var8;
             }
 
-            Iterator iterator1 = this.e.keySet().iterator();
+            Iterator var20 = this.e.keySet().iterator();
+            String var12;
 
-            String s2;
+            while (var20.hasNext())
+            {
+                var12 = (String)var20.next();
 
-            while (iterator1.hasNext()) {
-                s2 = (String) iterator1.next();
-                if (s2.length() > s.length() && s2.startsWith(s) && s2.indexOf(".", s.length() + 1) < 0) {
-                    long l = ((Long) this.e.get(s2)).longValue();
-                    double d0 = (double) l * 100.0D / (double) k;
-                    double d1 = (double) l * 100.0D / (double) i;
-                    String s3 = s2.substring(s.length());
-
-                    arraylist.add(new ProfilerInfo(s3, d0, d1));
+                if (var12.length() > par1Str.length() && var12.startsWith(par1Str) && var12.indexOf(".", par1Str.length() + 1) < 0)
+                {
+                    long var13 = ((Long)this.e.get(var12)).longValue();
+                    double var15 = (double)var13 * 100.0D / (double)var8;
+                    double var17 = (double)var13 * 100.0D / (double)var3;
+                    String var19 = var12.substring(par1Str.length());
+                    var7.add(new ProfilerInfo(var19, var15, var17));
                 }
             }
 
-            iterator1 = this.e.keySet().iterator();
+            var20 = this.e.keySet().iterator();
 
-            while (iterator1.hasNext()) {
-                s2 = (String) iterator1.next();
-                this.e.put(s2, Long.valueOf(((Long) this.e.get(s2)).longValue() * 999L / 1000L));
+            while (var20.hasNext())
+            {
+                var12 = (String)var20.next();
+                this.e.put(var12, Long.valueOf(((Long)this.e.get(var12)).longValue() * 999L / 1000L));
             }
 
-            if ((float) k > f) {
-                arraylist.add(new ProfilerInfo("unspecified", (double) ((float) k - f) * 100.0D / (double) k, (double) ((float) k - f) * 100.0D / (double) i));
+            if ((float)var8 > var21)
+            {
+                var7.add(new ProfilerInfo("unspecified", (double)((float)var8 - var21) * 100.0D / (double)var8, (double)((float)var8 - var21) * 100.0D / (double)var3));
             }
 
-            Collections.sort(arraylist);
-            arraylist.add(0, new ProfilerInfo(s, 100.0D, (double) k * 100.0D / (double) i));
-            return arraylist;
+            Collections.sort(var7);
+            var7.add(0, new ProfilerInfo(par1Str, 100.0D, (double)var8 * 100.0D / (double)var3));
+            return var7;
         }
     }
 
-    public void c(String s) {
+    /**
+     * End current section and start a new section
+     */
+    public void c(String par1Str)
+    {
         this.b();
-        this.a(s);
+        this.a(par1Str);
     }
 
-    public String c() {
-        return this.b.size() == 0 ? "[UNKNOWN]" : (String) this.b.get(this.b.size() - 1);
+    public String c()
+    {
+        return this.b.size() == 0 ? "[UNKNOWN]" : (String)this.b.get(this.b.size() - 1);
     }
 }

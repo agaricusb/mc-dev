@@ -4,71 +4,103 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class TileEntityPiston extends TileEntity {
-
+public class TileEntityPiston extends TileEntity
+{
     private int a;
     private int b;
+
+    /** the side the front of the piston is on */
     private int c;
+
+    /** if this piston is extending or not */
     private boolean d;
     private boolean e;
     private float f;
+
+    /** the progress in (de)extending */
     private float g;
     private List h = new ArrayList();
 
     public TileEntityPiston() {}
 
-    public TileEntityPiston(int i, int j, int k, boolean flag, boolean flag1) {
-        this.a = i;
-        this.b = j;
-        this.c = k;
-        this.d = flag;
-        this.e = flag1;
+    public TileEntityPiston(int par1, int par2, int par3, boolean par4, boolean par5)
+    {
+        this.a = par1;
+        this.b = par2;
+        this.c = par3;
+        this.d = par4;
+        this.e = par5;
     }
 
-    public int a() {
+    public int a()
+    {
         return this.a;
     }
 
-    public int p() {
+    /**
+     * Returns block data at the location of this entity (client-only).
+     */
+    public int p()
+    {
         return this.b;
     }
 
-    public boolean b() {
+    /**
+     * Returns true if a piston is extending
+     */
+    public boolean b()
+    {
         return this.d;
     }
 
-    public int c() {
+    /**
+     * Returns the orientation of the piston as an int
+     */
+    public int c()
+    {
         return this.c;
     }
 
-    public float a(float f) {
-        if (f > 1.0F) {
-            f = 1.0F;
+    /**
+     * Get interpolated progress value (between lastProgress and progress) given the fractional time between ticks as an
+     * argument.
+     */
+    public float a(float par1)
+    {
+        if (par1 > 1.0F)
+        {
+            par1 = 1.0F;
         }
 
-        return this.g + (this.f - this.g) * f;
+        return this.g + (this.f - this.g) * par1;
     }
 
-    private void a(float f, float f1) {
-        if (this.d) {
-            f = 1.0F - f;
-        } else {
-            --f;
+    private void a(float par1, float par2)
+    {
+        if (this.d)
+        {
+            par1 = 1.0F - par1;
+        }
+        else
+        {
+            --par1;
         }
 
-        AxisAlignedBB axisalignedbb = Block.PISTON_MOVING.b(this.world, this.x, this.y, this.z, this.a, f, this.c);
+        AxisAlignedBB var3 = Block.PISTON_MOVING.b(this.world, this.x, this.y, this.z, this.a, par1, this.c);
 
-        if (axisalignedbb != null) {
-            List list = this.world.getEntities((Entity) null, axisalignedbb);
+        if (var3 != null)
+        {
+            List var4 = this.world.getEntities((Entity) null, var3);
 
-            if (!list.isEmpty()) {
-                this.h.addAll(list);
-                Iterator iterator = this.h.iterator();
+            if (!var4.isEmpty())
+            {
+                this.h.addAll(var4);
+                Iterator var5 = this.h.iterator();
 
-                while (iterator.hasNext()) {
-                    Entity entity = (Entity) iterator.next();
-
-                    entity.move((double) (f1 * (float) Facing.b[this.c]), (double) (f1 * (float) Facing.c[this.c]), (double) (f1 * (float) Facing.d[this.c]));
+                while (var5.hasNext())
+                {
+                    Entity var6 = (Entity)var5.next();
+                    var6.move((double) (par2 * (float) Facing.b[this.c]), (double) (par2 * (float) Facing.c[this.c]), (double) (par2 * (float) Facing.d[this.c]));
                 }
 
                 this.h.clear();
@@ -76,53 +108,82 @@ public class TileEntityPiston extends TileEntity {
         }
     }
 
-    public void f() {
-        if (this.g < 1.0F && this.world != null) {
+    /**
+     * removes a pistons tile entity (and if the piston is moving, stops it)
+     */
+    public void f()
+    {
+        if (this.g < 1.0F && this.world != null)
+        {
             this.g = this.f = 1.0F;
             this.world.r(this.x, this.y, this.z);
             this.w_();
-            if (this.world.getTypeId(this.x, this.y, this.z) == Block.PISTON_MOVING.id) {
+
+            if (this.world.getTypeId(this.x, this.y, this.z) == Block.PISTON_MOVING.id)
+            {
                 this.world.setTypeIdAndData(this.x, this.y, this.z, this.a, this.b);
             }
         }
     }
 
-    public void g() {
+    /**
+     * Allows the entity to update its state. Overridden in most subclasses, e.g. the mob spawner uses this to count
+     * ticks and creates a new spawn inside its implementation.
+     */
+    public void g()
+    {
         this.g = this.f;
-        if (this.g >= 1.0F) {
+
+        if (this.g >= 1.0F)
+        {
             this.a(1.0F, 0.25F);
             this.world.r(this.x, this.y, this.z);
             this.w_();
-            if (this.world.getTypeId(this.x, this.y, this.z) == Block.PISTON_MOVING.id) {
+
+            if (this.world.getTypeId(this.x, this.y, this.z) == Block.PISTON_MOVING.id)
+            {
                 this.world.setTypeIdAndData(this.x, this.y, this.z, this.a, this.b);
             }
-        } else {
+        }
+        else
+        {
             this.f += 0.5F;
-            if (this.f >= 1.0F) {
+
+            if (this.f >= 1.0F)
+            {
                 this.f = 1.0F;
             }
 
-            if (this.d) {
+            if (this.d)
+            {
                 this.a(this.f, this.f - this.g + 0.0625F);
             }
         }
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
-        super.a(nbttagcompound);
-        this.a = nbttagcompound.getInt("blockId");
-        this.b = nbttagcompound.getInt("blockData");
-        this.c = nbttagcompound.getInt("facing");
-        this.g = this.f = nbttagcompound.getFloat("progress");
-        this.d = nbttagcompound.getBoolean("extending");
+    /**
+     * Reads a tile entity from NBT.
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        super.a(par1NBTTagCompound);
+        this.a = par1NBTTagCompound.getInt("blockId");
+        this.b = par1NBTTagCompound.getInt("blockData");
+        this.c = par1NBTTagCompound.getInt("facing");
+        this.g = this.f = par1NBTTagCompound.getFloat("progress");
+        this.d = par1NBTTagCompound.getBoolean("extending");
     }
 
-    public void b(NBTTagCompound nbttagcompound) {
-        super.b(nbttagcompound);
-        nbttagcompound.setInt("blockId", this.a);
-        nbttagcompound.setInt("blockData", this.b);
-        nbttagcompound.setInt("facing", this.c);
-        nbttagcompound.setFloat("progress", this.g);
-        nbttagcompound.setBoolean("extending", this.d);
+    /**
+     * Writes a tile entity to NBT.
+     */
+    public void b(NBTTagCompound par1NBTTagCompound)
+    {
+        super.b(par1NBTTagCompound);
+        par1NBTTagCompound.setInt("blockId", this.a);
+        par1NBTTagCompound.setInt("blockData", this.b);
+        par1NBTTagCompound.setInt("facing", this.c);
+        par1NBTTagCompound.setFloat("progress", this.g);
+        par1NBTTagCompound.setBoolean("extending", this.d);
     }
 }

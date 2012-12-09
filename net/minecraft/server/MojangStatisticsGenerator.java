@@ -11,36 +11,53 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.UUID;
 
-public class MojangStatisticsGenerator {
-
+public class MojangStatisticsGenerator
+{
+    /** String map for report data */
     private Map a = new HashMap();
     private final String b = UUID.randomUUID().toString();
+
+    /** URL of the server to send the report to */
     private final URL c;
     private final IMojangStatistics d;
+
+    /** set to fire the snooperThread every 15 mins */
     private final Timer e = new Timer("Snooper Timer", true);
     private final Object f = new Object();
     private boolean g = false;
+
+    /** incremented on every getSelfCounterFor */
     private int h = 0;
 
-    public MojangStatisticsGenerator(String s, IMojangStatistics imojangstatistics) {
-        try {
-            this.c = new URL("http://snoop.minecraft.net/" + s + "?version=" + 1);
-        } catch (MalformedURLException malformedurlexception) {
+    public MojangStatisticsGenerator(String par1Str, IMojangStatistics par2IPlayerUsage)
+    {
+        try
+        {
+            this.c = new URL("http://snoop.minecraft.net/" + par1Str + "?version=" + 1);
+        }
+        catch (MalformedURLException var4)
+        {
             throw new IllegalArgumentException();
         }
 
-        this.d = imojangstatistics;
+        this.d = par2IPlayerUsage;
     }
 
-    public void a() {
-        if (!this.g) {
+    /**
+     * Note issuing start multiple times is not an error.
+     */
+    public void a()
+    {
+        if (!this.g)
+        {
             this.g = true;
             this.g();
             this.e.schedule(new MojangStatisticsTask(this), 0L, 900000L);
         }
     }
 
-    private void g() {
+    private void g()
+    {
         this.h();
         this.a("snooper_token", this.b);
         this.a("os_name", System.getProperty("os.name"));
@@ -51,24 +68,28 @@ public class MojangStatisticsGenerator {
         this.d.b(this);
     }
 
-    private void h() {
-        RuntimeMXBean runtimemxbean = ManagementFactory.getRuntimeMXBean();
-        List list = runtimemxbean.getInputArguments();
-        int i = 0;
-        Iterator iterator = list.iterator();
+    private void h()
+    {
+        RuntimeMXBean var1 = ManagementFactory.getRuntimeMXBean();
+        List var2 = var1.getInputArguments();
+        int var3 = 0;
+        Iterator var4 = var2.iterator();
 
-        while (iterator.hasNext()) {
-            String s = (String) iterator.next();
+        while (var4.hasNext())
+        {
+            String var5 = (String)var4.next();
 
-            if (s.startsWith("-X")) {
-                this.a("jvm_arg[" + i++ + "]", s);
+            if (var5.startsWith("-X"))
+            {
+                this.a("jvm_arg[" + var3++ + "]", var5);
             }
         }
 
-        this.a("jvm_args", Integer.valueOf(i));
+        this.a("jvm_args", Integer.valueOf(var3));
     }
 
-    public void b() {
+    public void b()
+    {
         this.a("memory_total", Long.valueOf(Runtime.getRuntime().totalMemory()));
         this.a("memory_max", Long.valueOf(Runtime.getRuntime().maxMemory()));
         this.a("memory_free", Long.valueOf(Runtime.getRuntime().freeMemory()));
@@ -76,39 +97,54 @@ public class MojangStatisticsGenerator {
         this.d.a(this);
     }
 
-    public void a(String s, Object object) {
-        Object object1 = this.f;
+    /**
+     * Adds information to the report
+     */
+    public void a(String par1Str, Object par2Obj)
+    {
+        Object var3 = this.f;
 
-        synchronized (this.f) {
-            this.a.put(s, object);
+        synchronized (this.f)
+        {
+            this.a.put(par1Str, par2Obj);
         }
     }
 
-    public boolean d() {
+    public boolean d()
+    {
         return this.g;
     }
 
-    public void e() {
+    public void e()
+    {
         this.e.cancel();
     }
 
-    static IMojangStatistics a(MojangStatisticsGenerator mojangstatisticsgenerator) {
-        return mojangstatisticsgenerator.d;
+    static IMojangStatistics a(MojangStatisticsGenerator par0PlayerUsageSnooper)
+    {
+        return par0PlayerUsageSnooper.d;
     }
 
-    static Object b(MojangStatisticsGenerator mojangstatisticsgenerator) {
-        return mojangstatisticsgenerator.f;
+    static Object b(MojangStatisticsGenerator par0PlayerUsageSnooper)
+    {
+        return par0PlayerUsageSnooper.f;
     }
 
-    static Map c(MojangStatisticsGenerator mojangstatisticsgenerator) {
-        return mojangstatisticsgenerator.a;
+    static Map c(MojangStatisticsGenerator par0PlayerUsageSnooper)
+    {
+        return par0PlayerUsageSnooper.a;
     }
 
-    static int d(MojangStatisticsGenerator mojangstatisticsgenerator) {
-        return mojangstatisticsgenerator.h++;
+    /**
+     * returns a value indicating how many times this function has been run on the snooper
+     */
+    static int d(MojangStatisticsGenerator par0PlayerUsageSnooper)
+    {
+        return par0PlayerUsageSnooper.h++;
     }
 
-    static URL e(MojangStatisticsGenerator mojangstatisticsgenerator) {
-        return mojangstatisticsgenerator.c;
+    static URL e(MojangStatisticsGenerator par0PlayerUsageSnooper)
+    {
+        return par0PlayerUsageSnooper.c;
     }
 }

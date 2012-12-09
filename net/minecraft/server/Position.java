@@ -1,26 +1,30 @@
 package net.minecraft.server;
 
-public class Position implements IPosition {
-
+public class Position implements IPosition
+{
     protected final double a;
     protected final double b;
     protected final double c;
 
-    public Position(double d0, double d1, double d2) {
-        this.a = d0;
-        this.b = d1;
-        this.c = d2;
+    public Position(double par1, double par3, double par5)
+    {
+        this.a = par1;
+        this.b = par3;
+        this.c = par5;
     }
 
-    public double getX() {
+    public double getX()
+    {
         return this.a;
     }
 
-    public double getY() {
+    public double getY()
+    {
         return this.b;
     }
 
-    public double getZ() {
+    public double getZ()
+    {
         return this.c;
     }
 }

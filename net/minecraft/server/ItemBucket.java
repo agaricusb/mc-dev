@@ -1,133 +1,182 @@
 package net.minecraft.server;
 
-public class ItemBucket extends Item {
-
+public class ItemBucket extends Item
+{
+    /** field for checking if the bucket has been filled. */
     private int a;
 
-    public ItemBucket(int i, int j) {
-        super(i);
+    public ItemBucket(int par1, int par2)
+    {
+        super(par1);
         this.maxStackSize = 1;
-        this.a = j;
+        this.a = par2;
         this.a(CreativeModeTab.f);
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        float f = 1.0F;
-        double d0 = entityhuman.lastX + (entityhuman.locX - entityhuman.lastX) * (double) f;
-        double d1 = entityhuman.lastY + (entityhuman.locY - entityhuman.lastY) * (double) f + 1.62D - (double) entityhuman.height;
-        double d2 = entityhuman.lastZ + (entityhuman.locZ - entityhuman.lastZ) * (double) f;
-        boolean flag = this.a == 0;
-        MovingObjectPosition movingobjectposition = this.a(world, entityhuman, flag);
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        float var4 = 1.0F;
+        double var5 = par3EntityPlayer.lastX + (par3EntityPlayer.locX - par3EntityPlayer.lastX) * (double)var4;
+        double var7 = par3EntityPlayer.lastY + (par3EntityPlayer.locY - par3EntityPlayer.lastY) * (double)var4 + 1.62D - (double)par3EntityPlayer.height;
+        double var9 = par3EntityPlayer.lastZ + (par3EntityPlayer.locZ - par3EntityPlayer.lastZ) * (double)var4;
+        boolean var11 = this.a == 0;
+        MovingObjectPosition var12 = this.a(par2World, par3EntityPlayer, var11);
 
-        if (movingobjectposition == null) {
-            return itemstack;
-        } else {
-            if (movingobjectposition.type == EnumMovingObjectType.TILE) {
-                int i = movingobjectposition.b;
-                int j = movingobjectposition.c;
-                int k = movingobjectposition.d;
+        if (var12 == null)
+        {
+            return par1ItemStack;
+        }
+        else
+        {
+            if (var12.type == EnumMovingObjectType.TILE)
+            {
+                int var13 = var12.b;
+                int var14 = var12.c;
+                int var15 = var12.d;
 
-                if (!world.a(entityhuman, i, j, k)) {
-                    return itemstack;
+                if (!par2World.a(par3EntityPlayer, var13, var14, var15))
+                {
+                    return par1ItemStack;
                 }
 
-                if (this.a == 0) {
-                    if (!entityhuman.a(i, j, k, movingobjectposition.face, itemstack)) {
-                        return itemstack;
+                if (this.a == 0)
+                {
+                    if (!par3EntityPlayer.a(var13, var14, var15, var12.face, par1ItemStack))
+                    {
+                        return par1ItemStack;
                     }
 
-                    if (world.getMaterial(i, j, k) == Material.WATER && world.getData(i, j, k) == 0) {
-                        world.setTypeId(i, j, k, 0);
-                        if (entityhuman.abilities.canInstantlyBuild) {
-                            return itemstack;
+                    if (par2World.getMaterial(var13, var14, var15) == Material.WATER && par2World.getData(var13, var14, var15) == 0)
+                    {
+                        par2World.setTypeId(var13, var14, var15, 0);
+
+                        if (par3EntityPlayer.abilities.canInstantlyBuild)
+                        {
+                            return par1ItemStack;
                         }
 
-                        if (--itemstack.count <= 0) {
+                        if (--par1ItemStack.count <= 0)
+                        {
                             return new ItemStack(Item.WATER_BUCKET);
                         }
 
-                        if (!entityhuman.inventory.pickup(new ItemStack(Item.WATER_BUCKET))) {
-                            entityhuman.drop(new ItemStack(Item.WATER_BUCKET.id, 1, 0));
+                        if (!par3EntityPlayer.inventory.pickup(new ItemStack(Item.WATER_BUCKET)))
+                        {
+                            par3EntityPlayer.drop(new ItemStack(Item.WATER_BUCKET.id, 1, 0));
                         }
 
-                        return itemstack;
+                        return par1ItemStack;
                     }
 
-                    if (world.getMaterial(i, j, k) == Material.LAVA && world.getData(i, j, k) == 0) {
-                        world.setTypeId(i, j, k, 0);
-                        if (entityhuman.abilities.canInstantlyBuild) {
-                            return itemstack;
+                    if (par2World.getMaterial(var13, var14, var15) == Material.LAVA && par2World.getData(var13, var14, var15) == 0)
+                    {
+                        par2World.setTypeId(var13, var14, var15, 0);
+
+                        if (par3EntityPlayer.abilities.canInstantlyBuild)
+                        {
+                            return par1ItemStack;
                         }
 
-                        if (--itemstack.count <= 0) {
+                        if (--par1ItemStack.count <= 0)
+                        {
                             return new ItemStack(Item.LAVA_BUCKET);
                         }
 
-                        if (!entityhuman.inventory.pickup(new ItemStack(Item.LAVA_BUCKET))) {
-                            entityhuman.drop(new ItemStack(Item.LAVA_BUCKET.id, 1, 0));
+                        if (!par3EntityPlayer.inventory.pickup(new ItemStack(Item.LAVA_BUCKET)))
+                        {
+                            par3EntityPlayer.drop(new ItemStack(Item.LAVA_BUCKET.id, 1, 0));
                         }
 
-                        return itemstack;
+                        return par1ItemStack;
                     }
-                } else {
-                    if (this.a < 0) {
+                }
+                else
+                {
+                    if (this.a < 0)
+                    {
                         return new ItemStack(Item.BUCKET);
                     }
 
-                    if (movingobjectposition.face == 0) {
-                        --j;
+                    if (var12.face == 0)
+                    {
+                        --var14;
                     }
 
-                    if (movingobjectposition.face == 1) {
-                        ++j;
+                    if (var12.face == 1)
+                    {
+                        ++var14;
                     }
 
-                    if (movingobjectposition.face == 2) {
-                        --k;
+                    if (var12.face == 2)
+                    {
+                        --var15;
                     }
 
-                    if (movingobjectposition.face == 3) {
-                        ++k;
+                    if (var12.face == 3)
+                    {
+                        ++var15;
                     }
 
-                    if (movingobjectposition.face == 4) {
-                        --i;
+                    if (var12.face == 4)
+                    {
+                        --var13;
                     }
 
-                    if (movingobjectposition.face == 5) {
-                        ++i;
+                    if (var12.face == 5)
+                    {
+                        ++var13;
                     }
 
-                    if (!entityhuman.a(i, j, k, movingobjectposition.face, itemstack)) {
-                        return itemstack;
+                    if (!par3EntityPlayer.a(var13, var14, var15, var12.face, par1ItemStack))
+                    {
+                        return par1ItemStack;
                     }
 
-                    if (this.a(world, d0, d1, d2, i, j, k) && !entityhuman.abilities.canInstantlyBuild) {
+                    if (this.a(par2World, var5, var7, var9, var13, var14, var15) && !par3EntityPlayer.abilities.canInstantlyBuild)
+                    {
                         return new ItemStack(Item.BUCKET);
                     }
                 }
-            } else if (this.a == 0 && movingobjectposition.entity instanceof EntityCow) {
+            }
+            else if (this.a == 0 && var12.entity instanceof EntityCow)
+            {
                 return new ItemStack(Item.MILK_BUCKET);
             }
 
-            return itemstack;
+            return par1ItemStack;
         }
     }
 
-    public boolean a(World world, double d0, double d1, double d2, int i, int j, int k) {
-        if (this.a <= 0) {
+    /**
+     * Attempts to place the liquid contained inside the bucket.
+     */
+    public boolean a(World par1World, double par2, double par4, double par6, int par8, int par9, int par10)
+    {
+        if (this.a <= 0)
+        {
             return false;
-        } else if (!world.isEmpty(i, j, k) && world.getMaterial(i, j, k).isBuildable()) {
+        }
+        else if (!par1World.isEmpty(par8, par9, par10) && par1World.getMaterial(par8, par9, par10).isBuildable())
+        {
             return false;
-        } else {
-            if (world.worldProvider.e && this.a == Block.WATER.id) {
-                world.makeSound(d0 + 0.5D, d1 + 0.5D, d2 + 0.5D, "random.fizz", 0.5F, 2.6F + (world.random.nextFloat() - world.random.nextFloat()) * 0.8F);
+        }
+        else
+        {
+            if (par1World.worldProvider.e && this.a == Block.WATER.id)
+            {
+                par1World.makeSound(par2 + 0.5D, par4 + 0.5D, par6 + 0.5D, "random.fizz", 0.5F, 2.6F + (par1World.random.nextFloat() - par1World.random.nextFloat()) * 0.8F);
 
-                for (int l = 0; l < 8; ++l) {
-                    world.addParticle("largesmoke", (double) i + Math.random(), (double) j + Math.random(), (double) k + Math.random(), 0.0D, 0.0D, 0.0D);
+                for (int var11 = 0; var11 < 8; ++var11)
+                {
+                    par1World.addParticle("largesmoke", (double) par8 + Math.random(), (double) par9 + Math.random(), (double) par10 + Math.random(), 0.0D, 0.0D, 0.0D);
                 }
-            } else {
-                world.setTypeIdAndData(i, j, k, this.a, 0);
+            }
+            else
+            {
+                par1World.setTypeIdAndData(par8, par9, par10, this.a, 0);
             }
 
             return true;

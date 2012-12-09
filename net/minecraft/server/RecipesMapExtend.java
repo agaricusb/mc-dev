@@ -1,53 +1,73 @@
 package net.minecraft.server;
 
-public class RecipesMapExtend extends ShapedRecipes {
-
-    public RecipesMapExtend() {
-        super(3, 3, new ItemStack[] { new ItemStack(Item.PAPER), new ItemStack(Item.PAPER), new ItemStack(Item.PAPER), new ItemStack(Item.PAPER), new ItemStack(Item.MAP, 0, -1), new ItemStack(Item.PAPER), new ItemStack(Item.PAPER), new ItemStack(Item.PAPER), new ItemStack(Item.PAPER)}, new ItemStack(Item.MAP_EMPTY, 0, 0));
+public class RecipesMapExtend extends ShapedRecipes
+{
+    public RecipesMapExtend()
+    {
+        super(3, 3, new ItemStack[] {new ItemStack(Item.PAPER), new ItemStack(Item.PAPER), new ItemStack(Item.PAPER), new ItemStack(Item.PAPER), new ItemStack(Item.MAP, 0, -1), new ItemStack(Item.PAPER), new ItemStack(Item.PAPER), new ItemStack(Item.PAPER), new ItemStack(Item.PAPER)}, new ItemStack(Item.MAP_EMPTY, 0, 0));
     }
 
-    public boolean a(InventoryCrafting inventorycrafting, World world) {
-        if (!super.a(inventorycrafting, world)) {
+    /**
+     * Used to check if a recipe matches current crafting inventory
+     */
+    public boolean a(InventoryCrafting par1InventoryCrafting, World par2World)
+    {
+        if (!super.a(par1InventoryCrafting, par2World))
+        {
             return false;
-        } else {
-            ItemStack itemstack = null;
+        }
+        else
+        {
+            ItemStack var3 = null;
 
-            for (int i = 0; i < inventorycrafting.getSize() && itemstack == null; ++i) {
-                ItemStack itemstack1 = inventorycrafting.getItem(i);
+            for (int var4 = 0; var4 < par1InventoryCrafting.getSize() && var3 == null; ++var4)
+            {
+                ItemStack var5 = par1InventoryCrafting.getItem(var4);
 
-                if (itemstack1 != null && itemstack1.id == Item.MAP.id) {
-                    itemstack = itemstack1;
+                if (var5 != null && var5.id == Item.MAP.id)
+                {
+                    var3 = var5;
                 }
             }
 
-            if (itemstack == null) {
+            if (var3 == null)
+            {
                 return false;
-            } else {
-                WorldMap worldmap = Item.MAP.getSavedMap(itemstack, world);
-
-                return worldmap == null ? false : worldmap.scale < 4;
+            }
+            else
+            {
+                WorldMap var6 = Item.MAP.getSavedMap(var3, par2World);
+                return var6 == null ? false : var6.scale < 4;
             }
         }
     }
 
-    public ItemStack a(InventoryCrafting inventorycrafting) {
-        ItemStack itemstack = null;
+    /**
+     * Returns an Item that is the result of this recipe
+     */
+    public ItemStack a(InventoryCrafting par1InventoryCrafting)
+    {
+        ItemStack var2 = null;
 
-        for (int i = 0; i < inventorycrafting.getSize() && itemstack == null; ++i) {
-            ItemStack itemstack1 = inventorycrafting.getItem(i);
+        for (int var3 = 0; var3 < par1InventoryCrafting.getSize() && var2 == null; ++var3)
+        {
+            ItemStack var4 = par1InventoryCrafting.getItem(var3);
 
-            if (itemstack1 != null && itemstack1.id == Item.MAP.id) {
-                itemstack = itemstack1;
+            if (var4 != null && var4.id == Item.MAP.id)
+            {
+                var2 = var4;
             }
         }
 
-        itemstack = itemstack.cloneItemStack();
-        itemstack.count = 1;
-        if (itemstack.getTag() == null) {
-            itemstack.setTag(new NBTTagCompound());
+        var2 = var2.cloneItemStack();
+        var2.count = 1;
+
+        if (var2.getTag() == null)
+        {
+            var2.setTag(new NBTTagCompound());
         }
 
-        itemstack.getTag().setBoolean("map_is_scaling", true);
-        return itemstack;
+        var2.getTag().setBoolean("map_is_scaling", true);
+        return var2;
     }
 }

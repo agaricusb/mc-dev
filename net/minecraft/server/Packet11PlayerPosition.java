@@ -2,30 +2,44 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet11PlayerPosition extends Packet10Flying {
-
-    public Packet11PlayerPosition() {
+public class Packet11PlayerPosition extends Packet10Flying
+{
+    public Packet11PlayerPosition()
+    {
         this.hasPos = true;
     }
 
-    public void a(DataInputStream datainputstream) {
-        this.x = datainputstream.readDouble();
-        this.y = datainputstream.readDouble();
-        this.stance = datainputstream.readDouble();
-        this.z = datainputstream.readDouble();
-        super.a(datainputstream);
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        this.x = par1DataInputStream.readDouble();
+        this.y = par1DataInputStream.readDouble();
+        this.stance = par1DataInputStream.readDouble();
+        this.z = par1DataInputStream.readDouble();
+        super.a(par1DataInputStream);
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        dataoutputstream.writeDouble(this.x);
-        dataoutputstream.writeDouble(this.y);
-        dataoutputstream.writeDouble(this.stance);
-        dataoutputstream.writeDouble(this.z);
-        super.a(dataoutputstream);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        par1DataOutputStream.writeDouble(this.x);
+        par1DataOutputStream.writeDouble(this.y);
+        par1DataOutputStream.writeDouble(this.stance);
+        par1DataOutputStream.writeDouble(this.z);
+        super.a(par1DataOutputStream);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 33;
     }
 }

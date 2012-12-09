@@ -2,42 +2,83 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet10Flying extends Packet {
-
+public class Packet10Flying extends Packet
+{
+    /** The player's X position. */
     public double x;
+
+    /** The player's Y position. */
     public double y;
+
+    /** The player's Z position. */
     public double z;
+
+    /** The player's stance. (boundingBox.minY) */
     public double stance;
+
+    /** The player's yaw rotation. */
     public float yaw;
+
+    /** The player's pitch rotation. */
     public float pitch;
+
+    /** True if the client is on the ground. */
     public boolean g;
+
+    /** Boolean set to true if the player is moving. */
     public boolean hasPos;
+
+    /** Boolean set to true if the player is rotating. */
     public boolean hasLook;
 
-    public Packet10Flying() {}
-
-    public void handle(NetHandler nethandler) {
-        nethandler.a(this);
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
+    public void handle(NetHandler par1NetHandler)
+    {
+        par1NetHandler.a(this);
     }
 
-    public void a(DataInputStream datainputstream) {
-        this.g = datainputstream.read() != 0;
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        this.g = par1DataInputStream.read() != 0;
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        dataoutputstream.write(this.g ? 1 : 0);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        par1DataOutputStream.write(this.g ? 1 : 0);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 1;
     }
 
-    public boolean e() {
+    /**
+     * only false for the abstract Packet class, all real packets return true
+     */
+    public boolean e()
+    {
         return true;
     }
 
-    public boolean a(Packet packet) {
+    /**
+     * eg return packet30entity.entityId == entityId; WARNING : will throw if you compare a packet to a different packet
+     * class
+     */
+    public boolean a(Packet par1Packet)
+    {
         return true;
     }
 }

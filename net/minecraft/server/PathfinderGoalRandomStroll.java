@@ -1,43 +1,64 @@
 package net.minecraft.server;
 
-public class PathfinderGoalRandomStroll extends PathfinderGoal {
-
+public class PathfinderGoalRandomStroll extends PathfinderGoal
+{
     private EntityCreature a;
     private double b;
     private double c;
     private double d;
     private float e;
 
-    public PathfinderGoalRandomStroll(EntityCreature entitycreature, float f) {
-        this.a = entitycreature;
-        this.e = f;
+    public PathfinderGoalRandomStroll(EntityCreature par1EntityCreature, float par2)
+    {
+        this.a = par1EntityCreature;
+        this.e = par2;
         this.a(1);
     }
 
-    public boolean a() {
-        if (this.a.aE() >= 100) {
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
+        if (this.a.aE() >= 100)
+        {
             return false;
-        } else if (this.a.aB().nextInt(120) != 0) {
+        }
+        else if (this.a.aB().nextInt(120) != 0)
+        {
             return false;
-        } else {
-            Vec3D vec3d = RandomPositionGenerator.a(this.a, 10, 7);
+        }
+        else
+        {
+            Vec3D var1 = RandomPositionGenerator.a(this.a, 10, 7);
 
-            if (vec3d == null) {
+            if (var1 == null)
+            {
                 return false;
-            } else {
-                this.b = vec3d.c;
-                this.c = vec3d.d;
-                this.d = vec3d.e;
+            }
+            else
+            {
+                this.b = var1.c;
+                this.c = var1.d;
+                this.d = var1.e;
                 return true;
             }
         }
     }
 
-    public boolean b() {
+    /**
+     * Returns whether an in-progress EntityAIBase should continue executing
+     */
+    public boolean b()
+    {
         return !this.a.getNavigation().f();
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.a.getNavigation().a(this.b, this.c, this.d, this.e);
     }
 }

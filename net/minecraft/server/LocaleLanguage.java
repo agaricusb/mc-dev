@@ -8,121 +8,173 @@ import java.util.IllegalFormatException;
 import java.util.Properties;
 import java.util.TreeMap;
 
-public class LocaleLanguage {
-
+public class LocaleLanguage
+{
+    /** Is the private singleton instance of StringTranslate. */
     private static LocaleLanguage a = new LocaleLanguage("en_US");
+
+    /**
+     * Contains all key/value pairs to be translated - is loaded from '/lang/en_US.lang' when the StringTranslate is
+     * created.
+     */
     private Properties b = new Properties();
     private TreeMap c;
     private String d;
     private boolean e;
 
-    public LocaleLanguage(String s) {
+    public LocaleLanguage(String par1Str)
+    {
         this.e();
-        this.a(s);
+        this.a(par1Str);
     }
 
-    public static LocaleLanguage a() {
+    /**
+     * Return the StringTranslate singleton instance
+     */
+    public static LocaleLanguage a()
+    {
         return a;
     }
 
-    private void e() {
-        TreeMap treemap = new TreeMap();
+    private void e()
+    {
+        TreeMap var1 = new TreeMap();
 
-        try {
-            BufferedReader bufferedreader = new BufferedReader(new InputStreamReader(LocaleLanguage.class.getResourceAsStream("/lang/languages.txt"), "UTF-8"));
+        try
+        {
+            BufferedReader var2 = new BufferedReader(new InputStreamReader(LocaleLanguage.class.getResourceAsStream("/lang/languages.txt"), "UTF-8"));
 
-            for (String s = bufferedreader.readLine(); s != null; s = bufferedreader.readLine()) {
-                String[] astring = s.split("=");
+            for (String var3 = var2.readLine(); var3 != null; var3 = var2.readLine())
+            {
+                String[] var4 = var3.split("=");
 
-                if (astring != null && astring.length == 2) {
-                    treemap.put(astring[0], astring[1]);
+                if (var4 != null && var4.length == 2)
+                {
+                    var1.put(var4[0], var4[1]);
                 }
             }
-        } catch (IOException ioexception) {
-            ioexception.printStackTrace();
+        }
+        catch (IOException var5)
+        {
+            var5.printStackTrace();
             return;
         }
 
-        this.c = treemap;
+        this.c = var1;
         this.c.put("en_US", "English (US)");
     }
 
-    public TreeMap b() {
+    public TreeMap b()
+    {
         return this.c;
     }
 
-    private void a(Properties properties, String s) {
-        BufferedReader bufferedreader = new BufferedReader(new InputStreamReader(LocaleLanguage.class.getResourceAsStream("/lang/" + s + ".lang"), "UTF-8"));
+    private void a(Properties par1Properties, String par2Str) throws IOException
+    {
+        BufferedReader var3 = new BufferedReader(new InputStreamReader(LocaleLanguage.class.getResourceAsStream("/lang/" + par2Str + ".lang"), "UTF-8"));
 
-        for (String s1 = bufferedreader.readLine(); s1 != null; s1 = bufferedreader.readLine()) {
-            s1 = s1.trim();
-            if (!s1.startsWith("#")) {
-                String[] astring = s1.split("=");
+        for (String var4 = var3.readLine(); var4 != null; var4 = var3.readLine())
+        {
+            var4 = var4.trim();
 
-                if (astring != null && astring.length == 2) {
-                    properties.setProperty(astring[0], astring[1]);
+            if (!var4.startsWith("#"))
+            {
+                String[] var5 = var4.split("=");
+
+                if (var5 != null && var5.length == 2)
+                {
+                    par1Properties.setProperty(var5[0], var5[1]);
                 }
             }
         }
     }
 
-    public void a(String s) {
-        if (!s.equals(this.d)) {
-            Properties properties = new Properties();
+    public void a(String par1Str)
+    {
+        if (!par1Str.equals(this.d))
+        {
+            Properties var2 = new Properties();
 
-            try {
-                this.a(properties, "en_US");
-            } catch (IOException ioexception) {
+            try
+            {
+                this.a(var2, "en_US");
+            }
+            catch (IOException var8)
+            {
                 ;
             }
 
             this.e = false;
-            if (!"en_US".equals(s)) {
-                try {
-                    this.a(properties, s);
-                    Enumeration enumeration = properties.propertyNames();
 
-                    while (enumeration.hasMoreElements() && !this.e) {
-                        Object object = enumeration.nextElement();
-                        Object object1 = properties.get(object);
+            if (!"en_US".equals(par1Str))
+            {
+                try
+                {
+                    this.a(var2, par1Str);
+                    Enumeration var3 = var2.propertyNames();
 
-                        if (object1 != null) {
-                            String s1 = object1.toString();
+                    while (var3.hasMoreElements() && !this.e)
+                    {
+                        Object var4 = var3.nextElement();
+                        Object var5 = var2.get(var4);
 
-                            for (int i = 0; i < s1.length(); ++i) {
-                                if (s1.charAt(i) >= 256) {
+                        if (var5 != null)
+                        {
+                            String var6 = var5.toString();
+
+                            for (int var7 = 0; var7 < var6.length(); ++var7)
+                            {
+                                if (var6.charAt(var7) >= 256)
+                                {
                                     this.e = true;
                                     break;
                                 }
                             }
                         }
                     }
-                } catch (IOException ioexception1) {
-                    ioexception1.printStackTrace();
+                }
+                catch (IOException var9)
+                {
+                    var9.printStackTrace();
                     return;
                 }
             }
 
-            this.d = s;
-            this.b = properties;
+            this.d = par1Str;
+            this.b = var2;
         }
     }
 
-    public String b(String s) {
-        return this.b.getProperty(s, s);
+    /**
+     * Translate a key to current language.
+     */
+    public String b(String par1Str)
+    {
+        return this.b.getProperty(par1Str, par1Str);
     }
 
-    public String a(String s, Object... aobject) {
-        String s1 = this.b.getProperty(s, s);
+    /**
+     * Translate a key to current language applying String.format()
+     */
+    public String a(String par1Str, Object... par2ArrayOfObj)
+    {
+        String var3 = this.b.getProperty(par1Str, par1Str);
 
-        try {
-            return String.format(s1, aobject);
-        } catch (IllegalFormatException illegalformatexception) {
-            return "Format error: " + s1;
+        try
+        {
+            return String.format(var3, par2ArrayOfObj);
+        }
+        catch (IllegalFormatException var5)
+        {
+            return "Format error: " + var3;
         }
     }
 
-    public String c(String s) {
-        return this.b.getProperty(s + ".name", "");
+    /**
+     * Translate a key with a extra '.name' at end added, is used by blocks and items.
+     */
+    public String c(String par1Str)
+    {
+        return this.b.getProperty(par1Str + ".name", "");
     }
 }

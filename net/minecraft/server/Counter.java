@@ -1,3 +1,5 @@
 package net.minecraft.server;
 
-public interface Counter {}
+public interface Counter
+{
+}

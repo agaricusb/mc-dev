@@ -1,40 +1,56 @@
 package net.minecraft.server;
 
-class LongHashMapEntry {
-
+class LongHashMapEntry
+{
+    /**
+     * the key as a long (for playerInstances it is the x in the most significant 32 bits and then y)
+     */
     final long a;
+
+    /** the value held by the hash at the specified key */
     Object b;
+
+    /** the next hashentry in the table */
     LongHashMapEntry c;
     final int d;
 
-    LongHashMapEntry(int i, long j, Object object, LongHashMapEntry longhashmapentry) {
-        this.b = object;
-        this.c = longhashmapentry;
-        this.a = j;
-        this.d = i;
+    LongHashMapEntry(int par1, long par2, Object par4Obj, LongHashMapEntry par5LongHashMapEntry)
+    {
+        this.b = par4Obj;
+        this.c = par5LongHashMapEntry;
+        this.a = par2;
+        this.d = par1;
     }
 
-    public final long a() {
+    public final long a()
+    {
         return this.a;
     }
 
-    public final Object b() {
+    public final Object b()
+    {
         return this.b;
     }
 
-    public final boolean equals(Object object) {
-        if (!(object instanceof LongHashMapEntry)) {
+    public final boolean equals(Object par1Obj)
+    {
+        if (!(par1Obj instanceof LongHashMapEntry))
+        {
             return false;
-        } else {
-            LongHashMapEntry longhashmapentry = (LongHashMapEntry) object;
-            Long olong = Long.valueOf(this.a());
-            Long olong1 = Long.valueOf(longhashmapentry.a());
+        }
+        else
+        {
+            LongHashMapEntry var2 = (LongHashMapEntry)par1Obj;
+            Long var3 = Long.valueOf(this.a());
+            Long var4 = Long.valueOf(var2.a());
 
-            if (olong == olong1 || olong != null && olong.equals(olong1)) {
-                Object object1 = this.b();
-                Object object2 = longhashmapentry.b();
+            if (var3 == var4 || var3 != null && var3.equals(var4))
+            {
+                Object var5 = this.b();
+                Object var6 = var2.b();
 
-                if (object1 == object2 || object1 != null && object1.equals(object2)) {
+                if (var5 == var6 || var5 != null && var5.equals(var6))
+                {
                     return true;
                 }
             }
@@ -43,11 +59,13 @@ class LongHashMapEntry {
         }
     }
 
-    public final int hashCode() {
+    public final int hashCode()
+    {
         return LongHashMap.f(this.a);
     }
 
-    public final String toString() {
+    public final String toString()
+    {
         return this.a() + "=" + this.b();
     }
 }

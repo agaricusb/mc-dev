@@ -1,81 +1,121 @@
 package net.minecraft.server;
 
-public class BlockNote extends BlockContainer {
-
-    public BlockNote(int i) {
-        super(i, 74, Material.WOOD);
+public class BlockNote extends BlockContainer
+{
+    public BlockNote(int par1)
+    {
+        super(par1, 74, Material.WOOD);
         this.a(CreativeModeTab.d);
     }
 
-    public int a(int i) {
+    /**
+     * Returns the block texture based on the side being looked at.  Args: side
+     */
+    public int a(int par1)
+    {
         return this.textureId;
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        if (l > 0) {
-            boolean flag = world.isBlockIndirectlyPowered(i, j, k);
-            TileEntityNote tileentitynote = (TileEntityNote) world.getTileEntity(i, j, k);
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        if (par5 > 0)
+        {
+            boolean var6 = par1World.isBlockIndirectlyPowered(par2, par3, par4);
+            TileEntityNote var7 = (TileEntityNote)par1World.getTileEntity(par2, par3, par4);
 
-            if (tileentitynote != null && tileentitynote.b != flag) {
-                if (flag) {
-                    tileentitynote.play(world, i, j, k);
+            if (var7 != null && var7.b != var6)
+            {
+                if (var6)
+                {
+                    var7.play(par1World, par2, par3, par4);
                 }
 
-                tileentitynote.b = flag;
+                var7.b = var6;
             }
         }
     }
 
-    public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
-        if (world.isStatic) {
-            return true;
-        } else {
-            TileEntityNote tileentitynote = (TileEntityNote) world.getTileEntity(i, j, k);
-
-            if (tileentitynote != null) {
-                tileentitynote.a();
-                tileentitynote.play(world, i, j, k);
-            }
-
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
+        if (par1World.isStatic)
+        {
             return true;
         }
+        else
+        {
+            TileEntityNote var10 = (TileEntityNote)par1World.getTileEntity(par2, par3, par4);
+
+            if (var10 != null)
+            {
+                var10.a();
+                var10.play(par1World, par2, par3, par4);
+            }
+
+            return true;
+        }
     }
 
-    public void attack(World world, int i, int j, int k, EntityHuman entityhuman) {
-        if (!world.isStatic) {
-            TileEntityNote tileentitynote = (TileEntityNote) world.getTileEntity(i, j, k);
+    /**
+     * Called when the block is clicked by a player. Args: x, y, z, entityPlayer
+     */
+    public void attack(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer)
+    {
+        if (!par1World.isStatic)
+        {
+            TileEntityNote var6 = (TileEntityNote)par1World.getTileEntity(par2, par3, par4);
 
-            if (tileentitynote != null) {
-                tileentitynote.play(world, i, j, k);
+            if (var6 != null)
+            {
+                var6.play(par1World, par2, par3, par4);
             }
         }
     }
 
-    public TileEntity a(World world) {
+    /**
+     * Returns a new instance of a block's tile entity class. Called on placing the block.
+     */
+    public TileEntity a(World par1World)
+    {
         return new TileEntityNote();
     }
 
-    public void b(World world, int i, int j, int k, int l, int i1) {
-        float f = (float) Math.pow(2.0D, (double) (i1 - 12) / 12.0D);
-        String s = "harp";
+    /**
+     * Called when the block receives a BlockEvent - see World.addBlockEvent. By default, passes it on to the tile
+     * entity at this location. Args: world, x, y, z, blockID, EventID, event parameter
+     */
+    public void b(World par1World, int par2, int par3, int par4, int par5, int par6)
+    {
+        float var7 = (float)Math.pow(2.0D, (double)(par6 - 12) / 12.0D);
+        String var8 = "harp";
 
-        if (l == 1) {
-            s = "bd";
+        if (par5 == 1)
+        {
+            var8 = "bd";
         }
 
-        if (l == 2) {
-            s = "snare";
+        if (par5 == 2)
+        {
+            var8 = "snare";
         }
 
-        if (l == 3) {
-            s = "hat";
+        if (par5 == 3)
+        {
+            var8 = "hat";
         }
 
-        if (l == 4) {
-            s = "bassattack";
+        if (par5 == 4)
+        {
+            var8 = "bassattack";
         }
 
-        world.makeSound((double) i + 0.5D, (double) j + 0.5D, (double) k + 0.5D, "note." + s, 3.0F, f);
-        world.addParticle("note", (double) i + 0.5D, (double) j + 1.2D, (double) k + 0.5D, (double) i1 / 24.0D, 0.0D, 0.0D);
+        par1World.makeSound((double) par2 + 0.5D, (double) par3 + 0.5D, (double) par4 + 0.5D, "note." + var8, 3.0F, var7);
+        par1World.addParticle("note", (double) par2 + 0.5D, (double) par3 + 1.2D, (double) par4 + 0.5D, (double) par6 / 24.0D, 0.0D, 0.0D);
     }
 }

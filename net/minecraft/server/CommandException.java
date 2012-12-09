@@ -1,15 +1,17 @@
 package net.minecraft.server;
 
-public class CommandException extends RuntimeException {
-
+public class CommandException extends RuntimeException
+{
     private Object[] a;
 
-    public CommandException(String s, Object... aobject) {
-        super(s);
-        this.a = aobject;
+    public CommandException(String par1Str, Object... par2ArrayOfObj)
+    {
+        super(par1Str);
+        this.a = par2ArrayOfObj;
     }
 
-    public Object[] a() {
+    public Object[] a()
+    {
         return this.a;
     }
 }

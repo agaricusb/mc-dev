@@ -2,32 +2,40 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class DispenseBehaviorFireball extends DispenseBehaviorItem {
-
+public class DispenseBehaviorFireball extends DispenseBehaviorItem
+{
     final MinecraftServer b;
 
-    public DispenseBehaviorFireball(MinecraftServer minecraftserver) {
-        this.b = minecraftserver;
+    public DispenseBehaviorFireball(MinecraftServer par1MinecraftServer)
+    {
+        this.b = par1MinecraftServer;
     }
 
-    public ItemStack b(ISourceBlock isourceblock, ItemStack itemstack) {
-        EnumFacing enumfacing = EnumFacing.a(isourceblock.h());
-        IPosition iposition = BlockDispenser.a(isourceblock);
-        double d0 = iposition.getX() + (double) ((float) enumfacing.c() * 0.3F);
-        double d1 = iposition.getY();
-        double d2 = iposition.getZ() + (double) ((float) enumfacing.e() * 0.3F);
-        World world = isourceblock.k();
-        Random random = world.random;
-        double d3 = random.nextGaussian() * 0.05D + (double) enumfacing.c();
-        double d4 = random.nextGaussian() * 0.05D;
-        double d5 = random.nextGaussian() * 0.05D + (double) enumfacing.e();
-
-        world.addEntity(new EntitySmallFireball(world, d0, d1, d2, d3, d4, d5));
-        itemstack.a(1);
-        return itemstack;
+    /**
+     * Dispense the specified stack, play the dispense sound and spawn particles.
+     */
+    public ItemStack b(ISourceBlock par1IBlockSource, ItemStack par2ItemStack)
+    {
+        EnumFacing var3 = EnumFacing.a(par1IBlockSource.h());
+        IPosition var4 = BlockDispenser.a(par1IBlockSource);
+        double var5 = var4.getX() + (double)((float)var3.c() * 0.3F);
+        double var7 = var4.getY();
+        double var9 = var4.getZ() + (double)((float)var3.e() * 0.3F);
+        World var11 = par1IBlockSource.k();
+        Random var12 = var11.random;
+        double var13 = var12.nextGaussian() * 0.05D + (double)var3.c();
+        double var15 = var12.nextGaussian() * 0.05D;
+        double var17 = var12.nextGaussian() * 0.05D + (double)var3.e();
+        var11.addEntity(new EntitySmallFireball(var11, var5, var7, var9, var13, var15, var17));
+        par2ItemStack.a(1);
+        return par2ItemStack;
     }
 
-    protected void a(ISourceBlock isourceblock) {
-        isourceblock.k().triggerEffect(1009, isourceblock.getBlockX(), isourceblock.getBlockY(), isourceblock.getBlockZ(), 0);
+    /**
+     * Play the dispense sound from the specified block.
+     */
+    protected void a(ISourceBlock par1IBlockSource)
+    {
+        par1IBlockSource.k().triggerEffect(1009, par1IBlockSource.getBlockX(), par1IBlockSource.getBlockY(), par1IBlockSource.getBlockZ(), 0);
     }
 }

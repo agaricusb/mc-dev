@@ -2,82 +2,132 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockEnderChest extends BlockContainer {
-
-    protected BlockEnderChest(int i) {
-        super(i, Material.STONE);
+public class BlockEnderChest extends BlockContainer
+{
+    protected BlockEnderChest(int par1)
+    {
+        super(par1, Material.STONE);
         this.textureId = 37;
         this.a(CreativeModeTab.c);
         this.a(0.0625F, 0.0F, 0.0625F, 0.9375F, 0.875F, 0.9375F);
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 22;
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return Block.OBSIDIAN.id;
     }
 
-    public int a(Random random) {
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    public int a(Random par1Random)
+    {
         return 8;
     }
 
-    protected boolean s_() {
+    /**
+     * Return true if a player with Silk Touch can harvest this block directly, and not its normal drops.
+     */
+    protected boolean s_()
+    {
         return true;
     }
 
-    public void postPlace(World world, int i, int j, int k, EntityLiving entityliving) {
-        byte b0 = 0;
-        int l = MathHelper.floor((double) (entityliving.yaw * 4.0F / 360.0F) + 0.5D) & 3;
+    /**
+     * Called when the block is placed in the world.
+     */
+    public void postPlace(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving)
+    {
+        byte var6 = 0;
+        int var7 = MathHelper.floor((double) (par5EntityLiving.yaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-        if (l == 0) {
-            b0 = 2;
+        if (var7 == 0)
+        {
+            var6 = 2;
         }
 
-        if (l == 1) {
-            b0 = 5;
+        if (var7 == 1)
+        {
+            var6 = 5;
         }
 
-        if (l == 2) {
-            b0 = 3;
+        if (var7 == 2)
+        {
+            var6 = 3;
         }
 
-        if (l == 3) {
-            b0 = 4;
+        if (var7 == 3)
+        {
+            var6 = 4;
         }
 
-        world.setData(i, j, k, b0);
+        par1World.setData(par2, par3, par4, var6);
     }
 
-    public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
-        InventoryEnderChest inventoryenderchest = entityhuman.getEnderChest();
-        TileEntityEnderChest tileentityenderchest = (TileEntityEnderChest) world.getTileEntity(i, j, k);
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
+        InventoryEnderChest var10 = par5EntityPlayer.getEnderChest();
+        TileEntityEnderChest var11 = (TileEntityEnderChest)par1World.getTileEntity(par2, par3, par4);
 
-        if (inventoryenderchest != null && tileentityenderchest != null) {
-            if (world.t(i, j + 1, k)) {
-                return true;
-            } else if (world.isStatic) {
-                return true;
-            } else {
-                inventoryenderchest.a(tileentityenderchest);
-                entityhuman.openContainer(inventoryenderchest);
+        if (var10 != null && var11 != null)
+        {
+            if (par1World.t(par2, par3 + 1, par4))
+            {
                 return true;
             }
-        } else {
+            else if (par1World.isStatic)
+            {
+                return true;
+            }
+            else
+            {
+                var10.a(var11);
+                par5EntityPlayer.openContainer(var10);
+                return true;
+            }
+        }
+        else
+        {
             return true;
         }
     }
 
-    public TileEntity a(World world) {
+    /**
+     * Returns a new instance of a block's tile entity class. Called on placing the block.
+     */
+    public TileEntity a(World par1World)
+    {
         return new TileEntityEnderChest();
     }
 }

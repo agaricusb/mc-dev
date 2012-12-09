@@ -2,22 +2,35 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockLockedChest extends Block {
-
-    protected BlockLockedChest(int i) {
-        super(i, Material.WOOD);
+public class BlockLockedChest extends Block
+{
+    protected BlockLockedChest(int par1)
+    {
+        super(par1, Material.WOOD);
         this.textureId = 26;
     }
 
-    public int a(int i) {
-        return i == 1 ? this.textureId - 1 : (i == 0 ? this.textureId - 1 : (i == 3 ? this.textureId + 1 : this.textureId));
+    /**
+     * Returns the block texture based on the side being looked at.  Args: side
+     */
+    public int a(int par1)
+    {
+        return par1 == 1 ? this.textureId - 1 : (par1 == 0 ? this.textureId - 1 : (par1 == 3 ? this.textureId + 1 : this.textureId));
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
         return true;
     }
 
-    public void b(World world, int i, int j, int k, Random random) {
-        world.setTypeId(i, j, k, 0);
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        par1World.setTypeId(par2, par3, par4, 0);
     }
 }

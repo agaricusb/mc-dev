@@ -1,105 +1,145 @@
 package net.minecraft.server;
 
-public class BlockPumpkin extends BlockDirectional {
-
+public class BlockPumpkin extends BlockDirectional
+{
+    /** Boolean used to seperate different states of blocks */
     private boolean a;
 
-    protected BlockPumpkin(int i, int j, boolean flag) {
-        super(i, Material.PUMPKIN);
-        this.textureId = j;
+    protected BlockPumpkin(int par1, int par2, boolean par3)
+    {
+        super(par1, Material.PUMPKIN);
+        this.textureId = par2;
         this.b(true);
-        this.a = flag;
+        this.a = par3;
         this.a(CreativeModeTab.b);
     }
 
-    public int a(int i, int j) {
-        if (i == 1) {
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
+        if (par1 == 1)
+        {
             return this.textureId;
-        } else if (i == 0) {
+        }
+        else if (par1 == 0)
+        {
             return this.textureId;
-        } else {
-            int k = this.textureId + 1 + 16;
+        }
+        else
+        {
+            int var3 = this.textureId + 1 + 16;
 
-            if (this.a) {
-                ++k;
+            if (this.a)
+            {
+                ++var3;
             }
 
-            return j == 2 && i == 2 ? k : (j == 3 && i == 5 ? k : (j == 0 && i == 3 ? k : (j == 1 && i == 4 ? k : this.textureId + 16)));
+            return par2 == 2 && par1 == 2 ? var3 : (par2 == 3 && par1 == 5 ? var3 : (par2 == 0 && par1 == 3 ? var3 : (par2 == 1 && par1 == 4 ? var3 : this.textureId + 16)));
         }
     }
 
-    public int a(int i) {
-        return i == 1 ? this.textureId : (i == 0 ? this.textureId : (i == 3 ? this.textureId + 1 + 16 : this.textureId + 16));
+    /**
+     * Returns the block texture based on the side being looked at.  Args: side
+     */
+    public int a(int par1)
+    {
+        return par1 == 1 ? this.textureId : (par1 == 0 ? this.textureId : (par1 == 3 ? this.textureId + 1 + 16 : this.textureId + 16));
     }
 
-    public void onPlace(World world, int i, int j, int k) {
-        super.onPlace(world, i, j, k);
-        if (world.getTypeId(i, j - 1, k) == Block.SNOW_BLOCK.id && world.getTypeId(i, j - 2, k) == Block.SNOW_BLOCK.id) {
-            if (!world.isStatic) {
-                world.setRawTypeId(i, j, k, 0);
-                world.setRawTypeId(i, j - 1, k, 0);
-                world.setRawTypeId(i, j - 2, k, 0);
-                EntitySnowman entitysnowman = new EntitySnowman(world);
+    /**
+     * Called whenever the block is added into the world. Args: world, x, y, z
+     */
+    public void onPlace(World par1World, int par2, int par3, int par4)
+    {
+        super.onPlace(par1World, par2, par3, par4);
 
-                entitysnowman.setPositionRotation((double) i + 0.5D, (double) j - 1.95D, (double) k + 0.5D, 0.0F, 0.0F);
-                world.addEntity(entitysnowman);
-                world.update(i, j, k, 0);
-                world.update(i, j - 1, k, 0);
-                world.update(i, j - 2, k, 0);
+        if (par1World.getTypeId(par2, par3 - 1, par4) == Block.SNOW_BLOCK.id && par1World.getTypeId(par2, par3 - 2, par4) == Block.SNOW_BLOCK.id)
+        {
+            if (!par1World.isStatic)
+            {
+                par1World.setRawTypeId(par2, par3, par4, 0);
+                par1World.setRawTypeId(par2, par3 - 1, par4, 0);
+                par1World.setRawTypeId(par2, par3 - 2, par4, 0);
+                EntitySnowman var9 = new EntitySnowman(par1World);
+                var9.setPositionRotation((double) par2 + 0.5D, (double) par3 - 1.95D, (double) par4 + 0.5D, 0.0F, 0.0F);
+                par1World.addEntity(var9);
+                par1World.update(par2, par3, par4, 0);
+                par1World.update(par2, par3 - 1, par4, 0);
+                par1World.update(par2, par3 - 2, par4, 0);
             }
 
-            for (int l = 0; l < 120; ++l) {
-                world.addParticle("snowshovel", (double) i + world.random.nextDouble(), (double) (j - 2) + world.random.nextDouble() * 2.5D, (double) k + world.random.nextDouble(), 0.0D, 0.0D, 0.0D);
+            for (int var10 = 0; var10 < 120; ++var10)
+            {
+                par1World.addParticle("snowshovel", (double) par2 + par1World.random.nextDouble(), (double) (par3 - 2) + par1World.random.nextDouble() * 2.5D, (double) par4 + par1World.random.nextDouble(), 0.0D, 0.0D, 0.0D);
             }
-        } else if (world.getTypeId(i, j - 1, k) == Block.IRON_BLOCK.id && world.getTypeId(i, j - 2, k) == Block.IRON_BLOCK.id) {
-            boolean flag = world.getTypeId(i - 1, j - 1, k) == Block.IRON_BLOCK.id && world.getTypeId(i + 1, j - 1, k) == Block.IRON_BLOCK.id;
-            boolean flag1 = world.getTypeId(i, j - 1, k - 1) == Block.IRON_BLOCK.id && world.getTypeId(i, j - 1, k + 1) == Block.IRON_BLOCK.id;
+        }
+        else if (par1World.getTypeId(par2, par3 - 1, par4) == Block.IRON_BLOCK.id && par1World.getTypeId(par2, par3 - 2, par4) == Block.IRON_BLOCK.id)
+        {
+            boolean var5 = par1World.getTypeId(par2 - 1, par3 - 1, par4) == Block.IRON_BLOCK.id && par1World.getTypeId(par2 + 1, par3 - 1, par4) == Block.IRON_BLOCK.id;
+            boolean var6 = par1World.getTypeId(par2, par3 - 1, par4 - 1) == Block.IRON_BLOCK.id && par1World.getTypeId(par2, par3 - 1, par4 + 1) == Block.IRON_BLOCK.id;
 
-            if (flag || flag1) {
-                world.setRawTypeId(i, j, k, 0);
-                world.setRawTypeId(i, j - 1, k, 0);
-                world.setRawTypeId(i, j - 2, k, 0);
-                if (flag) {
-                    world.setRawTypeId(i - 1, j - 1, k, 0);
-                    world.setRawTypeId(i + 1, j - 1, k, 0);
-                } else {
-                    world.setRawTypeId(i, j - 1, k - 1, 0);
-                    world.setRawTypeId(i, j - 1, k + 1, 0);
+            if (var5 || var6)
+            {
+                par1World.setRawTypeId(par2, par3, par4, 0);
+                par1World.setRawTypeId(par2, par3 - 1, par4, 0);
+                par1World.setRawTypeId(par2, par3 - 2, par4, 0);
+
+                if (var5)
+                {
+                    par1World.setRawTypeId(par2 - 1, par3 - 1, par4, 0);
+                    par1World.setRawTypeId(par2 + 1, par3 - 1, par4, 0);
+                }
+                else
+                {
+                    par1World.setRawTypeId(par2, par3 - 1, par4 - 1, 0);
+                    par1World.setRawTypeId(par2, par3 - 1, par4 + 1, 0);
                 }
 
-                EntityIronGolem entityirongolem = new EntityIronGolem(world);
+                EntityIronGolem var7 = new EntityIronGolem(par1World);
+                var7.setPlayerCreated(true);
+                var7.setPositionRotation((double) par2 + 0.5D, (double) par3 - 1.95D, (double) par4 + 0.5D, 0.0F, 0.0F);
+                par1World.addEntity(var7);
 
-                entityirongolem.setPlayerCreated(true);
-                entityirongolem.setPositionRotation((double) i + 0.5D, (double) j - 1.95D, (double) k + 0.5D, 0.0F, 0.0F);
-                world.addEntity(entityirongolem);
-
-                for (int i1 = 0; i1 < 120; ++i1) {
-                    world.addParticle("snowballpoof", (double) i + world.random.nextDouble(), (double) (j - 2) + world.random.nextDouble() * 3.9D, (double) k + world.random.nextDouble(), 0.0D, 0.0D, 0.0D);
+                for (int var8 = 0; var8 < 120; ++var8)
+                {
+                    par1World.addParticle("snowballpoof", (double) par2 + par1World.random.nextDouble(), (double) (par3 - 2) + par1World.random.nextDouble() * 3.9D, (double) par4 + par1World.random.nextDouble(), 0.0D, 0.0D, 0.0D);
                 }
 
-                world.update(i, j, k, 0);
-                world.update(i, j - 1, k, 0);
-                world.update(i, j - 2, k, 0);
-                if (flag) {
-                    world.update(i - 1, j - 1, k, 0);
-                    world.update(i + 1, j - 1, k, 0);
-                } else {
-                    world.update(i, j - 1, k - 1, 0);
-                    world.update(i, j - 1, k + 1, 0);
+                par1World.update(par2, par3, par4, 0);
+                par1World.update(par2, par3 - 1, par4, 0);
+                par1World.update(par2, par3 - 2, par4, 0);
+
+                if (var5)
+                {
+                    par1World.update(par2 - 1, par3 - 1, par4, 0);
+                    par1World.update(par2 + 1, par3 - 1, par4, 0);
+                }
+                else
+                {
+                    par1World.update(par2, par3 - 1, par4 - 1, 0);
+                    par1World.update(par2, par3 - 1, par4 + 1, 0);
                 }
             }
         }
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        int l = world.getTypeId(i, j, k);
-
-        return (l == 0 || Block.byId[l].material.isReplaceable()) && world.v(i, j - 1, k);
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        int var5 = par1World.getTypeId(par2, par3, par4);
+        return (var5 == 0 || Block.byId[var5].material.isReplaceable()) && par1World.v(par2, par3 - 1, par4);
     }
 
-    public void postPlace(World world, int i, int j, int k, EntityLiving entityliving) {
-        int l = MathHelper.floor((double) (entityliving.yaw * 4.0F / 360.0F) + 2.5D) & 3;
-
-        world.setData(i, j, k, l);
+    /**
+     * Called when the block is placed in the world.
+     */
+    public void postPlace(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving)
+    {
+        int var6 = MathHelper.floor((double) (par5EntityLiving.yaw * 4.0F / 360.0F) + 2.5D) & 3;
+        par1World.setData(par2, par3, par4, var6);
     }
 }

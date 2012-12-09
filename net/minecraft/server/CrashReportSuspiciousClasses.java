@@ -8,98 +8,128 @@ import java.util.Iterator;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 
-class CrashReportSuspiciousClasses implements Callable {
-
+class CrashReportSuspiciousClasses implements Callable
+{
     final CrashReport a;
 
-    CrashReportSuspiciousClasses(CrashReport crashreport) {
-        this.a = crashreport;
+    CrashReportSuspiciousClasses(CrashReport par1CrashReport)
+    {
+        this.a = par1CrashReport;
     }
 
-    public String a() {
-        StringBuilder stringbuilder = new StringBuilder();
-        Field field = ClassLoader.class.getDeclaredField("classes");
+    public String a()
+    {
+        StringBuilder var1 = new StringBuilder();
+        ArrayList var3;
 
-        field.setAccessible(true);
-        ArrayList arraylist = new ArrayList((Vector) field.get(CrashReport.class.getClassLoader()));
-        boolean flag = true;
-        boolean flag1 = !CrashReport.class.getCanonicalName().equals("net.minecraft.CrashReport");
-        HashMap hashmap = new HashMap();
-        String s = "";
+        try
+        {
+            Field var2 = ClassLoader.class.getDeclaredField("classes");
+            var2.setAccessible(true);
+            var3 = new ArrayList((Vector)var2.get(CrashReport.class.getClassLoader()));
+        }
+        catch (Exception ex)
+        {
+            return "";
+        }
 
-        Collections.sort(arraylist, new PackageNameComparator(this));
-        Iterator iterator = arraylist.iterator();
+        boolean var4 = true;
+        boolean var5 = !CrashReport.class.getCanonicalName().equals("net.minecraft.CrashReport");
+        HashMap var6 = new HashMap();
+        String var7 = "";
+        Collections.sort(var3, new PackageNameComparator(this));
+        Iterator var8 = var3.iterator();
 
-        while (iterator.hasNext()) {
-            Class oclass = (Class) iterator.next();
+        while (var8.hasNext())
+        {
+            Class var9 = (Class)var8.next();
 
-            if (oclass != null) {
-                String s1 = oclass.getCanonicalName();
+            if (var9 != null)
+            {
+                String var10 = var9.getCanonicalName();
 
-                if (s1 != null && !s1.startsWith("org.lwjgl.") && !s1.startsWith("paulscode.") && !s1.startsWith("org.bouncycastle.") && !s1.startsWith("argo.") && !s1.startsWith("com.jcraft.") && !s1.equals("util.GLX")) {
-                    if (flag1) {
-                        if (s1.length() <= 3 || s1.equals("net.minecraft.client.MinecraftApplet") || s1.equals("net.minecraft.client.Minecraft") || s1.equals("net.minecraft.client.ClientBrandRetriever") || s1.equals("net.minecraft.server.MinecraftServer")) {
+                if (var10 != null && !var10.startsWith("org.lwjgl.") && !var10.startsWith("paulscode.") && !var10.startsWith("org.bouncycastle.") && !var10.startsWith("argo.") && !var10.startsWith("com.jcraft.") && !var10.equals("util.GLX"))
+                {
+                    if (var5)
+                    {
+                        if (var10.length() <= 3 || var10.equals("net.minecraft.client.MinecraftApplet") || var10.equals("net.minecraft.client.Minecraft") || var10.equals("net.minecraft.client.ClientBrandRetriever") || var10.equals("net.minecraft.server.MinecraftServer"))
+                        {
                             continue;
                         }
-                    } else if (s1.startsWith("net.minecraft")) {
+                    }
+                    else if (var10.startsWith("net.minecraft"))
+                    {
                         continue;
                     }
 
-                    Package package = oclass.getPackage();
-                    String s2 = package == null ? "" : package.getName();
+                    Package var11 = var9.getPackage();
+                    String var12 = var11 == null ? "" : var11.getName();
 
-                    if (hashmap.containsKey(s2)) {
-                        int i = ((Integer) hashmap.get(s2)).intValue();
+                    if (var6.containsKey(var12))
+                    {
+                        int var13 = ((Integer)var6.get(var12)).intValue();
+                        var6.put(var12, Integer.valueOf(var13 + 1));
 
-                        hashmap.put(s2, Integer.valueOf(i + 1));
-                        if (i == 3) {
-                            if (!flag) {
-                                stringbuilder.append(", ");
+                        if (var13 == 3)
+                        {
+                            if (!var4)
+                            {
+                                var1.append(", ");
                             }
 
-                            stringbuilder.append("...");
-                            flag = false;
+                            var1.append("...");
+                            var4 = false;
                             continue;
                         }
 
-                        if (i > 3) {
+                        if (var13 > 3)
+                        {
                             continue;
                         }
-                    } else {
-                        hashmap.put(s2, Integer.valueOf(1));
+                    }
+                    else
+                    {
+                        var6.put(var12, Integer.valueOf(1));
                     }
 
-                    if (s != s2 && s.length() > 0) {
-                        stringbuilder.append("], ");
+                    if (var7 != var12 && var7.length() > 0)
+                    {
+                        var1.append("], ");
                     }
 
-                    if (!flag && s == s2) {
-                        stringbuilder.append(", ");
+                    if (!var4 && var7 == var12)
+                    {
+                        var1.append(", ");
                     }
 
-                    if (s != s2) {
-                        stringbuilder.append("[");
-                        stringbuilder.append(s2);
-                        stringbuilder.append(".");
+                    if (var7 != var12)
+                    {
+                        var1.append("[");
+                        var1.append(var12);
+                        var1.append(".");
                     }
 
-                    stringbuilder.append(oclass.getSimpleName());
-                    s = s2;
-                    flag = false;
+                    var1.append(var9.getSimpleName());
+                    var7 = var12;
+                    var4 = false;
                 }
             }
         }
 
-        if (flag) {
-            stringbuilder.append("No suspicious classes found.");
-        } else {
-            stringbuilder.append("]");
+        if (var4)
+        {
+            var1.append("No suspicious classes found.");
+        }
+        else
+        {
+            var1.append("]");
         }
 
-        return stringbuilder.toString();
+        return var1.toString();
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

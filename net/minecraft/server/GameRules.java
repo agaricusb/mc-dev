@@ -4,11 +4,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.TreeMap;
 
-public class GameRules {
-
+public class GameRules
+{
     private TreeMap a = new TreeMap();
 
-    public GameRules() {
+    public GameRules()
+    {
         this.a("doFireTick", "true");
         this.a("mobGriefing", "true");
         this.a("keepInventory", "false");
@@ -18,64 +19,94 @@ public class GameRules {
         this.a("commandBlockOutput", "true");
     }
 
-    public void a(String s, String s1) {
-        this.a.put(s, new GameRuleValue(s1));
+    /**
+     * Define a game rule and its default value.
+     */
+    public void a(String par1Str, String par2Str)
+    {
+        this.a.put(par1Str, new GameRuleValue(par2Str));
     }
 
-    public void set(String s, String s1) {
-        GameRuleValue gamerulevalue = (GameRuleValue) this.a.get(s);
+    public void set(String par1Str, String par2Str)
+    {
+        GameRuleValue var3 = (GameRuleValue)this.a.get(par1Str);
 
-        if (gamerulevalue != null) {
-            gamerulevalue.a(s1);
-        } else {
-            this.a(s, s1);
+        if (var3 != null)
+        {
+            var3.a(par2Str);
+        }
+        else
+        {
+            this.a(par1Str, par2Str);
         }
     }
 
-    public String get(String s) {
-        GameRuleValue gamerulevalue = (GameRuleValue) this.a.get(s);
-
-        return gamerulevalue != null ? gamerulevalue.a() : "";
+    /**
+     * Gets the string Game Rule value.
+     */
+    public String get(String par1Str)
+    {
+        GameRuleValue var2 = (GameRuleValue)this.a.get(par1Str);
+        return var2 != null ? var2.a() : "";
     }
 
-    public boolean getBoolean(String s) {
-        GameRuleValue gamerulevalue = (GameRuleValue) this.a.get(s);
-
-        return gamerulevalue != null ? gamerulevalue.b() : false;
+    /**
+     * Gets the boolean Game Rule value.
+     */
+    public boolean getBoolean(String par1Str)
+    {
+        GameRuleValue var2 = (GameRuleValue)this.a.get(par1Str);
+        return var2 != null ? var2.b() : false;
     }
 
-    public NBTTagCompound a() {
-        NBTTagCompound nbttagcompound = new NBTTagCompound("GameRules");
-        Iterator iterator = this.a.keySet().iterator();
+    /**
+     * Return the defined game rules as NBT.
+     */
+    public NBTTagCompound a()
+    {
+        NBTTagCompound var1 = new NBTTagCompound("GameRules");
+        Iterator var2 = this.a.keySet().iterator();
 
-        while (iterator.hasNext()) {
-            String s = (String) iterator.next();
-            GameRuleValue gamerulevalue = (GameRuleValue) this.a.get(s);
-
-            nbttagcompound.setString(s, gamerulevalue.a());
+        while (var2.hasNext())
+        {
+            String var3 = (String)var2.next();
+            GameRuleValue var4 = (GameRuleValue)this.a.get(var3);
+            var1.setString(var3, var4.a());
         }
 
-        return nbttagcompound;
+        return var1;
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
-        Collection collection = nbttagcompound.c();
-        Iterator iterator = collection.iterator();
+    /**
+     * Set defined game rules from NBT.
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        Collection var2 = par1NBTTagCompound.c();
+        Iterator var3 = var2.iterator();
 
-        while (iterator.hasNext()) {
-            NBTBase nbtbase = (NBTBase) iterator.next();
-            String s = nbtbase.getName();
-            String s1 = nbttagcompound.getString(nbtbase.getName());
-
-            this.set(s, s1);
+        while (var3.hasNext())
+        {
+            NBTBase var4 = (NBTBase)var3.next();
+            String var5 = var4.getName();
+            String var6 = par1NBTTagCompound.getString(var4.getName());
+            this.set(var5, var6);
         }
     }
 
-    public String[] b() {
-        return (String[]) this.a.keySet().toArray(new String[0]);
+    /**
+     * Return the defined game rules.
+     */
+    public String[] b()
+    {
+        return (String[])this.a.keySet().toArray(new String[0]);
     }
 
-    public boolean e(String s) {
-        return this.a.containsKey(s);
+    /**
+     * Return whether the specified game rule is defined.
+     */
+    public boolean e(String par1Str)
+    {
+        return this.a.containsKey(par1Str);
     }
 }

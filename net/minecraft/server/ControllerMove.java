@@ -1,70 +1,88 @@
 package net.minecraft.server;
 
-public class ControllerMove {
-
+public class ControllerMove
+{
+    /** The EntityLiving that is being moved */
     private EntityLiving a;
     private double b;
     private double c;
     private double d;
+
+    /** The speed at which the entity should move */
     private float e;
     private boolean f = false;
 
-    public ControllerMove(EntityLiving entityliving) {
-        this.a = entityliving;
-        this.b = entityliving.locX;
-        this.c = entityliving.locY;
-        this.d = entityliving.locZ;
+    public ControllerMove(EntityLiving par1EntityLiving)
+    {
+        this.a = par1EntityLiving;
+        this.b = par1EntityLiving.locX;
+        this.c = par1EntityLiving.locY;
+        this.d = par1EntityLiving.locZ;
     }
 
-    public boolean a() {
+    public boolean a()
+    {
         return this.f;
     }
 
-    public float b() {
+    public float b()
+    {
         return this.e;
     }
 
-    public void a(double d0, double d1, double d2, float f) {
-        this.b = d0;
-        this.c = d1;
-        this.d = d2;
-        this.e = f;
+    /**
+     * Sets the speed and location to move to
+     */
+    public void a(double par1, double par3, double par5, float par7)
+    {
+        this.b = par1;
+        this.c = par3;
+        this.d = par5;
+        this.e = par7;
         this.f = true;
     }
 
-    public void c() {
+    public void c()
+    {
         this.a.f(0.0F);
-        if (this.f) {
+
+        if (this.f)
+        {
             this.f = false;
-            int i = MathHelper.floor(this.a.boundingBox.b + 0.5D);
-            double d0 = this.b - this.a.locX;
-            double d1 = this.d - this.a.locZ;
-            double d2 = this.c - (double) i;
-            double d3 = d0 * d0 + d2 * d2 + d1 * d1;
+            int var1 = MathHelper.floor(this.a.boundingBox.b + 0.5D);
+            double var2 = this.b - this.a.locX;
+            double var4 = this.d - this.a.locZ;
+            double var6 = this.c - (double)var1;
+            double var8 = var2 * var2 + var6 * var6 + var4 * var4;
 
-            if (d3 >= 2.500000277905201E-7D) {
-                float f = (float) (Math.atan2(d1, d0) * 180.0D / 3.1415927410125732D) - 90.0F;
-
-                this.a.yaw = this.a(this.a.yaw, f, 30.0F);
+            if (var8 >= 2.500000277905201E-7D)
+            {
+                float var10 = (float)(Math.atan2(var4, var2) * 180.0D / Math.PI) - 90.0F;
+                this.a.yaw = this.a(this.a.yaw, var10, 30.0F);
                 this.a.e(this.e * this.a.bB());
-                if (d2 > 0.0D && d0 * d0 + d1 * d1 < 1.0D) {
+
+                if (var6 > 0.0D && var2 * var2 + var4 * var4 < 1.0D)
+                {
                     this.a.getControllerJump().a();
                 }
             }
         }
     }
 
-    private float a(float f, float f1, float f2) {
-        float f3 = MathHelper.g(f1 - f);
+    private float a(float par1, float par2, float par3)
+    {
+        float var4 = MathHelper.g(par2 - par1);
 
-        if (f3 > f2) {
-            f3 = f2;
+        if (var4 > par3)
+        {
+            var4 = par3;
         }
 
-        if (f3 < -f2) {
-            f3 = -f2;
+        if (var4 < -par3)
+        {
+            var4 = -par3;
         }
 
-        return f + f3;
+        return par1 + var4;
     }
 }

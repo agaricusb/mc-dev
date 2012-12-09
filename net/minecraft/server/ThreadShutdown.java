@@ -1,14 +1,16 @@
 package net.minecraft.server;
 
-public final class ThreadShutdown extends Thread {
-
+public final class ThreadShutdown extends Thread
+{
     final DedicatedServer a;
 
-    public ThreadShutdown(DedicatedServer dedicatedserver) {
-        this.a = dedicatedserver;
+    public ThreadShutdown(DedicatedServer par1DedicatedServer)
+    {
+        this.a = par1DedicatedServer;
     }
 
-    public void run() {
+    public void run()
+    {
         this.a.stop();
     }
 }

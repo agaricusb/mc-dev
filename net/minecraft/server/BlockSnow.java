@@ -2,76 +2,125 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockSnow extends Block {
-
-    protected BlockSnow(int i, int j) {
-        super(i, j, Material.SNOW_LAYER);
+public class BlockSnow extends Block
+{
+    protected BlockSnow(int par1, int par2)
+    {
+        super(par1, par2, Material.SNOW_LAYER);
         this.a(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
         this.b(true);
         this.a(CreativeModeTab.c);
     }
 
-    public AxisAlignedBB e(World world, int i, int j, int k) {
-        int l = world.getData(i, j, k) & 7;
-
-        return l >= 3 ? AxisAlignedBB.a().a((double) i + this.minX, (double) j + this.minY, (double) k + this.minZ, (double) i + this.maxX, (double) ((float) j + 0.5F), (double) k + this.maxZ) : null;
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
+    {
+        int var5 = par1World.getData(par2, par3, par4) & 7;
+        return var5 >= 3 ? AxisAlignedBB.a().a((double) par2 + this.minX, (double) par3 + this.minY, (double) par4 + this.minZ, (double) par2 + this.maxX, (double) ((float) par3 + 0.5F), (double) par4 + this.maxZ) : null;
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public void updateShape(IBlockAccess iblockaccess, int i, int j, int k) {
-        int l = iblockaccess.getData(i, j, k) & 7;
-        float f = (float) (2 * (1 + l)) / 16.0F;
-
-        this.a(0.0F, 0.0F, 0.0F, 1.0F, f, 1.0F);
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void updateShape(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        int var5 = par1IBlockAccess.getData(par2, par3, par4) & 7;
+        float var6 = (float)(2 * (1 + var5)) / 16.0F;
+        this.a(0.0F, 0.0F, 0.0F, 1.0F, var6, 1.0F);
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        int l = world.getTypeId(i, j - 1, k);
-
-        return l != 0 && (l == Block.LEAVES.id || Block.byId[l].c()) ? world.getMaterial(i, j - 1, k).isSolid() : false;
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        int var5 = par1World.getTypeId(par2, par3 - 1, par4);
+        return var5 != 0 && (var5 == Block.LEAVES.id || Block.byId[var5].c()) ? par1World.getMaterial(par2, par3 - 1, par4).isSolid() : false;
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        this.n(world, i, j, k);
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        this.n(par1World, par2, par3, par4);
     }
 
-    private boolean n(World world, int i, int j, int k) {
-        if (!this.canPlace(world, i, j, k)) {
-            this.c(world, i, j, k, world.getData(i, j, k), 0);
-            world.setTypeId(i, j, k, 0);
+    /**
+     * Checks if this snow block can stay at this location.
+     */
+    private boolean n(World par1World, int par2, int par3, int par4)
+    {
+        if (!this.canPlace(par1World, par2, par3, par4))
+        {
+            this.c(par1World, par2, par3, par4, par1World.getData(par2, par3, par4), 0);
+            par1World.setTypeId(par2, par3, par4, 0);
             return false;
-        } else {
+        }
+        else
+        {
             return true;
         }
     }
 
-    public void a(World world, EntityHuman entityhuman, int i, int j, int k, int l) {
-        int i1 = Item.SNOW_BALL.id;
-
-        this.b(world, i, j, k, new ItemStack(i1, 1, 0));
-        world.setTypeId(i, j, k, 0);
-        entityhuman.a(StatisticList.C[this.id], 1);
+    /**
+     * Called when the player destroys a block with an item that can harvest it. (i, j, k) are the coordinates of the
+     * block and l is the block's subtype/damage.
+     */
+    public void a(World par1World, EntityHuman par2EntityPlayer, int par3, int par4, int par5, int par6)
+    {
+        int var7 = Item.SNOW_BALL.id;
+        this.b(par1World, par3, par4, par5, new ItemStack(var7, 1, 0));
+        par1World.setTypeId(par3, par4, par5, 0);
+        par2EntityPlayer.a(StatisticList.C[this.id], 1);
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return Item.SNOW_BALL.id;
     }
 
-    public int a(Random random) {
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    public int a(Random par1Random)
+    {
         return 0;
     }
 
-    public void b(World world, int i, int j, int k, Random random) {
-        if (world.b(EnumSkyBlock.BLOCK, i, j, k) > 11) {
-            this.c(world, i, j, k, world.getData(i, j, k), 0);
-            world.setTypeId(i, j, k, 0);
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        if (par1World.b(EnumSkyBlock.BLOCK, par2, par3, par4) > 11)
+        {
+            this.c(par1World, par2, par3, par4, par1World.getData(par2, par3, par4), 0);
+            par1World.setTypeId(par2, par3, par4, 0);
         }
     }
 }

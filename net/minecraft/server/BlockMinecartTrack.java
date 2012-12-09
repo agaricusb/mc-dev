@@ -2,265 +2,405 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockMinecartTrack extends Block {
-
+public class BlockMinecartTrack extends Block
+{
+    /** Power related rails have this field at true. */
     private final boolean a;
 
-    public static final boolean e_(World world, int i, int j, int k) {
-        int l = world.getTypeId(i, j, k);
-
-        return l == Block.RAILS.id || l == Block.GOLDEN_RAIL.id || l == Block.DETECTOR_RAIL.id;
+    /**
+     * Returns true if the block at the coordinates of world passed is a valid rail block (current is rail, powered or
+     * detector).
+     */
+    public static final boolean e_(World par0World, int par1, int par2, int par3)
+    {
+        int var4 = par0World.getTypeId(par1, par2, par3);
+        return var4 == Block.RAILS.id || var4 == Block.GOLDEN_RAIL.id || var4 == Block.DETECTOR_RAIL.id;
     }
 
-    public static final boolean d(int i) {
-        return i == Block.RAILS.id || i == Block.GOLDEN_RAIL.id || i == Block.DETECTOR_RAIL.id;
+    /**
+     * Return true if the parameter is a blockID for a valid rail block (current is rail, powered or detector).
+     */
+    public static final boolean d(int par0)
+    {
+        return par0 == Block.RAILS.id || par0 == Block.GOLDEN_RAIL.id || par0 == Block.DETECTOR_RAIL.id;
     }
 
-    protected BlockMinecartTrack(int i, int j, boolean flag) {
-        super(i, j, Material.ORIENTABLE);
-        this.a = flag;
+    protected BlockMinecartTrack(int par1, int par2, boolean par3)
+    {
+        super(par1, par2, Material.ORIENTABLE);
+        this.a = par3;
         this.a(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
         this.a(CreativeModeTab.e);
     }
 
-    public boolean p() {
+    /**
+     * Returns true if the block is power related rail.
+     */
+    public boolean p()
+    {
         return this.a;
     }
 
-    public AxisAlignedBB e(World world, int i, int j, int k) {
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
+    {
         return null;
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public MovingObjectPosition a(World world, int i, int j, int k, Vec3D vec3d, Vec3D vec3d1) {
-        this.updateShape(world, i, j, k);
-        return super.a(world, i, j, k, vec3d, vec3d1);
+    /**
+     * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
+     * x, y, z, startVec, endVec
+     */
+    public MovingObjectPosition a(World par1World, int par2, int par3, int par4, Vec3D par5Vec3, Vec3D par6Vec3)
+    {
+        this.updateShape(par1World, par2, par3, par4);
+        return super.a(par1World, par2, par3, par4, par5Vec3, par6Vec3);
     }
 
-    public void updateShape(IBlockAccess iblockaccess, int i, int j, int k) {
-        int l = iblockaccess.getData(i, j, k);
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void updateShape(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        int var5 = par1IBlockAccess.getData(par2, par3, par4);
 
-        if (l >= 2 && l <= 5) {
+        if (var5 >= 2 && var5 <= 5)
+        {
             this.a(0.0F, 0.0F, 0.0F, 1.0F, 0.625F, 1.0F);
-        } else {
+        }
+        else
+        {
             this.a(0.0F, 0.0F, 0.0F, 1.0F, 0.125F, 1.0F);
         }
     }
 
-    public int a(int i, int j) {
-        if (this.a) {
-            if (this.id == Block.GOLDEN_RAIL.id && (j & 8) == 0) {
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
+        if (this.a)
+        {
+            if (this.id == Block.GOLDEN_RAIL.id && (par2 & 8) == 0)
+            {
                 return this.textureId - 16;
             }
-        } else if (j >= 6) {
+        }
+        else if (par2 >= 6)
+        {
             return this.textureId - 16;
         }
 
         return this.textureId;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 9;
     }
 
-    public int a(Random random) {
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    public int a(Random par1Random)
+    {
         return 1;
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        return world.v(i, j - 1, k);
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        return par1World.v(par2, par3 - 1, par4);
     }
 
-    public void onPlace(World world, int i, int j, int k) {
-        if (!world.isStatic) {
-            this.a(world, i, j, k, true);
-            if (this.id == Block.GOLDEN_RAIL.id) {
-                this.doPhysics(world, i, j, k, this.id);
+    /**
+     * Called whenever the block is added into the world. Args: world, x, y, z
+     */
+    public void onPlace(World par1World, int par2, int par3, int par4)
+    {
+        if (!par1World.isStatic)
+        {
+            this.a(par1World, par2, par3, par4, true);
+
+            if (this.id == Block.GOLDEN_RAIL.id)
+            {
+                this.doPhysics(par1World, par2, par3, par4, this.id);
             }
         }
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        if (!world.isStatic) {
-            int i1 = world.getData(i, j, k);
-            int j1 = i1;
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        if (!par1World.isStatic)
+        {
+            int var6 = par1World.getData(par2, par3, par4);
+            int var7 = var6;
 
-            if (this.a) {
-                j1 = i1 & 7;
+            if (this.a)
+            {
+                var7 = var6 & 7;
             }
 
-            boolean flag = false;
+            boolean var8 = false;
 
-            if (!world.v(i, j - 1, k)) {
-                flag = true;
+            if (!par1World.v(par2, par3 - 1, par4))
+            {
+                var8 = true;
             }
 
-            if (j1 == 2 && !world.v(i + 1, j, k)) {
-                flag = true;
+            if (var7 == 2 && !par1World.v(par2 + 1, par3, par4))
+            {
+                var8 = true;
             }
 
-            if (j1 == 3 && !world.v(i - 1, j, k)) {
-                flag = true;
+            if (var7 == 3 && !par1World.v(par2 - 1, par3, par4))
+            {
+                var8 = true;
             }
 
-            if (j1 == 4 && !world.v(i, j, k - 1)) {
-                flag = true;
+            if (var7 == 4 && !par1World.v(par2, par3, par4 - 1))
+            {
+                var8 = true;
             }
 
-            if (j1 == 5 && !world.v(i, j, k + 1)) {
-                flag = true;
+            if (var7 == 5 && !par1World.v(par2, par3, par4 + 1))
+            {
+                var8 = true;
             }
 
-            if (flag) {
-                this.c(world, i, j, k, world.getData(i, j, k), 0);
-                world.setTypeId(i, j, k, 0);
-            } else if (this.id == Block.GOLDEN_RAIL.id) {
-                boolean flag1 = world.isBlockIndirectlyPowered(i, j, k);
+            if (var8)
+            {
+                this.c(par1World, par2, par3, par4, par1World.getData(par2, par3, par4), 0);
+                par1World.setTypeId(par2, par3, par4, 0);
+            }
+            else if (this.id == Block.GOLDEN_RAIL.id)
+            {
+                boolean var9 = par1World.isBlockIndirectlyPowered(par2, par3, par4);
+                var9 = var9 || this.a(par1World, par2, par3, par4, var6, true, 0) || this.a(par1World, par2, par3, par4, var6, false, 0);
+                boolean var10 = false;
 
-                flag1 = flag1 || this.a(world, i, j, k, i1, true, 0) || this.a(world, i, j, k, i1, false, 0);
-                boolean flag2 = false;
-
-                if (flag1 && (i1 & 8) == 0) {
-                    world.setData(i, j, k, j1 | 8);
-                    flag2 = true;
-                } else if (!flag1 && (i1 & 8) != 0) {
-                    world.setData(i, j, k, j1);
-                    flag2 = true;
+                if (var9 && (var6 & 8) == 0)
+                {
+                    par1World.setData(par2, par3, par4, var7 | 8);
+                    var10 = true;
+                }
+                else if (!var9 && (var6 & 8) != 0)
+                {
+                    par1World.setData(par2, par3, par4, var7);
+                    var10 = true;
                 }
 
-                if (flag2) {
-                    world.applyPhysics(i, j - 1, k, this.id);
-                    if (j1 == 2 || j1 == 3 || j1 == 4 || j1 == 5) {
-                        world.applyPhysics(i, j + 1, k, this.id);
+                if (var10)
+                {
+                    par1World.applyPhysics(par2, par3 - 1, par4, this.id);
+
+                    if (var7 == 2 || var7 == 3 || var7 == 4 || var7 == 5)
+                    {
+                        par1World.applyPhysics(par2, par3 + 1, par4, this.id);
                     }
                 }
-            } else if (l > 0 && Block.byId[l].isPowerSource() && !this.a && MinecartTrackLogic.a(new MinecartTrackLogic(this, world, i, j, k)) == 3) {
-                this.a(world, i, j, k, false);
+            }
+            else if (par5 > 0 && Block.byId[par5].isPowerSource() && !this.a && MinecartTrackLogic.a(new MinecartTrackLogic(this, par1World, par2, par3, par4)) == 3)
+            {
+                this.a(par1World, par2, par3, par4, false);
             }
         }
     }
 
-    private void a(World world, int i, int j, int k, boolean flag) {
-        if (!world.isStatic) {
-            (new MinecartTrackLogic(this, world, i, j, k)).a(world.isBlockIndirectlyPowered(i, j, k), flag);
+    /**
+     * Completely recalculates the track shape based on neighboring tracks
+     */
+    private void a(World par1World, int par2, int par3, int par4, boolean par5)
+    {
+        if (!par1World.isStatic)
+        {
+            (new MinecartTrackLogic(this, par1World, par2, par3, par4)).a(par1World.isBlockIndirectlyPowered(par2, par3, par4), par5);
         }
     }
 
-    private boolean a(World world, int i, int j, int k, int l, boolean flag, int i1) {
-        if (i1 >= 8) {
+    /**
+     * Powered minecart rail is conductive like wire, so check for powered neighbors
+     */
+    private boolean a(World par1World, int par2, int par3, int par4, int par5, boolean par6, int par7)
+    {
+        if (par7 >= 8)
+        {
             return false;
-        } else {
-            int j1 = l & 7;
-            boolean flag1 = true;
+        }
+        else
+        {
+            int var8 = par5 & 7;
+            boolean var9 = true;
 
-            switch (j1) {
-            case 0:
-                if (flag) {
-                    ++k;
-                } else {
-                    --k;
-                }
-                break;
+            switch (var8)
+            {
+                case 0:
+                    if (par6)
+                    {
+                        ++par4;
+                    }
+                    else
+                    {
+                        --par4;
+                    }
 
-            case 1:
-                if (flag) {
-                    --i;
-                } else {
-                    ++i;
-                }
-                break;
+                    break;
 
-            case 2:
-                if (flag) {
-                    --i;
-                } else {
-                    ++i;
-                    ++j;
-                    flag1 = false;
-                }
+                case 1:
+                    if (par6)
+                    {
+                        --par2;
+                    }
+                    else
+                    {
+                        ++par2;
+                    }
 
-                j1 = 1;
-                break;
+                    break;
 
-            case 3:
-                if (flag) {
-                    --i;
-                    ++j;
-                    flag1 = false;
-                } else {
-                    ++i;
-                }
+                case 2:
+                    if (par6)
+                    {
+                        --par2;
+                    }
+                    else
+                    {
+                        ++par2;
+                        ++par3;
+                        var9 = false;
+                    }
 
-                j1 = 1;
-                break;
+                    var8 = 1;
+                    break;
 
-            case 4:
-                if (flag) {
-                    ++k;
-                } else {
-                    --k;
-                    ++j;
-                    flag1 = false;
-                }
+                case 3:
+                    if (par6)
+                    {
+                        --par2;
+                        ++par3;
+                        var9 = false;
+                    }
+                    else
+                    {
+                        ++par2;
+                    }
 
-                j1 = 0;
-                break;
+                    var8 = 1;
+                    break;
 
-            case 5:
-                if (flag) {
-                    ++k;
-                    ++j;
-                    flag1 = false;
-                } else {
-                    --k;
-                }
+                case 4:
+                    if (par6)
+                    {
+                        ++par4;
+                    }
+                    else
+                    {
+                        --par4;
+                        ++par3;
+                        var9 = false;
+                    }
 
-                j1 = 0;
+                    var8 = 0;
+                    break;
+
+                case 5:
+                    if (par6)
+                    {
+                        ++par4;
+                        ++par3;
+                        var9 = false;
+                    }
+                    else
+                    {
+                        --par4;
+                    }
+
+                    var8 = 0;
             }
 
-            return this.a(world, i, j, k, flag, i1, j1) ? true : flag1 && this.a(world, i, j - 1, k, flag, i1, j1);
+            return this.a(par1World, par2, par3, par4, par6, par7, var8) ? true : var9 && this.a(par1World, par2, par3 - 1, par4, par6, par7, var8);
         }
     }
 
-    private boolean a(World world, int i, int j, int k, boolean flag, int l, int i1) {
-        int j1 = world.getTypeId(i, j, k);
+    /**
+     * Returns true if the specified rail is passing power to its neighbor
+     */
+    private boolean a(World par1World, int par2, int par3, int par4, boolean par5, int par6, int par7)
+    {
+        int var8 = par1World.getTypeId(par2, par3, par4);
 
-        if (j1 == Block.GOLDEN_RAIL.id) {
-            int k1 = world.getData(i, j, k);
-            int l1 = k1 & 7;
+        if (var8 == Block.GOLDEN_RAIL.id)
+        {
+            int var9 = par1World.getData(par2, par3, par4);
+            int var10 = var9 & 7;
 
-            if (i1 == 1 && (l1 == 0 || l1 == 4 || l1 == 5)) {
+            if (par7 == 1 && (var10 == 0 || var10 == 4 || var10 == 5))
+            {
                 return false;
             }
 
-            if (i1 == 0 && (l1 == 1 || l1 == 2 || l1 == 3)) {
+            if (par7 == 0 && (var10 == 1 || var10 == 2 || var10 == 3))
+            {
                 return false;
             }
 
-            if ((k1 & 8) != 0) {
-                if (world.isBlockIndirectlyPowered(i, j, k)) {
+            if ((var9 & 8) != 0)
+            {
+                if (par1World.isBlockIndirectlyPowered(par2, par3, par4))
+                {
                     return true;
                 }
 
-                return this.a(world, i, j, k, k1, flag, l + 1);
+                return this.a(par1World, par2, par3, par4, var9, par5, par6 + 1);
             }
         }
 
         return false;
     }
 
-    public int q_() {
+    /**
+     * Returns the mobility information of the block, 0 = free, 1 = can't push but can move over, 2 = total immobility
+     * and stop pistons
+     */
+    public int q_()
+    {
         return 0;
     }
 
-    static boolean a(BlockMinecartTrack blockminecarttrack) {
-        return blockminecarttrack.a;
+    /**
+     * Return true if the blocks passed is a power related rail.
+     */
+    static boolean a(BlockMinecartTrack par0BlockRail)
+    {
+        return par0BlockRail.a;
     }
 }

@@ -2,63 +2,82 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenLiquids extends WorldGenerator {
-
+public class WorldGenLiquids extends WorldGenerator
+{
+    /** The ID of the liquid block used in this liquid generator. */
     private int a;
 
-    public WorldGenLiquids(int i) {
-        this.a = i;
+    public WorldGenLiquids(int par1)
+    {
+        this.a = par1;
     }
 
-    public boolean a(World world, Random random, int i, int j, int k) {
-        if (world.getTypeId(i, j + 1, k) != Block.STONE.id) {
+    public boolean a(World par1World, Random par2Random, int par3, int par4, int par5)
+    {
+        if (par1World.getTypeId(par3, par4 + 1, par5) != Block.STONE.id)
+        {
             return false;
-        } else if (world.getTypeId(i, j - 1, k) != Block.STONE.id) {
+        }
+        else if (par1World.getTypeId(par3, par4 - 1, par5) != Block.STONE.id)
+        {
             return false;
-        } else if (world.getTypeId(i, j, k) != 0 && world.getTypeId(i, j, k) != Block.STONE.id) {
+        }
+        else if (par1World.getTypeId(par3, par4, par5) != 0 && par1World.getTypeId(par3, par4, par5) != Block.STONE.id)
+        {
             return false;
-        } else {
-            int l = 0;
+        }
+        else
+        {
+            int var6 = 0;
 
-            if (world.getTypeId(i - 1, j, k) == Block.STONE.id) {
-                ++l;
+            if (par1World.getTypeId(par3 - 1, par4, par5) == Block.STONE.id)
+            {
+                ++var6;
             }
 
-            if (world.getTypeId(i + 1, j, k) == Block.STONE.id) {
-                ++l;
+            if (par1World.getTypeId(par3 + 1, par4, par5) == Block.STONE.id)
+            {
+                ++var6;
             }
 
-            if (world.getTypeId(i, j, k - 1) == Block.STONE.id) {
-                ++l;
+            if (par1World.getTypeId(par3, par4, par5 - 1) == Block.STONE.id)
+            {
+                ++var6;
             }
 
-            if (world.getTypeId(i, j, k + 1) == Block.STONE.id) {
-                ++l;
+            if (par1World.getTypeId(par3, par4, par5 + 1) == Block.STONE.id)
+            {
+                ++var6;
             }
 
-            int i1 = 0;
+            int var7 = 0;
 
-            if (world.isEmpty(i - 1, j, k)) {
-                ++i1;
+            if (par1World.isEmpty(par3 - 1, par4, par5))
+            {
+                ++var7;
             }
 
-            if (world.isEmpty(i + 1, j, k)) {
-                ++i1;
+            if (par1World.isEmpty(par3 + 1, par4, par5))
+            {
+                ++var7;
             }
 
-            if (world.isEmpty(i, j, k - 1)) {
-                ++i1;
+            if (par1World.isEmpty(par3, par4, par5 - 1))
+            {
+                ++var7;
             }
 
-            if (world.isEmpty(i, j, k + 1)) {
-                ++i1;
+            if (par1World.isEmpty(par3, par4, par5 + 1))
+            {
+                ++var7;
             }
 
-            if (l == 3 && i1 == 1) {
-                world.setTypeId(i, j, k, this.a);
-                world.d = true;
-                Block.byId[this.a].b(world, i, j, k, random);
-                world.d = false;
+            if (var6 == 3 && var7 == 1)
+            {
+                par1World.setTypeId(par3, par4, par5, this.a);
+                par1World.d = true;
+                Block.byId[this.a].b(par1World, par3, par4, par5, par2Random);
+                par1World.d = false;
             }
 
             return true;

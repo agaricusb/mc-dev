@@ -1,31 +1,54 @@
 package net.minecraft.server;
 
-public class PathfinderGoalJumpOnBlock extends PathfinderGoal {
-
+public class PathfinderGoalJumpOnBlock extends PathfinderGoal
+{
     private final EntityOcelot a;
     private final float b;
+
+    /** Tracks for how long the task has been executing */
     private int c = 0;
     private int d = 0;
+
+    /** For how long the Ocelot should be sitting */
     private int e = 0;
+
+    /** X Coordinate of a nearby sitable block */
     private int f = 0;
+
+    /** Y Coordinate of a nearby sitable block */
     private int g = 0;
+
+    /** Z Coordinate of a nearby sitable block */
     private int h = 0;
 
-    public PathfinderGoalJumpOnBlock(EntityOcelot entityocelot, float f) {
-        this.a = entityocelot;
-        this.b = f;
+    public PathfinderGoalJumpOnBlock(EntityOcelot par1EntityOcelot, float par2)
+    {
+        this.a = par1EntityOcelot;
+        this.b = par2;
         this.a(5);
     }
 
-    public boolean a() {
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
         return this.a.isTamed() && !this.a.isSitting() && this.a.aB().nextDouble() <= 0.006500000134110451D && this.f();
     }
 
-    public boolean b() {
+    /**
+     * Returns whether an in-progress EntityAIBase should continue executing
+     */
+    public boolean b()
+    {
         return this.c <= this.e && this.d <= 60 && this.a(this.a.world, this.f, this.g, this.h);
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.a.getNavigation().a((double) ((float) this.f) + 0.5D, (double) (this.g + 1), (double) ((float) this.h) + 0.5D, this.b);
         this.c = 0;
         this.d = 0;
@@ -33,62 +56,94 @@ public class PathfinderGoalJumpOnBlock extends PathfinderGoal {
         this.a.q().a(false);
     }
 
-    public void d() {
+    /**
+     * Resets the task
+     */
+    public void d()
+    {
         this.a.setSitting(false);
     }
 
-    public void e() {
+    /**
+     * Updates the task
+     */
+    public void e()
+    {
         ++this.c;
         this.a.q().a(false);
-        if (this.a.e((double) this.f, (double) (this.g + 1), (double) this.h) > 1.0D) {
+
+        if (this.a.e((double) this.f, (double) (this.g + 1), (double) this.h) > 1.0D)
+        {
             this.a.setSitting(false);
             this.a.getNavigation().a((double) ((float) this.f) + 0.5D, (double) (this.g + 1), (double) ((float) this.h) + 0.5D, this.b);
             ++this.d;
-        } else if (!this.a.isSitting()) {
+        }
+        else if (!this.a.isSitting())
+        {
             this.a.setSitting(true);
-        } else {
+        }
+        else
+        {
             --this.d;
         }
     }
 
-    private boolean f() {
-        int i = (int) this.a.locY;
-        double d0 = 2.147483647E9D;
+    /**
+     * Searches for a block to sit on within a 8 block range, returns 0 if none found
+     */
+    private boolean f()
+    {
+        int var1 = (int)this.a.locY;
+        double var2 = 2.147483647E9D;
 
-        for (int j = (int) this.a.locX - 8; (double) j < this.a.locX + 8.0D; ++j) {
-            for (int k = (int) this.a.locZ - 8; (double) k < this.a.locZ + 8.0D; ++k) {
-                if (this.a(this.a.world, j, i, k) && this.a.world.isEmpty(j, i + 1, k)) {
-                    double d1 = this.a.e((double) j, (double) i, (double) k);
+        for (int var4 = (int)this.a.locX - 8; (double)var4 < this.a.locX + 8.0D; ++var4)
+        {
+            for (int var5 = (int)this.a.locZ - 8; (double)var5 < this.a.locZ + 8.0D; ++var5)
+            {
+                if (this.a(this.a.world, var4, var1, var5) && this.a.world.isEmpty(var4, var1 + 1, var5))
+                {
+                    double var6 = this.a.e((double) var4, (double) var1, (double) var5);
 
-                    if (d1 < d0) {
-                        this.f = j;
-                        this.g = i;
-                        this.h = k;
-                        d0 = d1;
+                    if (var6 < var2)
+                    {
+                        this.f = var4;
+                        this.g = var1;
+                        this.h = var5;
+                        var2 = var6;
                     }
                 }
             }
         }
 
-        return d0 < 2.147483647E9D;
+        return var2 < 2.147483647E9D;
     }
 
-    private boolean a(World world, int i, int j, int k) {
-        int l = world.getTypeId(i, j, k);
-        int i1 = world.getData(i, j, k);
+    /**
+     * Determines whether the Ocelot wants to sit on the block at given coordinate
+     */
+    private boolean a(World par1World, int par2, int par3, int par4)
+    {
+        int var5 = par1World.getTypeId(par2, par3, par4);
+        int var6 = par1World.getData(par2, par3, par4);
 
-        if (l == Block.CHEST.id) {
-            TileEntityChest tileentitychest = (TileEntityChest) world.getTileEntity(i, j, k);
+        if (var5 == Block.CHEST.id)
+        {
+            TileEntityChest var7 = (TileEntityChest)par1World.getTileEntity(par2, par3, par4);
 
-            if (tileentitychest.h < 1) {
+            if (var7.h < 1)
+            {
                 return true;
             }
-        } else {
-            if (l == Block.BURNING_FURNACE.id) {
+        }
+        else
+        {
+            if (var5 == Block.BURNING_FURNACE.id)
+            {
                 return true;
             }
 
-            if (l == Block.BED.id && !BlockBed.b_(i1)) {
+            if (var5 == Block.BED.id && !BlockBed.b_(var6))
+            {
                 return true;
             }
         }

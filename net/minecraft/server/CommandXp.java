@@ -2,76 +2,105 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public class CommandXp extends CommandAbstract {
-
-    public CommandXp() {}
-
-    public String c() {
+public class CommandXp extends CommandAbstract
+{
+    public String c()
+    {
         return "xp";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 2;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.xp.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.xp.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length <= 0) {
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length <= 0)
+        {
             throw new ExceptionUsage("commands.xp.usage", new Object[0]);
-        } else {
-            String s = astring[0];
-            boolean flag = s.endsWith("l") || s.endsWith("L");
+        }
+        else
+        {
+            String var4 = par2ArrayOfStr[0];
+            boolean var5 = var4.endsWith("l") || var4.endsWith("L");
 
-            if (flag && s.length() > 1) {
-                s = s.substring(0, s.length() - 1);
+            if (var5 && var4.length() > 1)
+            {
+                var4 = var4.substring(0, var4.length() - 1);
             }
 
-            int i = a(icommandlistener, s);
-            boolean flag1 = i < 0;
+            int var6 = a(par1ICommandSender, var4);
+            boolean var7 = var6 < 0;
 
-            if (flag1) {
-                i *= -1;
+            if (var7)
+            {
+                var6 *= -1;
             }
 
-            EntityPlayer entityplayer;
+            EntityPlayer var3;
 
-            if (astring.length > 1) {
-                entityplayer = c(icommandlistener, astring[1]);
-            } else {
-                entityplayer = c(icommandlistener);
+            if (par2ArrayOfStr.length > 1)
+            {
+                var3 = c(par1ICommandSender, par2ArrayOfStr[1]);
+            }
+            else
+            {
+                var3 = c(par1ICommandSender);
             }
 
-            if (flag) {
-                if (flag1) {
-                    entityplayer.levelDown(-i);
-                    a(icommandlistener, "commands.xp.success.negative.levels", new Object[] { Integer.valueOf(i), entityplayer.getLocalizedName()});
-                } else {
-                    entityplayer.levelDown(i);
-                    a(icommandlistener, "commands.xp.success.levels", new Object[] { Integer.valueOf(i), entityplayer.getLocalizedName()});
+            if (var5)
+            {
+                if (var7)
+                {
+                    var3.levelDown(-var6);
+                    a(par1ICommandSender, "commands.xp.success.negative.levels", new Object[]{Integer.valueOf(var6), var3.getLocalizedName()});
                 }
-            } else {
-                if (flag1) {
+                else
+                {
+                    var3.levelDown(var6);
+                    a(par1ICommandSender, "commands.xp.success.levels", new Object[]{Integer.valueOf(var6), var3.getLocalizedName()});
+                }
+            }
+            else
+            {
+                if (var7)
+                {
                     throw new ExceptionUsage("commands.xp.failure.widthdrawXp", new Object[0]);
                 }
 
-                entityplayer.giveExp(i);
-                a(icommandlistener, "commands.xp.success", new Object[] { Integer.valueOf(i), entityplayer.getLocalizedName()});
+                var3.giveExp(var6);
+                a(par1ICommandSender, "commands.xp.success", new Object[]{Integer.valueOf(var6), var3.getLocalizedName()});
             }
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return astring.length == 2 ? a(astring, this.d()) : null;
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return par2ArrayOfStr.length == 2 ? a(par2ArrayOfStr, this.d()) : null;
     }
 
-    protected String[] d() {
+    protected String[] d()
+    {
         return MinecraftServer.getServer().getPlayers();
     }
 
-    public boolean a(int i) {
-        return i == 1;
+    /**
+     * Return whether the specified command parameter index is a username parameter.
+     */
+    public boolean a(int par1)
+    {
+        return par1 == 1;
     }
 }

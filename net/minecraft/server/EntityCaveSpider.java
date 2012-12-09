@@ -1,40 +1,55 @@
 package net.minecraft.server;
 
-public class EntityCaveSpider extends EntitySpider {
-
-    public EntityCaveSpider(World world) {
-        super(world);
+public class EntityCaveSpider extends EntitySpider
+{
+    public EntityCaveSpider(World par1World)
+    {
+        super(par1World);
         this.texture = "/mob/cavespider.png";
         this.a(0.7F, 0.5F);
     }
 
-    public int getMaxHealth() {
+    public int getMaxHealth()
+    {
         return 12;
     }
 
-    public boolean m(Entity entity) {
-        if (super.m(entity)) {
-            if (entity instanceof EntityLiving) {
-                byte b0 = 0;
+    public boolean m(Entity par1Entity)
+    {
+        if (super.m(par1Entity))
+        {
+            if (par1Entity instanceof EntityLiving)
+            {
+                byte var2 = 0;
 
-                if (this.world.difficulty > 1) {
-                    if (this.world.difficulty == 2) {
-                        b0 = 7;
-                    } else if (this.world.difficulty == 3) {
-                        b0 = 15;
+                if (this.world.difficulty > 1)
+                {
+                    if (this.world.difficulty == 2)
+                    {
+                        var2 = 7;
+                    }
+                    else if (this.world.difficulty == 3)
+                    {
+                        var2 = 15;
                     }
                 }
 
-                if (b0 > 0) {
-                    ((EntityLiving) entity).addEffect(new MobEffect(MobEffectList.POISON.id, b0 * 20, 0));
+                if (var2 > 0)
+                {
+                    ((EntityLiving)par1Entity).addEffect(new MobEffect(MobEffectList.POISON.id, var2 * 20, 0));
                 }
             }
 
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
+    /**
+     * Initialize this creature.
+     */
     public void bG() {}
 }

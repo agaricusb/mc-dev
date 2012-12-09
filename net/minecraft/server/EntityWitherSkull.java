@@ -1,59 +1,87 @@
 package net.minecraft.server;
 
-public class EntityWitherSkull extends EntityFireball {
-
-    public EntityWitherSkull(World world) {
-        super(world);
+public class EntityWitherSkull extends EntityFireball
+{
+    public EntityWitherSkull(World par1World)
+    {
+        super(par1World);
         this.a(0.3125F, 0.3125F);
     }
 
-    public EntityWitherSkull(World world, EntityLiving entityliving, double d0, double d1, double d2) {
-        super(world, entityliving, d0, d1, d2);
+    public EntityWitherSkull(World par1World, EntityLiving par2EntityLiving, double par3, double par5, double par7)
+    {
+        super(par1World, par2EntityLiving, par3, par5, par7);
         this.a(0.3125F, 0.3125F);
     }
 
-    protected float c() {
+    /**
+     * Return the motion factor for this projectile. The factor is multiplied by the original motion.
+     */
+    protected float c()
+    {
         return this.d() ? 0.73F : super.c();
     }
 
-    public boolean isBurning() {
+    /**
+     * Returns true if the entity is on fire. Used by render to add the fire effect on rendering.
+     */
+    public boolean isBurning()
+    {
         return false;
     }
 
-    public float a(Explosion explosion, Block block, int i, int j, int k) {
-        float f = super.a(explosion, block, i, j, k);
+    public float a(Explosion par1Explosion, Block par2Block, int par3, int par4, int par5)
+    {
+        float var6 = super.a(par1Explosion, par2Block, par3, par4, par5);
 
-        if (this.d() && block != Block.BEDROCK && block != Block.ENDER_PORTAL && block != Block.ENDER_PORTAL_FRAME) {
-            f = Math.min(0.8F, f);
+        if (this.d() && par2Block != Block.BEDROCK && par2Block != Block.ENDER_PORTAL && par2Block != Block.ENDER_PORTAL_FRAME)
+        {
+            var6 = Math.min(0.8F, var6);
         }
 
-        return f;
+        return var6;
     }
 
-    protected void a(MovingObjectPosition movingobjectposition) {
-        if (!this.world.isStatic) {
-            if (movingobjectposition.entity != null) {
-                if (this.shooter != null) {
-                    if (movingobjectposition.entity.damageEntity(DamageSource.mobAttack(this.shooter), 8) && !movingobjectposition.entity.isAlive()) {
+    /**
+     * Called when this EntityFireball hits a block or entity.
+     */
+    protected void a(MovingObjectPosition par1MovingObjectPosition)
+    {
+        if (!this.world.isStatic)
+        {
+            if (par1MovingObjectPosition.entity != null)
+            {
+                if (this.shooter != null)
+                {
+                    if (par1MovingObjectPosition.entity.damageEntity(DamageSource.mobAttack(this.shooter), 8) && !par1MovingObjectPosition.entity.isAlive())
+                    {
                         this.shooter.heal(5);
                     }
-                } else {
-                    movingobjectposition.entity.damageEntity(DamageSource.MAGIC, 5);
+                }
+                else
+                {
+                    par1MovingObjectPosition.entity.damageEntity(DamageSource.MAGIC, 5);
                 }
 
-                if (movingobjectposition.entity instanceof EntityLiving) {
-                    byte b0 = 0;
+                if (par1MovingObjectPosition.entity instanceof EntityLiving)
+                {
+                    byte var2 = 0;
 
-                    if (this.world.difficulty > 1) {
-                        if (this.world.difficulty == 2) {
-                            b0 = 10;
-                        } else if (this.world.difficulty == 3) {
-                            b0 = 40;
+                    if (this.world.difficulty > 1)
+                    {
+                        if (this.world.difficulty == 2)
+                        {
+                            var2 = 10;
+                        }
+                        else if (this.world.difficulty == 3)
+                        {
+                            var2 = 40;
                         }
                     }
 
-                    if (b0 > 0) {
-                        ((EntityLiving) movingobjectposition.entity).addEffect(new MobEffect(MobEffectList.WITHER.id, 20 * b0, 1));
+                    if (var2 > 0)
+                    {
+                        ((EntityLiving)par1MovingObjectPosition.entity).addEffect(new MobEffect(MobEffectList.WITHER.id, 20 * var2, 1));
                     }
                 }
             }
@@ -63,23 +91,40 @@ public class EntityWitherSkull extends EntityFireball {
         }
     }
 
-    public boolean L() {
+    /**
+     * Returns true if other Entities should be prevented from moving through this Entity.
+     */
+    public boolean L()
+    {
         return false;
     }
 
-    public boolean damageEntity(DamageSource damagesource, int i) {
+    /**
+     * Called when the entity is attacked.
+     */
+    public boolean damageEntity(DamageSource par1DamageSource, int par2)
+    {
         return false;
     }
 
-    protected void a() {
+    protected void a()
+    {
         this.datawatcher.a(10, Byte.valueOf((byte) 0));
     }
 
-    public boolean d() {
+    /**
+     * Return whether this skull comes from an invulnerable (aura) wither boss.
+     */
+    public boolean d()
+    {
         return this.datawatcher.getByte(10) == 1;
     }
 
-    public void e(boolean flag) {
-        this.datawatcher.watch(10, Byte.valueOf((byte) (flag ? 1 : 0)));
+    /**
+     * Set whether this skull comes from an invulnerable (aura) wither boss.
+     */
+    public void e(boolean par1)
+    {
+        this.datawatcher.watch(10, Byte.valueOf((byte) (par1 ? 1 : 0)));
     }
 }

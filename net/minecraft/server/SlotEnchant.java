@@ -1,15 +1,21 @@
 package net.minecraft.server;
 
-class SlotEnchant extends Slot {
-
+class SlotEnchant extends Slot
+{
+    /** The brewing stand this slot belongs to. */
     final ContainerEnchantTable a;
 
-    SlotEnchant(ContainerEnchantTable containerenchanttable, IInventory iinventory, int i, int j, int k) {
-        super(iinventory, i, j, k);
-        this.a = containerenchanttable;
+    SlotEnchant(ContainerEnchantTable par1ContainerEnchantment, IInventory par2IInventory, int par3, int par4, int par5)
+    {
+        super(par2IInventory, par3, par4, par5);
+        this.a = par1ContainerEnchantment;
     }
 
-    public boolean isAllowed(ItemStack itemstack) {
+    /**
+     * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
+     */
+    public boolean isAllowed(ItemStack par1ItemStack)
+    {
         return true;
     }
 }

@@ -2,33 +2,48 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet32EntityLook extends Packet30Entity {
-
-    public Packet32EntityLook() {
+public class Packet32EntityLook extends Packet30Entity
+{
+    public Packet32EntityLook()
+    {
         this.g = true;
     }
 
-    public Packet32EntityLook(int i, byte b0, byte b1) {
-        super(i);
-        this.e = b0;
-        this.f = b1;
+    public Packet32EntityLook(int par1, byte par2, byte par3)
+    {
+        super(par1);
+        this.e = par2;
+        this.f = par3;
         this.g = true;
     }
 
-    public void a(DataInputStream datainputstream) {
-        super.a(datainputstream);
-        this.e = datainputstream.readByte();
-        this.f = datainputstream.readByte();
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        super.a(par1DataInputStream);
+        this.e = par1DataInputStream.readByte();
+        this.f = par1DataInputStream.readByte();
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        super.a(dataoutputstream);
-        dataoutputstream.writeByte(this.e);
-        dataoutputstream.writeByte(this.f);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        super.a(par1DataOutputStream);
+        par1DataOutputStream.writeByte(this.e);
+        par1DataOutputStream.writeByte(this.f);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 6;
     }
 }

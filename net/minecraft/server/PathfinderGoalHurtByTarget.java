@@ -3,37 +3,56 @@ package net.minecraft.server;
 import java.util.Iterator;
 import java.util.List;
 
-public class PathfinderGoalHurtByTarget extends PathfinderGoalTarget {
-
+public class PathfinderGoalHurtByTarget extends PathfinderGoalTarget
+{
     boolean a;
+
+    /** The PathNavigate of our entity. */
     EntityLiving b;
 
-    public PathfinderGoalHurtByTarget(EntityLiving entityliving, boolean flag) {
-        super(entityliving, 16.0F, false);
-        this.a = flag;
+    public PathfinderGoalHurtByTarget(EntityLiving par1EntityLiving, boolean par2)
+    {
+        super(par1EntityLiving, 16.0F, false);
+        this.a = par2;
         this.a(1);
     }
 
-    public boolean a() {
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
         return this.a(this.d.aC(), true);
     }
 
-    public boolean b() {
+    /**
+     * Returns whether an in-progress EntityAIBase should continue executing
+     */
+    public boolean b()
+    {
         return this.d.aC() != null && this.d.aC() != this.b;
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.d.b(this.d.aC());
         this.b = this.d.aC();
-        if (this.a) {
-            List list = this.d.world.a(this.d.getClass(), AxisAlignedBB.a().a(this.d.locX, this.d.locY, this.d.locZ, this.d.locX + 1.0D, this.d.locY + 1.0D, this.d.locZ + 1.0D).grow((double) this.e, 4.0D, (double) this.e));
-            Iterator iterator = list.iterator();
 
-            while (iterator.hasNext()) {
-                EntityLiving entityliving = (EntityLiving) iterator.next();
+        if (this.a)
+        {
+            List var1 = this.d.world.a(this.d.getClass(), AxisAlignedBB.a().a(this.d.locX, this.d.locY, this.d.locZ, this.d.locX + 1.0D, this.d.locY + 1.0D, this.d.locZ + 1.0D).grow((double) this.e, 4.0D, (double) this.e));
+            Iterator var2 = var1.iterator();
 
-                if (this.d != entityliving && entityliving.aG() == null) {
-                    entityliving.b(this.d.aC());
+            while (var2.hasNext())
+            {
+                EntityLiving var3 = (EntityLiving)var2.next();
+
+                if (this.d != var3 && var3.aG() == null)
+                {
+                    var3.b(this.d.aC());
                 }
             }
         }

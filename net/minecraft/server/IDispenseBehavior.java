@@ -1,9 +1,11 @@
 package net.minecraft.server;
 
-public interface IDispenseBehavior {
-
+public interface IDispenseBehavior
+{
     IDispenseBehavior a = new DispenseBehaviorNoop();
 
-    ItemStack a(ISourceBlock isourceblock, ItemStack itemstack);
-
+    /**
+     * Dispenses the specified ItemStack from a dispenser.
+     */
+    ItemStack a(ISourceBlock var1, ItemStack var2);
 }

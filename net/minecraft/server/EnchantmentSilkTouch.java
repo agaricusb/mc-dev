@@ -1,25 +1,42 @@
 package net.minecraft.server;
 
-public class EnchantmentSilkTouch extends Enchantment {
-
-    protected EnchantmentSilkTouch(int i, int j) {
-        super(i, j, EnchantmentSlotType.DIGGER);
+public class EnchantmentSilkTouch extends Enchantment
+{
+    protected EnchantmentSilkTouch(int par1, int par2)
+    {
+        super(par1, par2, EnchantmentSlotType.DIGGER);
         this.b("untouching");
     }
 
-    public int a(int i) {
+    /**
+     * Returns the minimal value of enchantability needed on the enchantment level passed.
+     */
+    public int a(int par1)
+    {
         return 15;
     }
 
-    public int b(int i) {
-        return super.a(i) + 50;
+    /**
+     * Returns the maximum value of enchantability nedded on the enchantment level passed.
+     */
+    public int b(int par1)
+    {
+        return super.a(par1) + 50;
     }
 
-    public int getMaxLevel() {
+    /**
+     * Returns the maximum level that the enchantment can have.
+     */
+    public int getMaxLevel()
+    {
         return 1;
     }
 
-    public boolean a(Enchantment enchantment) {
-        return super.a(enchantment) && enchantment.id != LOOT_BONUS_BLOCKS.id;
+    /**
+     * Determines if the enchantment passed can be applyied together with this enchantment.
+     */
+    public boolean a(Enchantment par1Enchantment)
+    {
+        return super.a(par1Enchantment) && par1Enchantment.id != LOOT_BONUS_BLOCKS.id;
     }
 }

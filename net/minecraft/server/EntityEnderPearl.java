@@ -1,29 +1,40 @@
 package net.minecraft.server;
 
-public class EntityEnderPearl extends EntityProjectile {
-
-    public EntityEnderPearl(World world) {
-        super(world);
+public class EntityEnderPearl extends EntityProjectile
+{
+    public EntityEnderPearl(World par1World)
+    {
+        super(par1World);
     }
 
-    public EntityEnderPearl(World world, EntityLiving entityliving) {
-        super(world, entityliving);
+    public EntityEnderPearl(World par1World, EntityLiving par2EntityLiving)
+    {
+        super(par1World, par2EntityLiving);
     }
 
-    protected void a(MovingObjectPosition movingobjectposition) {
-        if (movingobjectposition.entity != null) {
-            movingobjectposition.entity.damageEntity(DamageSource.projectile(this, this.getShooter()), 0);
+    /**
+     * Called when this EntityThrowable hits a block or entity.
+     */
+    protected void a(MovingObjectPosition par1MovingObjectPosition)
+    {
+        if (par1MovingObjectPosition.entity != null)
+        {
+            par1MovingObjectPosition.entity.damageEntity(DamageSource.projectile(this, this.getShooter()), 0);
         }
 
-        for (int i = 0; i < 32; ++i) {
+        for (int var2 = 0; var2 < 32; ++var2)
+        {
             this.world.addParticle("portal", this.locX, this.locY + this.random.nextDouble() * 2.0D, this.locZ, this.random.nextGaussian(), 0.0D, this.random.nextGaussian());
         }
 
-        if (!this.world.isStatic) {
-            if (this.getShooter() != null && this.getShooter() instanceof EntityPlayer) {
-                EntityPlayer entityplayer = (EntityPlayer) this.getShooter();
+        if (!this.world.isStatic)
+        {
+            if (this.getShooter() != null && this.getShooter() instanceof EntityPlayer)
+            {
+                EntityPlayer var3 = (EntityPlayer)this.getShooter();
 
-                if (!entityplayer.netServerHandler.disconnected && entityplayer.world == this.world) {
+                if (!var3.netServerHandler.disconnected && var3.world == this.world)
+                {
                     this.getShooter().enderTeleportTo(this.locX, this.locY, this.locZ);
                     this.getShooter().fallDistance = 0.0F;
                     this.getShooter().damageEntity(DamageSource.FALL, 5);

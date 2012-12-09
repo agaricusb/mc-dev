@@ -1,101 +1,150 @@
 package net.minecraft.server;
 
-public class MerchantRecipe {
-
+public class MerchantRecipe
+{
+    /** Item the Villager buys. */
     private ItemStack buyingItem1;
+
+    /** Second Item the Villager buys. */
     private ItemStack buyingItem2;
+
+    /** Item the Villager sells. */
     private ItemStack sellingItem;
+
+    /**
+     * Saves how much has been tool used when put into to slot to be enchanted.
+     */
     private int uses;
+
+    /** Maximum times this trade can be used. */
     private int maxUses;
 
-    public MerchantRecipe(NBTTagCompound nbttagcompound) {
-        this.a(nbttagcompound);
+    public MerchantRecipe(NBTTagCompound par1NBTTagCompound)
+    {
+        this.a(par1NBTTagCompound);
     }
 
-    public MerchantRecipe(ItemStack itemstack, ItemStack itemstack1, ItemStack itemstack2) {
-        this.buyingItem1 = itemstack;
-        this.buyingItem2 = itemstack1;
-        this.sellingItem = itemstack2;
+    public MerchantRecipe(ItemStack par1ItemStack, ItemStack par2ItemStack, ItemStack par3ItemStack)
+    {
+        this.buyingItem1 = par1ItemStack;
+        this.buyingItem2 = par2ItemStack;
+        this.sellingItem = par3ItemStack;
         this.maxUses = 7;
     }
 
-    public MerchantRecipe(ItemStack itemstack, ItemStack itemstack1) {
-        this(itemstack, (ItemStack) null, itemstack1);
+    public MerchantRecipe(ItemStack par1ItemStack, ItemStack par2ItemStack)
+    {
+        this(par1ItemStack, (ItemStack)null, par2ItemStack);
     }
 
-    public MerchantRecipe(ItemStack itemstack, Item item) {
-        this(itemstack, new ItemStack(item));
+    public MerchantRecipe(ItemStack par1ItemStack, Item par2Item)
+    {
+        this(par1ItemStack, new ItemStack(par2Item));
     }
 
-    public ItemStack getBuyItem1() {
+    /**
+     * Gets the itemToBuy.
+     */
+    public ItemStack getBuyItem1()
+    {
         return this.buyingItem1;
     }
 
-    public ItemStack getBuyItem2() {
+    /**
+     * Gets secondItemToBuy.
+     */
+    public ItemStack getBuyItem2()
+    {
         return this.buyingItem2;
     }
 
-    public boolean hasSecondItem() {
+    /**
+     * Gets if Villager has secondItemToBuy.
+     */
+    public boolean hasSecondItem()
+    {
         return this.buyingItem2 != null;
     }
 
-    public ItemStack getBuyItem3() {
+    /**
+     * Gets itemToSell.
+     */
+    public ItemStack getBuyItem3()
+    {
         return this.sellingItem;
     }
 
-    public boolean a(MerchantRecipe merchantrecipe) {
-        return this.buyingItem1.id == merchantrecipe.buyingItem1.id && this.sellingItem.id == merchantrecipe.sellingItem.id ? this.buyingItem2 == null && merchantrecipe.buyingItem2 == null || this.buyingItem2 != null && merchantrecipe.buyingItem2 != null && this.buyingItem2.id == merchantrecipe.buyingItem2.id : false;
+    /**
+     * checks if both the first and second ItemToBuy IDs are the same
+     */
+    public boolean a(MerchantRecipe par1MerchantRecipe)
+    {
+        return this.buyingItem1.id == par1MerchantRecipe.buyingItem1.id && this.sellingItem.id == par1MerchantRecipe.sellingItem.id ? this.buyingItem2 == null && par1MerchantRecipe.buyingItem2 == null || this.buyingItem2 != null && par1MerchantRecipe.buyingItem2 != null && this.buyingItem2.id == par1MerchantRecipe.buyingItem2.id : false;
     }
 
-    public boolean b(MerchantRecipe merchantrecipe) {
-        return this.a(merchantrecipe) && (this.buyingItem1.count < merchantrecipe.buyingItem1.count || this.buyingItem2 != null && this.buyingItem2.count < merchantrecipe.buyingItem2.count);
+    /**
+     * checks first and second ItemToBuy ID's and count. Calls hasSameIDs
+     */
+    public boolean b(MerchantRecipe par1MerchantRecipe)
+    {
+        return this.a(par1MerchantRecipe) && (this.buyingItem1.count < par1MerchantRecipe.buyingItem1.count || this.buyingItem2 != null && this.buyingItem2.count < par1MerchantRecipe.buyingItem2.count);
     }
 
-    public void f() {
+    public void f()
+    {
         ++this.uses;
     }
 
-    public void a(int i) {
-        this.maxUses += i;
+    public void a(int par1)
+    {
+        this.maxUses += par1;
     }
 
-    public boolean g() {
+    public boolean g()
+    {
         return this.uses >= this.maxUses;
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
-        NBTTagCompound nbttagcompound1 = nbttagcompound.getCompound("buy");
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        NBTTagCompound var2 = par1NBTTagCompound.getCompound("buy");
+        this.buyingItem1 = ItemStack.a(var2);
+        NBTTagCompound var3 = par1NBTTagCompound.getCompound("sell");
+        this.sellingItem = ItemStack.a(var3);
 
-        this.buyingItem1 = ItemStack.a(nbttagcompound1);
-        NBTTagCompound nbttagcompound2 = nbttagcompound.getCompound("sell");
-
-        this.sellingItem = ItemStack.a(nbttagcompound2);
-        if (nbttagcompound.hasKey("buyB")) {
-            this.buyingItem2 = ItemStack.a(nbttagcompound.getCompound("buyB"));
+        if (par1NBTTagCompound.hasKey("buyB"))
+        {
+            this.buyingItem2 = ItemStack.a(par1NBTTagCompound.getCompound("buyB"));
         }
 
-        if (nbttagcompound.hasKey("uses")) {
-            this.uses = nbttagcompound.getInt("uses");
+        if (par1NBTTagCompound.hasKey("uses"))
+        {
+            this.uses = par1NBTTagCompound.getInt("uses");
         }
 
-        if (nbttagcompound.hasKey("maxUses")) {
-            this.maxUses = nbttagcompound.getInt("maxUses");
-        } else {
+        if (par1NBTTagCompound.hasKey("maxUses"))
+        {
+            this.maxUses = par1NBTTagCompound.getInt("maxUses");
+        }
+        else
+        {
             this.maxUses = 7;
         }
     }
 
-    public NBTTagCompound i() {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
+    public NBTTagCompound i()
+    {
+        NBTTagCompound var1 = new NBTTagCompound();
+        var1.setCompound("buy", this.buyingItem1.save(new NBTTagCompound("buy")));
+        var1.setCompound("sell", this.sellingItem.save(new NBTTagCompound("sell")));
 
-        nbttagcompound.setCompound("buy", this.buyingItem1.save(new NBTTagCompound("buy")));
-        nbttagcompound.setCompound("sell", this.sellingItem.save(new NBTTagCompound("sell")));
-        if (this.buyingItem2 != null) {
-            nbttagcompound.setCompound("buyB", this.buyingItem2.save(new NBTTagCompound("buyB")));
+        if (this.buyingItem2 != null)
+        {
+            var1.setCompound("buyB", this.buyingItem2.save(new NBTTagCompound("buyB")));
         }
 
-        nbttagcompound.setInt("uses", this.uses);
-        nbttagcompound.setInt("maxUses", this.maxUses);
-        return nbttagcompound;
+        var1.setInt("uses", this.uses);
+        var1.setInt("maxUses", this.maxUses);
+        return var1;
     }
 }

@@ -2,11 +2,12 @@ package net.minecraft.server;
 
 import java.util.ArrayList;
 
-class NoteDataList extends ArrayList {
-
+class NoteDataList extends ArrayList
+{
     private NoteDataList() {}
 
-    NoteDataList(EmptyClass2 emptyclass2) {
+    NoteDataList(EmptyClass par1ServerBlockEvent)
+    {
         this();
     }
 }

@@ -2,52 +2,64 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenMinable extends WorldGenerator {
-
+public class WorldGenMinable extends WorldGenerator
+{
+    /** The block ID of the ore to be placed using this generator. */
     private int a;
+
+    /** The number of blocks to generate. */
     private int b;
 
-    public WorldGenMinable(int i, int j) {
-        this.a = i;
-        this.b = j;
+    public WorldGenMinable(int par1, int par2)
+    {
+        this.a = par1;
+        this.b = par2;
     }
 
-    public boolean a(World world, Random random, int i, int j, int k) {
-        float f = random.nextFloat() * 3.1415927F;
-        double d0 = (double) ((float) (i + 8) + MathHelper.sin(f) * (float) this.b / 8.0F);
-        double d1 = (double) ((float) (i + 8) - MathHelper.sin(f) * (float) this.b / 8.0F);
-        double d2 = (double) ((float) (k + 8) + MathHelper.cos(f) * (float) this.b / 8.0F);
-        double d3 = (double) ((float) (k + 8) - MathHelper.cos(f) * (float) this.b / 8.0F);
-        double d4 = (double) (j + random.nextInt(3) - 2);
-        double d5 = (double) (j + random.nextInt(3) - 2);
+    public boolean a(World par1World, Random par2Random, int par3, int par4, int par5)
+    {
+        float var6 = par2Random.nextFloat() * (float)Math.PI;
+        double var7 = (double)((float)(par3 + 8) + MathHelper.sin(var6) * (float)this.b / 8.0F);
+        double var9 = (double)((float)(par3 + 8) - MathHelper.sin(var6) * (float)this.b / 8.0F);
+        double var11 = (double)((float)(par5 + 8) + MathHelper.cos(var6) * (float)this.b / 8.0F);
+        double var13 = (double)((float)(par5 + 8) - MathHelper.cos(var6) * (float)this.b / 8.0F);
+        double var15 = (double)(par4 + par2Random.nextInt(3) - 2);
+        double var17 = (double)(par4 + par2Random.nextInt(3) - 2);
 
-        for (int l = 0; l <= this.b; ++l) {
-            double d6 = d0 + (d1 - d0) * (double) l / (double) this.b;
-            double d7 = d4 + (d5 - d4) * (double) l / (double) this.b;
-            double d8 = d2 + (d3 - d2) * (double) l / (double) this.b;
-            double d9 = random.nextDouble() * (double) this.b / 16.0D;
-            double d10 = (double) (MathHelper.sin((float) l * 3.1415927F / (float) this.b) + 1.0F) * d9 + 1.0D;
-            double d11 = (double) (MathHelper.sin((float) l * 3.1415927F / (float) this.b) + 1.0F) * d9 + 1.0D;
-            int i1 = MathHelper.floor(d6 - d10 / 2.0D);
-            int j1 = MathHelper.floor(d7 - d11 / 2.0D);
-            int k1 = MathHelper.floor(d8 - d10 / 2.0D);
-            int l1 = MathHelper.floor(d6 + d10 / 2.0D);
-            int i2 = MathHelper.floor(d7 + d11 / 2.0D);
-            int j2 = MathHelper.floor(d8 + d10 / 2.0D);
+        for (int var19 = 0; var19 <= this.b; ++var19)
+        {
+            double var20 = var7 + (var9 - var7) * (double)var19 / (double)this.b;
+            double var22 = var15 + (var17 - var15) * (double)var19 / (double)this.b;
+            double var24 = var11 + (var13 - var11) * (double)var19 / (double)this.b;
+            double var26 = par2Random.nextDouble() * (double)this.b / 16.0D;
+            double var28 = (double)(MathHelper.sin((float) var19 * (float) Math.PI / (float) this.b) + 1.0F) * var26 + 1.0D;
+            double var30 = (double)(MathHelper.sin((float) var19 * (float) Math.PI / (float) this.b) + 1.0F) * var26 + 1.0D;
+            int var32 = MathHelper.floor(var20 - var28 / 2.0D);
+            int var33 = MathHelper.floor(var22 - var30 / 2.0D);
+            int var34 = MathHelper.floor(var24 - var28 / 2.0D);
+            int var35 = MathHelper.floor(var20 + var28 / 2.0D);
+            int var36 = MathHelper.floor(var22 + var30 / 2.0D);
+            int var37 = MathHelper.floor(var24 + var28 / 2.0D);
 
-            for (int k2 = i1; k2 <= l1; ++k2) {
-                double d12 = ((double) k2 + 0.5D - d6) / (d10 / 2.0D);
+            for (int var38 = var32; var38 <= var35; ++var38)
+            {
+                double var39 = ((double)var38 + 0.5D - var20) / (var28 / 2.0D);
 
-                if (d12 * d12 < 1.0D) {
-                    for (int l2 = j1; l2 <= i2; ++l2) {
-                        double d13 = ((double) l2 + 0.5D - d7) / (d11 / 2.0D);
+                if (var39 * var39 < 1.0D)
+                {
+                    for (int var41 = var33; var41 <= var36; ++var41)
+                    {
+                        double var42 = ((double)var41 + 0.5D - var22) / (var30 / 2.0D);
 
-                        if (d12 * d12 + d13 * d13 < 1.0D) {
-                            for (int i3 = k1; i3 <= j2; ++i3) {
-                                double d14 = ((double) i3 + 0.5D - d8) / (d10 / 2.0D);
+                        if (var39 * var39 + var42 * var42 < 1.0D)
+                        {
+                            for (int var44 = var34; var44 <= var37; ++var44)
+                            {
+                                double var45 = ((double)var44 + 0.5D - var24) / (var28 / 2.0D);
 
-                                if (d12 * d12 + d13 * d13 + d14 * d14 < 1.0D && world.getTypeId(k2, l2, i3) == Block.STONE.id) {
-                                    world.setRawTypeId(k2, l2, i3, this.a);
+                                if (var39 * var39 + var42 * var42 + var45 * var45 < 1.0D && par1World.getTypeId(var38, var41, var44) == Block.STONE.id)
+                                {
+                                    par1World.setRawTypeId(var38, var41, var44, this.a);
                                 }
                             }
                         }

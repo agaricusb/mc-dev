@@ -5,69 +5,82 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 
-public class InsensitiveStringMap implements Map {
-
+public class InsensitiveStringMap implements Map
+{
     private final Map a = new LinkedHashMap();
 
-    public InsensitiveStringMap() {}
-
-    public int size() {
+    public int size()
+    {
         return this.a.size();
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty()
+    {
         return this.a.isEmpty();
     }
 
-    public boolean containsKey(Object object) {
-        return this.a.containsKey(object.toString().toLowerCase());
+    public boolean containsKey(Object par1Obj)
+    {
+        return this.a.containsKey(par1Obj.toString().toLowerCase());
     }
 
-    public boolean containsValue(Object object) {
-        return this.a.containsKey(object);
+    public boolean containsValue(Object par1Obj)
+    {
+        return this.a.containsKey(par1Obj);
     }
 
-    public Object get(Object object) {
-        return this.a.get(object.toString().toLowerCase());
+    public Object get(Object par1Obj)
+    {
+        return this.a.get(par1Obj.toString().toLowerCase());
     }
 
-    public Object put(String s, Object object) {
-        return this.a.put(s.toLowerCase(), object);
+    /**
+     * a map already defines a general put
+     */
+    public Object put(String par1Str, Object par2Obj)
+    {
+        return this.a.put(par1Str.toLowerCase(), par2Obj);
     }
 
-    public Object remove(Object object) {
-        return this.a.remove(object.toString().toLowerCase());
+    public Object remove(Object par1Obj)
+    {
+        return this.a.remove(par1Obj.toString().toLowerCase());
     }
 
-    public void putAll(Map map) {
-        Iterator iterator = map.entrySet().iterator();
+    public void putAll(Map par1Map)
+    {
+        Iterator var2 = par1Map.entrySet().iterator();
 
-        while (iterator.hasNext()) {
-            Entry entry = (Entry) iterator.next();
-
-            this.put((String) entry.getKey(), entry.getValue());
+        while (var2.hasNext())
+        {
+            Entry var3 = (Entry)var2.next();
+            this.put((String) var3.getKey(), var3.getValue());
         }
     }
 
-    public void clear() {
+    public void clear()
+    {
         this.a.clear();
     }
 
-    public Set keySet() {
+    public Set keySet()
+    {
         return this.a.keySet();
     }
 
-    public Collection values() {
+    public Collection values()
+    {
         return this.a.values();
     }
 
-    public Set entrySet() {
+    public Set entrySet()
+    {
         return this.a.entrySet();
     }
 
-    public Object put(Object object, Object object1) {
-        return this.put((String) object, object1);
+    public Object put(Object par1Obj, Object par2Obj)
+    {
+        return this.put((String) par1Obj, par2Obj);
     }
 }

@@ -2,19 +2,26 @@ package net.minecraft.server;
 
 import java.util.concurrent.Callable;
 
-class CrashReportChunkStats implements Callable {
-
+class CrashReportChunkStats implements Callable
+{
+    /** Reference to the World object. */
     final World a;
 
-    CrashReportChunkStats(World world) {
-        this.a = world;
+    CrashReportChunkStats(World par1World)
+    {
+        this.a = par1World;
     }
 
-    public String a() {
+    /**
+     * Returns the result of the ChunkProvider's makeString
+     */
+    public String a()
+    {
         return this.a.chunkProvider.getName();
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

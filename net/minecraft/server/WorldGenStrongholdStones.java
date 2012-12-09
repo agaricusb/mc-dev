@@ -2,32 +2,47 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-class WorldGenStrongholdStones extends StructurePieceBlockSelector {
-
+class WorldGenStrongholdStones extends StructurePieceBlockSelector
+{
     private WorldGenStrongholdStones() {}
 
-    public void a(Random random, int i, int j, int k, boolean flag) {
-        if (flag) {
+    /**
+     * picks Block Ids and Metadata (Silverfish)
+     */
+    public void a(Random par1Random, int par2, int par3, int par4, boolean par5)
+    {
+        if (par5)
+        {
             this.a = Block.SMOOTH_BRICK.id;
-            float f = random.nextFloat();
+            float var6 = par1Random.nextFloat();
 
-            if (f < 0.2F) {
+            if (var6 < 0.2F)
+            {
                 this.b = 2;
-            } else if (f < 0.5F) {
+            }
+            else if (var6 < 0.5F)
+            {
                 this.b = 1;
-            } else if (f < 0.55F) {
+            }
+            else if (var6 < 0.55F)
+            {
                 this.a = Block.MONSTER_EGGS.id;
                 this.b = 2;
-            } else {
+            }
+            else
+            {
                 this.b = 0;
             }
-        } else {
+        }
+        else
+        {
             this.a = 0;
             this.b = 0;
         }
     }
 
-    WorldGenStrongholdStones(WorldGenStrongholdUnknown worldgenstrongholdunknown) {
+    WorldGenStrongholdStones(WorldGenStrongholdUnknown par1StructureStrongholdPieceWeight2)
+    {
         this();
     }
 }

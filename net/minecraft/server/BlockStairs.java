@@ -3,399 +3,581 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-public class BlockStairs extends Block {
+public class BlockStairs extends Block
+{
+    private static final int[][] a = new int[][] {{2, 6}, {3, 7}, {2, 3}, {6, 7}, {0, 4}, {1, 5}, {0, 1}, {4, 5}};
+    private static final int[] b = new int[] {1, -1, 0, 0};
+    private static final int[] c = new int[] {0, 0, 1, -1};
 
-    private static final int[][] a = new int[][] { { 2, 6}, { 3, 7}, { 2, 3}, { 6, 7}, { 0, 4}, { 1, 5}, { 0, 1}, { 4, 5}};
-    private static final int[] b = new int[] { 1, -1, 0, 0};
-    private static final int[] c = new int[] { 0, 0, 1, -1};
+    /** The block that is used as model for the stair. */
     private final Block cD;
     private final int cE;
     private boolean cF = false;
     private int cG = 0;
 
-    protected BlockStairs(int i, Block block, int j) {
-        super(i, block.textureId, block.material);
-        this.cD = block;
-        this.cE = j;
-        this.c(block.strength);
-        this.b(block.durability / 3.0F);
-        this.a(block.stepSound);
+    protected BlockStairs(int par1, Block par2Block, int par3)
+    {
+        super(par1, par2Block.textureId, par2Block.material);
+        this.cD = par2Block;
+        this.cE = par3;
+        this.c(par2Block.strength);
+        this.b(par2Block.durability / 3.0F);
+        this.a(par2Block.stepSound);
         this.h(255);
         this.a(CreativeModeTab.b);
     }
 
-    public void updateShape(IBlockAccess iblockaccess, int i, int j, int k) {
-        if (this.cF) {
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void updateShape(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        if (this.cF)
+        {
             this.a(0.5F * (float) (this.cG % 2), 0.5F * (float) (this.cG / 2 % 2), 0.5F * (float) (this.cG / 4 % 2), 0.5F + 0.5F * (float) (this.cG % 2), 0.5F + 0.5F * (float) (this.cG / 2 % 2), 0.5F + 0.5F * (float) (this.cG / 4 % 2));
-        } else {
+        }
+        else
+        {
             this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 10;
     }
 
-    public void d(IBlockAccess iblockaccess, int i, int j, int k) {
-        int l = iblockaccess.getData(i, j, k);
+    public void d(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        int var5 = par1IBlockAccess.getData(par2, par3, par4);
 
-        if ((l & 4) != 0) {
+        if ((var5 & 4) != 0)
+        {
             this.a(0.0F, 0.5F, 0.0F, 1.0F, 1.0F, 1.0F);
-        } else {
+        }
+        else
+        {
             this.a(0.0F, 0.0F, 0.0F, 1.0F, 0.5F, 1.0F);
         }
     }
 
-    public static boolean e(int i) {
-        return i > 0 && Block.byId[i] instanceof BlockStairs;
+    public static boolean e(int par0)
+    {
+        return par0 > 0 && Block.byId[par0] instanceof BlockStairs;
     }
 
-    private boolean f(IBlockAccess iblockaccess, int i, int j, int k, int l) {
-        int i1 = iblockaccess.getTypeId(i, j, k);
-
-        return e(i1) && iblockaccess.getData(i, j, k) == l;
+    private boolean f(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    {
+        int var6 = par1IBlockAccess.getTypeId(par2, par3, par4);
+        return e(var6) && par1IBlockAccess.getData(par2, par3, par4) == par5;
     }
 
-    public boolean g(IBlockAccess iblockaccess, int i, int j, int k) {
-        int l = iblockaccess.getData(i, j, k);
-        int i1 = l & 3;
-        float f = 0.5F;
-        float f1 = 1.0F;
+    public boolean g(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        int var5 = par1IBlockAccess.getData(par2, par3, par4);
+        int var6 = var5 & 3;
+        float var7 = 0.5F;
+        float var8 = 1.0F;
 
-        if ((l & 4) != 0) {
-            f = 0.0F;
-            f1 = 0.5F;
+        if ((var5 & 4) != 0)
+        {
+            var7 = 0.0F;
+            var8 = 0.5F;
         }
 
-        float f2 = 0.0F;
-        float f3 = 1.0F;
-        float f4 = 0.0F;
-        float f5 = 0.5F;
-        boolean flag = true;
-        int j1;
-        int k1;
-        int l1;
+        float var9 = 0.0F;
+        float var10 = 1.0F;
+        float var11 = 0.0F;
+        float var12 = 0.5F;
+        boolean var13 = true;
+        int var14;
+        int var15;
+        int var16;
 
-        if (i1 == 0) {
-            f2 = 0.5F;
-            f5 = 1.0F;
-            j1 = iblockaccess.getTypeId(i + 1, j, k);
-            k1 = iblockaccess.getData(i + 1, j, k);
-            if (e(j1) && (l & 4) == (k1 & 4)) {
-                l1 = k1 & 3;
-                if (l1 == 3 && !this.f(iblockaccess, i, j, k + 1, l)) {
-                    f5 = 0.5F;
-                    flag = false;
-                } else if (l1 == 2 && !this.f(iblockaccess, i, j, k - 1, l)) {
-                    f4 = 0.5F;
-                    flag = false;
+        if (var6 == 0)
+        {
+            var9 = 0.5F;
+            var12 = 1.0F;
+            var14 = par1IBlockAccess.getTypeId(par2 + 1, par3, par4);
+            var15 = par1IBlockAccess.getData(par2 + 1, par3, par4);
+
+            if (e(var14) && (var5 & 4) == (var15 & 4))
+            {
+                var16 = var15 & 3;
+
+                if (var16 == 3 && !this.f(par1IBlockAccess, par2, par3, par4 + 1, var5))
+                {
+                    var12 = 0.5F;
+                    var13 = false;
                 }
-            }
-        } else if (i1 == 1) {
-            f3 = 0.5F;
-            f5 = 1.0F;
-            j1 = iblockaccess.getTypeId(i - 1, j, k);
-            k1 = iblockaccess.getData(i - 1, j, k);
-            if (e(j1) && (l & 4) == (k1 & 4)) {
-                l1 = k1 & 3;
-                if (l1 == 3 && !this.f(iblockaccess, i, j, k + 1, l)) {
-                    f5 = 0.5F;
-                    flag = false;
-                } else if (l1 == 2 && !this.f(iblockaccess, i, j, k - 1, l)) {
-                    f4 = 0.5F;
-                    flag = false;
-                }
-            }
-        } else if (i1 == 2) {
-            f4 = 0.5F;
-            f5 = 1.0F;
-            j1 = iblockaccess.getTypeId(i, j, k + 1);
-            k1 = iblockaccess.getData(i, j, k + 1);
-            if (e(j1) && (l & 4) == (k1 & 4)) {
-                l1 = k1 & 3;
-                if (l1 == 1 && !this.f(iblockaccess, i + 1, j, k, l)) {
-                    f3 = 0.5F;
-                    flag = false;
-                } else if (l1 == 0 && !this.f(iblockaccess, i - 1, j, k, l)) {
-                    f2 = 0.5F;
-                    flag = false;
-                }
-            }
-        } else if (i1 == 3) {
-            j1 = iblockaccess.getTypeId(i, j, k - 1);
-            k1 = iblockaccess.getData(i, j, k - 1);
-            if (e(j1) && (l & 4) == (k1 & 4)) {
-                l1 = k1 & 3;
-                if (l1 == 1 && !this.f(iblockaccess, i + 1, j, k, l)) {
-                    f3 = 0.5F;
-                    flag = false;
-                } else if (l1 == 0 && !this.f(iblockaccess, i - 1, j, k, l)) {
-                    f2 = 0.5F;
-                    flag = false;
+                else if (var16 == 2 && !this.f(par1IBlockAccess, par2, par3, par4 - 1, var5))
+                {
+                    var11 = 0.5F;
+                    var13 = false;
                 }
             }
         }
+        else if (var6 == 1)
+        {
+            var10 = 0.5F;
+            var12 = 1.0F;
+            var14 = par1IBlockAccess.getTypeId(par2 - 1, par3, par4);
+            var15 = par1IBlockAccess.getData(par2 - 1, par3, par4);
 
-        this.a(f2, f, f4, f3, f1, f5);
-        return flag;
+            if (e(var14) && (var5 & 4) == (var15 & 4))
+            {
+                var16 = var15 & 3;
+
+                if (var16 == 3 && !this.f(par1IBlockAccess, par2, par3, par4 + 1, var5))
+                {
+                    var12 = 0.5F;
+                    var13 = false;
+                }
+                else if (var16 == 2 && !this.f(par1IBlockAccess, par2, par3, par4 - 1, var5))
+                {
+                    var11 = 0.5F;
+                    var13 = false;
+                }
+            }
+        }
+        else if (var6 == 2)
+        {
+            var11 = 0.5F;
+            var12 = 1.0F;
+            var14 = par1IBlockAccess.getTypeId(par2, par3, par4 + 1);
+            var15 = par1IBlockAccess.getData(par2, par3, par4 + 1);
+
+            if (e(var14) && (var5 & 4) == (var15 & 4))
+            {
+                var16 = var15 & 3;
+
+                if (var16 == 1 && !this.f(par1IBlockAccess, par2 + 1, par3, par4, var5))
+                {
+                    var10 = 0.5F;
+                    var13 = false;
+                }
+                else if (var16 == 0 && !this.f(par1IBlockAccess, par2 - 1, par3, par4, var5))
+                {
+                    var9 = 0.5F;
+                    var13 = false;
+                }
+            }
+        }
+        else if (var6 == 3)
+        {
+            var14 = par1IBlockAccess.getTypeId(par2, par3, par4 - 1);
+            var15 = par1IBlockAccess.getData(par2, par3, par4 - 1);
+
+            if (e(var14) && (var5 & 4) == (var15 & 4))
+            {
+                var16 = var15 & 3;
+
+                if (var16 == 1 && !this.f(par1IBlockAccess, par2 + 1, par3, par4, var5))
+                {
+                    var10 = 0.5F;
+                    var13 = false;
+                }
+                else if (var16 == 0 && !this.f(par1IBlockAccess, par2 - 1, par3, par4, var5))
+                {
+                    var9 = 0.5F;
+                    var13 = false;
+                }
+            }
+        }
+
+        this.a(var9, var7, var11, var10, var8, var12);
+        return var13;
     }
 
-    public boolean h(IBlockAccess iblockaccess, int i, int j, int k) {
-        int l = iblockaccess.getData(i, j, k);
-        int i1 = l & 3;
-        float f = 0.5F;
-        float f1 = 1.0F;
+    public boolean h(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        int var5 = par1IBlockAccess.getData(par2, par3, par4);
+        int var6 = var5 & 3;
+        float var7 = 0.5F;
+        float var8 = 1.0F;
 
-        if ((l & 4) != 0) {
-            f = 0.0F;
-            f1 = 0.5F;
+        if ((var5 & 4) != 0)
+        {
+            var7 = 0.0F;
+            var8 = 0.5F;
         }
 
-        float f2 = 0.0F;
-        float f3 = 0.5F;
-        float f4 = 0.5F;
-        float f5 = 1.0F;
-        boolean flag = false;
-        int j1;
-        int k1;
-        int l1;
+        float var9 = 0.0F;
+        float var10 = 0.5F;
+        float var11 = 0.5F;
+        float var12 = 1.0F;
+        boolean var13 = false;
+        int var14;
+        int var15;
+        int var16;
 
-        if (i1 == 0) {
-            j1 = iblockaccess.getTypeId(i - 1, j, k);
-            k1 = iblockaccess.getData(i - 1, j, k);
-            if (e(j1) && (l & 4) == (k1 & 4)) {
-                l1 = k1 & 3;
-                if (l1 == 3 && !this.f(iblockaccess, i, j, k - 1, l)) {
-                    f4 = 0.0F;
-                    f5 = 0.5F;
-                    flag = true;
-                } else if (l1 == 2 && !this.f(iblockaccess, i, j, k + 1, l)) {
-                    f4 = 0.5F;
-                    f5 = 1.0F;
-                    flag = true;
+        if (var6 == 0)
+        {
+            var14 = par1IBlockAccess.getTypeId(par2 - 1, par3, par4);
+            var15 = par1IBlockAccess.getData(par2 - 1, par3, par4);
+
+            if (e(var14) && (var5 & 4) == (var15 & 4))
+            {
+                var16 = var15 & 3;
+
+                if (var16 == 3 && !this.f(par1IBlockAccess, par2, par3, par4 - 1, var5))
+                {
+                    var11 = 0.0F;
+                    var12 = 0.5F;
+                    var13 = true;
                 }
-            }
-        } else if (i1 == 1) {
-            j1 = iblockaccess.getTypeId(i + 1, j, k);
-            k1 = iblockaccess.getData(i + 1, j, k);
-            if (e(j1) && (l & 4) == (k1 & 4)) {
-                f2 = 0.5F;
-                f3 = 1.0F;
-                l1 = k1 & 3;
-                if (l1 == 3 && !this.f(iblockaccess, i, j, k - 1, l)) {
-                    f4 = 0.0F;
-                    f5 = 0.5F;
-                    flag = true;
-                } else if (l1 == 2 && !this.f(iblockaccess, i, j, k + 1, l)) {
-                    f4 = 0.5F;
-                    f5 = 1.0F;
-                    flag = true;
-                }
-            }
-        } else if (i1 == 2) {
-            j1 = iblockaccess.getTypeId(i, j, k - 1);
-            k1 = iblockaccess.getData(i, j, k - 1);
-            if (e(j1) && (l & 4) == (k1 & 4)) {
-                f4 = 0.0F;
-                f5 = 0.5F;
-                l1 = k1 & 3;
-                if (l1 == 1 && !this.f(iblockaccess, i - 1, j, k, l)) {
-                    flag = true;
-                } else if (l1 == 0 && !this.f(iblockaccess, i + 1, j, k, l)) {
-                    f2 = 0.5F;
-                    f3 = 1.0F;
-                    flag = true;
-                }
-            }
-        } else if (i1 == 3) {
-            j1 = iblockaccess.getTypeId(i, j, k + 1);
-            k1 = iblockaccess.getData(i, j, k + 1);
-            if (e(j1) && (l & 4) == (k1 & 4)) {
-                l1 = k1 & 3;
-                if (l1 == 1 && !this.f(iblockaccess, i - 1, j, k, l)) {
-                    flag = true;
-                } else if (l1 == 0 && !this.f(iblockaccess, i + 1, j, k, l)) {
-                    f2 = 0.5F;
-                    f3 = 1.0F;
-                    flag = true;
+                else if (var16 == 2 && !this.f(par1IBlockAccess, par2, par3, par4 + 1, var5))
+                {
+                    var11 = 0.5F;
+                    var12 = 1.0F;
+                    var13 = true;
                 }
             }
         }
+        else if (var6 == 1)
+        {
+            var14 = par1IBlockAccess.getTypeId(par2 + 1, par3, par4);
+            var15 = par1IBlockAccess.getData(par2 + 1, par3, par4);
 
-        if (flag) {
-            this.a(f2, f, f4, f3, f1, f5);
+            if (e(var14) && (var5 & 4) == (var15 & 4))
+            {
+                var9 = 0.5F;
+                var10 = 1.0F;
+                var16 = var15 & 3;
+
+                if (var16 == 3 && !this.f(par1IBlockAccess, par2, par3, par4 - 1, var5))
+                {
+                    var11 = 0.0F;
+                    var12 = 0.5F;
+                    var13 = true;
+                }
+                else if (var16 == 2 && !this.f(par1IBlockAccess, par2, par3, par4 + 1, var5))
+                {
+                    var11 = 0.5F;
+                    var12 = 1.0F;
+                    var13 = true;
+                }
+            }
+        }
+        else if (var6 == 2)
+        {
+            var14 = par1IBlockAccess.getTypeId(par2, par3, par4 - 1);
+            var15 = par1IBlockAccess.getData(par2, par3, par4 - 1);
+
+            if (e(var14) && (var5 & 4) == (var15 & 4))
+            {
+                var11 = 0.0F;
+                var12 = 0.5F;
+                var16 = var15 & 3;
+
+                if (var16 == 1 && !this.f(par1IBlockAccess, par2 - 1, par3, par4, var5))
+                {
+                    var13 = true;
+                }
+                else if (var16 == 0 && !this.f(par1IBlockAccess, par2 + 1, par3, par4, var5))
+                {
+                    var9 = 0.5F;
+                    var10 = 1.0F;
+                    var13 = true;
+                }
+            }
+        }
+        else if (var6 == 3)
+        {
+            var14 = par1IBlockAccess.getTypeId(par2, par3, par4 + 1);
+            var15 = par1IBlockAccess.getData(par2, par3, par4 + 1);
+
+            if (e(var14) && (var5 & 4) == (var15 & 4))
+            {
+                var16 = var15 & 3;
+
+                if (var16 == 1 && !this.f(par1IBlockAccess, par2 - 1, par3, par4, var5))
+                {
+                    var13 = true;
+                }
+                else if (var16 == 0 && !this.f(par1IBlockAccess, par2 + 1, par3, par4, var5))
+                {
+                    var9 = 0.5F;
+                    var10 = 1.0F;
+                    var13 = true;
+                }
+            }
         }
 
-        return flag;
+        if (var13)
+        {
+            this.a(var9, var7, var11, var10, var8, var12);
+        }
+
+        return var13;
     }
 
-    public void a(World world, int i, int j, int k, AxisAlignedBB axisalignedbb, List list, Entity entity) {
-        this.d(world, i, j, k);
-        super.a(world, i, j, k, axisalignedbb, list, entity);
-        boolean flag = this.g(world, i, j, k);
+    /**
+     * if the specified block is in the given AABB, add its collision bounding box to the given list
+     */
+    public void a(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB, List par6List, Entity par7Entity)
+    {
+        this.d(par1World, par2, par3, par4);
+        super.a(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+        boolean var8 = this.g(par1World, par2, par3, par4);
+        super.a(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
 
-        super.a(world, i, j, k, axisalignedbb, list, entity);
-        if (flag && this.h(world, i, j, k)) {
-            super.a(world, i, j, k, axisalignedbb, list, entity);
+        if (var8 && this.h(par1World, par2, par3, par4))
+        {
+            super.a(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
         }
 
         this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    public void attack(World world, int i, int j, int k, EntityHuman entityhuman) {
-        this.cD.attack(world, i, j, k, entityhuman);
+    /**
+     * Called when the block is clicked by a player. Args: x, y, z, entityPlayer
+     */
+    public void attack(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer)
+    {
+        this.cD.attack(par1World, par2, par3, par4, par5EntityPlayer);
     }
 
-    public void postBreak(World world, int i, int j, int k, int l) {
-        this.cD.postBreak(world, i, j, k, l);
+    /**
+     * Called right before the block is destroyed by a player.  Args: world, x, y, z, metaData
+     */
+    public void postBreak(World par1World, int par2, int par3, int par4, int par5)
+    {
+        this.cD.postBreak(par1World, par2, par3, par4, par5);
     }
 
-    public float a(Entity entity) {
-        return this.cD.a(entity);
+    /**
+     * Returns how much this block can resist explosions from the passed in entity.
+     */
+    public float a(Entity par1Entity)
+    {
+        return this.cD.a(par1Entity);
     }
 
-    public int a(int i, int j) {
-        return this.cD.a(i, this.cE);
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
+        return this.cD.a(par1, this.cE);
     }
 
-    public int a(int i) {
-        return this.cD.a(i, this.cE);
+    /**
+     * Returns the block texture based on the side being looked at.  Args: side
+     */
+    public int a(int par1)
+    {
+        return this.cD.a(par1, this.cE);
     }
 
-    public int r_() {
+    /**
+     * How many world ticks before ticking
+     */
+    public int r_()
+    {
         return this.cD.r_();
     }
 
-    public void a(World world, int i, int j, int k, Entity entity, Vec3D vec3d) {
-        this.cD.a(world, i, j, k, entity, vec3d);
+    /**
+     * Can add to the passed in vector for a movement vector to be applied to the entity. Args: x, y, z, entity, vec3d
+     */
+    public void a(World par1World, int par2, int par3, int par4, Entity par5Entity, Vec3D par6Vec3)
+    {
+        this.cD.a(par1World, par2, par3, par4, par5Entity, par6Vec3);
     }
 
-    public boolean m() {
+    /**
+     * Returns if this block is collidable (only used by Fire). Args: x, y, z
+     */
+    public boolean m()
+    {
         return this.cD.m();
     }
 
-    public boolean a(int i, boolean flag) {
-        return this.cD.a(i, flag);
+    /**
+     * Returns whether this block is collideable based on the arguments passed in Args: blockMetaData, unknownFlag
+     */
+    public boolean a(int par1, boolean par2)
+    {
+        return this.cD.a(par1, par2);
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        return this.cD.canPlace(world, i, j, k);
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        return this.cD.canPlace(par1World, par2, par3, par4);
     }
 
-    public void onPlace(World world, int i, int j, int k) {
-        this.doPhysics(world, i, j, k, 0);
-        this.cD.onPlace(world, i, j, k);
+    /**
+     * Called whenever the block is added into the world. Args: world, x, y, z
+     */
+    public void onPlace(World par1World, int par2, int par3, int par4)
+    {
+        this.doPhysics(par1World, par2, par3, par4, 0);
+        this.cD.onPlace(par1World, par2, par3, par4);
     }
 
-    public void remove(World world, int i, int j, int k, int l, int i1) {
-        this.cD.remove(world, i, j, k, l, i1);
+    /**
+     * ejects contained items into the world, and notifies neighbours of an update, as appropriate
+     */
+    public void remove(World par1World, int par2, int par3, int par4, int par5, int par6)
+    {
+        this.cD.remove(par1World, par2, par3, par4, par5, par6);
     }
 
-    public void b(World world, int i, int j, int k, Entity entity) {
-        this.cD.b(world, i, j, k, entity);
+    /**
+     * Called whenever an entity is walking on top of this block. Args: world, x, y, z, entity
+     */
+    public void b(World par1World, int par2, int par3, int par4, Entity par5Entity)
+    {
+        this.cD.b(par1World, par2, par3, par4, par5Entity);
     }
 
-    public void b(World world, int i, int j, int k, Random random) {
-        this.cD.b(world, i, j, k, random);
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        this.cD.b(par1World, par2, par3, par4, par5Random);
     }
 
-    public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
-        return this.cD.interact(world, i, j, k, entityhuman, 0, 0.0F, 0.0F, 0.0F);
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
+        return this.cD.interact(par1World, par2, par3, par4, par5EntityPlayer, 0, 0.0F, 0.0F, 0.0F);
     }
 
-    public void wasExploded(World world, int i, int j, int k) {
-        this.cD.wasExploded(world, i, j, k);
+    /**
+     * Called upon the block being destroyed by an explosion
+     */
+    public void wasExploded(World par1World, int par2, int par3, int par4)
+    {
+        this.cD.wasExploded(par1World, par2, par3, par4);
     }
 
-    public void postPlace(World world, int i, int j, int k, EntityLiving entityliving) {
-        int l = MathHelper.floor((double) (entityliving.yaw * 4.0F / 360.0F) + 0.5D) & 3;
-        int i1 = world.getData(i, j, k) & 4;
+    /**
+     * Called when the block is placed in the world.
+     */
+    public void postPlace(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving)
+    {
+        int var6 = MathHelper.floor((double) (par5EntityLiving.yaw * 4.0F / 360.0F) + 0.5D) & 3;
+        int var7 = par1World.getData(par2, par3, par4) & 4;
 
-        if (l == 0) {
-            world.setData(i, j, k, 2 | i1);
+        if (var6 == 0)
+        {
+            par1World.setData(par2, par3, par4, 2 | var7);
         }
 
-        if (l == 1) {
-            world.setData(i, j, k, 1 | i1);
+        if (var6 == 1)
+        {
+            par1World.setData(par2, par3, par4, 1 | var7);
         }
 
-        if (l == 2) {
-            world.setData(i, j, k, 3 | i1);
+        if (var6 == 2)
+        {
+            par1World.setData(par2, par3, par4, 3 | var7);
         }
 
-        if (l == 3) {
-            world.setData(i, j, k, 0 | i1);
+        if (var6 == 3)
+        {
+            par1World.setData(par2, par3, par4, 0 | var7);
         }
     }
 
-    public int getPlacedData(World world, int i, int j, int k, int l, float f, float f1, float f2, int i1) {
-        return l != 0 && (l == 1 || (double) f1 <= 0.5D) ? i1 : i1 | 4;
+    public int getPlacedData(World par1World, int par2, int par3, int par4, int par5, float par6, float par7, float par8, int par9)
+    {
+        return par5 != 0 && (par5 == 1 || (double)par7 <= 0.5D) ? par9 : par9 | 4;
     }
 
-    public MovingObjectPosition a(World world, int i, int j, int k, Vec3D vec3d, Vec3D vec3d1) {
-        MovingObjectPosition[] amovingobjectposition = new MovingObjectPosition[8];
-        int l = world.getData(i, j, k);
-        int i1 = l & 3;
-        boolean flag = (l & 4) == 4;
-        int[] aint = a[i1 + (flag ? 4 : 0)];
-
+    /**
+     * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
+     * x, y, z, startVec, endVec
+     */
+    public MovingObjectPosition a(World par1World, int par2, int par3, int par4, Vec3D par5Vec3, Vec3D par6Vec3)
+    {
+        MovingObjectPosition[] var7 = new MovingObjectPosition[8];
+        int var8 = par1World.getData(par2, par3, par4);
+        int var9 = var8 & 3;
+        boolean var10 = (var8 & 4) == 4;
+        int[] var11 = a[var9 + (var10 ? 4 : 0)];
         this.cF = true;
+        int var14;
+        int var15;
+        int var16;
 
-        int j1;
-        int k1;
-        int l1;
+        for (int var12 = 0; var12 < 8; ++var12)
+        {
+            this.cG = var12;
+            int[] var13 = var11;
+            var14 = var11.length;
 
-        for (int i2 = 0; i2 < 8; ++i2) {
-            this.cG = i2;
-            int[] aint1 = aint;
+            for (var15 = 0; var15 < var14; ++var15)
+            {
+                var16 = var13[var15];
 
-            j1 = aint.length;
-
-            for (k1 = 0; k1 < j1; ++k1) {
-                l1 = aint1[k1];
-                if (l1 == i2) {
+                if (var16 == var12)
+                {
                     ;
                 }
             }
 
-            amovingobjectposition[i2] = super.a(world, i, j, k, vec3d, vec3d1);
+            var7[var12] = super.a(par1World, par2, par3, par4, par5Vec3, par6Vec3);
         }
 
-        int[] aint2 = aint;
-        int j2 = aint.length;
+        int[] var21 = var11;
+        int var24 = var11.length;
 
-        for (j1 = 0; j1 < j2; ++j1) {
-            k1 = aint2[j1];
-            amovingobjectposition[k1] = null;
+        for (var14 = 0; var14 < var24; ++var14)
+        {
+            var15 = var21[var14];
+            var7[var15] = null;
         }
 
-        MovingObjectPosition movingobjectposition = null;
-        double d0 = 0.0D;
-        MovingObjectPosition[] amovingobjectposition1 = amovingobjectposition;
+        MovingObjectPosition var23 = null;
+        double var22 = 0.0D;
+        MovingObjectPosition[] var25 = var7;
+        var16 = var7.length;
 
-        l1 = amovingobjectposition.length;
+        for (int var17 = 0; var17 < var16; ++var17)
+        {
+            MovingObjectPosition var18 = var25[var17];
 
-        for (int k2 = 0; k2 < l1; ++k2) {
-            MovingObjectPosition movingobjectposition1 = amovingobjectposition1[k2];
+            if (var18 != null)
+            {
+                double var19 = var18.pos.distanceSquared(par6Vec3);
 
-            if (movingobjectposition1 != null) {
-                double d1 = movingobjectposition1.pos.distanceSquared(vec3d1);
-
-                if (d1 > d0) {
-                    movingobjectposition = movingobjectposition1;
-                    d0 = d1;
+                if (var19 > var22)
+                {
+                    var23 = var18;
+                    var22 = var19;
                 }
             }
         }
 
-        return movingobjectposition;
+        return var23;
     }
 }

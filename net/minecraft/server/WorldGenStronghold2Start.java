@@ -1,27 +1,26 @@
 package net.minecraft.server;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-class WorldGenStronghold2Start extends StructureStart {
-
-    public WorldGenStronghold2Start(World world, Random random, int i, int j) {
+class WorldGenStronghold2Start extends StructureStart
+{
+    public WorldGenStronghold2Start(World par1World, Random par2Random, int par3, int par4)
+    {
         WorldGenStrongholdPieces.a();
-        WorldGenStrongholdStart worldgenstrongholdstart = new WorldGenStrongholdStart(0, random, (i << 4) + 2, (j << 4) + 2);
+        WorldGenStrongholdStart var5 = new WorldGenStrongholdStart(0, par2Random, (par3 << 4) + 2, (par4 << 4) + 2);
+        this.a.add(var5);
+        var5.a(var5, this.a, par2Random);
+        ArrayList var6 = var5.c;
 
-        this.a.add(worldgenstrongholdstart);
-        worldgenstrongholdstart.a(worldgenstrongholdstart, this.a, random);
-        ArrayList arraylist = worldgenstrongholdstart.c;
-
-        while (!arraylist.isEmpty()) {
-            int k = random.nextInt(arraylist.size());
-            StructurePiece structurepiece = (StructurePiece) arraylist.remove(k);
-
-            structurepiece.a((StructurePiece) worldgenstrongholdstart, (List) this.a, random);
+        while (!var6.isEmpty())
+        {
+            int var7 = par2Random.nextInt(var6.size());
+            StructurePiece var8 = (StructurePiece)var6.remove(var7);
+            var8.a(var5, this.a, par2Random);
         }
 
         this.c();
-        this.a(world, random, 10);
+        this.a(par1World, par2Random, 10);
     }
 }

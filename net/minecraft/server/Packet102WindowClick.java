@@ -2,41 +2,65 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet102WindowClick extends Packet {
-
+public class Packet102WindowClick extends Packet
+{
+    /** The id of the window which was clicked. 0 for player inventory. */
     public int a;
+
+    /** The clicked slot (-999 is outside of inventory) */
     public int slot;
+
+    /** 1 when right-clicking and otherwise 0 */
     public int button;
+
+    /** A unique number for the action, used for transaction handling */
     public short d;
+
+    /** Item stack for inventory */
     public ItemStack item;
     public int shift;
 
-    public Packet102WindowClick() {}
-
-    public void handle(NetHandler nethandler) {
-        nethandler.a(this);
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
+    public void handle(NetHandler par1NetHandler)
+    {
+        par1NetHandler.a(this);
     }
 
-    public void a(DataInputStream datainputstream) {
-        this.a = datainputstream.readByte();
-        this.slot = datainputstream.readShort();
-        this.button = datainputstream.readByte();
-        this.d = datainputstream.readShort();
-        this.shift = datainputstream.readByte();
-        this.item = c(datainputstream);
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        this.a = par1DataInputStream.readByte();
+        this.slot = par1DataInputStream.readShort();
+        this.button = par1DataInputStream.readByte();
+        this.d = par1DataInputStream.readShort();
+        this.shift = par1DataInputStream.readByte();
+        this.item = c(par1DataInputStream);
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        dataoutputstream.writeByte(this.a);
-        dataoutputstream.writeShort(this.slot);
-        dataoutputstream.writeByte(this.button);
-        dataoutputstream.writeShort(this.d);
-        dataoutputstream.writeByte(this.shift);
-        a(this.item, dataoutputstream);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        par1DataOutputStream.writeByte(this.a);
+        par1DataOutputStream.writeShort(this.slot);
+        par1DataOutputStream.writeByte(this.button);
+        par1DataOutputStream.writeShort(this.d);
+        par1DataOutputStream.writeByte(this.shift);
+        a(this.item, par1DataOutputStream);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 11;
     }
 }

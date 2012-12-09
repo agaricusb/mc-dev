@@ -1,6 +1,6 @@
 package net.minecraft.server;
 
-public interface ISource extends IPosition {
-
+public interface ISource extends IPosition
+{
     World k();
 }

@@ -1,12 +1,17 @@
 package net.minecraft.server;
 
-final class MaterialWeb extends Material {
-
-    MaterialWeb(MaterialMapColor materialmapcolor) {
-        super(materialmapcolor);
+final class MaterialWeb extends Material
+{
+    MaterialWeb(MaterialMapColor par1MapColor)
+    {
+        super(par1MapColor);
     }
 
-    public boolean isSolid() {
+    /**
+     * Returns if this material is considered solid or not
+     */
+    public boolean isSolid()
+    {
         return false;
     }
 }

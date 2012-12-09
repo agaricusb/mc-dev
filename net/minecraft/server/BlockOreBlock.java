@@ -1,14 +1,19 @@
 package net.minecraft.server;
 
-public class BlockOreBlock extends Block {
-
-    public BlockOreBlock(int i, int j) {
-        super(i, Material.ORE);
-        this.textureId = j;
+public class BlockOreBlock extends Block
+{
+    public BlockOreBlock(int par1, int par2)
+    {
+        super(par1, Material.ORE);
+        this.textureId = par2;
         this.a(CreativeModeTab.b);
     }
 
-    public int a(int i) {
+    /**
+     * Returns the block texture based on the side being looked at.  Args: side
+     */
+    public int a(int par1)
+    {
         return this.textureId;
     }
 }

@@ -2,25 +2,29 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenLargeFeatureStart extends StructureStart {
+public class WorldGenLargeFeatureStart extends StructureStart
+{
+    public WorldGenLargeFeatureStart(World par1World, Random par2Random, int par3, int par4)
+    {
+        BiomeBase var5 = par1World.getBiome(par3 * 16 + 8, par4 * 16 + 8);
 
-    public WorldGenLargeFeatureStart(World world, Random random, int i, int j) {
-        BiomeBase biomebase = world.getBiome(i * 16 + 8, j * 16 + 8);
-
-        if (biomebase != BiomeBase.JUNGLE && biomebase != BiomeBase.JUNGLE_HILLS) {
-            if (biomebase == BiomeBase.SWAMPLAND) {
-                WorldGenWitchHut worldgenwitchhut = new WorldGenWitchHut(random, i * 16, j * 16);
-
-                this.a.add(worldgenwitchhut);
-            } else {
-                WorldGenPyramidPiece worldgenpyramidpiece = new WorldGenPyramidPiece(random, i * 16, j * 16);
-
-                this.a.add(worldgenpyramidpiece);
+        if (var5 != BiomeBase.JUNGLE && var5 != BiomeBase.JUNGLE_HILLS)
+        {
+            if (var5 == BiomeBase.SWAMPLAND)
+            {
+                WorldGenWitchHut var8 = new WorldGenWitchHut(par2Random, par3 * 16, par4 * 16);
+                this.a.add(var8);
             }
-        } else {
-            WorldGenJungleTemple worldgenjungletemple = new WorldGenJungleTemple(random, i * 16, j * 16);
-
-            this.a.add(worldgenjungletemple);
+            else
+            {
+                WorldGenPyramidPiece var7 = new WorldGenPyramidPiece(par2Random, par3 * 16, par4 * 16);
+                this.a.add(var7);
+            }
+        }
+        else
+        {
+            WorldGenJungleTemple var6 = new WorldGenJungleTemple(par2Random, par3 * 16, par4 * 16);
+            this.a.add(var6);
         }
 
         this.c();

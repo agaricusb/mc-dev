@@ -1,16 +1,25 @@
 package net.minecraft.server;
 
-public class InstantMobEffect extends MobEffectList {
-
-    public InstantMobEffect(int i, boolean flag, int j) {
-        super(i, flag, j);
+public class InstantMobEffect extends MobEffectList
+{
+    public InstantMobEffect(int par1, boolean par2, int par3)
+    {
+        super(par1, par2, par3);
     }
 
-    public boolean isInstant() {
+    /**
+     * Returns true if the potion has an instant effect instead of a continuous one (eg Harming)
+     */
+    public boolean isInstant()
+    {
         return true;
     }
 
-    public boolean a(int i, int j) {
-        return i >= 1;
+    /**
+     * checks if Potion effect is ready to be applied this tick.
+     */
+    public boolean a(int par1, int par2)
+    {
+        return par1 >= 1;
     }
 }

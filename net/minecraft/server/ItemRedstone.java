@@ -1,49 +1,67 @@
 package net.minecraft.server;
 
-public class ItemRedstone extends Item {
-
-    public ItemRedstone(int i) {
-        super(i);
+public class ItemRedstone extends Item
+{
+    public ItemRedstone(int par1)
+    {
+        super(par1);
         this.a(CreativeModeTab.d);
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
-        if (world.getTypeId(i, j, k) != Block.SNOW.id) {
-            if (l == 0) {
-                --j;
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        if (par3World.getTypeId(par4, par5, par6) != Block.SNOW.id)
+        {
+            if (par7 == 0)
+            {
+                --par5;
             }
 
-            if (l == 1) {
-                ++j;
+            if (par7 == 1)
+            {
+                ++par5;
             }
 
-            if (l == 2) {
-                --k;
+            if (par7 == 2)
+            {
+                --par6;
             }
 
-            if (l == 3) {
-                ++k;
+            if (par7 == 3)
+            {
+                ++par6;
             }
 
-            if (l == 4) {
-                --i;
+            if (par7 == 4)
+            {
+                --par4;
             }
 
-            if (l == 5) {
-                ++i;
+            if (par7 == 5)
+            {
+                ++par4;
             }
 
-            if (!world.isEmpty(i, j, k)) {
+            if (!par3World.isEmpty(par4, par5, par6))
+            {
                 return false;
             }
         }
 
-        if (!entityhuman.a(i, j, k, l, itemstack)) {
+        if (!par2EntityPlayer.a(par4, par5, par6, par7, par1ItemStack))
+        {
             return false;
-        } else {
-            if (Block.REDSTONE_WIRE.canPlace(world, i, j, k)) {
-                --itemstack.count;
-                world.setTypeId(i, j, k, Block.REDSTONE_WIRE.id);
+        }
+        else
+        {
+            if (Block.REDSTONE_WIRE.canPlace(par3World, par4, par5, par6))
+            {
+                --par1ItemStack.count;
+                par3World.setTypeId(par4, par5, par6, Block.REDSTONE_WIRE.id);
             }
 
             return true;

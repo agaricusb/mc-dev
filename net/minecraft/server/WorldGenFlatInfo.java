@@ -7,244 +7,310 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-public class WorldGenFlatInfo {
-
+public class WorldGenFlatInfo
+{
+    /** List of layers on this preset. */
     private final List layers = new ArrayList();
+
+    /** List of world features enabled on this preset. */
     private final Map structures = new HashMap();
     private int c = 0;
 
-    public WorldGenFlatInfo() {}
-
-    public int a() {
+    /**
+     * Return the biome used on this preset.
+     */
+    public int a()
+    {
         return this.c;
     }
 
-    public void a(int i) {
-        this.c = i;
+    /**
+     * Set the biome used on this preset.
+     */
+    public void a(int par1)
+    {
+        this.c = par1;
     }
 
-    public Map b() {
+    /**
+     * Return the list of world features enabled on this preset.
+     */
+    public Map b()
+    {
         return this.structures;
     }
 
-    public List c() {
+    /**
+     * Return the list of layers on this preset.
+     */
+    public List c()
+    {
         return this.layers;
     }
 
-    public void d() {
-        int i = 0;
+    public void d()
+    {
+        int var1 = 0;
+        WorldGenFlatLayerInfo var3;
 
-        WorldGenFlatLayerInfo worldgenflatlayerinfo;
-
-        for (Iterator iterator = this.layers.iterator(); iterator.hasNext(); i += worldgenflatlayerinfo.a()) {
-            worldgenflatlayerinfo = (WorldGenFlatLayerInfo) iterator.next();
-            worldgenflatlayerinfo.d(i);
+        for (Iterator var2 = this.layers.iterator(); var2.hasNext(); var1 += var3.a())
+        {
+            var3 = (WorldGenFlatLayerInfo)var2.next();
+            var3.d(var1);
         }
     }
 
-    public String toString() {
-        StringBuilder stringbuilder = new StringBuilder();
+    public String toString()
+    {
+        StringBuilder var1 = new StringBuilder();
+        var1.append(2);
+        var1.append(";");
+        int var2;
 
-        stringbuilder.append(2);
-        stringbuilder.append(";");
-
-        int i;
-
-        for (i = 0; i < this.layers.size(); ++i) {
-            if (i > 0) {
-                stringbuilder.append(",");
+        for (var2 = 0; var2 < this.layers.size(); ++var2)
+        {
+            if (var2 > 0)
+            {
+                var1.append(",");
             }
 
-            stringbuilder.append(((WorldGenFlatLayerInfo) this.layers.get(i)).toString());
+            var1.append(((WorldGenFlatLayerInfo)this.layers.get(var2)).toString());
         }
 
-        stringbuilder.append(";");
-        stringbuilder.append(this.c);
-        if (!this.structures.isEmpty()) {
-            stringbuilder.append(";");
-            i = 0;
-            Iterator iterator = this.structures.entrySet().iterator();
+        var1.append(";");
+        var1.append(this.c);
 
-            while (iterator.hasNext()) {
-                Entry entry = (Entry) iterator.next();
+        if (!this.structures.isEmpty())
+        {
+            var1.append(";");
+            var2 = 0;
+            Iterator var3 = this.structures.entrySet().iterator();
 
-                if (i++ > 0) {
-                    stringbuilder.append(",");
+            while (var3.hasNext())
+            {
+                Entry var4 = (Entry)var3.next();
+
+                if (var2++ > 0)
+                {
+                    var1.append(",");
                 }
 
-                stringbuilder.append(((String) entry.getKey()).toLowerCase());
-                Map map = (Map) entry.getValue();
+                var1.append(((String)var4.getKey()).toLowerCase());
+                Map var5 = (Map)var4.getValue();
 
-                if (!map.isEmpty()) {
-                    stringbuilder.append("(");
-                    int j = 0;
-                    Iterator iterator1 = map.entrySet().iterator();
+                if (!var5.isEmpty())
+                {
+                    var1.append("(");
+                    int var6 = 0;
+                    Iterator var7 = var5.entrySet().iterator();
 
-                    while (iterator1.hasNext()) {
-                        Entry entry1 = (Entry) iterator1.next();
+                    while (var7.hasNext())
+                    {
+                        Entry var8 = (Entry)var7.next();
 
-                        if (j++ > 0) {
-                            stringbuilder.append(" ");
+                        if (var6++ > 0)
+                        {
+                            var1.append(" ");
                         }
 
-                        stringbuilder.append((String) entry1.getKey());
-                        stringbuilder.append("=");
-                        stringbuilder.append((String) entry1.getValue());
+                        var1.append((String)var8.getKey());
+                        var1.append("=");
+                        var1.append((String)var8.getValue());
                     }
 
-                    stringbuilder.append(")");
+                    var1.append(")");
                 }
             }
         }
 
-        return stringbuilder.toString();
+        return var1.toString();
     }
 
-    private static WorldGenFlatLayerInfo a(String s, int i) {
-        String[] astring = s.split("x", 2);
-        int j = 1;
-        int k = 0;
+    private static WorldGenFlatLayerInfo a(String par0Str, int par1)
+    {
+        String[] var2 = par0Str.split("x", 2);
+        int var3 = 1;
+        int var5 = 0;
 
-        if (astring.length == 2) {
-            try {
-                j = Integer.parseInt(astring[0]);
-                if (i + j >= 256) {
-                    j = 256 - i;
+        if (var2.length == 2)
+        {
+            try
+            {
+                var3 = Integer.parseInt(var2[0]);
+
+                if (par1 + var3 >= 256)
+                {
+                    var3 = 256 - par1;
                 }
 
-                if (j < 0) {
-                    j = 0;
+                if (var3 < 0)
+                {
+                    var3 = 0;
                 }
-            } catch (Throwable throwable) {
+            }
+            catch (Throwable var7)
+            {
                 return null;
             }
         }
 
-        int l;
+        int var4;
 
-        try {
-            String s1 = astring[astring.length - 1];
+        try
+        {
+            String var6 = var2[var2.length - 1];
+            var2 = var6.split(":", 2);
+            var4 = Integer.parseInt(var2[0]);
 
-            astring = s1.split(":", 2);
-            l = Integer.parseInt(astring[0]);
-            if (astring.length > 1) {
-                k = Integer.parseInt(astring[1]);
+            if (var2.length > 1)
+            {
+                var5 = Integer.parseInt(var2[1]);
             }
 
-            if (Block.byId[l] == null) {
-                l = 0;
-                k = 0;
+            if (Block.byId[var4] == null)
+            {
+                var4 = 0;
+                var5 = 0;
             }
 
-            if (k < 0 || k > 15) {
-                k = 0;
+            if (var5 < 0 || var5 > 15)
+            {
+                var5 = 0;
             }
-        } catch (Throwable throwable1) {
+        }
+        catch (Throwable var8)
+        {
             return null;
         }
 
-        WorldGenFlatLayerInfo worldgenflatlayerinfo = new WorldGenFlatLayerInfo(j, l, k);
-
-        worldgenflatlayerinfo.d(i);
-        return worldgenflatlayerinfo;
+        WorldGenFlatLayerInfo var9 = new WorldGenFlatLayerInfo(var3, var4, var5);
+        var9.d(par1);
+        return var9;
     }
 
-    private static List b(String s) {
-        if (s != null && s.length() >= 1) {
-            ArrayList arraylist = new ArrayList();
-            String[] astring = s.split(",");
-            int i = 0;
-            String[] astring1 = astring;
-            int j = astring.length;
+    private static List b(String par0Str)
+    {
+        if (par0Str != null && par0Str.length() >= 1)
+        {
+            ArrayList var1 = new ArrayList();
+            String[] var2 = par0Str.split(",");
+            int var3 = 0;
+            String[] var4 = var2;
+            int var5 = var2.length;
 
-            for (int k = 0; k < j; ++k) {
-                String s1 = astring1[k];
-                WorldGenFlatLayerInfo worldgenflatlayerinfo = a(s1, i);
+            for (int var6 = 0; var6 < var5; ++var6)
+            {
+                String var7 = var4[var6];
+                WorldGenFlatLayerInfo var8 = a(var7, var3);
 
-                if (worldgenflatlayerinfo == null) {
+                if (var8 == null)
+                {
                     return null;
                 }
 
-                arraylist.add(worldgenflatlayerinfo);
-                i += worldgenflatlayerinfo.a();
+                var1.add(var8);
+                var3 += var8.a();
             }
 
-            return arraylist;
-        } else {
+            return var1;
+        }
+        else
+        {
             return null;
         }
     }
 
-    public static WorldGenFlatInfo a(String s) {
-        if (s == null) {
+    public static WorldGenFlatInfo a(String par0Str)
+    {
+        if (par0Str == null)
+        {
             return e();
-        } else {
-            String[] astring = s.split(";", -1);
-            int i = astring.length == 1 ? 0 : MathHelper.a(astring[0], 0);
+        }
+        else
+        {
+            String[] var1 = par0Str.split(";", -1);
+            int var2 = var1.length == 1 ? 0 : MathHelper.a(var1[0], 0);
 
-            if (i >= 0 && i <= 2) {
-                WorldGenFlatInfo worldgenflatinfo = new WorldGenFlatInfo();
-                int j = astring.length == 1 ? 0 : 1;
-                List list = b(astring[j++]);
+            if (var2 >= 0 && var2 <= 2)
+            {
+                WorldGenFlatInfo var3 = new WorldGenFlatInfo();
+                int var4 = var1.length == 1 ? 0 : 1;
+                List var5 = b(var1[var4++]);
 
-                if (list != null && !list.isEmpty()) {
-                    worldgenflatinfo.c().addAll(list);
-                    worldgenflatinfo.d();
-                    int k = BiomeBase.PLAINS.id;
+                if (var5 != null && !var5.isEmpty())
+                {
+                    var3.c().addAll(var5);
+                    var3.d();
+                    int var6 = BiomeBase.PLAINS.id;
 
-                    if (i > 0 && astring.length > j) {
-                        k = MathHelper.a(astring[j++], k);
+                    if (var2 > 0 && var1.length > var4)
+                    {
+                        var6 = MathHelper.a(var1[var4++], var6);
                     }
 
-                    worldgenflatinfo.a(k);
-                    if (i > 0 && astring.length > j) {
-                        String[] astring1 = astring[j++].toLowerCase().split(",");
-                        String[] astring2 = astring1;
-                        int l = astring1.length;
+                    var3.a(var6);
 
-                        for (int i1 = 0; i1 < l; ++i1) {
-                            String s1 = astring2[i1];
-                            String[] astring3 = s1.split("\\(", 2);
-                            HashMap hashmap = new HashMap();
+                    if (var2 > 0 && var1.length > var4)
+                    {
+                        String[] var7 = var1[var4++].toLowerCase().split(",");
+                        String[] var8 = var7;
+                        int var9 = var7.length;
 
-                            if (astring3[0].length() > 0) {
-                                worldgenflatinfo.b().put(astring3[0], hashmap);
-                                if (astring3.length > 1 && astring3[1].endsWith(")") && astring3[1].length() > 1) {
-                                    String[] astring4 = astring3[1].substring(0, astring3[1].length() - 1).split(" ");
+                        for (int var10 = 0; var10 < var9; ++var10)
+                        {
+                            String var11 = var8[var10];
+                            String[] var12 = var11.split("\\(", 2);
+                            HashMap var13 = new HashMap();
 
-                                    for (int j1 = 0; j1 < astring4.length; ++j1) {
-                                        String[] astring5 = astring4[j1].split("=", 2);
+                            if (var12[0].length() > 0)
+                            {
+                                var3.b().put(var12[0], var13);
 
-                                        if (astring5.length == 2) {
-                                            hashmap.put(astring5[0], astring5[1]);
+                                if (var12.length > 1 && var12[1].endsWith(")") && var12[1].length() > 1)
+                                {
+                                    String[] var14 = var12[1].substring(0, var12[1].length() - 1).split(" ");
+
+                                    for (int var15 = 0; var15 < var14.length; ++var15)
+                                    {
+                                        String[] var16 = var14[var15].split("=", 2);
+
+                                        if (var16.length == 2)
+                                        {
+                                            var13.put(var16[0], var16[1]);
                                         }
                                     }
                                 }
                             }
                         }
-                    } else {
-                        worldgenflatinfo.b().put("village", new HashMap());
+                    }
+                    else
+                    {
+                        var3.b().put("village", new HashMap());
                     }
 
-                    return worldgenflatinfo;
-                } else {
+                    return var3;
+                }
+                else
+                {
                     return e();
                 }
-            } else {
+            }
+            else
+            {
                 return e();
             }
         }
     }
 
-    public static WorldGenFlatInfo e() {
-        WorldGenFlatInfo worldgenflatinfo = new WorldGenFlatInfo();
-
-        worldgenflatinfo.a(BiomeBase.PLAINS.id);
-        worldgenflatinfo.c().add(new WorldGenFlatLayerInfo(1, Block.BEDROCK.id));
-        worldgenflatinfo.c().add(new WorldGenFlatLayerInfo(2, Block.DIRT.id));
-        worldgenflatinfo.c().add(new WorldGenFlatLayerInfo(1, Block.GRASS.id));
-        worldgenflatinfo.d();
-        worldgenflatinfo.b().put("village", new HashMap());
-        return worldgenflatinfo;
+    public static WorldGenFlatInfo e()
+    {
+        WorldGenFlatInfo var0 = new WorldGenFlatInfo();
+        var0.a(BiomeBase.PLAINS.id);
+        var0.c().add(new WorldGenFlatLayerInfo(1, Block.BEDROCK.id));
+        var0.c().add(new WorldGenFlatLayerInfo(2, Block.DIRT.id));
+        var0.c().add(new WorldGenFlatLayerInfo(1, Block.GRASS.id));
+        var0.d();
+        var0.b().put("village", new HashMap());
+        return var0;
     }
 }

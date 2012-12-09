@@ -2,54 +2,70 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public class CommandSpawnpoint extends CommandAbstract {
-
-    public CommandSpawnpoint() {}
-
-    public String c() {
+public class CommandSpawnpoint extends CommandAbstract
+{
+    public String c()
+    {
         return "spawnpoint";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 2;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.spawnpoint.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.spawnpoint.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        EntityPlayer entityplayer = astring.length == 0 ? c(icommandlistener) : c(icommandlistener, astring[0]);
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        EntityPlayer var3 = par2ArrayOfStr.length == 0 ? c(par1ICommandSender) : c(par1ICommandSender, par2ArrayOfStr[0]);
 
-        if (astring.length == 4) {
-            if (entityplayer.world != null) {
-                byte b0 = 1;
-                int i = 30000000;
-                int j = b0 + 1;
-                int k = a(icommandlistener, astring[b0], -i, i);
-                int l = a(icommandlistener, astring[j++], 0, 256);
-                int i1 = a(icommandlistener, astring[j++], -i, i);
-
-                entityplayer.setRespawnPosition(new ChunkCoordinates(k, l, i1), true);
-                a(icommandlistener, "commands.spawnpoint.success", new Object[] { entityplayer.getLocalizedName(), Integer.valueOf(k), Integer.valueOf(l), Integer.valueOf(i1)});
+        if (par2ArrayOfStr.length == 4)
+        {
+            if (var3.world != null)
+            {
+                byte var4 = 1;
+                int var5 = 30000000;
+                int var10 = var4 + 1;
+                int var6 = a(par1ICommandSender, par2ArrayOfStr[var4], -var5, var5);
+                int var7 = a(par1ICommandSender, par2ArrayOfStr[var10++], 0, 256);
+                int var8 = a(par1ICommandSender, par2ArrayOfStr[var10++], -var5, var5);
+                var3.setRespawnPosition(new ChunkCoordinates(var6, var7, var8), true);
+                a(par1ICommandSender, "commands.spawnpoint.success", new Object[]{var3.getLocalizedName(), Integer.valueOf(var6), Integer.valueOf(var7), Integer.valueOf(var8)});
             }
-        } else {
-            if (astring.length > 1) {
+        }
+        else
+        {
+            if (par2ArrayOfStr.length > 1)
+            {
                 throw new ExceptionUsage("commands.spawnpoint.usage", new Object[0]);
             }
 
-            ChunkCoordinates chunkcoordinates = entityplayer.b();
-
-            entityplayer.setRespawnPosition(chunkcoordinates, true);
-            a(icommandlistener, "commands.spawnpoint.success", new Object[] { entityplayer.getLocalizedName(), Integer.valueOf(chunkcoordinates.x), Integer.valueOf(chunkcoordinates.y), Integer.valueOf(chunkcoordinates.z)});
+            ChunkCoordinates var11 = var3.b();
+            var3.setRespawnPosition(var11, true);
+            a(par1ICommandSender, "commands.spawnpoint.success", new Object[]{var3.getLocalizedName(), Integer.valueOf(var11.x), Integer.valueOf(var11.y), Integer.valueOf(var11.z)});
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return astring.length != 1 && astring.length != 2 ? null : a(astring, MinecraftServer.getServer().getPlayers());
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return par2ArrayOfStr.length != 1 && par2ArrayOfStr.length != 2 ? null : a(par2ArrayOfStr, MinecraftServer.getServer().getPlayers());
     }
 
-    public boolean a(int i) {
-        return i == 0;
+    /**
+     * Return whether the specified command parameter index is a username parameter.
+     */
+    public boolean a(int par1)
+    {
+        return par1 == 0;
     }
 }

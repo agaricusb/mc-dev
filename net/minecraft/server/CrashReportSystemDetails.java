@@ -5,159 +5,198 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class CrashReportSystemDetails {
-
+public class CrashReportSystemDetails
+{
     private final CrashReport a;
     private final String b;
     private final List c = new ArrayList();
     private StackTraceElement[] d = new StackTraceElement[0];
 
-    public CrashReportSystemDetails(CrashReport crashreport, String s) {
-        this.a = crashreport;
-        this.b = s;
+    public CrashReportSystemDetails(CrashReport par1CrashReport, String par2Str)
+    {
+        this.a = par1CrashReport;
+        this.b = par2Str;
     }
 
-    public static String a(int i, int j, int k) {
-        StringBuilder stringbuilder = new StringBuilder();
+    public static String a(int par0, int par1, int par2)
+    {
+        StringBuilder var3 = new StringBuilder();
 
-        try {
-            stringbuilder.append(String.format("World: (%d,%d,%d)", new Object[] { Integer.valueOf(i), Integer.valueOf(j), Integer.valueOf(k)}));
-        } catch (Throwable throwable) {
-            stringbuilder.append("(Error finding world loc)");
+        try
+        {
+            var3.append(String.format("World: (%d,%d,%d)", new Object[] {Integer.valueOf(par0), Integer.valueOf(par1), Integer.valueOf(par2)}));
+        }
+        catch (Throwable var16)
+        {
+            var3.append("(Error finding world loc)");
         }
 
-        stringbuilder.append(", ");
+        var3.append(", ");
+        int var4;
+        int var5;
+        int var6;
+        int var7;
+        int var8;
+        int var9;
+        int var10;
+        int var11;
+        int var12;
 
-        int l;
-        int i1;
-        int j1;
-        int k1;
-        int l1;
-        int i2;
-        int j2;
-        int k2;
-        int l2;
-
-        try {
-            l = i >> 4;
-            i1 = k >> 4;
-            j1 = i & 15;
-            k1 = j >> 4;
-            l1 = k & 15;
-            i2 = l << 4;
-            j2 = i1 << 4;
-            k2 = (l + 1 << 4) - 1;
-            l2 = (i1 + 1 << 4) - 1;
-            stringbuilder.append(String.format("Chunk: (at %d,%d,%d in %d,%d; contains blocks %d,0,%d to %d,255,%d)", new Object[] { Integer.valueOf(j1), Integer.valueOf(k1), Integer.valueOf(l1), Integer.valueOf(l), Integer.valueOf(i1), Integer.valueOf(i2), Integer.valueOf(j2), Integer.valueOf(k2), Integer.valueOf(l2)}));
-        } catch (Throwable throwable1) {
-            stringbuilder.append("(Error finding chunk loc)");
+        try
+        {
+            var4 = par0 >> 4;
+            var5 = par2 >> 4;
+            var6 = par0 & 15;
+            var7 = par1 >> 4;
+            var8 = par2 & 15;
+            var9 = var4 << 4;
+            var10 = var5 << 4;
+            var11 = (var4 + 1 << 4) - 1;
+            var12 = (var5 + 1 << 4) - 1;
+            var3.append(String.format("Chunk: (at %d,%d,%d in %d,%d; contains blocks %d,0,%d to %d,255,%d)", new Object[] {Integer.valueOf(var6), Integer.valueOf(var7), Integer.valueOf(var8), Integer.valueOf(var4), Integer.valueOf(var5), Integer.valueOf(var9), Integer.valueOf(var10), Integer.valueOf(var11), Integer.valueOf(var12)}));
+        }
+        catch (Throwable var15)
+        {
+            var3.append("(Error finding chunk loc)");
         }
 
-        stringbuilder.append(", ");
+        var3.append(", ");
 
-        try {
-            l = i >> 9;
-            i1 = k >> 9;
-            j1 = l << 5;
-            k1 = i1 << 5;
-            l1 = (l + 1 << 5) - 1;
-            i2 = (i1 + 1 << 5) - 1;
-            j2 = l << 9;
-            k2 = i1 << 9;
-            l2 = (l + 1 << 9) - 1;
-            int i3 = (i1 + 1 << 9) - 1;
-
-            stringbuilder.append(String.format("Region: (%d,%d; contains chunks %d,%d to %d,%d, blocks %d,0,%d to %d,255,%d)", new Object[] { Integer.valueOf(l), Integer.valueOf(i1), Integer.valueOf(j1), Integer.valueOf(k1), Integer.valueOf(l1), Integer.valueOf(i2), Integer.valueOf(j2), Integer.valueOf(k2), Integer.valueOf(l2), Integer.valueOf(i3)}));
-        } catch (Throwable throwable2) {
-            stringbuilder.append("(Error finding world loc)");
+        try
+        {
+            var4 = par0 >> 9;
+            var5 = par2 >> 9;
+            var6 = var4 << 5;
+            var7 = var5 << 5;
+            var8 = (var4 + 1 << 5) - 1;
+            var9 = (var5 + 1 << 5) - 1;
+            var10 = var4 << 9;
+            var11 = var5 << 9;
+            var12 = (var4 + 1 << 9) - 1;
+            int var13 = (var5 + 1 << 9) - 1;
+            var3.append(String.format("Region: (%d,%d; contains chunks %d,%d to %d,%d, blocks %d,0,%d to %d,255,%d)", new Object[] {Integer.valueOf(var4), Integer.valueOf(var5), Integer.valueOf(var6), Integer.valueOf(var7), Integer.valueOf(var8), Integer.valueOf(var9), Integer.valueOf(var10), Integer.valueOf(var11), Integer.valueOf(var12), Integer.valueOf(var13)}));
+        }
+        catch (Throwable var14)
+        {
+            var3.append("(Error finding world loc)");
         }
 
-        return stringbuilder.toString();
+        return var3.toString();
     }
 
-    public void a(String s, Callable callable) {
-        try {
-            this.a(s, callable.call());
-        } catch (Throwable throwable) {
-            this.a(s, throwable);
+    /**
+     * Adds a Crashreport section with the given name with the value set to the result of the given Callable;
+     */
+    public void a(String par1Str, Callable par2Callable)
+    {
+        try
+        {
+            this.a(par1Str, par2Callable.call());
+        }
+        catch (Throwable var4)
+        {
+            this.a(par1Str, var4);
         }
     }
 
-    public void a(String s, Object object) {
-        this.c.add(new CrashReportDetail(s, object));
+    /**
+     * Adds a Crashreport section with the given name with the given value (convered .toString())
+     */
+    public void a(String par1Str, Object par2Obj)
+    {
+        this.c.add(new CrashReportDetail(par1Str, par2Obj));
     }
 
-    public void a(String s, Throwable throwable) {
-        this.a(s, throwable);
+    /**
+     * Adds a Crashreport section with the given name with the given Throwable
+     */
+    public void a(String par1Str, Throwable par2Throwable)
+    {
+        this.a(par1Str, par2Throwable);
     }
 
-    public int a(int i) {
-        StackTraceElement[] astacktraceelement = Thread.currentThread().getStackTrace();
-
-        this.d = new StackTraceElement[astacktraceelement.length - 3 - i];
-        System.arraycopy(astacktraceelement, 3 + i, this.d, 0, this.d.length);
+    public int a(int par1)
+    {
+        StackTraceElement[] var2 = Thread.currentThread().getStackTrace();
+        this.d = new StackTraceElement[var2.length - 3 - par1];
+        System.arraycopy(var2, 3 + par1, this.d, 0, this.d.length);
         return this.d.length;
     }
 
-    public boolean a(StackTraceElement stacktraceelement, StackTraceElement stacktraceelement1) {
-        if (this.d.length != 0 && stacktraceelement != null) {
-            StackTraceElement stacktraceelement2 = this.d[0];
+    public boolean a(StackTraceElement par1StackTraceElement, StackTraceElement par2StackTraceElement)
+    {
+        if (this.d.length != 0 && par1StackTraceElement != null)
+        {
+            StackTraceElement var3 = this.d[0];
 
-            if (stacktraceelement2.isNativeMethod() == stacktraceelement.isNativeMethod() && stacktraceelement2.getClassName().equals(stacktraceelement.getClassName()) && stacktraceelement2.getFileName().equals(stacktraceelement.getFileName()) && stacktraceelement2.getMethodName().equals(stacktraceelement.getMethodName())) {
-                if (stacktraceelement1 != null != this.d.length > 1) {
+            if (var3.isNativeMethod() == par1StackTraceElement.isNativeMethod() && var3.getClassName().equals(par1StackTraceElement.getClassName()) && var3.getFileName().equals(par1StackTraceElement.getFileName()) && var3.getMethodName().equals(par1StackTraceElement.getMethodName()))
+            {
+                if (par2StackTraceElement != null != this.d.length > 1)
+                {
                     return false;
-                } else if (stacktraceelement1 != null && !this.d[1].equals(stacktraceelement1)) {
+                }
+                else if (par2StackTraceElement != null && !this.d[1].equals(par2StackTraceElement))
+                {
                     return false;
-                } else {
-                    this.d[0] = stacktraceelement;
+                }
+                else
+                {
+                    this.d[0] = par1StackTraceElement;
                     return true;
                 }
-            } else {
+            }
+            else
+            {
                 return false;
             }
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    public void b(int i) {
-        StackTraceElement[] astacktraceelement = new StackTraceElement[this.d.length - i];
-
-        System.arraycopy(this.d, 0, astacktraceelement, 0, astacktraceelement.length);
-        this.d = astacktraceelement;
+    public void b(int par1)
+    {
+        StackTraceElement[] var2 = new StackTraceElement[this.d.length - par1];
+        System.arraycopy(this.d, 0, var2, 0, var2.length);
+        this.d = var2;
     }
 
-    public void a(StringBuilder stringbuilder) {
-        stringbuilder.append("-- ").append(this.b).append(" --\n");
-        stringbuilder.append("Details:");
-        Iterator iterator = this.c.iterator();
+    public void a(StringBuilder par1StringBuilder)
+    {
+        par1StringBuilder.append("-- ").append(this.b).append(" --\n");
+        par1StringBuilder.append("Details:");
+        Iterator var2 = this.c.iterator();
 
-        while (iterator.hasNext()) {
-            CrashReportDetail crashreportdetail = (CrashReportDetail) iterator.next();
-
-            stringbuilder.append("\n\t");
-            stringbuilder.append(crashreportdetail.a());
-            stringbuilder.append(": ");
-            stringbuilder.append(crashreportdetail.b());
+        while (var2.hasNext())
+        {
+            CrashReportDetail var3 = (CrashReportDetail)var2.next();
+            par1StringBuilder.append("\n\t");
+            par1StringBuilder.append(var3.a());
+            par1StringBuilder.append(": ");
+            par1StringBuilder.append(var3.b());
         }
 
-        if (this.d != null && this.d.length > 0) {
-            stringbuilder.append("\nStacktrace:");
-            StackTraceElement[] astacktraceelement = this.d;
-            int i = astacktraceelement.length;
+        if (this.d != null && this.d.length > 0)
+        {
+            par1StringBuilder.append("\nStacktrace:");
+            StackTraceElement[] var6 = this.d;
+            int var7 = var6.length;
 
-            for (int j = 0; j < i; ++j) {
-                StackTraceElement stacktraceelement = astacktraceelement[j];
-
-                stringbuilder.append("\n\tat ");
-                stringbuilder.append(stacktraceelement.toString());
+            for (int var4 = 0; var4 < var7; ++var4)
+            {
+                StackTraceElement var5 = var6[var4];
+                par1StringBuilder.append("\n\tat ");
+                par1StringBuilder.append(var5.toString());
             }
         }
     }
 
-    public static void a(CrashReportSystemDetails crashreportsystemdetails, int i, int j, int k, int l, int i1) {
-        crashreportsystemdetails.a("Block type", (Callable) (new CrashReportBlockType(l)));
-        crashreportsystemdetails.a("Block data value", (Callable) (new CrashReportBlockDataValue(i1)));
-        crashreportsystemdetails.a("Block location", (Callable) (new CrashReportBlockLocation(i, j, k)));
+    public static void a(CrashReportSystemDetails par0CrashReportCategory, int par1, int par2, int par3, int par4, int par5)
+    {
+        par0CrashReportCategory.a("Block type", new CrashReportBlockType(par4));
+        par0CrashReportCategory.a("Block data value", new CrashReportBlockDataValue(par5));
+        par0CrashReportCategory.a("Block location", new CrashReportBlockLocation(par1, par2, par3));
     }
 }

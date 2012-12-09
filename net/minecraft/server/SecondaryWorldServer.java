@@ -1,12 +1,16 @@
 package net.minecraft.server;
 
-public class SecondaryWorldServer extends WorldServer {
-
-    public SecondaryWorldServer(MinecraftServer minecraftserver, IDataManager idatamanager, String s, int i, WorldSettings worldsettings, WorldServer worldserver, MethodProfiler methodprofiler) {
-        super(minecraftserver, idatamanager, s, i, worldsettings, methodprofiler);
-        this.worldMaps = worldserver.worldMaps;
-        this.worldData = new SecondaryWorldData(worldserver.getWorldData());
+public class SecondaryWorldServer extends WorldServer
+{
+    public SecondaryWorldServer(MinecraftServer par1MinecraftServer, IDataManager par2ISaveHandler, String par3Str, int par4, WorldSettings par5WorldSettings, WorldServer par6WorldServer, MethodProfiler par7Profiler)
+    {
+        super(par1MinecraftServer, par2ISaveHandler, par3Str, par4, par5WorldSettings, par7Profiler);
+        this.worldMaps = par6WorldServer.worldMaps;
+        this.worldData = new SecondaryWorldData(par6WorldServer.getWorldData());
     }
 
-    protected void a() {}
+    /**
+     * Saves the chunks to disk.
+     */
+    protected void a() throws ExceptionWorldConflict {}
 }

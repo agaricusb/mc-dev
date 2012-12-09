@@ -1,16 +1,17 @@
 package net.minecraft.server;
 
-class RedstoneUpdateInfo {
-
+class RedstoneUpdateInfo
+{
     int a;
     int b;
     int c;
     long d;
 
-    public RedstoneUpdateInfo(int i, int j, int k, long l) {
-        this.a = i;
-        this.b = j;
-        this.c = k;
-        this.d = l;
+    public RedstoneUpdateInfo(int par1, int par2, int par3, long par4)
+    {
+        this.a = par1;
+        this.b = par2;
+        this.c = par3;
+        this.d = par4;
     }
 }

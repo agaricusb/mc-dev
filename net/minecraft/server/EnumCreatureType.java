@@ -1,41 +1,63 @@
 package net.minecraft.server;
 
-public enum EnumCreatureType {
+public enum EnumCreatureType
+{
+    MONSTER(IMonster.class, 70, Material.AIR, false, false),
+    CREATURE(EntityAnimal.class, 10, Material.AIR, true, true),
+    AMBIENT(EntityAmbient.class, 15, Material.AIR, true, false),
+    WATER_CREATURE(EntityWaterAnimal.class, 5, Material.WATER, true, false);
 
-    MONSTER("monster", 0, IMonster.class, 70, Material.AIR, false, false), CREATURE("creature", 1, EntityAnimal.class, 10, Material.AIR, true, true), AMBIENT("ambient", 2, EntityAmbient.class, 15, Material.AIR, true, false), WATER_CREATURE("waterCreature", 3, EntityWaterAnimal.class, 5, Material.WATER, true, false);
+    /**
+     * The root class of creatures associated with this EnumCreatureType (IMobs for aggressive creatures, EntityAnimals
+     * for friendly ones)
+     */
     private final Class e;
     private final int f;
     private final Material g;
+
+    /** A flag indicating whether this creature type is peaceful. */
     private final boolean h;
+
+    /** Whether this creature type is an animal. */
     private final boolean i;
 
-    private static final EnumCreatureType[] j = new EnumCreatureType[] { MONSTER, CREATURE, AMBIENT, WATER_CREATURE};
-
-    private EnumCreatureType(String s, int i, Class oclass, int j, Material material, boolean flag, boolean flag1) {
-        this.e = oclass;
-        this.f = j;
-        this.g = material;
-        this.h = flag;
-        this.i = flag1;
+    private EnumCreatureType(Class par3Class, int par4, Material par5Material, boolean par6, boolean par7)
+    {
+        this.e = par3Class;
+        this.f = par4;
+        this.g = par5Material;
+        this.h = par6;
+        this.i = par7;
     }
 
-    public Class a() {
+    public Class a()
+    {
         return this.e;
     }
 
-    public int b() {
+    public int b()
+    {
         return this.f;
     }
 
-    public Material c() {
+    public Material c()
+    {
         return this.g;
     }
 
-    public boolean d() {
+    /**
+     * Gets whether or not this creature type is peaceful.
+     */
+    public boolean d()
+    {
         return this.h;
     }
 
-    public boolean e() {
+    /**
+     * Return whether this creature type is an animal.
+     */
+    public boolean e()
+    {
         return this.i;
     }
 }

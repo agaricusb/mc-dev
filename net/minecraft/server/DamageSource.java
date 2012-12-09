@@ -1,7 +1,7 @@
 package net.minecraft.server;
 
-public class DamageSource {
-
+public class DamageSource
+{
     public static DamageSource FIRE = (new DamageSource("inFire")).j();
     public static DamageSource BURN = (new DamageSource("onFire")).h().j();
     public static DamageSource LAVA = (new DamageSource("lava")).j();
@@ -18,114 +18,182 @@ public class DamageSource {
     public static DamageSource WITHER = (new DamageSource("wither")).h();
     public static DamageSource ANVIL = new DamageSource("anvil");
     public static DamageSource FALLING_BLOCK = new DamageSource("fallingBlock");
+
+    /** This kind of damage can be blocked or not. */
     private boolean r = false;
     private boolean s = false;
     private float t = 0.3F;
+
+    /** This kind of damage is based on fire or not. */
     private boolean u;
+
+    /** This kind of damage is based on a projectile or not. */
     private boolean v;
     private boolean w;
+
+    /** Whether the damage is magic based. */
     private boolean x = false;
     public String translationIndex;
 
-    public static DamageSource mobAttack(EntityLiving entityliving) {
-        return new EntityDamageSource("mob", entityliving);
+    public static DamageSource mobAttack(EntityLiving par0EntityLiving)
+    {
+        return new EntityDamageSource("mob", par0EntityLiving);
     }
 
-    public static DamageSource playerAttack(EntityHuman entityhuman) {
-        return new EntityDamageSource("player", entityhuman);
+    /**
+     * returns an EntityDamageSource of type player
+     */
+    public static DamageSource playerAttack(EntityHuman par0EntityPlayer)
+    {
+        return new EntityDamageSource("player", par0EntityPlayer);
     }
 
-    public static DamageSource arrow(EntityArrow entityarrow, Entity entity) {
-        return (new EntityDamageSourceIndirect("arrow", entityarrow, entity)).b();
+    /**
+     * returns EntityDamageSourceIndirect of an arrow
+     */
+    public static DamageSource arrow(EntityArrow par0EntityArrow, Entity par1Entity)
+    {
+        return (new EntityDamageSourceIndirect("arrow", par0EntityArrow, par1Entity)).b();
     }
 
-    public static DamageSource fireball(EntityFireball entityfireball, Entity entity) {
-        return entity == null ? (new EntityDamageSourceIndirect("onFire", entityfireball, entityfireball)).j().b() : (new EntityDamageSourceIndirect("fireball", entityfireball, entity)).j().b();
+    /**
+     * returns EntityDamageSourceIndirect of a fireball
+     */
+    public static DamageSource fireball(EntityFireball par0EntityFireball, Entity par1Entity)
+    {
+        return par1Entity == null ? (new EntityDamageSourceIndirect("onFire", par0EntityFireball, par0EntityFireball)).j().b() : (new EntityDamageSourceIndirect("fireball", par0EntityFireball, par1Entity)).j().b();
     }
 
-    public static DamageSource projectile(Entity entity, Entity entity1) {
-        return (new EntityDamageSourceIndirect("thrown", entity, entity1)).b();
+    public static DamageSource projectile(Entity par0Entity, Entity par1Entity)
+    {
+        return (new EntityDamageSourceIndirect("thrown", par0Entity, par1Entity)).b();
     }
 
-    public static DamageSource b(Entity entity, Entity entity1) {
-        return (new EntityDamageSourceIndirect("indirectMagic", entity, entity1)).h().p();
+    public static DamageSource b(Entity par0Entity, Entity par1Entity)
+    {
+        return (new EntityDamageSourceIndirect("indirectMagic", par0Entity, par1Entity)).h().p();
     }
 
-    public boolean a() {
+    /**
+     * Returns true if the damage is projectile based.
+     */
+    public boolean a()
+    {
         return this.v;
     }
 
-    public DamageSource b() {
+    /**
+     * Define the damage type as projectile based.
+     */
+    public DamageSource b()
+    {
         this.v = true;
         return this;
     }
 
-    public boolean ignoresArmor() {
+    public boolean ignoresArmor()
+    {
         return this.r;
     }
 
-    public float d() {
+    /**
+     * How much satiate(food) is consumed by this DamageSource
+     */
+    public float d()
+    {
         return this.t;
     }
 
-    public boolean ignoresInvulnerability() {
+    public boolean ignoresInvulnerability()
+    {
         return this.s;
     }
 
-    protected DamageSource(String s) {
-        this.translationIndex = s;
+    protected DamageSource(String par1Str)
+    {
+        this.translationIndex = par1Str;
     }
 
-    public Entity f() {
+    public Entity f()
+    {
         return this.getEntity();
     }
 
-    public Entity getEntity() {
+    public Entity getEntity()
+    {
         return null;
     }
 
-    protected DamageSource h() {
+    protected DamageSource h()
+    {
         this.r = true;
         this.t = 0.0F;
         return this;
     }
 
-    protected DamageSource i() {
+    protected DamageSource i()
+    {
         this.s = true;
         return this;
     }
 
-    protected DamageSource j() {
+    /**
+     * Define the damage type as fire based.
+     */
+    protected DamageSource j()
+    {
         this.u = true;
         return this;
     }
 
-    public String getLocalizedDeathMessage(EntityHuman entityhuman) {
-        return LocaleI18n.get("death." + this.translationIndex, new Object[] { entityhuman.name});
+    /**
+     * Returns the message to be displayed on player death.
+     */
+    public String getLocalizedDeathMessage(EntityHuman par1EntityPlayer)
+    {
+        return LocaleI18n.get("death." + this.translationIndex, new Object[]{par1EntityPlayer.name});
     }
 
-    public boolean k() {
+    /**
+     * Returns true if the damage is fire based.
+     */
+    public boolean k()
+    {
         return this.u;
     }
 
-    public String l() {
+    /**
+     * Return the name of damage type.
+     */
+    public String l()
+    {
         return this.translationIndex;
     }
 
-    public DamageSource m() {
+    public DamageSource m()
+    {
         this.w = true;
         return this;
     }
 
-    public boolean n() {
+    public boolean n()
+    {
         return this.w;
     }
 
-    public boolean o() {
+    /**
+     * Returns true if the damage is magic based.
+     */
+    public boolean o()
+    {
         return this.x;
     }
 
-    public DamageSource p() {
+    /**
+     * Define the damage type as magic based.
+     */
+    public DamageSource p()
+    {
         this.x = true;
         return this;
     }

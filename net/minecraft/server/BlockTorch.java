@@ -2,157 +2,247 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockTorch extends Block {
-
-    protected BlockTorch(int i, int j) {
-        super(i, j, Material.ORIENTABLE);
+public class BlockTorch extends Block
+{
+    protected BlockTorch(int par1, int par2)
+    {
+        super(par1, par2, Material.ORIENTABLE);
         this.b(true);
         this.a(CreativeModeTab.c);
     }
 
-    public AxisAlignedBB e(World world, int i, int j, int k) {
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
+    {
         return null;
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 2;
     }
 
-    private boolean l(World world, int i, int j, int k) {
-        if (world.v(i, j, k)) {
+    /**
+     * Gets if we can place a torch on a block.
+     */
+    private boolean l(World par1World, int par2, int par3, int par4)
+    {
+        if (par1World.v(par2, par3, par4))
+        {
             return true;
-        } else {
-            int l = world.getTypeId(i, j, k);
-
-            return l == Block.FENCE.id || l == Block.NETHER_FENCE.id || l == Block.GLASS.id || l == Block.COBBLE_WALL.id;
+        }
+        else
+        {
+            int var5 = par1World.getTypeId(par2, par3, par4);
+            return var5 == Block.FENCE.id || var5 == Block.NETHER_FENCE.id || var5 == Block.GLASS.id || var5 == Block.COBBLE_WALL.id;
         }
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        return world.b(i - 1, j, k, true) ? true : (world.b(i + 1, j, k, true) ? true : (world.b(i, j, k - 1, true) ? true : (world.b(i, j, k + 1, true) ? true : this.l(world, i, j - 1, k))));
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        return par1World.b(par2 - 1, par3, par4, true) ? true : (par1World.b(par2 + 1, par3, par4, true) ? true : (par1World.b(par2, par3, par4 - 1, true) ? true : (par1World.b(par2, par3, par4 + 1, true) ? true : this.l(par1World, par2, par3 - 1, par4))));
     }
 
-    public int getPlacedData(World world, int i, int j, int k, int l, float f, float f1, float f2, int i1) {
-        int j1 = i1;
+    public int getPlacedData(World par1World, int par2, int par3, int par4, int par5, float par6, float par7, float par8, int par9)
+    {
+        int var10 = par9;
 
-        if (l == 1 && this.l(world, i, j - 1, k)) {
-            j1 = 5;
+        if (par5 == 1 && this.l(par1World, par2, par3 - 1, par4))
+        {
+            var10 = 5;
         }
 
-        if (l == 2 && world.b(i, j, k + 1, true)) {
-            j1 = 4;
+        if (par5 == 2 && par1World.b(par2, par3, par4 + 1, true))
+        {
+            var10 = 4;
         }
 
-        if (l == 3 && world.b(i, j, k - 1, true)) {
-            j1 = 3;
+        if (par5 == 3 && par1World.b(par2, par3, par4 - 1, true))
+        {
+            var10 = 3;
         }
 
-        if (l == 4 && world.b(i + 1, j, k, true)) {
-            j1 = 2;
+        if (par5 == 4 && par1World.b(par2 + 1, par3, par4, true))
+        {
+            var10 = 2;
         }
 
-        if (l == 5 && world.b(i - 1, j, k, true)) {
-            j1 = 1;
+        if (par5 == 5 && par1World.b(par2 - 1, par3, par4, true))
+        {
+            var10 = 1;
         }
 
-        return j1;
+        return var10;
     }
 
-    public void b(World world, int i, int j, int k, Random random) {
-        super.b(world, i, j, k, random);
-        if (world.getData(i, j, k) == 0) {
-            this.onPlace(world, i, j, k);
-        }
-    }
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        super.b(par1World, par2, par3, par4, par5Random);
 
-    public void onPlace(World world, int i, int j, int k) {
-        if (world.getData(i, j, k) == 0) {
-            if (world.b(i - 1, j, k, true)) {
-                world.setData(i, j, k, 1);
-            } else if (world.b(i + 1, j, k, true)) {
-                world.setData(i, j, k, 2);
-            } else if (world.b(i, j, k - 1, true)) {
-                world.setData(i, j, k, 3);
-            } else if (world.b(i, j, k + 1, true)) {
-                world.setData(i, j, k, 4);
-            } else if (this.l(world, i, j - 1, k)) {
-                world.setData(i, j, k, 5);
-            }
-        }
-
-        this.n(world, i, j, k);
-    }
-
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        if (this.n(world, i, j, k)) {
-            int i1 = world.getData(i, j, k);
-            boolean flag = false;
-
-            if (!world.b(i - 1, j, k, true) && i1 == 1) {
-                flag = true;
-            }
-
-            if (!world.b(i + 1, j, k, true) && i1 == 2) {
-                flag = true;
-            }
-
-            if (!world.b(i, j, k - 1, true) && i1 == 3) {
-                flag = true;
-            }
-
-            if (!world.b(i, j, k + 1, true) && i1 == 4) {
-                flag = true;
-            }
-
-            if (!this.l(world, i, j - 1, k) && i1 == 5) {
-                flag = true;
-            }
-
-            if (flag) {
-                this.c(world, i, j, k, world.getData(i, j, k), 0);
-                world.setTypeId(i, j, k, 0);
-            }
+        if (par1World.getData(par2, par3, par4) == 0)
+        {
+            this.onPlace(par1World, par2, par3, par4);
         }
     }
 
-    private boolean n(World world, int i, int j, int k) {
-        if (!this.canPlace(world, i, j, k)) {
-            if (world.getTypeId(i, j, k) == this.id) {
-                this.c(world, i, j, k, world.getData(i, j, k), 0);
-                world.setTypeId(i, j, k, 0);
+    /**
+     * Called whenever the block is added into the world. Args: world, x, y, z
+     */
+    public void onPlace(World par1World, int par2, int par3, int par4)
+    {
+        if (par1World.getData(par2, par3, par4) == 0)
+        {
+            if (par1World.b(par2 - 1, par3, par4, true))
+            {
+                par1World.setData(par2, par3, par4, 1);
+            }
+            else if (par1World.b(par2 + 1, par3, par4, true))
+            {
+                par1World.setData(par2, par3, par4, 2);
+            }
+            else if (par1World.b(par2, par3, par4 - 1, true))
+            {
+                par1World.setData(par2, par3, par4, 3);
+            }
+            else if (par1World.b(par2, par3, par4 + 1, true))
+            {
+                par1World.setData(par2, par3, par4, 4);
+            }
+            else if (this.l(par1World, par2, par3 - 1, par4))
+            {
+                par1World.setData(par2, par3, par4, 5);
+            }
+        }
+
+        this.n(par1World, par2, par3, par4);
+    }
+
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        if (this.n(par1World, par2, par3, par4))
+        {
+            int var6 = par1World.getData(par2, par3, par4);
+            boolean var7 = false;
+
+            if (!par1World.b(par2 - 1, par3, par4, true) && var6 == 1)
+            {
+                var7 = true;
+            }
+
+            if (!par1World.b(par2 + 1, par3, par4, true) && var6 == 2)
+            {
+                var7 = true;
+            }
+
+            if (!par1World.b(par2, par3, par4 - 1, true) && var6 == 3)
+            {
+                var7 = true;
+            }
+
+            if (!par1World.b(par2, par3, par4 + 1, true) && var6 == 4)
+            {
+                var7 = true;
+            }
+
+            if (!this.l(par1World, par2, par3 - 1, par4) && var6 == 5)
+            {
+                var7 = true;
+            }
+
+            if (var7)
+            {
+                this.c(par1World, par2, par3, par4, par1World.getData(par2, par3, par4), 0);
+                par1World.setTypeId(par2, par3, par4, 0);
+            }
+        }
+    }
+
+    /**
+     * Tests if the block can remain at its current location and will drop as an item if it is unable to stay. Returns
+     * True if it can stay and False if it drops. Args: world, x, y, z
+     */
+    private boolean n(World par1World, int par2, int par3, int par4)
+    {
+        if (!this.canPlace(par1World, par2, par3, par4))
+        {
+            if (par1World.getTypeId(par2, par3, par4) == this.id)
+            {
+                this.c(par1World, par2, par3, par4, par1World.getData(par2, par3, par4), 0);
+                par1World.setTypeId(par2, par3, par4, 0);
             }
 
             return false;
-        } else {
+        }
+        else
+        {
             return true;
         }
     }
 
-    public MovingObjectPosition a(World world, int i, int j, int k, Vec3D vec3d, Vec3D vec3d1) {
-        int l = world.getData(i, j, k) & 7;
-        float f = 0.15F;
+    /**
+     * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
+     * x, y, z, startVec, endVec
+     */
+    public MovingObjectPosition a(World par1World, int par2, int par3, int par4, Vec3D par5Vec3, Vec3D par6Vec3)
+    {
+        int var7 = par1World.getData(par2, par3, par4) & 7;
+        float var8 = 0.15F;
 
-        if (l == 1) {
-            this.a(0.0F, 0.2F, 0.5F - f, f * 2.0F, 0.8F, 0.5F + f);
-        } else if (l == 2) {
-            this.a(1.0F - f * 2.0F, 0.2F, 0.5F - f, 1.0F, 0.8F, 0.5F + f);
-        } else if (l == 3) {
-            this.a(0.5F - f, 0.2F, 0.0F, 0.5F + f, 0.8F, f * 2.0F);
-        } else if (l == 4) {
-            this.a(0.5F - f, 0.2F, 1.0F - f * 2.0F, 0.5F + f, 0.8F, 1.0F);
-        } else {
-            f = 0.1F;
-            this.a(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 0.6F, 0.5F + f);
+        if (var7 == 1)
+        {
+            this.a(0.0F, 0.2F, 0.5F - var8, var8 * 2.0F, 0.8F, 0.5F + var8);
+        }
+        else if (var7 == 2)
+        {
+            this.a(1.0F - var8 * 2.0F, 0.2F, 0.5F - var8, 1.0F, 0.8F, 0.5F + var8);
+        }
+        else if (var7 == 3)
+        {
+            this.a(0.5F - var8, 0.2F, 0.0F, 0.5F + var8, 0.8F, var8 * 2.0F);
+        }
+        else if (var7 == 4)
+        {
+            this.a(0.5F - var8, 0.2F, 1.0F - var8 * 2.0F, 0.5F + var8, 0.8F, 1.0F);
+        }
+        else
+        {
+            var8 = 0.1F;
+            this.a(0.5F - var8, 0.0F, 0.5F - var8, 0.5F + var8, 0.6F, 0.5F + var8);
         }
 
-        return super.a(world, i, j, k, vec3d, vec3d1);
+        return super.a(par1World, par2, par3, par4, par5Vec3, par6Vec3);
     }
 }

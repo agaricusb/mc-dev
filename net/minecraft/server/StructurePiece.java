@@ -4,98 +4,143 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public abstract class StructurePiece {
-
+public abstract class StructurePiece
+{
     protected StructureBoundingBox e;
+
+    /** switches the Coordinate System base off the Bounding Box */
     protected int f;
+
+    /** The type ID of this component. */
     protected int g;
 
-    protected StructurePiece(int i) {
-        this.g = i;
+    protected StructurePiece(int par1)
+    {
+        this.g = par1;
         this.f = -1;
     }
 
-    public void a(StructurePiece structurepiece, List list, Random random) {}
+    /**
+     * Initiates construction of the Structure Component picked, at the current Location of StructGen
+     */
+    public void a(StructurePiece par1StructureComponent, List par2List, Random par3Random) {}
 
-    public abstract boolean a(World world, Random random, StructureBoundingBox structureboundingbox);
+    /**
+     * second Part of Structure generating, this for example places Spiderwebs, Mob Spawners, it closes Mineshafts at
+     * the end, it adds Fences...
+     */
+    public abstract boolean a(World var1, Random var2, StructureBoundingBox var3);
 
-    public StructureBoundingBox b() {
+    public StructureBoundingBox b()
+    {
         return this.e;
     }
 
-    public int c() {
+    /**
+     * Returns the component type ID of this component.
+     */
+    public int c()
+    {
         return this.g;
     }
 
-    public static StructurePiece a(List list, StructureBoundingBox structureboundingbox) {
-        Iterator iterator = list.iterator();
+    /**
+     * Discover if bounding box can fit within the current bounding box object.
+     */
+    public static StructurePiece a(List par0List, StructureBoundingBox par1StructureBoundingBox)
+    {
+        Iterator var2 = par0List.iterator();
+        StructurePiece var3;
 
-        StructurePiece structurepiece;
-
-        do {
-            if (!iterator.hasNext()) {
+        do
+        {
+            if (!var2.hasNext())
+            {
                 return null;
             }
 
-            structurepiece = (StructurePiece) iterator.next();
-        } while (structurepiece.b() == null || !structurepiece.b().a(structureboundingbox));
+            var3 = (StructurePiece)var2.next();
+        }
+        while (var3.b() == null || !var3.b().a(par1StructureBoundingBox));
 
-        return structurepiece;
+        return var3;
     }
 
-    public ChunkPosition a() {
+    public ChunkPosition a()
+    {
         return new ChunkPosition(this.e.e(), this.e.f(), this.e.g());
     }
 
-    protected boolean a(World world, StructureBoundingBox structureboundingbox) {
-        int i = Math.max(this.e.a - 1, structureboundingbox.a);
-        int j = Math.max(this.e.b - 1, structureboundingbox.b);
-        int k = Math.max(this.e.c - 1, structureboundingbox.c);
-        int l = Math.min(this.e.d + 1, structureboundingbox.d);
-        int i1 = Math.min(this.e.e + 1, structureboundingbox.e);
-        int j1 = Math.min(this.e.f + 1, structureboundingbox.f);
+    /**
+     * checks the entire StructureBoundingBox for Liquids
+     */
+    protected boolean a(World par1World, StructureBoundingBox par2StructureBoundingBox)
+    {
+        int var3 = Math.max(this.e.a - 1, par2StructureBoundingBox.a);
+        int var4 = Math.max(this.e.b - 1, par2StructureBoundingBox.b);
+        int var5 = Math.max(this.e.c - 1, par2StructureBoundingBox.c);
+        int var6 = Math.min(this.e.d + 1, par2StructureBoundingBox.d);
+        int var7 = Math.min(this.e.e + 1, par2StructureBoundingBox.e);
+        int var8 = Math.min(this.e.f + 1, par2StructureBoundingBox.f);
+        int var9;
+        int var10;
+        int var11;
 
-        int k1;
-        int l1;
-        int i2;
+        for (var9 = var3; var9 <= var6; ++var9)
+        {
+            for (var10 = var5; var10 <= var8; ++var10)
+            {
+                var11 = par1World.getTypeId(var9, var4, var10);
 
-        for (k1 = i; k1 <= l; ++k1) {
-            for (l1 = k; l1 <= j1; ++l1) {
-                i2 = world.getTypeId(k1, j, l1);
-                if (i2 > 0 && Block.byId[i2].material.isLiquid()) {
+                if (var11 > 0 && Block.byId[var11].material.isLiquid())
+                {
                     return true;
                 }
 
-                i2 = world.getTypeId(k1, i1, l1);
-                if (i2 > 0 && Block.byId[i2].material.isLiquid()) {
-                    return true;
-                }
-            }
-        }
+                var11 = par1World.getTypeId(var9, var7, var10);
 
-        for (k1 = i; k1 <= l; ++k1) {
-            for (l1 = j; l1 <= i1; ++l1) {
-                i2 = world.getTypeId(k1, l1, k);
-                if (i2 > 0 && Block.byId[i2].material.isLiquid()) {
-                    return true;
-                }
-
-                i2 = world.getTypeId(k1, l1, j1);
-                if (i2 > 0 && Block.byId[i2].material.isLiquid()) {
+                if (var11 > 0 && Block.byId[var11].material.isLiquid())
+                {
                     return true;
                 }
             }
         }
 
-        for (k1 = k; k1 <= j1; ++k1) {
-            for (l1 = j; l1 <= i1; ++l1) {
-                i2 = world.getTypeId(i, l1, k1);
-                if (i2 > 0 && Block.byId[i2].material.isLiquid()) {
+        for (var9 = var3; var9 <= var6; ++var9)
+        {
+            for (var10 = var4; var10 <= var7; ++var10)
+            {
+                var11 = par1World.getTypeId(var9, var10, var5);
+
+                if (var11 > 0 && Block.byId[var11].material.isLiquid())
+                {
                     return true;
                 }
 
-                i2 = world.getTypeId(l, l1, k1);
-                if (i2 > 0 && Block.byId[i2].material.isLiquid()) {
+                var11 = par1World.getTypeId(var9, var10, var8);
+
+                if (var11 > 0 && Block.byId[var11].material.isLiquid())
+                {
+                    return true;
+                }
+            }
+        }
+
+        for (var9 = var5; var9 <= var8; ++var9)
+        {
+            for (var10 = var4; var10 <= var7; ++var10)
+            {
+                var11 = par1World.getTypeId(var3, var10, var9);
+
+                if (var11 > 0 && Block.byId[var11].material.isLiquid())
+                {
+                    return true;
+                }
+
+                var11 = par1World.getTypeId(var6, var10, var9);
+
+                if (var11 > 0 && Block.byId[var11].material.isLiquid())
+                {
                     return true;
                 }
             }
@@ -104,315 +149,445 @@ public abstract class StructurePiece {
         return false;
     }
 
-    protected int a(int i, int j) {
-        switch (this.f) {
-        case 0:
-        case 2:
-            return this.e.a + i;
+    protected int a(int par1, int par2)
+    {
+        switch (this.f)
+        {
+            case 0:
+            case 2:
+                return this.e.a + par1;
 
-        case 1:
-            return this.e.d - j;
+            case 1:
+                return this.e.d - par2;
 
-        case 3:
-            return this.e.a + j;
+            case 3:
+                return this.e.a + par2;
 
-        default:
-            return i;
+            default:
+                return par1;
         }
     }
 
-    protected int a(int i) {
-        return this.f == -1 ? i : i + this.e.b;
+    protected int a(int par1)
+    {
+        return this.f == -1 ? par1 : par1 + this.e.b;
     }
 
-    protected int b(int i, int j) {
-        switch (this.f) {
-        case 0:
-            return this.e.c + j;
+    protected int b(int par1, int par2)
+    {
+        switch (this.f)
+        {
+            case 0:
+                return this.e.c + par2;
 
-        case 1:
-        case 3:
-            return this.e.c + i;
+            case 1:
+            case 3:
+                return this.e.c + par1;
 
-        case 2:
-            return this.e.f - j;
+            case 2:
+                return this.e.f - par2;
 
-        default:
-            return j;
+            default:
+                return par2;
         }
     }
 
-    protected int c(int i, int j) {
-        if (i == Block.RAILS.id) {
-            if (this.f == 1 || this.f == 3) {
-                if (j == 1) {
+    /**
+     * Returns the direction-shifted metadata for blocks that require orientation, e.g. doors, stairs, ladders.
+     * Parameters: block ID, original metadata
+     */
+    protected int c(int par1, int par2)
+    {
+        if (par1 == Block.RAILS.id)
+        {
+            if (this.f == 1 || this.f == 3)
+            {
+                if (par2 == 1)
+                {
                     return 0;
                 }
 
                 return 1;
             }
-        } else if (i != Block.WOODEN_DOOR.id && i != Block.IRON_DOOR_BLOCK.id) {
-            if (i != Block.COBBLESTONE_STAIRS.id && i != Block.WOOD_STAIRS.id && i != Block.NETHER_BRICK_STAIRS.id && i != Block.STONE_STAIRS.id && i != Block.SANDSTONE_STAIRS.id) {
-                if (i == Block.LADDER.id) {
-                    if (this.f == 0) {
-                        if (j == 2) {
+        }
+        else if (par1 != Block.WOODEN_DOOR.id && par1 != Block.IRON_DOOR_BLOCK.id)
+        {
+            if (par1 != Block.COBBLESTONE_STAIRS.id && par1 != Block.WOOD_STAIRS.id && par1 != Block.NETHER_BRICK_STAIRS.id && par1 != Block.STONE_STAIRS.id && par1 != Block.SANDSTONE_STAIRS.id)
+            {
+                if (par1 == Block.LADDER.id)
+                {
+                    if (this.f == 0)
+                    {
+                        if (par2 == 2)
+                        {
                             return 3;
                         }
 
-                        if (j == 3) {
+                        if (par2 == 3)
+                        {
                             return 2;
                         }
-                    } else if (this.f == 1) {
-                        if (j == 2) {
+                    }
+                    else if (this.f == 1)
+                    {
+                        if (par2 == 2)
+                        {
                             return 4;
                         }
 
-                        if (j == 3) {
+                        if (par2 == 3)
+                        {
                             return 5;
                         }
 
-                        if (j == 4) {
+                        if (par2 == 4)
+                        {
                             return 2;
                         }
 
-                        if (j == 5) {
+                        if (par2 == 5)
+                        {
                             return 3;
                         }
-                    } else if (this.f == 3) {
-                        if (j == 2) {
+                    }
+                    else if (this.f == 3)
+                    {
+                        if (par2 == 2)
+                        {
                             return 5;
                         }
 
-                        if (j == 3) {
+                        if (par2 == 3)
+                        {
                             return 4;
                         }
 
-                        if (j == 4) {
+                        if (par2 == 4)
+                        {
                             return 2;
                         }
 
-                        if (j == 5) {
+                        if (par2 == 5)
+                        {
                             return 3;
                         }
                     }
-                } else if (i == Block.STONE_BUTTON.id) {
-                    if (this.f == 0) {
-                        if (j == 3) {
+                }
+                else if (par1 == Block.STONE_BUTTON.id)
+                {
+                    if (this.f == 0)
+                    {
+                        if (par2 == 3)
+                        {
                             return 4;
                         }
 
-                        if (j == 4) {
+                        if (par2 == 4)
+                        {
                             return 3;
                         }
-                    } else if (this.f == 1) {
-                        if (j == 3) {
+                    }
+                    else if (this.f == 1)
+                    {
+                        if (par2 == 3)
+                        {
                             return 1;
                         }
 
-                        if (j == 4) {
+                        if (par2 == 4)
+                        {
                             return 2;
                         }
 
-                        if (j == 2) {
+                        if (par2 == 2)
+                        {
                             return 3;
                         }
 
-                        if (j == 1) {
+                        if (par2 == 1)
+                        {
                             return 4;
                         }
-                    } else if (this.f == 3) {
-                        if (j == 3) {
+                    }
+                    else if (this.f == 3)
+                    {
+                        if (par2 == 3)
+                        {
                             return 2;
                         }
 
-                        if (j == 4) {
+                        if (par2 == 4)
+                        {
                             return 1;
                         }
 
-                        if (j == 2) {
+                        if (par2 == 2)
+                        {
                             return 3;
                         }
 
-                        if (j == 1) {
+                        if (par2 == 1)
+                        {
                             return 4;
                         }
                     }
-                } else if (i != Block.TRIPWIRE_SOURCE.id && (Block.byId[i] == null || !(Block.byId[i] instanceof BlockDirectional))) {
-                    if (i == Block.PISTON.id || i == Block.PISTON_STICKY.id || i == Block.LEVER.id || i == Block.DISPENSER.id) {
-                        if (this.f == 0) {
-                            if (j == 2 || j == 3) {
-                                return Facing.OPPOSITE_FACING[j];
+                }
+                else if (par1 != Block.TRIPWIRE_SOURCE.id && (Block.byId[par1] == null || !(Block.byId[par1] instanceof BlockDirectional)))
+                {
+                    if (par1 == Block.PISTON.id || par1 == Block.PISTON_STICKY.id || par1 == Block.LEVER.id || par1 == Block.DISPENSER.id)
+                    {
+                        if (this.f == 0)
+                        {
+                            if (par2 == 2 || par2 == 3)
+                            {
+                                return Facing.OPPOSITE_FACING[par2];
                             }
-                        } else if (this.f == 1) {
-                            if (j == 2) {
+                        }
+                        else if (this.f == 1)
+                        {
+                            if (par2 == 2)
+                            {
                                 return 4;
                             }
 
-                            if (j == 3) {
+                            if (par2 == 3)
+                            {
                                 return 5;
                             }
 
-                            if (j == 4) {
+                            if (par2 == 4)
+                            {
                                 return 2;
                             }
 
-                            if (j == 5) {
+                            if (par2 == 5)
+                            {
                                 return 3;
                             }
-                        } else if (this.f == 3) {
-                            if (j == 2) {
+                        }
+                        else if (this.f == 3)
+                        {
+                            if (par2 == 2)
+                            {
                                 return 5;
                             }
 
-                            if (j == 3) {
+                            if (par2 == 3)
+                            {
                                 return 4;
                             }
 
-                            if (j == 4) {
+                            if (par2 == 4)
+                            {
                                 return 2;
                             }
 
-                            if (j == 5) {
+                            if (par2 == 5)
+                            {
                                 return 3;
                             }
                         }
                     }
-                } else if (this.f == 0) {
-                    if (j == 0 || j == 2) {
-                        return Direction.f[j];
+                }
+                else if (this.f == 0)
+                {
+                    if (par2 == 0 || par2 == 2)
+                    {
+                        return Direction.f[par2];
                     }
-                } else if (this.f == 1) {
-                    if (j == 2) {
+                }
+                else if (this.f == 1)
+                {
+                    if (par2 == 2)
+                    {
                         return 1;
                     }
 
-                    if (j == 0) {
+                    if (par2 == 0)
+                    {
                         return 3;
                     }
 
-                    if (j == 1) {
+                    if (par2 == 1)
+                    {
                         return 2;
                     }
 
-                    if (j == 3) {
+                    if (par2 == 3)
+                    {
                         return 0;
                     }
-                } else if (this.f == 3) {
-                    if (j == 2) {
+                }
+                else if (this.f == 3)
+                {
+                    if (par2 == 2)
+                    {
                         return 3;
                     }
 
-                    if (j == 0) {
+                    if (par2 == 0)
+                    {
                         return 1;
                     }
 
-                    if (j == 1) {
+                    if (par2 == 1)
+                    {
                         return 2;
                     }
 
-                    if (j == 3) {
+                    if (par2 == 3)
+                    {
                         return 0;
                     }
                 }
-            } else if (this.f == 0) {
-                if (j == 2) {
+            }
+            else if (this.f == 0)
+            {
+                if (par2 == 2)
+                {
                     return 3;
                 }
 
-                if (j == 3) {
+                if (par2 == 3)
+                {
                     return 2;
                 }
-            } else if (this.f == 1) {
-                if (j == 0) {
+            }
+            else if (this.f == 1)
+            {
+                if (par2 == 0)
+                {
                     return 2;
                 }
 
-                if (j == 1) {
+                if (par2 == 1)
+                {
                     return 3;
                 }
 
-                if (j == 2) {
+                if (par2 == 2)
+                {
                     return 0;
                 }
 
-                if (j == 3) {
+                if (par2 == 3)
+                {
                     return 1;
                 }
-            } else if (this.f == 3) {
-                if (j == 0) {
+            }
+            else if (this.f == 3)
+            {
+                if (par2 == 0)
+                {
                     return 2;
                 }
 
-                if (j == 1) {
+                if (par2 == 1)
+                {
                     return 3;
                 }
 
-                if (j == 2) {
+                if (par2 == 2)
+                {
                     return 1;
                 }
 
-                if (j == 3) {
+                if (par2 == 3)
+                {
                     return 0;
                 }
             }
-        } else if (this.f == 0) {
-            if (j == 0) {
+        }
+        else if (this.f == 0)
+        {
+            if (par2 == 0)
+            {
                 return 2;
             }
 
-            if (j == 2) {
+            if (par2 == 2)
+            {
                 return 0;
             }
-        } else {
-            if (this.f == 1) {
-                return j + 1 & 3;
+        }
+        else
+        {
+            if (this.f == 1)
+            {
+                return par2 + 1 & 3;
             }
 
-            if (this.f == 3) {
-                return j + 3 & 3;
+            if (this.f == 3)
+            {
+                return par2 + 3 & 3;
             }
         }
 
-        return j;
+        return par2;
     }
 
-    protected void a(World world, int i, int j, int k, int l, int i1, StructureBoundingBox structureboundingbox) {
-        int j1 = this.a(k, i1);
-        int k1 = this.a(l);
-        int l1 = this.b(k, i1);
+    /**
+     * current Position depends on currently set Coordinates mode, is computed here
+     */
+    protected void a(World par1World, int par2, int par3, int par4, int par5, int par6, StructureBoundingBox par7StructureBoundingBox)
+    {
+        int var8 = this.a(par4, par6);
+        int var9 = this.a(par5);
+        int var10 = this.b(par4, par6);
 
-        if (structureboundingbox.b(j1, k1, l1)) {
-            world.setRawTypeIdAndData(j1, k1, l1, i, j);
+        if (par7StructureBoundingBox.b(var8, var9, var10))
+        {
+            par1World.setRawTypeIdAndData(var8, var9, var10, par2, par3);
         }
     }
 
-    protected int a(World world, int i, int j, int k, StructureBoundingBox structureboundingbox) {
-        int l = this.a(i, k);
-        int i1 = this.a(j);
-        int j1 = this.b(i, k);
-
-        return !structureboundingbox.b(l, i1, j1) ? 0 : world.getTypeId(l, i1, j1);
+    protected int a(World par1World, int par2, int par3, int par4, StructureBoundingBox par5StructureBoundingBox)
+    {
+        int var6 = this.a(par2, par4);
+        int var7 = this.a(par3);
+        int var8 = this.b(par2, par4);
+        return !par5StructureBoundingBox.b(var6, var7, var8) ? 0 : par1World.getTypeId(var6, var7, var8);
     }
 
-    protected void a(World world, StructureBoundingBox structureboundingbox, int i, int j, int k, int l, int i1, int j1) {
-        for (int k1 = j; k1 <= i1; ++k1) {
-            for (int l1 = i; l1 <= l; ++l1) {
-                for (int i2 = k; i2 <= j1; ++i2) {
-                    this.a(world, 0, 0, l1, k1, i2, structureboundingbox);
+    /**
+     * arguments: (World worldObj, StructureBoundingBox structBB, int minX, int minY, int minZ, int maxX, int maxY, int
+     * maxZ)
+     */
+    protected void a(World par1World, StructureBoundingBox par2StructureBoundingBox, int par3, int par4, int par5, int par6, int par7, int par8)
+    {
+        for (int var9 = par4; var9 <= par7; ++var9)
+        {
+            for (int var10 = par3; var10 <= par6; ++var10)
+            {
+                for (int var11 = par5; var11 <= par8; ++var11)
+                {
+                    this.a(par1World, 0, 0, var10, var9, var11, par2StructureBoundingBox);
                 }
             }
         }
     }
 
-    protected void a(World world, StructureBoundingBox structureboundingbox, int i, int j, int k, int l, int i1, int j1, int k1, int l1, boolean flag) {
-        for (int i2 = j; i2 <= i1; ++i2) {
-            for (int j2 = i; j2 <= l; ++j2) {
-                for (int k2 = k; k2 <= j1; ++k2) {
-                    if (!flag || this.a(world, j2, i2, k2, structureboundingbox) != 0) {
-                        if (i2 != j && i2 != i1 && j2 != i && j2 != l && k2 != k && k2 != j1) {
-                            this.a(world, l1, 0, j2, i2, k2, structureboundingbox);
-                        } else {
-                            this.a(world, k1, 0, j2, i2, k2, structureboundingbox);
+    /**
+     * arguments: (World worldObj, StructureBoundingBox structBB, int minX, int minY, int minZ, int maxX, int maxY, int
+     * maxZ, int placeBlockId, int replaceBlockId, boolean alwaysreplace)
+     */
+    protected void a(World par1World, StructureBoundingBox par2StructureBoundingBox, int par3, int par4, int par5, int par6, int par7, int par8, int par9, int par10, boolean par11)
+    {
+        for (int var12 = par4; var12 <= par7; ++var12)
+        {
+            for (int var13 = par3; var13 <= par6; ++var13)
+            {
+                for (int var14 = par5; var14 <= par8; ++var14)
+                {
+                    if (!par11 || this.a(par1World, var13, var12, var14, par2StructureBoundingBox) != 0)
+                    {
+                        if (var12 != par4 && var12 != par7 && var13 != par3 && var13 != par6 && var14 != par5 && var14 != par8)
+                        {
+                            this.a(par1World, par10, 0, var13, var12, var14, par2StructureBoundingBox);
+                        }
+                        else
+                        {
+                            this.a(par1World, par9, 0, var13, var12, var14, par2StructureBoundingBox);
                         }
                     }
                 }
@@ -420,15 +595,28 @@ public abstract class StructurePiece {
         }
     }
 
-    protected void a(World world, StructureBoundingBox structureboundingbox, int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2, boolean flag) {
-        for (int k2 = j; k2 <= i1; ++k2) {
-            for (int l2 = i; l2 <= l; ++l2) {
-                for (int i3 = k; i3 <= j1; ++i3) {
-                    if (!flag || this.a(world, l2, k2, i3, structureboundingbox) != 0) {
-                        if (k2 != j && k2 != i1 && l2 != i && l2 != l && i3 != k && i3 != j1) {
-                            this.a(world, i2, j2, l2, k2, i3, structureboundingbox);
-                        } else {
-                            this.a(world, k1, l1, l2, k2, i3, structureboundingbox);
+    /**
+     * arguments: (World worldObj, StructureBoundingBox structBB, int minX, int minY, int minZ, int maxX, int maxY, int
+     * maxZ, int placeBlockId, int placeBlockMetadata, int replaceBlockId, int replaceBlockMetadata, boolean
+     * alwaysreplace)
+     */
+    protected void a(World par1World, StructureBoundingBox par2StructureBoundingBox, int par3, int par4, int par5, int par6, int par7, int par8, int par9, int par10, int par11, int par12, boolean par13)
+    {
+        for (int var14 = par4; var14 <= par7; ++var14)
+        {
+            for (int var15 = par3; var15 <= par6; ++var15)
+            {
+                for (int var16 = par5; var16 <= par8; ++var16)
+                {
+                    if (!par13 || this.a(par1World, var15, var14, var16, par2StructureBoundingBox) != 0)
+                    {
+                        if (var14 != par4 && var14 != par7 && var15 != par3 && var15 != par6 && var16 != par5 && var16 != par8)
+                        {
+                            this.a(par1World, par11, par12, var15, var14, var16, par2StructureBoundingBox);
+                        }
+                        else
+                        {
+                            this.a(par1World, par9, par10, var15, var14, var16, par2StructureBoundingBox);
                         }
                     }
                 }
@@ -436,28 +624,49 @@ public abstract class StructurePiece {
         }
     }
 
-    protected void a(World world, StructureBoundingBox structureboundingbox, int i, int j, int k, int l, int i1, int j1, boolean flag, Random random, StructurePieceBlockSelector structurepieceblockselector) {
-        for (int k1 = j; k1 <= i1; ++k1) {
-            for (int l1 = i; l1 <= l; ++l1) {
-                for (int i2 = k; i2 <= j1; ++i2) {
-                    if (!flag || this.a(world, l1, k1, i2, structureboundingbox) != 0) {
-                        structurepieceblockselector.a(random, l1, k1, i2, k1 == j || k1 == i1 || l1 == i || l1 == l || i2 == k || i2 == j1);
-                        this.a(world, structurepieceblockselector.a(), structurepieceblockselector.b(), l1, k1, i2, structureboundingbox);
+    /**
+     * arguments: World worldObj, StructureBoundingBox structBB, int minX, int minY, int minZ, int maxX, int maxY, int
+     * maxZ, boolean alwaysreplace, Random rand, StructurePieceBlockSelector blockselector
+     */
+    protected void a(World par1World, StructureBoundingBox par2StructureBoundingBox, int par3, int par4, int par5, int par6, int par7, int par8, boolean par9, Random par10Random, StructurePieceBlockSelector par11StructurePieceBlockSelector)
+    {
+        for (int var12 = par4; var12 <= par7; ++var12)
+        {
+            for (int var13 = par3; var13 <= par6; ++var13)
+            {
+                for (int var14 = par5; var14 <= par8; ++var14)
+                {
+                    if (!par9 || this.a(par1World, var13, var12, var14, par2StructureBoundingBox) != 0)
+                    {
+                        par11StructurePieceBlockSelector.a(par10Random, var13, var12, var14, var12 == par4 || var12 == par7 || var13 == par3 || var13 == par6 || var14 == par5 || var14 == par8);
+                        this.a(par1World, par11StructurePieceBlockSelector.a(), par11StructurePieceBlockSelector.b(), var13, var12, var14, par2StructureBoundingBox);
                     }
                 }
             }
         }
     }
 
-    protected void a(World world, StructureBoundingBox structureboundingbox, Random random, float f, int i, int j, int k, int l, int i1, int j1, int k1, int l1, boolean flag) {
-        for (int i2 = j; i2 <= i1; ++i2) {
-            for (int j2 = i; j2 <= l; ++j2) {
-                for (int k2 = k; k2 <= j1; ++k2) {
-                    if (random.nextFloat() <= f && (!flag || this.a(world, j2, i2, k2, structureboundingbox) != 0)) {
-                        if (i2 != j && i2 != i1 && j2 != i && j2 != l && k2 != k && k2 != j1) {
-                            this.a(world, l1, 0, j2, i2, k2, structureboundingbox);
-                        } else {
-                            this.a(world, k1, 0, j2, i2, k2, structureboundingbox);
+    /**
+     * arguments: World worldObj, StructureBoundingBox structBB, Random rand, float randLimit, int minX, int minY, int
+     * minZ, int maxX, int maxY, int maxZ, int olaceBlockId, int replaceBlockId, boolean alwaysreplace
+     */
+    protected void a(World par1World, StructureBoundingBox par2StructureBoundingBox, Random par3Random, float par4, int par5, int par6, int par7, int par8, int par9, int par10, int par11, int par12, boolean par13)
+    {
+        for (int var14 = par6; var14 <= par9; ++var14)
+        {
+            for (int var15 = par5; var15 <= par8; ++var15)
+            {
+                for (int var16 = par7; var16 <= par10; ++var16)
+                {
+                    if (par3Random.nextFloat() <= par4 && (!par13 || this.a(par1World, var15, var14, var16, par2StructureBoundingBox) != 0))
+                    {
+                        if (var14 != par6 && var14 != par9 && var15 != par5 && var15 != par8 && var16 != par7 && var16 != par10)
+                        {
+                            this.a(par1World, par12, 0, var15, var14, var16, par2StructureBoundingBox);
+                        }
+                        else
+                        {
+                            this.a(par1World, par11, 0, var15, var14, var16, par2StructureBoundingBox);
                         }
                     }
                 }
@@ -465,33 +674,48 @@ public abstract class StructurePiece {
         }
     }
 
-    protected void a(World world, StructureBoundingBox structureboundingbox, Random random, float f, int i, int j, int k, int l, int i1) {
-        if (random.nextFloat() < f) {
-            this.a(world, l, i1, i, j, k, structureboundingbox);
+    /**
+     * Randomly decides if placing or not. Used for Decoration such as Torches and Spiderwebs
+     */
+    protected void a(World par1World, StructureBoundingBox par2StructureBoundingBox, Random par3Random, float par4, int par5, int par6, int par7, int par8, int par9)
+    {
+        if (par3Random.nextFloat() < par4)
+        {
+            this.a(par1World, par8, par9, par5, par6, par7, par2StructureBoundingBox);
         }
     }
 
-    protected void a(World world, StructureBoundingBox structureboundingbox, int i, int j, int k, int l, int i1, int j1, int k1, boolean flag) {
-        float f = (float) (l - i + 1);
-        float f1 = (float) (i1 - j + 1);
-        float f2 = (float) (j1 - k + 1);
-        float f3 = (float) i + f / 2.0F;
-        float f4 = (float) k + f2 / 2.0F;
+    /**
+     * arguments: World worldObj, StructureBoundingBox structBB, int minX, int minY, int minZ, int maxX, int maxY, int
+     * maxZ, int placeBlockId, boolean alwaysreplace
+     */
+    protected void a(World par1World, StructureBoundingBox par2StructureBoundingBox, int par3, int par4, int par5, int par6, int par7, int par8, int par9, boolean par10)
+    {
+        float var11 = (float)(par6 - par3 + 1);
+        float var12 = (float)(par7 - par4 + 1);
+        float var13 = (float)(par8 - par5 + 1);
+        float var14 = (float)par3 + var11 / 2.0F;
+        float var15 = (float)par5 + var13 / 2.0F;
 
-        for (int l1 = j; l1 <= i1; ++l1) {
-            float f5 = (float) (l1 - j) / f1;
+        for (int var16 = par4; var16 <= par7; ++var16)
+        {
+            float var17 = (float)(var16 - par4) / var12;
 
-            for (int i2 = i; i2 <= l; ++i2) {
-                float f6 = ((float) i2 - f3) / (f * 0.5F);
+            for (int var18 = par3; var18 <= par6; ++var18)
+            {
+                float var19 = ((float)var18 - var14) / (var11 * 0.5F);
 
-                for (int j2 = k; j2 <= j1; ++j2) {
-                    float f7 = ((float) j2 - f4) / (f2 * 0.5F);
+                for (int var20 = par5; var20 <= par8; ++var20)
+                {
+                    float var21 = ((float)var20 - var15) / (var13 * 0.5F);
 
-                    if (!flag || this.a(world, i2, l1, j2, structureboundingbox) != 0) {
-                        float f8 = f6 * f6 + f5 * f5 + f7 * f7;
+                    if (!par10 || this.a(par1World, var18, var16, var20, par2StructureBoundingBox) != 0)
+                    {
+                        float var22 = var19 * var19 + var17 * var17 + var21 * var21;
 
-                        if (f8 <= 1.05F) {
-                            this.a(world, k1, 0, i2, l1, j2, structureboundingbox);
+                        if (var22 <= 1.05F)
+                        {
+                            this.a(par1World, par9, 0, var18, var16, var20, par2StructureBoundingBox);
                         }
                     }
                 }
@@ -499,77 +723,107 @@ public abstract class StructurePiece {
         }
     }
 
-    protected void b(World world, int i, int j, int k, StructureBoundingBox structureboundingbox) {
-        int l = this.a(i, k);
-        int i1 = this.a(j);
-        int j1 = this.b(i, k);
+    /**
+     * Deletes all continuous blocks from selected position upwards. Stops at hitting air.
+     */
+    protected void b(World par1World, int par2, int par3, int par4, StructureBoundingBox par5StructureBoundingBox)
+    {
+        int var6 = this.a(par2, par4);
+        int var7 = this.a(par3);
+        int var8 = this.b(par2, par4);
 
-        if (structureboundingbox.b(l, i1, j1)) {
-            while (!world.isEmpty(l, i1, j1) && i1 < 255) {
-                world.setRawTypeIdAndData(l, i1, j1, 0, 0);
-                ++i1;
+        if (par5StructureBoundingBox.b(var6, var7, var8))
+        {
+            while (!par1World.isEmpty(var6, var7, var8) && var7 < 255)
+            {
+                par1World.setRawTypeIdAndData(var6, var7, var8, 0, 0);
+                ++var7;
             }
         }
     }
 
-    protected void b(World world, int i, int j, int k, int l, int i1, StructureBoundingBox structureboundingbox) {
-        int j1 = this.a(k, i1);
-        int k1 = this.a(l);
-        int l1 = this.b(k, i1);
+    /**
+     * Overwrites air and liquids from selected position downwards, stops at hitting anything else.
+     */
+    protected void b(World par1World, int par2, int par3, int par4, int par5, int par6, StructureBoundingBox par7StructureBoundingBox)
+    {
+        int var8 = this.a(par4, par6);
+        int var9 = this.a(par5);
+        int var10 = this.b(par4, par6);
 
-        if (structureboundingbox.b(j1, k1, l1)) {
-            while ((world.isEmpty(j1, k1, l1) || world.getMaterial(j1, k1, l1).isLiquid()) && k1 > 1) {
-                world.setRawTypeIdAndData(j1, k1, l1, i, j);
-                --k1;
+        if (par7StructureBoundingBox.b(var8, var9, var10))
+        {
+            while ((par1World.isEmpty(var8, var9, var10) || par1World.getMaterial(var8, var9, var10).isLiquid()) && var9 > 1)
+            {
+                par1World.setRawTypeIdAndData(var8, var9, var10, par2, par3);
+                --var9;
             }
         }
     }
 
-    protected boolean a(World world, StructureBoundingBox structureboundingbox, Random random, int i, int j, int k, StructurePieceTreasure[] astructurepiecetreasure, int l) {
-        int i1 = this.a(i, k);
-        int j1 = this.a(j);
-        int k1 = this.b(i, k);
+    /**
+     * Used to generate chests with items in it. ex: Temple Chests, Village Blacksmith Chests, Mineshaft Chests.
+     */
+    protected boolean a(World par1World, StructureBoundingBox par2StructureBoundingBox, Random par3Random, int par4, int par5, int par6, StructurePieceTreasure[] par7ArrayOfWeightedRandomChestContent, int par8)
+    {
+        int var9 = this.a(par4, par6);
+        int var10 = this.a(par5);
+        int var11 = this.b(par4, par6);
 
-        if (structureboundingbox.b(i1, j1, k1) && world.getTypeId(i1, j1, k1) != Block.CHEST.id) {
-            world.setTypeId(i1, j1, k1, Block.CHEST.id);
-            TileEntityChest tileentitychest = (TileEntityChest) world.getTileEntity(i1, j1, k1);
+        if (par2StructureBoundingBox.b(var9, var10, var11) && par1World.getTypeId(var9, var10, var11) != Block.CHEST.id)
+        {
+            par1World.setTypeId(var9, var10, var11, Block.CHEST.id);
+            TileEntityChest var12 = (TileEntityChest)par1World.getTileEntity(var9, var10, var11);
 
-            if (tileentitychest != null) {
-                StructurePieceTreasure.a(random, astructurepiecetreasure, tileentitychest, l);
+            if (var12 != null)
+            {
+                StructurePieceTreasure.a(par3Random, par7ArrayOfWeightedRandomChestContent, var12, par8);
             }
 
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    protected boolean a(World world, StructureBoundingBox structureboundingbox, Random random, int i, int j, int k, int l, StructurePieceTreasure[] astructurepiecetreasure, int i1) {
-        int j1 = this.a(i, k);
-        int k1 = this.a(j);
-        int l1 = this.b(i, k);
+    /**
+     * Used to generate dispenser contents for structures. ex: Jungle Temples.
+     */
+    protected boolean a(World par1World, StructureBoundingBox par2StructureBoundingBox, Random par3Random, int par4, int par5, int par6, int par7, StructurePieceTreasure[] par8ArrayOfWeightedRandomChestContent, int par9)
+    {
+        int var10 = this.a(par4, par6);
+        int var11 = this.a(par5);
+        int var12 = this.b(par4, par6);
 
-        if (structureboundingbox.b(j1, k1, l1) && world.getTypeId(j1, k1, l1) != Block.DISPENSER.id) {
-            world.setTypeIdAndData(j1, k1, l1, Block.DISPENSER.id, this.c(Block.DISPENSER.id, l));
-            TileEntityDispenser tileentitydispenser = (TileEntityDispenser) world.getTileEntity(j1, k1, l1);
+        if (par2StructureBoundingBox.b(var10, var11, var12) && par1World.getTypeId(var10, var11, var12) != Block.DISPENSER.id)
+        {
+            par1World.setTypeIdAndData(var10, var11, var12, Block.DISPENSER.id, this.c(Block.DISPENSER.id, par7));
+            TileEntityDispenser var13 = (TileEntityDispenser)par1World.getTileEntity(var10, var11, var12);
 
-            if (tileentitydispenser != null) {
-                StructurePieceTreasure.a(random, astructurepiecetreasure, tileentitydispenser, i1);
+            if (var13 != null)
+            {
+                StructurePieceTreasure.a(par3Random, par8ArrayOfWeightedRandomChestContent, var13, par9);
             }
 
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    protected void a(World world, StructureBoundingBox structureboundingbox, Random random, int i, int j, int k, int l) {
-        int i1 = this.a(i, k);
-        int j1 = this.a(j);
-        int k1 = this.b(i, k);
+    protected void a(World par1World, StructureBoundingBox par2StructureBoundingBox, Random par3Random, int par4, int par5, int par6, int par7)
+    {
+        int var8 = this.a(par4, par6);
+        int var9 = this.a(par5);
+        int var10 = this.b(par4, par6);
 
-        if (structureboundingbox.b(i1, j1, k1)) {
-            ItemDoor.place(world, i1, j1, k1, l, Block.WOODEN_DOOR);
+        if (par2StructureBoundingBox.b(var8, var9, var10))
+        {
+            ItemDoor.place(par1World, var8, var9, var10, par7, Block.WOODEN_DOOR);
         }
     }
 }

@@ -1,19 +1,23 @@
 package net.minecraft.server;
 
-public class CommandStop extends CommandAbstract {
-
-    public CommandStop() {}
-
-    public String c() {
+public class CommandStop extends CommandAbstract
+{
+    public String c()
+    {
         return "stop";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 4;
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        a(icommandlistener, "commands.stop.start", new Object[0]);
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        a(par1ICommandSender, "commands.stop.start", new Object[0]);
         MinecraftServer.getServer().safeShutdown();
     }
 }

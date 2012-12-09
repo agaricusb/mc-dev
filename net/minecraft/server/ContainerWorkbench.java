@@ -1,7 +1,8 @@
 package net.minecraft.server;
 
-public class ContainerWorkbench extends Container {
-
+public class ContainerWorkbench extends Container
+{
+    /** The crafting matrix inventory (3x3). */
     public InventoryCrafting craftInventory = new InventoryCrafting(this, 3, 3);
     public IInventory resultInventory = new InventoryCraftResult();
     private World g;
@@ -9,95 +10,132 @@ public class ContainerWorkbench extends Container {
     private int i;
     private int j;
 
-    public ContainerWorkbench(PlayerInventory playerinventory, World world, int i, int j, int k) {
-        this.g = world;
-        this.h = i;
-        this.i = j;
-        this.j = k;
-        this.a((Slot) (new SlotResult(playerinventory.player, this.craftInventory, this.resultInventory, 0, 124, 35)));
+    public ContainerWorkbench(PlayerInventory par1InventoryPlayer, World par2World, int par3, int par4, int par5)
+    {
+        this.g = par2World;
+        this.h = par3;
+        this.i = par4;
+        this.j = par5;
+        this.a(new SlotResult(par1InventoryPlayer.player, this.craftInventory, this.resultInventory, 0, 124, 35));
+        int var6;
+        int var7;
 
-        int l;
-        int i1;
-
-        for (l = 0; l < 3; ++l) {
-            for (i1 = 0; i1 < 3; ++i1) {
-                this.a(new Slot(this.craftInventory, i1 + l * 3, 30 + i1 * 18, 17 + l * 18));
+        for (var6 = 0; var6 < 3; ++var6)
+        {
+            for (var7 = 0; var7 < 3; ++var7)
+            {
+                this.a(new Slot(this.craftInventory, var7 + var6 * 3, 30 + var7 * 18, 17 + var6 * 18));
             }
         }
 
-        for (l = 0; l < 3; ++l) {
-            for (i1 = 0; i1 < 9; ++i1) {
-                this.a(new Slot(playerinventory, i1 + l * 9 + 9, 8 + i1 * 18, 84 + l * 18));
+        for (var6 = 0; var6 < 3; ++var6)
+        {
+            for (var7 = 0; var7 < 9; ++var7)
+            {
+                this.a(new Slot(par1InventoryPlayer, var7 + var6 * 9 + 9, 8 + var7 * 18, 84 + var6 * 18));
             }
         }
 
-        for (l = 0; l < 9; ++l) {
-            this.a(new Slot(playerinventory, l, 8 + l * 18, 142));
+        for (var6 = 0; var6 < 9; ++var6)
+        {
+            this.a(new Slot(par1InventoryPlayer, var6, 8 + var6 * 18, 142));
         }
 
-        this.a((IInventory) this.craftInventory);
+        this.a(this.craftInventory);
     }
 
-    public void a(IInventory iinventory) {
+    /**
+     * Callback for when the crafting matrix is changed.
+     */
+    public void a(IInventory par1IInventory)
+    {
         this.resultInventory.setItem(0, CraftingManager.getInstance().craft(this.craftInventory, this.g));
     }
 
-    public void b(EntityHuman entityhuman) {
-        super.b(entityhuman);
-        if (!this.g.isStatic) {
-            for (int i = 0; i < 9; ++i) {
-                ItemStack itemstack = this.craftInventory.splitWithoutUpdate(i);
+    /**
+     * Callback for when the crafting gui is closed.
+     */
+    public void b(EntityHuman par1EntityPlayer)
+    {
+        super.b(par1EntityPlayer);
 
-                if (itemstack != null) {
-                    entityhuman.drop(itemstack);
+        if (!this.g.isStatic)
+        {
+            for (int var2 = 0; var2 < 9; ++var2)
+            {
+                ItemStack var3 = this.craftInventory.splitWithoutUpdate(var2);
+
+                if (var3 != null)
+                {
+                    par1EntityPlayer.drop(var3);
                 }
             }
         }
     }
 
-    public boolean a(EntityHuman entityhuman) {
-        return this.g.getTypeId(this.h, this.i, this.j) != Block.WORKBENCH.id ? false : entityhuman.e((double) this.h + 0.5D, (double) this.i + 0.5D, (double) this.j + 0.5D) <= 64.0D;
+    public boolean a(EntityHuman par1EntityPlayer)
+    {
+        return this.g.getTypeId(this.h, this.i, this.j) != Block.WORKBENCH.id ? false : par1EntityPlayer.e((double) this.h + 0.5D, (double) this.i + 0.5D, (double) this.j + 0.5D) <= 64.0D;
     }
 
-    public ItemStack b(EntityHuman entityhuman, int i) {
-        ItemStack itemstack = null;
-        Slot slot = (Slot) this.c.get(i);
+    /**
+     * Take a stack from the specified inventory slot.
+     */
+    public ItemStack b(EntityHuman par1EntityPlayer, int par2)
+    {
+        ItemStack var3 = null;
+        Slot var4 = (Slot)this.c.get(par2);
 
-        if (slot != null && slot.d()) {
-            ItemStack itemstack1 = slot.getItem();
+        if (var4 != null && var4.d())
+        {
+            ItemStack var5 = var4.getItem();
+            var3 = var5.cloneItemStack();
 
-            itemstack = itemstack1.cloneItemStack();
-            if (i == 0) {
-                if (!this.a(itemstack1, 10, 46, true)) {
+            if (par2 == 0)
+            {
+                if (!this.a(var5, 10, 46, true))
+                {
                     return null;
                 }
 
-                slot.a(itemstack1, itemstack);
-            } else if (i >= 10 && i < 37) {
-                if (!this.a(itemstack1, 37, 46, false)) {
+                var4.a(var5, var3);
+            }
+            else if (par2 >= 10 && par2 < 37)
+            {
+                if (!this.a(var5, 37, 46, false))
+                {
                     return null;
                 }
-            } else if (i >= 37 && i < 46) {
-                if (!this.a(itemstack1, 10, 37, false)) {
+            }
+            else if (par2 >= 37 && par2 < 46)
+            {
+                if (!this.a(var5, 10, 37, false))
+                {
                     return null;
                 }
-            } else if (!this.a(itemstack1, 10, 46, false)) {
+            }
+            else if (!this.a(var5, 10, 46, false))
+            {
                 return null;
             }
 
-            if (itemstack1.count == 0) {
-                slot.set((ItemStack) null);
-            } else {
-                slot.e();
+            if (var5.count == 0)
+            {
+                var4.set((ItemStack) null);
+            }
+            else
+            {
+                var4.e();
             }
 
-            if (itemstack1.count == itemstack.count) {
+            if (var5.count == var3.count)
+            {
                 return null;
             }
 
-            slot.a(entityhuman, itemstack1);
+            var4.a(par1EntityPlayer, var5);
         }
 
-        return itemstack;
+        return var3;
     }
 }

@@ -1,104 +1,144 @@
 package net.minecraft.server;
 
-public class BlockFence extends Block {
-
-    public BlockFence(int i, int j) {
-        super(i, j, Material.WOOD);
+public class BlockFence extends Block
+{
+    public BlockFence(int par1, int par2)
+    {
+        super(par1, par2, Material.WOOD);
         this.a(CreativeModeTab.c);
     }
 
-    public BlockFence(int i, int j, Material material) {
-        super(i, j, material);
+    public BlockFence(int par1, int par2, Material par3Material)
+    {
+        super(par1, par2, par3Material);
         this.a(CreativeModeTab.c);
     }
 
-    public AxisAlignedBB e(World world, int i, int j, int k) {
-        boolean flag = this.d(world, i, j, k - 1);
-        boolean flag1 = this.d(world, i, j, k + 1);
-        boolean flag2 = this.d(world, i - 1, j, k);
-        boolean flag3 = this.d(world, i + 1, j, k);
-        float f = 0.375F;
-        float f1 = 0.625F;
-        float f2 = 0.375F;
-        float f3 = 0.625F;
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
+    {
+        boolean var5 = this.d(par1World, par2, par3, par4 - 1);
+        boolean var6 = this.d(par1World, par2, par3, par4 + 1);
+        boolean var7 = this.d(par1World, par2 - 1, par3, par4);
+        boolean var8 = this.d(par1World, par2 + 1, par3, par4);
+        float var9 = 0.375F;
+        float var10 = 0.625F;
+        float var11 = 0.375F;
+        float var12 = 0.625F;
 
-        if (flag) {
-            f2 = 0.0F;
+        if (var5)
+        {
+            var11 = 0.0F;
         }
 
-        if (flag1) {
-            f3 = 1.0F;
+        if (var6)
+        {
+            var12 = 1.0F;
         }
 
-        if (flag2) {
-            f = 0.0F;
+        if (var7)
+        {
+            var9 = 0.0F;
         }
 
-        if (flag3) {
-            f1 = 1.0F;
+        if (var8)
+        {
+            var10 = 1.0F;
         }
 
-        return AxisAlignedBB.a().a((double) ((float) i + f), (double) j, (double) ((float) k + f2), (double) ((float) i + f1), (double) ((float) j + 1.5F), (double) ((float) k + f3));
+        return AxisAlignedBB.a().a((double) ((float) par2 + var9), (double) par3, (double) ((float) par4 + var11), (double) ((float) par2 + var10), (double) ((float) par3 + 1.5F), (double) ((float) par4 + var12));
     }
 
-    public void updateShape(IBlockAccess iblockaccess, int i, int j, int k) {
-        boolean flag = this.d(iblockaccess, i, j, k - 1);
-        boolean flag1 = this.d(iblockaccess, i, j, k + 1);
-        boolean flag2 = this.d(iblockaccess, i - 1, j, k);
-        boolean flag3 = this.d(iblockaccess, i + 1, j, k);
-        float f = 0.375F;
-        float f1 = 0.625F;
-        float f2 = 0.375F;
-        float f3 = 0.625F;
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void updateShape(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        boolean var5 = this.d(par1IBlockAccess, par2, par3, par4 - 1);
+        boolean var6 = this.d(par1IBlockAccess, par2, par3, par4 + 1);
+        boolean var7 = this.d(par1IBlockAccess, par2 - 1, par3, par4);
+        boolean var8 = this.d(par1IBlockAccess, par2 + 1, par3, par4);
+        float var9 = 0.375F;
+        float var10 = 0.625F;
+        float var11 = 0.375F;
+        float var12 = 0.625F;
 
-        if (flag) {
-            f2 = 0.0F;
+        if (var5)
+        {
+            var11 = 0.0F;
         }
 
-        if (flag1) {
-            f3 = 1.0F;
+        if (var6)
+        {
+            var12 = 1.0F;
         }
 
-        if (flag2) {
-            f = 0.0F;
+        if (var7)
+        {
+            var9 = 0.0F;
         }
 
-        if (flag3) {
-            f1 = 1.0F;
+        if (var8)
+        {
+            var10 = 1.0F;
         }
 
-        this.a(f, 0.0F, f2, f1, 1.0F, f3);
+        this.a(var9, 0.0F, var11, var10, 1.0F, var12);
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public boolean c(IBlockAccess iblockaccess, int i, int j, int k) {
+    public boolean c(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
         return false;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 11;
     }
 
-    public boolean d(IBlockAccess iblockaccess, int i, int j, int k) {
-        int l = iblockaccess.getTypeId(i, j, k);
+    /**
+     * Returns true if the specified block can be connected by a fence
+     */
+    public boolean d(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        int var5 = par1IBlockAccess.getTypeId(par2, par3, par4);
 
-        if (l != this.id && l != Block.FENCE_GATE.id) {
-            Block block = Block.byId[l];
-
-            return block != null && block.material.k() && block.b() ? block.material != Material.PUMPKIN : false;
-        } else {
+        if (var5 != this.id && var5 != Block.FENCE_GATE.id)
+        {
+            Block var6 = Block.byId[var5];
+            return var6 != null && var6.material.k() && var6.b() ? var6.material != Material.PUMPKIN : false;
+        }
+        else
+        {
             return true;
         }
     }
 
-    public static boolean c(int i) {
-        return i == Block.FENCE.id || i == Block.NETHER_FENCE.id;
+    public static boolean c(int par0)
+    {
+        return par0 == Block.FENCE.id || par0 == Block.NETHER_FENCE.id;
     }
 }

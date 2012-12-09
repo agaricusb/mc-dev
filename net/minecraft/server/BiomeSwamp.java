@@ -2,10 +2,11 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BiomeSwamp extends BiomeBase {
-
-    protected BiomeSwamp(int i) {
-        super(i);
+public class BiomeSwamp extends BiomeBase
+{
+    protected BiomeSwamp(int par1)
+    {
+        super(par1);
         this.I.z = 2;
         this.I.A = -999;
         this.I.C = 1;
@@ -17,7 +18,11 @@ public class BiomeSwamp extends BiomeBase {
         this.J.add(new BiomeMeta(EntitySlime.class, 1, 1, 1));
     }
 
-    public WorldGenerator a(Random random) {
+    /**
+     * Gets a WorldGen appropriate for this biome.
+     */
+    public WorldGenerator a(Random par1Random)
+    {
         return this.R;
     }
 }

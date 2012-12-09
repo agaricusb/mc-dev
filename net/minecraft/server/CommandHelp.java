@@ -5,70 +5,84 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class CommandHelp extends CommandAbstract {
-
-    public CommandHelp() {}
-
-    public String c() {
+public class CommandHelp extends CommandAbstract
+{
+    public String c()
+    {
         return "help";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 0;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.help.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.help.usage", new Object[0]);
     }
 
-    public List b() {
-        return Arrays.asList(new String[] { "?"});
+    public List b()
+    {
+        return Arrays.asList(new String[] {"?"});
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        List list = this.d(icommandlistener);
-        byte b0 = 7;
-        int i = (list.size() - 1) / b0;
-        boolean flag = false;
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        List var3 = this.d(par1ICommandSender);
+        byte var4 = 7;
+        int var5 = (var3.size() - 1) / var4;
+        boolean var6 = false;
+        ICommand var9;
+        int var11;
 
-        ICommand icommand;
-        int j;
+        try
+        {
+            var11 = par2ArrayOfStr.length == 0 ? 0 : a(par1ICommandSender, par2ArrayOfStr[0], 1, var5 + 1) - 1;
+        }
+        catch (ExceptionInvalidNumber var10)
+        {
+            Map var8 = this.d();
+            var9 = (ICommand)var8.get(par2ArrayOfStr[0]);
 
-        try {
-            j = astring.length == 0 ? 0 : a(icommandlistener, astring[0], 1, i + 1) - 1;
-        } catch (ExceptionInvalidNumber exceptioninvalidnumber) {
-            Map map = this.d();
-
-            icommand = (ICommand) map.get(astring[0]);
-            if (icommand != null) {
-                throw new ExceptionUsage(icommand.a(icommandlistener), new Object[0]);
+            if (var9 != null)
+            {
+                throw new ExceptionUsage(var9.a(par1ICommandSender), new Object[0]);
             }
 
             throw new ExceptionUnknownCommand();
         }
 
-        int k = Math.min((j + 1) * b0, list.size());
+        int var7 = Math.min((var11 + 1) * var4, var3.size());
+        par1ICommandSender.sendMessage("\u00a72" + par1ICommandSender.a("commands.help.header", new Object[]{Integer.valueOf(var11 + 1), Integer.valueOf(var5 + 1)}));
 
-        icommandlistener.sendMessage("\u00A72" + icommandlistener.a("commands.help.header", new Object[] { Integer.valueOf(j + 1), Integer.valueOf(i + 1)}));
-
-        for (int l = j * b0; l < k; ++l) {
-            icommand = (ICommand) list.get(l);
-            icommandlistener.sendMessage(icommand.a(icommandlistener));
+        for (int var12 = var11 * var4; var12 < var7; ++var12)
+        {
+            var9 = (ICommand)var3.get(var12);
+            par1ICommandSender.sendMessage(var9.a(par1ICommandSender));
         }
 
-        if (j == 0 && icommandlistener instanceof EntityHuman) {
-            icommandlistener.sendMessage("\u00A7a" + icommandlistener.a("commands.help.footer", new Object[0]));
+        if (var11 == 0 && par1ICommandSender instanceof EntityHuman)
+        {
+            par1ICommandSender.sendMessage("\u00a7a" + par1ICommandSender.a("commands.help.footer", new Object[0]));
         }
     }
 
-    protected List d(ICommandListener icommandlistener) {
-        List list = MinecraftServer.getServer().getCommandHandler().a(icommandlistener);
-
-        Collections.sort(list);
-        return list;
+    /**
+     * Returns a sorted list of all possible commands for the given ICommandSender.
+     */
+    protected List d(ICommandListener par1ICommandSender)
+    {
+        List var2 = MinecraftServer.getServer().getCommandHandler().a(par1ICommandSender);
+        Collections.sort(var2);
+        return var2;
     }
 
-    protected Map d() {
+    protected Map d()
+    {
         return MinecraftServer.getServer().getCommandHandler().a();
     }
 }

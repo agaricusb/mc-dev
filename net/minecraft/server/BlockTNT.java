@@ -2,78 +2,125 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockTNT extends Block {
-
-    public BlockTNT(int i, int j) {
-        super(i, j, Material.TNT);
+public class BlockTNT extends Block
+{
+    public BlockTNT(int par1, int par2)
+    {
+        super(par1, par2, Material.TNT);
         this.a(CreativeModeTab.d);
     }
 
-    public int a(int i) {
-        return i == 0 ? this.textureId + 2 : (i == 1 ? this.textureId + 1 : this.textureId);
+    /**
+     * Returns the block texture based on the side being looked at.  Args: side
+     */
+    public int a(int par1)
+    {
+        return par1 == 0 ? this.textureId + 2 : (par1 == 1 ? this.textureId + 1 : this.textureId);
     }
 
-    public void onPlace(World world, int i, int j, int k) {
-        super.onPlace(world, i, j, k);
-        if (world.isBlockIndirectlyPowered(i, j, k)) {
-            this.postBreak(world, i, j, k, 1);
-            world.setTypeId(i, j, k, 0);
+    /**
+     * Called whenever the block is added into the world. Args: world, x, y, z
+     */
+    public void onPlace(World par1World, int par2, int par3, int par4)
+    {
+        super.onPlace(par1World, par2, par3, par4);
+
+        if (par1World.isBlockIndirectlyPowered(par2, par3, par4))
+        {
+            this.postBreak(par1World, par2, par3, par4, 1);
+            par1World.setTypeId(par2, par3, par4, 0);
         }
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        if (l > 0 && Block.byId[l].isPowerSource() && world.isBlockIndirectlyPowered(i, j, k)) {
-            this.postBreak(world, i, j, k, 1);
-            world.setTypeId(i, j, k, 0);
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        if (par5 > 0 && Block.byId[par5].isPowerSource() && par1World.isBlockIndirectlyPowered(par2, par3, par4))
+        {
+            this.postBreak(par1World, par2, par3, par4, 1);
+            par1World.setTypeId(par2, par3, par4, 0);
         }
     }
 
-    public int a(Random random) {
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    public int a(Random par1Random)
+    {
         return 1;
     }
 
-    public void wasExploded(World world, int i, int j, int k) {
-        if (!world.isStatic) {
-            EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(world, (double) ((float) i + 0.5F), (double) ((float) j + 0.5F), (double) ((float) k + 0.5F));
-
-            entitytntprimed.fuseTicks = world.random.nextInt(entitytntprimed.fuseTicks / 4) + entitytntprimed.fuseTicks / 8;
-            world.addEntity(entitytntprimed);
+    /**
+     * Called upon the block being destroyed by an explosion
+     */
+    public void wasExploded(World par1World, int par2, int par3, int par4)
+    {
+        if (!par1World.isStatic)
+        {
+            EntityTNTPrimed var5 = new EntityTNTPrimed(par1World, (double)((float)par2 + 0.5F), (double)((float)par3 + 0.5F), (double)((float)par4 + 0.5F));
+            var5.fuseTicks = par1World.random.nextInt(var5.fuseTicks / 4) + var5.fuseTicks / 8;
+            par1World.addEntity(var5);
         }
     }
 
-    public void postBreak(World world, int i, int j, int k, int l) {
-        if (!world.isStatic) {
-            if ((l & 1) == 1) {
-                EntityTNTPrimed entitytntprimed = new EntityTNTPrimed(world, (double) ((float) i + 0.5F), (double) ((float) j + 0.5F), (double) ((float) k + 0.5F));
-
-                world.addEntity(entitytntprimed);
-                world.makeSound(entitytntprimed, "random.fuse", 1.0F, 1.0F);
+    /**
+     * Called right before the block is destroyed by a player.  Args: world, x, y, z, metaData
+     */
+    public void postBreak(World par1World, int par2, int par3, int par4, int par5)
+    {
+        if (!par1World.isStatic)
+        {
+            if ((par5 & 1) == 1)
+            {
+                EntityTNTPrimed var6 = new EntityTNTPrimed(par1World, (double)((float)par2 + 0.5F), (double)((float)par3 + 0.5F), (double)((float)par4 + 0.5F));
+                par1World.addEntity(var6);
+                par1World.makeSound(var6, "random.fuse", 1.0F, 1.0F);
             }
         }
     }
 
-    public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
-        if (entityhuman.bT() != null && entityhuman.bT().id == Item.FLINT_AND_STEEL.id) {
-            this.postBreak(world, i, j, k, 1);
-            world.setTypeId(i, j, k, 0);
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
+        if (par5EntityPlayer.bT() != null && par5EntityPlayer.bT().id == Item.FLINT_AND_STEEL.id)
+        {
+            this.postBreak(par1World, par2, par3, par4, 1);
+            par1World.setTypeId(par2, par3, par4, 0);
             return true;
-        } else {
-            return super.interact(world, i, j, k, entityhuman, l, f, f1, f2);
+        }
+        else
+        {
+            return super.interact(par1World, par2, par3, par4, par5EntityPlayer, par6, par7, par8, par9);
         }
     }
 
-    public void a(World world, int i, int j, int k, Entity entity) {
-        if (entity instanceof EntityArrow && !world.isStatic) {
-            EntityArrow entityarrow = (EntityArrow) entity;
+    /**
+     * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
+     */
+    public void a(World par1World, int par2, int par3, int par4, Entity par5Entity)
+    {
+        if (par5Entity instanceof EntityArrow && !par1World.isStatic)
+        {
+            EntityArrow var6 = (EntityArrow)par5Entity;
 
-            if (entityarrow.isBurning()) {
-                this.postBreak(world, i, j, k, 1);
-                world.setTypeId(i, j, k, 0);
+            if (var6.isBurning())
+            {
+                this.postBreak(par1World, par2, par3, par4, 1);
+                par1World.setTypeId(par2, par3, par4, 0);
             }
         }
     }
 
-    public boolean a(Explosion explosion) {
+    /**
+     * Return whether this block can drop from an explosion.
+     */
+    public boolean a(Explosion par1Explosion)
+    {
         return false;
     }
 }

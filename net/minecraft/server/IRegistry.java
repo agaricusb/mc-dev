@@ -1,8 +1,11 @@
 package net.minecraft.server;
 
-public interface IRegistry {
+public interface IRegistry
+{
+    Object a(Object var1);
 
-    Object a(Object object);
-
-    void a(Object object, Object object1);
+    /**
+     * Register an object on this registry.
+     */
+    void a(Object var1, Object var2);
 }

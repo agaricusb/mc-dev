@@ -2,103 +2,137 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenTaiga2 extends WorldGenerator {
-
-    public WorldGenTaiga2(boolean flag) {
-        super(flag);
+public class WorldGenTaiga2 extends WorldGenerator
+{
+    public WorldGenTaiga2(boolean par1)
+    {
+        super(par1);
     }
 
-    public boolean a(World world, Random random, int i, int j, int k) {
-        int l = random.nextInt(4) + 6;
-        int i1 = 1 + random.nextInt(2);
-        int j1 = l - i1;
-        int k1 = 2 + random.nextInt(2);
-        boolean flag = true;
+    public boolean a(World par1World, Random par2Random, int par3, int par4, int par5)
+    {
+        int var6 = par2Random.nextInt(4) + 6;
+        int var7 = 1 + par2Random.nextInt(2);
+        int var8 = var6 - var7;
+        int var9 = 2 + par2Random.nextInt(2);
+        boolean var10 = true;
 
-        if (j >= 1 && j + l + 1 <= 256) {
-            int l1;
-            int i2;
-            int j2;
-            int k2;
+        if (par4 >= 1 && par4 + var6 + 1 <= 256)
+        {
+            int var11;
+            int var13;
+            int var15;
+            int var21;
 
-            for (l1 = j; l1 <= j + 1 + l && flag; ++l1) {
-                boolean flag1 = true;
+            for (var11 = par4; var11 <= par4 + 1 + var6 && var10; ++var11)
+            {
+                boolean var12 = true;
 
-                if (l1 - j < i1) {
-                    k2 = 0;
-                } else {
-                    k2 = k1;
+                if (var11 - par4 < var7)
+                {
+                    var21 = 0;
+                }
+                else
+                {
+                    var21 = var9;
                 }
 
-                for (i2 = i - k2; i2 <= i + k2 && flag; ++i2) {
-                    for (int l2 = k - k2; l2 <= k + k2 && flag; ++l2) {
-                        if (l1 >= 0 && l1 < 256) {
-                            j2 = world.getTypeId(i2, l1, l2);
-                            if (j2 != 0 && j2 != Block.LEAVES.id) {
-                                flag = false;
+                for (var13 = par3 - var21; var13 <= par3 + var21 && var10; ++var13)
+                {
+                    for (int var14 = par5 - var21; var14 <= par5 + var21 && var10; ++var14)
+                    {
+                        if (var11 >= 0 && var11 < 256)
+                        {
+                            var15 = par1World.getTypeId(var13, var11, var14);
+
+                            if (var15 != 0 && var15 != Block.LEAVES.id)
+                            {
+                                var10 = false;
                             }
-                        } else {
-                            flag = false;
+                        }
+                        else
+                        {
+                            var10 = false;
                         }
                     }
                 }
             }
 
-            if (!flag) {
+            if (!var10)
+            {
                 return false;
-            } else {
-                l1 = world.getTypeId(i, j - 1, k);
-                if ((l1 == Block.GRASS.id || l1 == Block.DIRT.id) && j < 256 - l - 1) {
-                    this.setType(world, i, j - 1, k, Block.DIRT.id);
-                    k2 = random.nextInt(2);
-                    i2 = 1;
-                    byte b0 = 0;
+            }
+            else
+            {
+                var11 = par1World.getTypeId(par3, par4 - 1, par5);
 
-                    int i3;
-                    int j3;
+                if ((var11 == Block.GRASS.id || var11 == Block.DIRT.id) && par4 < 256 - var6 - 1)
+                {
+                    this.setType(par1World, par3, par4 - 1, par5, Block.DIRT.id);
+                    var21 = par2Random.nextInt(2);
+                    var13 = 1;
+                    byte var22 = 0;
+                    int var17;
+                    int var16;
 
-                    for (j2 = 0; j2 <= j1; ++j2) {
-                        j3 = j + l - j2;
+                    for (var15 = 0; var15 <= var8; ++var15)
+                    {
+                        var16 = par4 + var6 - var15;
 
-                        for (i3 = i - k2; i3 <= i + k2; ++i3) {
-                            int k3 = i3 - i;
+                        for (var17 = par3 - var21; var17 <= par3 + var21; ++var17)
+                        {
+                            int var18 = var17 - par3;
 
-                            for (int l3 = k - k2; l3 <= k + k2; ++l3) {
-                                int i4 = l3 - k;
+                            for (int var19 = par5 - var21; var19 <= par5 + var21; ++var19)
+                            {
+                                int var20 = var19 - par5;
 
-                                if ((Math.abs(k3) != k2 || Math.abs(i4) != k2 || k2 <= 0) && !Block.q[world.getTypeId(i3, j3, l3)]) {
-                                    this.setTypeAndData(world, i3, j3, l3, Block.LEAVES.id, 1);
+                                if ((Math.abs(var18) != var21 || Math.abs(var20) != var21 || var21 <= 0) && !Block.q[par1World.getTypeId(var17, var16, var19)])
+                                {
+                                    this.setTypeAndData(par1World, var17, var16, var19, Block.LEAVES.id, 1);
                                 }
                             }
                         }
 
-                        if (k2 >= i2) {
-                            k2 = b0;
-                            b0 = 1;
-                            ++i2;
-                            if (i2 > k1) {
-                                i2 = k1;
+                        if (var21 >= var13)
+                        {
+                            var21 = var22;
+                            var22 = 1;
+                            ++var13;
+
+                            if (var13 > var9)
+                            {
+                                var13 = var9;
                             }
-                        } else {
-                            ++k2;
+                        }
+                        else
+                        {
+                            ++var21;
                         }
                     }
 
-                    j2 = random.nextInt(3);
+                    var15 = par2Random.nextInt(3);
 
-                    for (j3 = 0; j3 < l - j2; ++j3) {
-                        i3 = world.getTypeId(i, j + j3, k);
-                        if (i3 == 0 || i3 == Block.LEAVES.id) {
-                            this.setTypeAndData(world, i, j + j3, k, Block.LOG.id, 1);
+                    for (var16 = 0; var16 < var6 - var15; ++var16)
+                    {
+                        var17 = par1World.getTypeId(par3, par4 + var16, par5);
+
+                        if (var17 == 0 || var17 == Block.LEAVES.id)
+                        {
+                            this.setTypeAndData(par1World, par3, par4 + var16, par5, Block.LOG.id, 1);
                         }
                     }
 
                     return true;
-                } else {
+                }
+                else
+                {
                     return false;
                 }
             }
-        } else {
+        }
+        else
+        {
             return false;
         }
     }

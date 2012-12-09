@@ -31,122 +31,163 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
-public class MinecraftEncryption {
-
+public class MinecraftEncryption
+{
+    /** ISO_8859_1 */
     public static final Charset a = Charset.forName("ISO_8859_1");
 
-    public static KeyPair b() {
-        try {
-            KeyPairGenerator keypairgenerator = KeyPairGenerator.getInstance("RSA");
-
-            keypairgenerator.initialize(1024);
-            return keypairgenerator.generateKeyPair();
-        } catch (NoSuchAlgorithmException nosuchalgorithmexception) {
-            nosuchalgorithmexception.printStackTrace();
+    /**
+     * Generates RSA KeyPair
+     */
+    public static KeyPair b()
+    {
+        try
+        {
+            KeyPairGenerator var0 = KeyPairGenerator.getInstance("RSA");
+            var0.initialize(1024);
+            return var0.generateKeyPair();
+        }
+        catch (NoSuchAlgorithmException var1)
+        {
+            var1.printStackTrace();
             System.err.println("Key pair generation failed!");
             return null;
         }
     }
 
-    public static byte[] a(String s, PublicKey publickey, SecretKey secretkey) {
-        try {
-            return a("SHA-1", new byte[][] { s.getBytes("ISO_8859_1"), secretkey.getEncoded(), publickey.getEncoded()});
-        } catch (UnsupportedEncodingException unsupportedencodingexception) {
-            unsupportedencodingexception.printStackTrace();
+    public static byte[] a(String par0Str, PublicKey par1PublicKey, SecretKey par2SecretKey)
+    {
+        try
+        {
+            return a("SHA-1", new byte[][]{par0Str.getBytes("ISO_8859_1"), par2SecretKey.getEncoded(), par1PublicKey.getEncoded()});
+        }
+        catch (UnsupportedEncodingException var4)
+        {
+            var4.printStackTrace();
             return null;
         }
     }
 
-    private static byte[] a(String s, byte[]... abyte) {
-        try {
-            MessageDigest messagedigest = MessageDigest.getInstance(s);
-            byte[][] abyte = abyte;
-            int i = abyte.length;
+    private static byte[] a(String par0Str, byte[]... par1ArrayOfByte)
+    {
+        try
+        {
+            MessageDigest var2 = MessageDigest.getInstance(par0Str);
+            byte[][] var3 = par1ArrayOfByte;
+            int var4 = par1ArrayOfByte.length;
 
-            for (int j = 0; j < i; ++j) {
-                byte[] abyte1 = abyte[j];
-
-                messagedigest.update(abyte1);
+            for (int var5 = 0; var5 < var4; ++var5)
+            {
+                byte[] var6 = var3[var5];
+                var2.update(var6);
             }
 
-            return messagedigest.digest();
-        } catch (NoSuchAlgorithmException nosuchalgorithmexception) {
-            nosuchalgorithmexception.printStackTrace();
+            return var2.digest();
+        }
+        catch (NoSuchAlgorithmException var7)
+        {
+            var7.printStackTrace();
             return null;
         }
     }
 
-    public static PublicKey a(byte[] abyte) {
-        try {
-            X509EncodedKeySpec x509encodedkeyspec = new X509EncodedKeySpec(abyte);
-            KeyFactory keyfactory = KeyFactory.getInstance("RSA");
-
-            return keyfactory.generatePublic(x509encodedkeyspec);
-        } catch (NoSuchAlgorithmException nosuchalgorithmexception) {
-            nosuchalgorithmexception.printStackTrace();
-        } catch (InvalidKeySpecException invalidkeyspecexception) {
-            invalidkeyspecexception.printStackTrace();
+    public static PublicKey a(byte[] par0ArrayOfByte)
+    {
+        try
+        {
+            X509EncodedKeySpec var1 = new X509EncodedKeySpec(par0ArrayOfByte);
+            KeyFactory var2 = KeyFactory.getInstance("RSA");
+            return var2.generatePublic(var1);
+        }
+        catch (NoSuchAlgorithmException var3)
+        {
+            var3.printStackTrace();
+        }
+        catch (InvalidKeySpecException var4)
+        {
+            var4.printStackTrace();
         }
 
         System.err.println("Public key reconstitute failed!");
         return null;
     }
 
-    public static SecretKey a(PrivateKey privatekey, byte[] abyte) {
-        return new SecretKeySpec(b(privatekey, abyte), "AES");
+    public static SecretKey a(PrivateKey par0PrivateKey, byte[] par1ArrayOfByte)
+    {
+        return new SecretKeySpec(b(par0PrivateKey, par1ArrayOfByte), "AES");
     }
 
-    public static byte[] b(Key key, byte[] abyte) {
-        return a(2, key, abyte);
+    public static byte[] b(Key par0Key, byte[] par1ArrayOfByte)
+    {
+        return a(2, par0Key, par1ArrayOfByte);
     }
 
-    private static byte[] a(int i, Key key, byte[] abyte) {
-        try {
-            return a(i, key.getAlgorithm(), key).doFinal(abyte);
-        } catch (IllegalBlockSizeException illegalblocksizeexception) {
-            illegalblocksizeexception.printStackTrace();
-        } catch (BadPaddingException badpaddingexception) {
-            badpaddingexception.printStackTrace();
+    private static byte[] a(int par0, Key par1Key, byte[] par2ArrayOfByte)
+    {
+        try
+        {
+            return a(par0, par1Key.getAlgorithm(), par1Key).doFinal(par2ArrayOfByte);
+        }
+        catch (IllegalBlockSizeException var4)
+        {
+            var4.printStackTrace();
+        }
+        catch (BadPaddingException var5)
+        {
+            var5.printStackTrace();
         }
 
         System.err.println("Cipher data failed!");
         return null;
     }
 
-    private static Cipher a(int i, String s, Key key) {
-        try {
-            Cipher cipher = Cipher.getInstance(s);
-
-            cipher.init(i, key);
-            return cipher;
-        } catch (InvalidKeyException invalidkeyexception) {
-            invalidkeyexception.printStackTrace();
-        } catch (NoSuchAlgorithmException nosuchalgorithmexception) {
-            nosuchalgorithmexception.printStackTrace();
-        } catch (NoSuchPaddingException nosuchpaddingexception) {
-            nosuchpaddingexception.printStackTrace();
+    /**
+     * Creates the Chiper Instance.
+     */
+    private static Cipher a(int par0, String par1Str, Key par2Key)
+    {
+        try
+        {
+            Cipher var3 = Cipher.getInstance(par1Str);
+            var3.init(par0, par2Key);
+            return var3;
+        }
+        catch (InvalidKeyException var4)
+        {
+            var4.printStackTrace();
+        }
+        catch (NoSuchAlgorithmException var5)
+        {
+            var5.printStackTrace();
+        }
+        catch (NoSuchPaddingException var6)
+        {
+            var6.printStackTrace();
         }
 
         System.err.println("Cipher creation failed!");
         return null;
     }
 
-    private static BufferedBlockCipher a(boolean flag, Key key) {
-        BufferedBlockCipher bufferedblockcipher = new BufferedBlockCipher(new CFBBlockCipher(new AESFastEngine(), 8));
-
-        bufferedblockcipher.a(flag, new ParametersWithIV(new KeyParameter(key.getEncoded()), key.getEncoded(), 0, 16));
-        return bufferedblockcipher;
+    private static BufferedBlockCipher a(boolean par0, Key par1Key)
+    {
+        BufferedBlockCipher var2 = new BufferedBlockCipher(new CFBBlockCipher(new AESFastEngine(), 8));
+        var2.a(par0, new ParametersWithIV(new KeyParameter(par1Key.getEncoded()), par1Key.getEncoded(), 0, 16));
+        return var2;
     }
 
-    public static OutputStream a(SecretKey secretkey, OutputStream outputstream) {
-        return new CipherOutputStream(outputstream, a(true, secretkey));
+    public static OutputStream a(SecretKey par0SecretKey, OutputStream par1OutputStream)
+    {
+        return new CipherOutputStream(par1OutputStream, a(true, par0SecretKey));
     }
 
-    public static InputStream a(SecretKey secretkey, InputStream inputstream) {
-        return new CipherInputStream(inputstream, a(false, secretkey));
+    public static InputStream a(SecretKey par0SecretKey, InputStream par1InputStream)
+    {
+        return new CipherInputStream(par1InputStream, a(false, par0SecretKey));
     }
 
-    static {
+    static
+    {
         Security.addProvider(new BouncyCastleProvider());
     }
 }

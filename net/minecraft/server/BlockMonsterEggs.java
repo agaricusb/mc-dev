@@ -2,59 +2,93 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockMonsterEggs extends Block {
+public class BlockMonsterEggs extends Block
+{
+    /** Block names that can be a silverfish stone. */
+    public static final String[] a = new String[] {"stone", "cobble", "brick"};
 
-    public static final String[] a = new String[] { "stone", "cobble", "brick"};
-
-    public BlockMonsterEggs(int i) {
-        super(i, 1, Material.CLAY);
+    public BlockMonsterEggs(int par1)
+    {
+        super(par1, 1, Material.CLAY);
         this.c(0.0F);
         this.a(CreativeModeTab.c);
     }
 
-    public int a(int i, int j) {
-        return j == 1 ? Block.COBBLESTONE.textureId : (j == 2 ? Block.SMOOTH_BRICK.textureId : Block.STONE.textureId);
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
+        return par2 == 1 ? Block.COBBLESTONE.textureId : (par2 == 2 ? Block.SMOOTH_BRICK.textureId : Block.STONE.textureId);
     }
 
-    public void postBreak(World world, int i, int j, int k, int l) {
-        if (!world.isStatic) {
-            EntitySilverfish entitysilverfish = new EntitySilverfish(world);
-
-            entitysilverfish.setPositionRotation((double) i + 0.5D, (double) j, (double) k + 0.5D, 0.0F, 0.0F);
-            world.addEntity(entitysilverfish);
-            entitysilverfish.aR();
+    /**
+     * Called right before the block is destroyed by a player.  Args: world, x, y, z, metaData
+     */
+    public void postBreak(World par1World, int par2, int par3, int par4, int par5)
+    {
+        if (!par1World.isStatic)
+        {
+            EntitySilverfish var6 = new EntitySilverfish(par1World);
+            var6.setPositionRotation((double) par2 + 0.5D, (double) par3, (double) par4 + 0.5D, 0.0F, 0.0F);
+            par1World.addEntity(var6);
+            var6.aR();
         }
 
-        super.postBreak(world, i, j, k, l);
+        super.postBreak(par1World, par2, par3, par4, par5);
     }
 
-    public int a(Random random) {
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    public int a(Random par1Random)
+    {
         return 0;
     }
 
-    public static boolean e(int i) {
-        return i == Block.STONE.id || i == Block.COBBLESTONE.id || i == Block.SMOOTH_BRICK.id;
+    /**
+     * Gets the blockID of the block this block is pretending to be according to this block's metadata.
+     */
+    public static boolean e(int par0)
+    {
+        return par0 == Block.STONE.id || par0 == Block.COBBLESTONE.id || par0 == Block.SMOOTH_BRICK.id;
     }
 
-    public static int f(int i) {
-        return i == Block.COBBLESTONE.id ? 1 : (i == Block.SMOOTH_BRICK.id ? 2 : 0);
+    /**
+     * Returns the metadata to use when a Silverfish hides in the block. Sets the block to BlockSilverfish with this
+     * metadata. It changes the displayed texture client side to look like a normal block.
+     */
+    public static int f(int par0)
+    {
+        return par0 == Block.COBBLESTONE.id ? 1 : (par0 == Block.SMOOTH_BRICK.id ? 2 : 0);
     }
 
-    protected ItemStack f_(int i) {
-        Block block = Block.STONE;
+    /**
+     * Returns an item stack containing a single instance of the current block type. 'i' is the block's subtype/damage
+     * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
+     */
+    protected ItemStack f_(int par1)
+    {
+        Block var2 = Block.STONE;
 
-        if (i == 1) {
-            block = Block.COBBLESTONE;
+        if (par1 == 1)
+        {
+            var2 = Block.COBBLESTONE;
         }
 
-        if (i == 2) {
-            block = Block.SMOOTH_BRICK;
+        if (par1 == 2)
+        {
+            var2 = Block.SMOOTH_BRICK;
         }
 
-        return new ItemStack(block);
+        return new ItemStack(var2);
     }
 
-    public int getDropData(World world, int i, int j, int k) {
-        return world.getData(i, j, k);
+    /**
+     * Get the block's damage value (for use with pick block).
+     */
+    public int getDropData(World par1World, int par2, int par3, int par4)
+    {
+        return par1World.getData(par2, par3, par4);
     }
 }

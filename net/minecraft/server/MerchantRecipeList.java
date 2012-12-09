@@ -1,27 +1,37 @@
 package net.minecraft.server;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
-public class MerchantRecipeList extends ArrayList {
-
+public class MerchantRecipeList extends ArrayList
+{
     public MerchantRecipeList() {}
 
-    public MerchantRecipeList(NBTTagCompound nbttagcompound) {
-        this.a(nbttagcompound);
+    public MerchantRecipeList(NBTTagCompound par1NBTTagCompound)
+    {
+        this.a(par1NBTTagCompound);
     }
 
-    public MerchantRecipe a(ItemStack itemstack, ItemStack itemstack1, int i) {
-        if (i > 0 && i < this.size()) {
-            MerchantRecipe merchantrecipe = (MerchantRecipe) this.get(i);
+    /**
+     * can par1,par2 be used to in crafting recipe par3
+     */
+    public MerchantRecipe a(ItemStack par1ItemStack, ItemStack par2ItemStack, int par3)
+    {
+        if (par3 > 0 && par3 < this.size())
+        {
+            MerchantRecipe var6 = (MerchantRecipe)this.get(par3);
+            return par1ItemStack.id == var6.getBuyItem1().id && (par2ItemStack == null && !var6.hasSecondItem() || var6.hasSecondItem() && par2ItemStack != null && var6.getBuyItem2().id == par2ItemStack.id) && par1ItemStack.count >= var6.getBuyItem1().count && (!var6.hasSecondItem() || par2ItemStack.count >= var6.getBuyItem2().count) ? var6 : null;
+        }
+        else
+        {
+            for (int var4 = 0; var4 < this.size(); ++var4)
+            {
+                MerchantRecipe var5 = (MerchantRecipe)this.get(var4);
 
-            return itemstack.id == merchantrecipe.getBuyItem1().id && (itemstack1 == null && !merchantrecipe.hasSecondItem() || merchantrecipe.hasSecondItem() && itemstack1 != null && merchantrecipe.getBuyItem2().id == itemstack1.id) && itemstack.count >= merchantrecipe.getBuyItem1().count && (!merchantrecipe.hasSecondItem() || itemstack1.count >= merchantrecipe.getBuyItem2().count) ? merchantrecipe : null;
-        } else {
-            for (int j = 0; j < this.size(); ++j) {
-                MerchantRecipe merchantrecipe1 = (MerchantRecipe) this.get(j);
-
-                if (itemstack.id == merchantrecipe1.getBuyItem1().id && itemstack.count >= merchantrecipe1.getBuyItem1().count && (!merchantrecipe1.hasSecondItem() && itemstack1 == null || merchantrecipe1.hasSecondItem() && itemstack1 != null && merchantrecipe1.getBuyItem2().id == itemstack1.id && itemstack1.count >= merchantrecipe1.getBuyItem2().count)) {
-                    return merchantrecipe1;
+                if (par1ItemStack.id == var5.getBuyItem1().id && par1ItemStack.count >= var5.getBuyItem1().count && (!var5.hasSecondItem() && par2ItemStack == null || var5.hasSecondItem() && par2ItemStack != null && var5.getBuyItem2().id == par2ItemStack.id && par2ItemStack.count >= var5.getBuyItem2().count))
+                {
+                    return var5;
                 }
             }
 
@@ -29,62 +39,73 @@ public class MerchantRecipeList extends ArrayList {
         }
     }
 
-    public void a(MerchantRecipe merchantrecipe) {
-        for (int i = 0; i < this.size(); ++i) {
-            MerchantRecipe merchantrecipe1 = (MerchantRecipe) this.get(i);
+    /**
+     * checks if there is a recipie for the same ingredients already on the list, and replaces it. otherwise, adds it
+     */
+    public void a(MerchantRecipe par1MerchantRecipe)
+    {
+        for (int var2 = 0; var2 < this.size(); ++var2)
+        {
+            MerchantRecipe var3 = (MerchantRecipe)this.get(var2);
 
-            if (merchantrecipe.a(merchantrecipe1)) {
-                if (merchantrecipe.b(merchantrecipe1)) {
-                    this.set(i, merchantrecipe);
+            if (par1MerchantRecipe.a(var3))
+            {
+                if (par1MerchantRecipe.b(var3))
+                {
+                    this.set(var2, par1MerchantRecipe);
                 }
 
                 return;
             }
         }
 
-        this.add(merchantrecipe);
+        this.add(par1MerchantRecipe);
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        dataoutputstream.writeByte((byte) (this.size() & 255));
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        par1DataOutputStream.writeByte((byte)(this.size() & 255));
 
-        for (int i = 0; i < this.size(); ++i) {
-            MerchantRecipe merchantrecipe = (MerchantRecipe) this.get(i);
+        for (int var2 = 0; var2 < this.size(); ++var2)
+        {
+            MerchantRecipe var3 = (MerchantRecipe)this.get(var2);
+            Packet.a(var3.getBuyItem1(), par1DataOutputStream);
+            Packet.a(var3.getBuyItem3(), par1DataOutputStream);
+            ItemStack var4 = var3.getBuyItem2();
+            par1DataOutputStream.writeBoolean(var4 != null);
 
-            Packet.a(merchantrecipe.getBuyItem1(), dataoutputstream);
-            Packet.a(merchantrecipe.getBuyItem3(), dataoutputstream);
-            ItemStack itemstack = merchantrecipe.getBuyItem2();
-
-            dataoutputstream.writeBoolean(itemstack != null);
-            if (itemstack != null) {
-                Packet.a(itemstack, dataoutputstream);
+            if (var4 != null)
+            {
+                Packet.a(var4, par1DataOutputStream);
             }
 
-            dataoutputstream.writeBoolean(merchantrecipe.g());
+            par1DataOutputStream.writeBoolean(var3.g());
         }
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
-        NBTTagList nbttaglist = nbttagcompound.getList("Recipes");
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        NBTTagList var2 = par1NBTTagCompound.getList("Recipes");
 
-        for (int i = 0; i < nbttaglist.size(); ++i) {
-            NBTTagCompound nbttagcompound1 = (NBTTagCompound) nbttaglist.get(i);
-
-            this.add(new MerchantRecipe(nbttagcompound1));
+        for (int var3 = 0; var3 < var2.size(); ++var3)
+        {
+            NBTTagCompound var4 = (NBTTagCompound)var2.get(var3);
+            this.add(new MerchantRecipe(var4));
         }
     }
 
-    public NBTTagCompound a() {
-        NBTTagCompound nbttagcompound = new NBTTagCompound();
-        NBTTagList nbttaglist = new NBTTagList("Recipes");
+    public NBTTagCompound a()
+    {
+        NBTTagCompound var1 = new NBTTagCompound();
+        NBTTagList var2 = new NBTTagList("Recipes");
 
-        for (int i = 0; i < this.size(); ++i) {
-            MerchantRecipe merchantrecipe = (MerchantRecipe) this.get(i);
-
-            nbttaglist.add(merchantrecipe.i());
+        for (int var3 = 0; var3 < this.size(); ++var3)
+        {
+            MerchantRecipe var4 = (MerchantRecipe)this.get(var3);
+            var2.add(var4.i());
         }
 
-        nbttagcompound.set("Recipes", nbttaglist);
-        return nbttagcompound;
+        var1.set("Recipes", var2);
+        return var1;
     }
 }

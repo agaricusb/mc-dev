@@ -3,118 +3,135 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-public class WorldGenStrongholdPortalRoom extends WorldGenStrongholdPiece {
-
+public class WorldGenStrongholdPortalRoom extends WorldGenStrongholdPiece
+{
     private boolean a;
 
-    public WorldGenStrongholdPortalRoom(int i, Random random, StructureBoundingBox structureboundingbox, int j) {
-        super(i);
-        this.f = j;
-        this.e = structureboundingbox;
+    public WorldGenStrongholdPortalRoom(int par1, Random par2Random, StructureBoundingBox par3StructureBoundingBox, int par4)
+    {
+        super(par1);
+        this.f = par4;
+        this.e = par3StructureBoundingBox;
     }
 
-    public void a(StructurePiece structurepiece, List list, Random random) {
-        if (structurepiece != null) {
-            ((WorldGenStrongholdStart) structurepiece).b = this;
+    /**
+     * Initiates construction of the Structure Component picked, at the current Location of StructGen
+     */
+    public void a(StructurePiece par1StructureComponent, List par2List, Random par3Random)
+    {
+        if (par1StructureComponent != null)
+        {
+            ((WorldGenStrongholdStart)par1StructureComponent).b = this;
         }
     }
 
-    public static WorldGenStrongholdPortalRoom a(List list, Random random, int i, int j, int k, int l, int i1) {
-        StructureBoundingBox structureboundingbox = StructureBoundingBox.a(i, j, k, -4, -1, 0, 11, 8, 16, l);
-
-        return a(structureboundingbox) && StructurePiece.a(list, structureboundingbox) == null ? new WorldGenStrongholdPortalRoom(i1, random, structureboundingbox, l) : null;
+    public static WorldGenStrongholdPortalRoom a(List par0List, Random par1Random, int par2, int par3, int par4, int par5, int par6)
+    {
+        StructureBoundingBox var7 = StructureBoundingBox.a(par2, par3, par4, -4, -1, 0, 11, 8, 16, par5);
+        return a(var7) && StructurePiece.a(par0List, var7) == null ? new WorldGenStrongholdPortalRoom(par6, par1Random, var7, par5) : null;
     }
 
-    public boolean a(World world, Random random, StructureBoundingBox structureboundingbox) {
-        this.a(world, structureboundingbox, 0, 0, 0, 10, 7, 15, false, random, WorldGenStrongholdPieces.b());
-        this.a(world, random, structureboundingbox, WorldGenStrongholdDoorType.c, 4, 1, 0);
-        byte b0 = 6;
+    /**
+     * second Part of Structure generating, this for example places Spiderwebs, Mob Spawners, it closes Mineshafts at
+     * the end, it adds Fences...
+     */
+    public boolean a(World par1World, Random par2Random, StructureBoundingBox par3StructureBoundingBox)
+    {
+        this.a(par1World, par3StructureBoundingBox, 0, 0, 0, 10, 7, 15, false, par2Random, WorldGenStrongholdPieces.b());
+        this.a(par1World, par2Random, par3StructureBoundingBox, WorldGenStrongholdDoorType.c, 4, 1, 0);
+        byte var4 = 6;
+        this.a(par1World, par3StructureBoundingBox, 1, var4, 1, 1, var4, 14, false, par2Random, WorldGenStrongholdPieces.b());
+        this.a(par1World, par3StructureBoundingBox, 9, var4, 1, 9, var4, 14, false, par2Random, WorldGenStrongholdPieces.b());
+        this.a(par1World, par3StructureBoundingBox, 2, var4, 1, 8, var4, 2, false, par2Random, WorldGenStrongholdPieces.b());
+        this.a(par1World, par3StructureBoundingBox, 2, var4, 14, 8, var4, 14, false, par2Random, WorldGenStrongholdPieces.b());
+        this.a(par1World, par3StructureBoundingBox, 1, 1, 1, 2, 1, 4, false, par2Random, WorldGenStrongholdPieces.b());
+        this.a(par1World, par3StructureBoundingBox, 8, 1, 1, 9, 1, 4, false, par2Random, WorldGenStrongholdPieces.b());
+        this.a(par1World, par3StructureBoundingBox, 1, 1, 1, 1, 1, 3, Block.LAVA.id, Block.LAVA.id, false);
+        this.a(par1World, par3StructureBoundingBox, 9, 1, 1, 9, 1, 3, Block.LAVA.id, Block.LAVA.id, false);
+        this.a(par1World, par3StructureBoundingBox, 3, 1, 8, 7, 1, 12, false, par2Random, WorldGenStrongholdPieces.b());
+        this.a(par1World, par3StructureBoundingBox, 4, 1, 9, 6, 1, 11, Block.LAVA.id, Block.LAVA.id, false);
+        int var5;
 
-        this.a(world, structureboundingbox, 1, b0, 1, 1, b0, 14, false, random, WorldGenStrongholdPieces.b());
-        this.a(world, structureboundingbox, 9, b0, 1, 9, b0, 14, false, random, WorldGenStrongholdPieces.b());
-        this.a(world, structureboundingbox, 2, b0, 1, 8, b0, 2, false, random, WorldGenStrongholdPieces.b());
-        this.a(world, structureboundingbox, 2, b0, 14, 8, b0, 14, false, random, WorldGenStrongholdPieces.b());
-        this.a(world, structureboundingbox, 1, 1, 1, 2, 1, 4, false, random, WorldGenStrongholdPieces.b());
-        this.a(world, structureboundingbox, 8, 1, 1, 9, 1, 4, false, random, WorldGenStrongholdPieces.b());
-        this.a(world, structureboundingbox, 1, 1, 1, 1, 1, 3, Block.LAVA.id, Block.LAVA.id, false);
-        this.a(world, structureboundingbox, 9, 1, 1, 9, 1, 3, Block.LAVA.id, Block.LAVA.id, false);
-        this.a(world, structureboundingbox, 3, 1, 8, 7, 1, 12, false, random, WorldGenStrongholdPieces.b());
-        this.a(world, structureboundingbox, 4, 1, 9, 6, 1, 11, Block.LAVA.id, Block.LAVA.id, false);
-
-        int i;
-
-        for (i = 3; i < 14; i += 2) {
-            this.a(world, structureboundingbox, 0, 3, i, 0, 4, i, Block.IRON_FENCE.id, Block.IRON_FENCE.id, false);
-            this.a(world, structureboundingbox, 10, 3, i, 10, 4, i, Block.IRON_FENCE.id, Block.IRON_FENCE.id, false);
+        for (var5 = 3; var5 < 14; var5 += 2)
+        {
+            this.a(par1World, par3StructureBoundingBox, 0, 3, var5, 0, 4, var5, Block.IRON_FENCE.id, Block.IRON_FENCE.id, false);
+            this.a(par1World, par3StructureBoundingBox, 10, 3, var5, 10, 4, var5, Block.IRON_FENCE.id, Block.IRON_FENCE.id, false);
         }
 
-        for (i = 2; i < 9; i += 2) {
-            this.a(world, structureboundingbox, i, 3, 15, i, 4, 15, Block.IRON_FENCE.id, Block.IRON_FENCE.id, false);
+        for (var5 = 2; var5 < 9; var5 += 2)
+        {
+            this.a(par1World, par3StructureBoundingBox, var5, 3, 15, var5, 4, 15, Block.IRON_FENCE.id, Block.IRON_FENCE.id, false);
         }
 
-        i = this.c(Block.STONE_STAIRS.id, 3);
-        this.a(world, structureboundingbox, 4, 1, 5, 6, 1, 7, false, random, WorldGenStrongholdPieces.b());
-        this.a(world, structureboundingbox, 4, 2, 6, 6, 2, 7, false, random, WorldGenStrongholdPieces.b());
-        this.a(world, structureboundingbox, 4, 3, 7, 6, 3, 7, false, random, WorldGenStrongholdPieces.b());
+        var5 = this.c(Block.STONE_STAIRS.id, 3);
+        this.a(par1World, par3StructureBoundingBox, 4, 1, 5, 6, 1, 7, false, par2Random, WorldGenStrongholdPieces.b());
+        this.a(par1World, par3StructureBoundingBox, 4, 2, 6, 6, 2, 7, false, par2Random, WorldGenStrongholdPieces.b());
+        this.a(par1World, par3StructureBoundingBox, 4, 3, 7, 6, 3, 7, false, par2Random, WorldGenStrongholdPieces.b());
 
-        for (int j = 4; j <= 6; ++j) {
-            this.a(world, Block.STONE_STAIRS.id, i, j, 1, 4, structureboundingbox);
-            this.a(world, Block.STONE_STAIRS.id, i, j, 2, 5, structureboundingbox);
-            this.a(world, Block.STONE_STAIRS.id, i, j, 3, 6, structureboundingbox);
+        for (int var6 = 4; var6 <= 6; ++var6)
+        {
+            this.a(par1World, Block.STONE_STAIRS.id, var5, var6, 1, 4, par3StructureBoundingBox);
+            this.a(par1World, Block.STONE_STAIRS.id, var5, var6, 2, 5, par3StructureBoundingBox);
+            this.a(par1World, Block.STONE_STAIRS.id, var5, var6, 3, 6, par3StructureBoundingBox);
         }
 
-        byte b1 = 2;
-        byte b2 = 0;
-        byte b3 = 3;
-        byte b4 = 1;
+        byte var14 = 2;
+        byte var7 = 0;
+        byte var8 = 3;
+        byte var9 = 1;
 
-        switch (this.f) {
-        case 0:
-            b1 = 0;
-            b2 = 2;
-            break;
+        switch (this.f)
+        {
+            case 0:
+                var14 = 0;
+                var7 = 2;
+                break;
 
-        case 1:
-            b1 = 1;
-            b2 = 3;
-            b3 = 0;
-            b4 = 2;
+            case 1:
+                var14 = 1;
+                var7 = 3;
+                var8 = 0;
+                var9 = 2;
 
-        case 2:
-        default:
-            break;
+            case 2:
+            default:
+                break;
 
-        case 3:
-            b1 = 3;
-            b2 = 1;
-            b3 = 0;
-            b4 = 2;
+            case 3:
+                var14 = 3;
+                var7 = 1;
+                var8 = 0;
+                var9 = 2;
         }
 
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b1 + (random.nextFloat() > 0.9F ? 4 : 0), 4, 3, 8, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b1 + (random.nextFloat() > 0.9F ? 4 : 0), 5, 3, 8, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b1 + (random.nextFloat() > 0.9F ? 4 : 0), 6, 3, 8, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b2 + (random.nextFloat() > 0.9F ? 4 : 0), 4, 3, 12, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b2 + (random.nextFloat() > 0.9F ? 4 : 0), 5, 3, 12, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b2 + (random.nextFloat() > 0.9F ? 4 : 0), 6, 3, 12, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b3 + (random.nextFloat() > 0.9F ? 4 : 0), 3, 3, 9, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b3 + (random.nextFloat() > 0.9F ? 4 : 0), 3, 3, 10, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b3 + (random.nextFloat() > 0.9F ? 4 : 0), 3, 3, 11, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b4 + (random.nextFloat() > 0.9F ? 4 : 0), 7, 3, 9, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b4 + (random.nextFloat() > 0.9F ? 4 : 0), 7, 3, 10, structureboundingbox);
-        this.a(world, Block.ENDER_PORTAL_FRAME.id, b4 + (random.nextFloat() > 0.9F ? 4 : 0), 7, 3, 11, structureboundingbox);
-        if (!this.a) {
-            int k = this.a(3);
-            int l = this.a(5, 6);
-            int i1 = this.b(5, 6);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var14 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 4, 3, 8, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var14 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 5, 3, 8, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var14 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 6, 3, 8, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var7 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 4, 3, 12, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var7 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 5, 3, 12, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var7 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 6, 3, 12, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var8 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 3, 3, 9, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var8 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 3, 3, 10, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var8 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 3, 3, 11, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var9 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 7, 3, 9, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var9 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 7, 3, 10, par3StructureBoundingBox);
+        this.a(par1World, Block.ENDER_PORTAL_FRAME.id, var9 + (par2Random.nextFloat() > 0.9F ? 4 : 0), 7, 3, 11, par3StructureBoundingBox);
 
-            if (structureboundingbox.b(l, k, i1)) {
+        if (!this.a)
+        {
+            int var13 = this.a(3);
+            int var10 = this.a(5, 6);
+            int var11 = this.b(5, 6);
+
+            if (par3StructureBoundingBox.b(var10, var13, var11))
+            {
                 this.a = true;
-                world.setTypeId(l, k, i1, Block.MOB_SPAWNER.id);
-                TileEntityMobSpawner tileentitymobspawner = (TileEntityMobSpawner) world.getTileEntity(l, k, i1);
+                par1World.setTypeId(var10, var13, var11, Block.MOB_SPAWNER.id);
+                TileEntityMobSpawner var12 = (TileEntityMobSpawner)par1World.getTileEntity(var10, var13, var11);
 
-                if (tileentitymobspawner != null) {
-                    tileentitymobspawner.a("Silverfish");
+                if (var12 != null)
+                {
+                    var12.a("Silverfish");
                 }
             }
         }

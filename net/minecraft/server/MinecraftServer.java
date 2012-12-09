@@ -2,41 +2,82 @@ package net.minecraft.server;
 
 import java.awt.GraphicsEnvironment;
 import java.io.File;
+import java.io.IOException;
 import java.security.KeyPair;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public abstract class MinecraftServer implements ICommandListener, Runnable, IMojangStatistics {
-
+public abstract class MinecraftServer implements ICommandListener, Runnable, IMojangStatistics
+{
+    /** The logging system. */
     public static Logger log = Logger.getLogger("Minecraft");
+
+    /** Instance of Minecraft Server. */
     private static MinecraftServer l = null;
     private final Convertable convertable;
+
+    /** The PlayerUsageSnooper instance. */
     private final MojangStatisticsGenerator n = new MojangStatisticsGenerator("server", this);
     private final File universe;
+
+    /** List of names of players who are online. */
     private final List p = new ArrayList();
     private final ICommandHandler q;
     public final MethodProfiler methodProfiler = new MethodProfiler();
+
+    /** The server's hostname. */
     private String serverIp;
+
+    /** The server's port. */
     private int s = -1;
+
+    /** The server world instances. */
     public WorldServer[] worldServer;
+
+    /** The ServerConfigurationManager instance. */
     private ServerConfigurationManagerAbstract t;
+
+    /**
+     * Indicates whether the server is running or not. Set to false to initiate a shutdown.
+     */
     private boolean isRunning = true;
+
+    /** Indicates to other classes that the server is safely stopped. */
     private boolean isStopped = false;
+
+    /** Incremented every tick. */
     private int ticks = 0;
+
+    /**
+     * The task the server is currently working on(and will output on outputPercentRemaining).
+     */
     public String d;
+
+    /** The percentage of the current task finished so far. */
     public int e;
+
+    /** True if the server is in online mode. */
     private boolean onlineMode;
+
+    /** True if the server has animals turned on. */
     private boolean spawnAnimals;
     private boolean spawnNPCs;
+
+    /** Indicates whether PvP is active on the server or not. */
     private boolean pvpMode;
+
+    /** Determines if flight is allowed or not. */
     private boolean allowFlight;
+
+    /** The server MOTD string. */
     private String motd;
+
+    /** Maximum build height. */
     private int D;
     private long E;
     private long F;
@@ -47,28 +88,45 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     public final long[] h = new long[100];
     public final long[] i = new long[100];
     public final long[] j = new long[100];
+
+    /** Stats are [dimension][tick%100] system.nanoTime is stored. */
     public long[][] k;
     private KeyPair I;
+
+    /** Username of the server owner (for integrated servers) */
     private String J;
     private String K;
     private boolean demoMode;
     private boolean N;
+
+    /**
+     * If true, there is no need to save chunks or stop the server, because that is already being done.
+     */
     private boolean O;
     private String P = "";
     private boolean Q = false;
+
+    /**
+     * Set when warned for "Can't keep up", which triggers again after 15 seconds.
+     */
     private long R;
     private String S;
     private boolean T;
 
-    public MinecraftServer(File file1) {
+    public MinecraftServer(File par1File)
+    {
         l = this;
-        this.universe = file1;
+        this.universe = par1File;
         this.q = new CommandDispatcher();
-        this.convertable = new WorldLoaderServer(file1);
+        this.convertable = new WorldLoaderServer(par1File);
         this.al();
     }
 
-    private void al() {
+    /**
+     * Register all dispense behaviors.
+     */
+    private void al()
+    {
         BlockDispenser.a.a(Item.ARROW, new DispenseBehaviorArrow(this));
         BlockDispenser.a.a(Item.EGG, new DispenseBehaviorEgg(this));
         BlockDispenser.a.a(Item.SNOW_BALL, new DispenseBehaviorSnowBall(this));
@@ -76,77 +134,100 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         BlockDispenser.a.a(Item.POTION, new DispenseBehaviorPotion(this));
         BlockDispenser.a.a(Item.MONSTER_EGG, new DispenseBehaviorMonsterEgg(this));
         BlockDispenser.a.a(Item.FIREBALL, new DispenseBehaviorFireball(this));
-        DispenseBehaviorMinecart dispensebehaviorminecart = new DispenseBehaviorMinecart(this);
-
-        BlockDispenser.a.a(Item.MINECART, dispensebehaviorminecart);
-        BlockDispenser.a.a(Item.STORAGE_MINECART, dispensebehaviorminecart);
-        BlockDispenser.a.a(Item.POWERED_MINECART, dispensebehaviorminecart);
+        DispenseBehaviorMinecart var1 = new DispenseBehaviorMinecart(this);
+        BlockDispenser.a.a(Item.MINECART, var1);
+        BlockDispenser.a.a(Item.STORAGE_MINECART, var1);
+        BlockDispenser.a.a(Item.POWERED_MINECART, var1);
         BlockDispenser.a.a(Item.BOAT, new DispenseBehaviorBoat(this));
-        DispenseBehaviorFilledBucket dispensebehaviorfilledbucket = new DispenseBehaviorFilledBucket(this);
-
-        BlockDispenser.a.a(Item.LAVA_BUCKET, dispensebehaviorfilledbucket);
-        BlockDispenser.a.a(Item.WATER_BUCKET, dispensebehaviorfilledbucket);
+        DispenseBehaviorFilledBucket var2 = new DispenseBehaviorFilledBucket(this);
+        BlockDispenser.a.a(Item.LAVA_BUCKET, var2);
+        BlockDispenser.a.a(Item.WATER_BUCKET, var2);
         BlockDispenser.a.a(Item.BUCKET, new DispenseBehaviorEmptyBucket(this));
     }
 
-    protected abstract boolean init();
+    /**
+     * Initialises the server and starts it.
+     */
+    protected abstract boolean init() throws IOException;
 
-    protected void b(String s) {
-        if (this.getConvertable().isConvertable(s)) {
+    protected void b(String par1Str)
+    {
+        if (this.getConvertable().isConvertable(par1Str))
+        {
             log.info("Converting map!");
             this.c("menu.convertingLevel");
-            this.getConvertable().convert(s, new ConvertProgressUpdater(this));
+            this.getConvertable().convert(par1Str, new ConvertProgressUpdater(this));
         }
     }
 
-    protected synchronized void c(String s) {
-        this.S = s;
+    /**
+     * Typically "menu.convertingLevel", "menu.loadingLevel" or others.
+     */
+    protected synchronized void c(String par1Str)
+    {
+        this.S = par1Str;
     }
 
-    protected void a(String s, String s1, long i, WorldType worldtype, String s2) {
-        this.b(s);
+    protected void a(String par1Str, String par2Str, long par3, WorldType par5WorldType, String par6Str)
+    {
+        this.b(par1Str);
         this.c("menu.loadingLevel");
         this.worldServer = new WorldServer[3];
         this.k = new long[this.worldServer.length][100];
-        IDataManager idatamanager = this.convertable.a(s, true);
-        WorldData worlddata = idatamanager.getWorldData();
-        WorldSettings worldsettings;
+        IDataManager var7 = this.convertable.a(par1Str, true);
+        WorldData var9 = var7.getWorldData();
+        WorldSettings var8;
 
-        if (worlddata == null) {
-            worldsettings = new WorldSettings(i, this.getGamemode(), this.getGenerateStructures(), this.isHardcore(), worldtype);
-            worldsettings.a(s2);
-        } else {
-            worldsettings = new WorldSettings(worlddata);
+        if (var9 == null)
+        {
+            var8 = new WorldSettings(par3, this.getGamemode(), this.getGenerateStructures(), this.isHardcore(), par5WorldType);
+            var8.a(par6Str);
+        }
+        else
+        {
+            var8 = new WorldSettings(var9);
         }
 
-        if (this.N) {
-            worldsettings.a();
+        if (this.N)
+        {
+            var8.a();
         }
 
-        for (int j = 0; j < this.worldServer.length; ++j) {
-            byte b0 = 0;
+        for (int var10 = 0; var10 < this.worldServer.length; ++var10)
+        {
+            byte var11 = 0;
 
-            if (j == 1) {
-                b0 = -1;
+            if (var10 == 1)
+            {
+                var11 = -1;
             }
 
-            if (j == 2) {
-                b0 = 1;
+            if (var10 == 2)
+            {
+                var11 = 1;
             }
 
-            if (j == 0) {
-                if (this.M()) {
-                    this.worldServer[j] = new DemoWorldServer(this, idatamanager, s1, b0, this.methodProfiler);
-                } else {
-                    this.worldServer[j] = new WorldServer(this, idatamanager, s1, b0, worldsettings, this.methodProfiler);
+            if (var10 == 0)
+            {
+                if (this.M())
+                {
+                    this.worldServer[var10] = new DemoWorldServer(this, var7, par2Str, var11, this.methodProfiler);
                 }
-            } else {
-                this.worldServer[j] = new SecondaryWorldServer(this, idatamanager, s1, b0, worldsettings, this.worldServer[0], this.methodProfiler);
+                else
+                {
+                    this.worldServer[var10] = new WorldServer(this, var7, par2Str, var11, var8, this.methodProfiler);
+                }
+            }
+            else
+            {
+                this.worldServer[var10] = new SecondaryWorldServer(this, var7, par2Str, var11, var8, this.worldServer[0], this.methodProfiler);
             }
 
-            this.worldServer[j].addIWorldAccess(new WorldManager(this, this.worldServer[j]));
-            if (!this.I()) {
-                this.worldServer[j].getWorldData().setGameType(this.getGamemode());
+            this.worldServer[var10].addIWorldAccess(new WorldManager(this, this.worldServer[var10]));
+
+            if (!this.I())
+            {
+                this.worldServer[var10].getWorldData().setGameType(this.getGamemode());
             }
 
             this.t.setPlayerFileData(this.worldServer);
@@ -156,28 +237,30 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         this.e();
     }
 
-    protected void e() {
-        int i = 0;
-
+    protected void e()
+    {
+        int var5 = 0;
         this.c("menu.generatingTerrain");
-        byte b0 = 0;
+        byte var6 = 0;
+        log.info("Preparing start region for level " + var6);
+        WorldServer var7 = this.worldServer[var6];
+        ChunkCoordinates var8 = var7.getSpawn();
+        long var9 = System.currentTimeMillis();
 
-        log.info("Preparing start region for level " + b0);
-        WorldServer worldserver = this.worldServer[b0];
-        ChunkCoordinates chunkcoordinates = worldserver.getSpawn();
-        long j = System.currentTimeMillis();
+        for (int var11 = -192; var11 <= 192 && this.isRunning(); var11 += 16)
+        {
+            for (int var12 = -192; var12 <= 192 && this.isRunning(); var12 += 16)
+            {
+                long var13 = System.currentTimeMillis();
 
-        for (int k = -192; k <= 192 && this.isRunning(); k += 16) {
-            for (int l = -192; l <= 192 && this.isRunning(); l += 16) {
-                long i1 = System.currentTimeMillis();
-
-                if (i1 - j > 1000L) {
-                    this.a_("Preparing spawn area", i * 100 / 625);
-                    j = i1;
+                if (var13 - var9 > 1000L)
+                {
+                    this.a_("Preparing spawn area", var5 * 100 / 625);
+                    var9 = var13;
                 }
 
-                ++i;
-                worldserver.chunkProviderServer.getChunkAt(chunkcoordinates.x + k >> 4, chunkcoordinates.z + l >> 4);
+                ++var5;
+                var7.chunkProviderServer.getChunkAt(var8.x + var11 >> 4, var8.z + var12 >> 4);
             }
         }
 
@@ -188,52 +271,85 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
 
     public abstract EnumGamemode getGamemode();
 
+    /**
+     * Defaults to "1" (Easy) for the dedicated server, defaults to "2" (Normal) on the client.
+     */
     public abstract int getDifficulty();
 
+    /**
+     * Defaults to false.
+     */
     public abstract boolean isHardcore();
 
-    protected void a_(String s, int i) {
-        this.d = s;
-        this.e = i;
-        log.info(s + ": " + i + "%");
+    /**
+     * Used to display a percent remaining given text and the percentage.
+     */
+    protected void a_(String par1Str, int par2)
+    {
+        this.d = par1Str;
+        this.e = par2;
+        log.info(par1Str + ": " + par2 + "%");
     }
 
-    protected void j() {
+    /**
+     * Set current task to null and set its percentage to 0.
+     */
+    protected void j()
+    {
         this.d = null;
         this.e = 0;
     }
 
-    protected void saveChunks(boolean flag) {
-        if (!this.O) {
-            WorldServer[] aworldserver = this.worldServer;
-            int i = aworldserver.length;
+    /**
+     * par1 indicates if a log message should be output.
+     */
+    protected void saveChunks(boolean par1)
+    {
+        if (!this.O)
+        {
+            WorldServer[] var2 = this.worldServer;
+            int var3 = var2.length;
 
-            for (int j = 0; j < i; ++j) {
-                WorldServer worldserver = aworldserver[j];
+            for (int var4 = 0; var4 < var3; ++var4)
+            {
+                WorldServer var5 = var2[var4];
 
-                if (worldserver != null) {
-                    if (!flag) {
-                        log.info("Saving chunks for level \'" + worldserver.getWorldData().getName() + "\'/" + worldserver.worldProvider.getName());
+                if (var5 != null)
+                {
+                    if (!par1)
+                    {
+                        log.info("Saving chunks for level \'" + var5.getWorldData().getName() + "\'/" + var5.worldProvider.getName());
                     }
 
-                    try {
-                        worldserver.save(true, (IProgressUpdate) null);
-                    } catch (ExceptionWorldConflict exceptionworldconflict) {
-                        log.warning(exceptionworldconflict.getMessage());
+                    try
+                    {
+                        var5.save(true, (IProgressUpdate) null);
+                    }
+                    catch (ExceptionWorldConflict var7)
+                    {
+                        log.warning(var7.getMessage());
                     }
                 }
             }
         }
     }
 
-    public void stop() {
-        if (!this.O) {
+    /**
+     * Saves all necessary data as preparation for stopping the server.
+     */
+    public void stop()
+    {
+        if (!this.O)
+        {
             log.info("Stopping server");
-            if (this.ae() != null) {
+
+            if (this.ae() != null)
+            {
                 this.ae().a();
             }
 
-            if (this.t != null) {
+            if (this.t != null)
+            {
                 log.info("Saving players");
                 this.t.savePlayers();
                 this.t.r();
@@ -242,117 +358,168 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
             log.info("Saving worlds");
             this.saveChunks(false);
 
-            for (int i = 0; i < this.worldServer.length; ++i) {
-                WorldServer worldserver = this.worldServer[i];
-
-                worldserver.saveLevel();
+            for (int var1 = 0; var1 < this.worldServer.length; ++var1)
+            {
+                WorldServer var2 = this.worldServer[var1];
+                var2.saveLevel();
             }
 
-            if (this.n != null && this.n.d()) {
+            if (this.n != null && this.n.d())
+            {
                 this.n.e();
             }
         }
     }
 
-    public String getServerIp() {
+    /**
+     * "getHostname" is already taken, but both return the hostname.
+     */
+    public String getServerIp()
+    {
         return this.serverIp;
     }
 
-    public void d(String s) {
-        this.serverIp = s;
+    public void d(String par1Str)
+    {
+        this.serverIp = par1Str;
     }
 
-    public boolean isRunning() {
+    public boolean isRunning()
+    {
         return this.isRunning;
     }
 
-    public void safeShutdown() {
+    /**
+     * Sets the serverRunning variable to false, in order to get the server to shut down.
+     */
+    public void safeShutdown()
+    {
         this.isRunning = false;
     }
 
-    public void run() {
-        try {
-            if (this.init()) {
-                long i = System.currentTimeMillis();
+    public void run()
+    {
+        try
+        {
+            if (this.init())
+            {
+                long var1 = System.currentTimeMillis();
 
-                for (long j = 0L; this.isRunning; this.Q = true) {
-                    long k = System.currentTimeMillis();
-                    long l = k - i;
+                for (long var50 = 0L; this.isRunning; this.Q = true)
+                {
+                    long var5 = System.currentTimeMillis();
+                    long var7 = var5 - var1;
 
-                    if (l > 2000L && i - this.R >= 15000L) {
+                    if (var7 > 2000L && var1 - this.R >= 15000L)
+                    {
                         log.warning("Can\'t keep up! Did the system time change, or is the server overloaded?");
-                        l = 2000L;
-                        this.R = i;
+                        var7 = 2000L;
+                        this.R = var1;
                     }
 
-                    if (l < 0L) {
+                    if (var7 < 0L)
+                    {
                         log.warning("Time ran backwards! Did the system time change?");
-                        l = 0L;
+                        var7 = 0L;
                     }
 
-                    j += l;
-                    i = k;
-                    if (this.worldServer[0].everyoneDeeplySleeping()) {
+                    var50 += var7;
+                    var1 = var5;
+
+                    if (this.worldServer[0].everyoneDeeplySleeping())
+                    {
                         this.q();
-                        j = 0L;
-                    } else {
-                        while (j > 50L) {
-                            j -= 50L;
+                        var50 = 0L;
+                    }
+                    else
+                    {
+                        while (var50 > 50L)
+                        {
+                            var50 -= 50L;
                             this.q();
                         }
                     }
 
                     Thread.sleep(1L);
                 }
-            } else {
+            }
+            else
+            {
                 this.a((CrashReport) null);
             }
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-            log.log(Level.SEVERE, "Encountered an unexpected exception " + throwable.getClass().getSimpleName(), throwable);
-            CrashReport crashreport = null;
+        }
+        catch (Throwable var48)
+        {
+            var48.printStackTrace();
+            log.log(Level.SEVERE, "Encountered an unexpected exception " + var48.getClass().getSimpleName(), var48);
+            CrashReport var2 = null;
 
-            if (throwable instanceof ReportedException) {
-                crashreport = this.b(((ReportedException) throwable).a());
-            } else {
-                crashreport = this.b(new CrashReport("Exception in server tick loop", throwable));
+            if (var48 instanceof ReportedException)
+            {
+                var2 = this.b(((ReportedException) var48).a());
+            }
+            else
+            {
+                var2 = this.b(new CrashReport("Exception in server tick loop", var48));
             }
 
-            File file1 = new File(new File(this.o(), "crash-reports"), "crash-" + (new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")).format(new Date()) + "-server.txt");
+            File var3 = new File(new File(this.o(), "crash-reports"), "crash-" + (new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")).format(new Date()) + "-server.txt");
 
-            if (crashreport.a(file1)) {
-                log.severe("This crash report has been saved to: " + file1.getAbsolutePath());
-            } else {
+            if (var2.a(var3))
+            {
+                log.severe("This crash report has been saved to: " + var3.getAbsolutePath());
+            }
+            else
+            {
                 log.severe("We were unable to save this crash report to disk.");
             }
 
-            this.a(crashreport);
-        } finally {
-            try {
+            this.a(var2);
+        }
+        finally
+        {
+            try
+            {
                 this.stop();
                 this.isStopped = true;
-            } catch (Throwable throwable1) {
-                throwable1.printStackTrace();
-            } finally {
+            }
+            catch (Throwable var46)
+            {
+                var46.printStackTrace();
+            }
+            finally
+            {
                 this.p();
             }
         }
     }
 
-    protected File o() {
+    protected File o()
+    {
         return new File(".");
     }
 
-    protected void a(CrashReport crashreport) {}
+    /**
+     * Called on exit from the main run() loop.
+     */
+    protected void a(CrashReport par1CrashReport) {}
 
+    /**
+     * Directly calls System.exit(0), instantly killing the program.
+     */
     protected void p() {}
 
-    protected void q() {
-        long i = System.nanoTime();
-
+    /**
+     * Main function called by run() every loop.
+     */
+    protected void q()
+    {
+        long var1 = System.nanoTime();
         AxisAlignedBB.a().a();
         ++this.ticks;
-        if (this.T) {
+
+        if (this.T)
+        {
             this.T = false;
             this.methodProfiler.a = true;
             this.methodProfiler.a();
@@ -360,7 +527,9 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
 
         this.methodProfiler.a("root");
         this.r();
-        if (this.ticks % 900 == 0) {
+
+        if (this.ticks % 900 == 0)
+        {
             this.methodProfiler.a("save");
             this.t.savePlayers();
             this.saveChunks(true);
@@ -368,7 +537,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         }
 
         this.methodProfiler.a("tallying");
-        this.j[this.ticks % 100] = System.nanoTime() - i;
+        this.j[this.ticks % 100] = System.nanoTime() - var1;
         this.f[this.ticks % 100] = Packet.p - this.E;
         this.E = Packet.p;
         this.g[this.ticks % 100] = Packet.q - this.F;
@@ -379,11 +548,14 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         this.H = Packet.o;
         this.methodProfiler.b();
         this.methodProfiler.a("snooper");
-        if (!this.n.d() && this.ticks > 100) {
+
+        if (!this.n.d() && this.ticks > 100)
+        {
             this.n.a();
         }
 
-        if (this.ticks % 6000 == 0) {
+        if (this.ticks % 6000 == 0)
+        {
             this.n.b();
         }
 
@@ -391,55 +563,63 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         this.methodProfiler.b();
     }
 
-    public void r() {
+    public void r()
+    {
         this.methodProfiler.a("levels");
+        int var1;
 
-        int i;
+        for (var1 = 0; var1 < this.worldServer.length; ++var1)
+        {
+            long var2 = System.nanoTime();
 
-        for (i = 0; i < this.worldServer.length; ++i) {
-            long j = System.nanoTime();
-
-            if (i == 0 || this.getAllowNether()) {
-                WorldServer worldserver = this.worldServer[i];
-
-                this.methodProfiler.a(worldserver.getWorldData().getName());
+            if (var1 == 0 || this.getAllowNether())
+            {
+                WorldServer var4 = this.worldServer[var1];
+                this.methodProfiler.a(var4.getWorldData().getName());
                 this.methodProfiler.a("pools");
-                worldserver.getVec3DPool().a();
+                var4.getVec3DPool().a();
                 this.methodProfiler.b();
-                if (this.ticks % 20 == 0) {
+
+                if (this.ticks % 20 == 0)
+                {
                     this.methodProfiler.a("timeSync");
-                    this.t.a(new Packet4UpdateTime(worldserver.getTime(), worldserver.getDayTime()), worldserver.worldProvider.dimension);
+                    this.t.a(new Packet4UpdateTime(var4.getTime(), var4.getDayTime()), var4.worldProvider.dimension);
                     this.methodProfiler.b();
                 }
 
                 this.methodProfiler.a("tick");
+                CrashReport var6;
 
-                CrashReport crashreport;
-
-                try {
-                    worldserver.doTick();
-                } catch (Throwable throwable) {
-                    crashreport = CrashReport.a(throwable, "Exception ticking world");
-                    worldserver.a(crashreport);
-                    throw new ReportedException(crashreport);
+                try
+                {
+                    var4.doTick();
+                }
+                catch (Throwable var8)
+                {
+                    var6 = CrashReport.a(var8, "Exception ticking world");
+                    var4.a(var6);
+                    throw new ReportedException(var6);
                 }
 
-                try {
-                    worldserver.tickEntities();
-                } catch (Throwable throwable1) {
-                    crashreport = CrashReport.a(throwable1, "Exception ticking world entities");
-                    worldserver.a(crashreport);
-                    throw new ReportedException(crashreport);
+                try
+                {
+                    var4.tickEntities();
+                }
+                catch (Throwable var7)
+                {
+                    var6 = CrashReport.a(var7, "Exception ticking world entities");
+                    var4.a(var6);
+                    throw new ReportedException(var6);
                 }
 
                 this.methodProfiler.b();
                 this.methodProfiler.a("tracker");
-                worldserver.getTracker().updatePlayers();
+                var4.getTracker().updatePlayers();
                 this.methodProfiler.b();
                 this.methodProfiler.b();
             }
 
-            this.k[i][this.ticks % 100] = System.nanoTime() - j;
+            this.k[var1][this.ticks % 100] = System.nanoTime() - var2;
         }
 
         this.methodProfiler.c("connection");
@@ -448,341 +628,526 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         this.t.tick();
         this.methodProfiler.c("tickables");
 
-        for (i = 0; i < this.p.size(); ++i) {
-            ((IUpdatePlayerListBox) this.p.get(i)).a();
+        for (var1 = 0; var1 < this.p.size(); ++var1)
+        {
+            ((IUpdatePlayerListBox)this.p.get(var1)).a();
         }
 
         this.methodProfiler.b();
     }
 
-    public boolean getAllowNether() {
+    public boolean getAllowNether()
+    {
         return true;
     }
 
-    public void a(IUpdatePlayerListBox iupdateplayerlistbox) {
-        this.p.add(iupdateplayerlistbox);
+    public void a(IUpdatePlayerListBox par1IUpdatePlayerListBox)
+    {
+        this.p.add(par1IUpdatePlayerListBox);
     }
 
-    public static void main(String[] astring) {
+    public static void main(String[] par0ArrayOfStr)
+    {
         StatisticList.a();
 
-        try {
-            boolean flag = !GraphicsEnvironment.isHeadless();
-            String s = null;
-            String s1 = ".";
-            String s2 = null;
-            boolean flag1 = false;
-            boolean flag2 = false;
-            int i = -1;
+        try
+        {
+            boolean var1 = !GraphicsEnvironment.isHeadless();
+            String var2 = null;
+            String var3 = ".";
+            String var4 = null;
+            boolean var5 = false;
+            boolean var6 = false;
+            int var7 = -1;
 
-            for (int j = 0; j < astring.length; ++j) {
-                String s3 = astring[j];
-                String s4 = j == astring.length - 1 ? null : astring[j + 1];
-                boolean flag3 = false;
+            for (int var8 = 0; var8 < par0ArrayOfStr.length; ++var8)
+            {
+                String var9 = par0ArrayOfStr[var8];
+                String var10 = var8 == par0ArrayOfStr.length - 1 ? null : par0ArrayOfStr[var8 + 1];
+                boolean var11 = false;
 
-                if (!s3.equals("nogui") && !s3.equals("--nogui")) {
-                    if (s3.equals("--port") && s4 != null) {
-                        flag3 = true;
+                if (!var9.equals("nogui") && !var9.equals("--nogui"))
+                {
+                    if (var9.equals("--port") && var10 != null)
+                    {
+                        var11 = true;
 
-                        try {
-                            i = Integer.parseInt(s4);
-                        } catch (NumberFormatException numberformatexception) {
+                        try
+                        {
+                            var7 = Integer.parseInt(var10);
+                        }
+                        catch (NumberFormatException var13)
+                        {
                             ;
                         }
-                    } else if (s3.equals("--singleplayer") && s4 != null) {
-                        flag3 = true;
-                        s = s4;
-                    } else if (s3.equals("--universe") && s4 != null) {
-                        flag3 = true;
-                        s1 = s4;
-                    } else if (s3.equals("--world") && s4 != null) {
-                        flag3 = true;
-                        s2 = s4;
-                    } else if (s3.equals("--demo")) {
-                        flag1 = true;
-                    } else if (s3.equals("--bonusChest")) {
-                        flag2 = true;
                     }
-                } else {
-                    flag = false;
+                    else if (var9.equals("--singleplayer") && var10 != null)
+                    {
+                        var11 = true;
+                        var2 = var10;
+                    }
+                    else if (var9.equals("--universe") && var10 != null)
+                    {
+                        var11 = true;
+                        var3 = var10;
+                    }
+                    else if (var9.equals("--world") && var10 != null)
+                    {
+                        var11 = true;
+                        var4 = var10;
+                    }
+                    else if (var9.equals("--demo"))
+                    {
+                        var5 = true;
+                    }
+                    else if (var9.equals("--bonusChest"))
+                    {
+                        var6 = true;
+                    }
+                }
+                else
+                {
+                    var1 = false;
                 }
 
-                if (flag3) {
-                    ++j;
+                if (var11)
+                {
+                    ++var8;
                 }
             }
 
-            DedicatedServer dedicatedserver = new DedicatedServer(new File(s1));
+            DedicatedServer var15 = new DedicatedServer(new File(var3));
 
-            if (s != null) {
-                dedicatedserver.k(s);
+            if (var2 != null)
+            {
+                var15.k(var2);
             }
 
-            if (s2 != null) {
-                dedicatedserver.l(s2);
+            if (var4 != null)
+            {
+                var15.l(var4);
             }
 
-            if (i >= 0) {
-                dedicatedserver.setPort(i);
+            if (var7 >= 0)
+            {
+                var15.setPort(var7);
             }
 
-            if (flag1) {
-                dedicatedserver.b(true);
+            if (var5)
+            {
+                var15.b(true);
             }
 
-            if (flag2) {
-                dedicatedserver.c(true);
+            if (var6)
+            {
+                var15.c(true);
             }
 
-            if (flag) {
-                dedicatedserver.an();
+            if (var1)
+            {
+                var15.an();
             }
 
-            dedicatedserver.t();
-            Runtime.getRuntime().addShutdownHook(new ThreadShutdown(dedicatedserver));
-        } catch (Exception exception) {
-            log.log(Level.SEVERE, "Failed to start the minecraft server", exception);
+            var15.t();
+            Runtime.getRuntime().addShutdownHook(new ThreadShutdown(var15));
+        }
+        catch (Exception var14)
+        {
+            log.log(Level.SEVERE, "Failed to start the minecraft server", var14);
         }
     }
 
-    public void t() {
+    public void t()
+    {
         (new ThreadServerApplication(this, "Server thread")).start();
     }
 
-    public File e(String s) {
-        return new File(this.o(), s);
+    /**
+     * Returns a File object from the specified string.
+     */
+    public File e(String par1Str)
+    {
+        return new File(this.o(), par1Str);
     }
 
-    public void info(String s) {
-        log.info(s);
+    /**
+     * Logs the message with a level of INFO.
+     */
+    public void info(String par1Str)
+    {
+        log.info(par1Str);
     }
 
-    public void warning(String s) {
-        log.warning(s);
+    /**
+     * Logs the message with a level of WARN.
+     */
+    public void warning(String par1Str)
+    {
+        log.warning(par1Str);
     }
 
-    public WorldServer getWorldServer(int i) {
-        return i == -1 ? this.worldServer[1] : (i == 1 ? this.worldServer[2] : this.worldServer[0]);
+    /**
+     * Gets the worldServer by the given dimension.
+     */
+    public WorldServer getWorldServer(int par1)
+    {
+        return par1 == -1 ? this.worldServer[1] : (par1 == 1 ? this.worldServer[2] : this.worldServer[0]);
     }
 
-    public String u() {
+    /**
+     * Returns the server's hostname.
+     */
+    public String u()
+    {
         return this.serverIp;
     }
 
-    public int v() {
+    /**
+     * Never used, but "getServerPort" is already taken.
+     */
+    public int v()
+    {
         return this.s;
     }
 
-    public String w() {
+    /**
+     * Returns the server message of the day
+     */
+    public String w()
+    {
         return this.motd;
     }
 
-    public String getVersion() {
+    /**
+     * Returns the server's Minecraft version as string.
+     */
+    public String getVersion()
+    {
         return "1.4.5";
     }
 
-    public int y() {
+    /**
+     * Returns the number of players currently on the server.
+     */
+    public int y()
+    {
         return this.t.getPlayerCount();
     }
 
-    public int z() {
+    /**
+     * Returns the maximum number of players allowed on the server.
+     */
+    public int z()
+    {
         return this.t.getMaxPlayers();
     }
 
-    public String[] getPlayers() {
+    /**
+     * Returns an array of the usernames of all the connected players.
+     */
+    public String[] getPlayers()
+    {
         return this.t.d();
     }
 
-    public String getPlugins() {
+    /**
+     * Used by RCon's Query in the form of "MajorServerMod 1.2.3: MyPlugin 1.3; AnotherPlugin 2.1; AndSoForth 1.0".
+     */
+    public String getPlugins()
+    {
         return "";
     }
 
-    public String h(String s) {
+    /**
+     * Handle a command received by an RCon instance
+     */
+    public String h(String par1Str)
+    {
         RemoteControlCommandListener.instance.c();
-        this.q.a(RemoteControlCommandListener.instance, s);
+        this.q.a(RemoteControlCommandListener.instance, par1Str);
         return RemoteControlCommandListener.instance.d();
     }
 
-    public boolean isDebugging() {
+    /**
+     * Returns true if debugging is enabled, false otherwise.
+     */
+    public boolean isDebugging()
+    {
         return false;
     }
 
-    public void i(String s) {
-        log.log(Level.SEVERE, s);
+    /**
+     * Logs the error message with a level of SEVERE.
+     */
+    public void i(String par1Str)
+    {
+        log.log(Level.SEVERE, par1Str);
     }
 
-    public void j(String s) {
-        if (this.isDebugging()) {
-            log.log(Level.INFO, s);
+    /**
+     * If isDebuggingEnabled(), logs the message with a level of INFO.
+     */
+    public void j(String par1Str)
+    {
+        if (this.isDebugging())
+        {
+            log.log(Level.INFO, par1Str);
         }
     }
 
-    public String getServerModName() {
+    public String getServerModName()
+    {
         return "vanilla";
     }
 
-    public CrashReport b(CrashReport crashreport) {
-        crashreport.g().a("Profiler Position", (Callable) (new CrashReportProfilerPosition(this)));
-        if (this.worldServer != null && this.worldServer.length > 0 && this.worldServer[0] != null) {
-            crashreport.g().a("Vec3 Pool Size", (Callable) (new CrashReportVec3DPoolSize(this)));
+    /**
+     * Adds the server info, including from theWorldServer, to the crash report.
+     */
+    public CrashReport b(CrashReport par1CrashReport)
+    {
+        par1CrashReport.g().a("Profiler Position", new CrashReportProfilerPosition(this));
+
+        if (this.worldServer != null && this.worldServer.length > 0 && this.worldServer[0] != null)
+        {
+            par1CrashReport.g().a("Vec3 Pool Size", new CrashReportVec3DPoolSize(this));
         }
 
-        if (this.t != null) {
-            crashreport.g().a("Player Count", (Callable) (new CrashReportPlayerCount(this)));
+        if (this.t != null)
+        {
+            par1CrashReport.g().a("Player Count", new CrashReportPlayerCount(this));
         }
 
-        return crashreport;
+        return par1CrashReport;
     }
 
-    public List a(ICommandListener icommandlistener, String s) {
-        ArrayList arraylist = new ArrayList();
+    /**
+     * If par2Str begins with /, then it searches for commands, otherwise it returns players.
+     */
+    public List a(ICommandListener par1ICommandSender, String par2Str)
+    {
+        ArrayList var3 = new ArrayList();
 
-        if (s.startsWith("/")) {
-            s = s.substring(1);
-            boolean flag = !s.contains(" ");
-            List list = this.q.b(icommandlistener, s);
+        if (par2Str.startsWith("/"))
+        {
+            par2Str = par2Str.substring(1);
+            boolean var10 = !par2Str.contains(" ");
+            List var11 = this.q.b(par1ICommandSender, par2Str);
 
-            if (list != null) {
-                Iterator iterator = list.iterator();
+            if (var11 != null)
+            {
+                Iterator var12 = var11.iterator();
 
-                while (iterator.hasNext()) {
-                    String s1 = (String) iterator.next();
+                while (var12.hasNext())
+                {
+                    String var13 = (String)var12.next();
 
-                    if (flag) {
-                        arraylist.add("/" + s1);
-                    } else {
-                        arraylist.add(s1);
+                    if (var10)
+                    {
+                        var3.add("/" + var13);
+                    }
+                    else
+                    {
+                        var3.add(var13);
                     }
                 }
             }
 
-            return arraylist;
-        } else {
-            String[] astring = s.split(" ", -1);
-            String s2 = astring[astring.length - 1];
-            String[] astring1 = this.t.d();
-            int i = astring1.length;
+            return var3;
+        }
+        else
+        {
+            String[] var4 = par2Str.split(" ", -1);
+            String var5 = var4[var4.length - 1];
+            String[] var6 = this.t.d();
+            int var7 = var6.length;
 
-            for (int j = 0; j < i; ++j) {
-                String s3 = astring1[j];
+            for (int var8 = 0; var8 < var7; ++var8)
+            {
+                String var9 = var6[var8];
 
-                if (CommandAbstract.a(s2, s3)) {
-                    arraylist.add(s3);
+                if (CommandAbstract.a(var5, var9))
+                {
+                    var3.add(var9);
                 }
             }
 
-            return arraylist;
+            return var3;
         }
     }
 
-    public static MinecraftServer getServer() {
+    /**
+     * Gets mcServer.
+     */
+    public static MinecraftServer getServer()
+    {
         return l;
     }
 
-    public String getName() {
+    /**
+     * Gets the name of this command sender (usually username, but possibly "Rcon")
+     */
+    public String getName()
+    {
         return "Server";
     }
 
-    public void sendMessage(String s) {
-        log.info(StripColor.a(s));
+    public void sendMessage(String par1Str)
+    {
+        log.info(StripColor.a(par1Str));
     }
 
-    public boolean a(int i, String s) {
+    /**
+     * Returns true if the command sender is allowed to use the given command.
+     */
+    public boolean a(int par1, String par2Str)
+    {
         return true;
     }
 
-    public String a(String s, Object... aobject) {
-        return LocaleLanguage.a().a(s, aobject);
+    /**
+     * Translates and formats the given string key with the given arguments.
+     */
+    public String a(String par1Str, Object... par2ArrayOfObj)
+    {
+        return LocaleLanguage.a().a(par1Str, par2ArrayOfObj);
     }
 
-    public ICommandHandler getCommandHandler() {
+    public ICommandHandler getCommandHandler()
+    {
         return this.q;
     }
 
-    public KeyPair F() {
+    /**
+     * Gets KeyPair instanced in MinecraftServer.
+     */
+    public KeyPair F()
+    {
         return this.I;
     }
 
-    public int G() {
+    /**
+     * Gets serverPort.
+     */
+    public int G()
+    {
         return this.s;
     }
 
-    public void setPort(int i) {
-        this.s = i;
+    public void setPort(int par1)
+    {
+        this.s = par1;
     }
 
-    public String H() {
+    /**
+     * Returns the username of the server owner (for integrated servers)
+     */
+    public String H()
+    {
         return this.J;
     }
 
-    public void k(String s) {
-        this.J = s;
+    /**
+     * Sets the username of the owner of this server (in the case of an integrated server)
+     */
+    public void k(String par1Str)
+    {
+        this.J = par1Str;
     }
 
-    public boolean I() {
+    public boolean I()
+    {
         return this.J != null;
     }
 
-    public String J() {
+    public String J()
+    {
         return this.K;
     }
 
-    public void l(String s) {
-        this.K = s;
+    public void l(String par1Str)
+    {
+        this.K = par1Str;
     }
 
-    public void a(KeyPair keypair) {
-        this.I = keypair;
+    public void a(KeyPair par1KeyPair)
+    {
+        this.I = par1KeyPair;
     }
 
-    public void c(int i) {
-        for (int j = 0; j < this.worldServer.length; ++j) {
-            WorldServer worldserver = this.worldServer[j];
+    public void c(int par1)
+    {
+        for (int var2 = 0; var2 < this.worldServer.length; ++var2)
+        {
+            WorldServer var3 = this.worldServer[var2];
 
-            if (worldserver != null) {
-                if (worldserver.getWorldData().isHardcore()) {
-                    worldserver.difficulty = 3;
-                    worldserver.setSpawnFlags(true, true);
-                } else if (this.I()) {
-                    worldserver.difficulty = i;
-                    worldserver.setSpawnFlags(worldserver.difficulty > 0, true);
-                } else {
-                    worldserver.difficulty = i;
-                    worldserver.setSpawnFlags(this.getSpawnMonsters(), this.spawnAnimals);
+            if (var3 != null)
+            {
+                if (var3.getWorldData().isHardcore())
+                {
+                    var3.difficulty = 3;
+                    var3.setSpawnFlags(true, true);
+                }
+                else if (this.I())
+                {
+                    var3.difficulty = par1;
+                    var3.setSpawnFlags(var3.difficulty > 0, true);
+                }
+                else
+                {
+                    var3.difficulty = par1;
+                    var3.setSpawnFlags(this.getSpawnMonsters(), this.spawnAnimals);
                 }
             }
         }
     }
 
-    protected boolean getSpawnMonsters() {
+    protected boolean getSpawnMonsters()
+    {
         return true;
     }
 
-    public boolean M() {
+    /**
+     * Gets whether this is a demo or not.
+     */
+    public boolean M()
+    {
         return this.demoMode;
     }
 
-    public void b(boolean flag) {
-        this.demoMode = flag;
+    /**
+     * Sets whether this is a demo or not.
+     */
+    public void b(boolean par1)
+    {
+        this.demoMode = par1;
     }
 
-    public void c(boolean flag) {
-        this.N = flag;
+    public void c(boolean par1)
+    {
+        this.N = par1;
     }
 
-    public Convertable getConvertable() {
+    public Convertable getConvertable()
+    {
         return this.convertable;
     }
 
-    public void P() {
+    /**
+     * WARNING : directly calls
+     * getActiveAnvilConverter().deleteWorldDirectory(theWorldServer[0].getSaveHandler().getSaveDirectoryName());
+     */
+    public void P()
+    {
         this.O = true;
         this.getConvertable().d();
 
-        for (int i = 0; i < this.worldServer.length; ++i) {
-            WorldServer worldserver = this.worldServer[i];
+        for (int var1 = 0; var1 < this.worldServer.length; ++var1)
+        {
+            WorldServer var2 = this.worldServer[var1];
 
-            if (worldserver != null) {
-                worldserver.saveLevel();
+            if (var2 != null)
+            {
+                var2.saveLevel();
             }
         }
 
@@ -790,167 +1155,223 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         this.safeShutdown();
     }
 
-    public String getTexturePack() {
+    public String getTexturePack()
+    {
         return this.P;
     }
 
-    public void setTexturePack(String s) {
-        this.P = s;
+    public void setTexturePack(String par1Str)
+    {
+        this.P = par1Str;
     }
 
-    public void a(MojangStatisticsGenerator mojangstatisticsgenerator) {
-        mojangstatisticsgenerator.a("whitelist_enabled", Boolean.valueOf(false));
-        mojangstatisticsgenerator.a("whitelist_count", Integer.valueOf(0));
-        mojangstatisticsgenerator.a("players_current", Integer.valueOf(this.y()));
-        mojangstatisticsgenerator.a("players_max", Integer.valueOf(this.z()));
-        mojangstatisticsgenerator.a("players_seen", Integer.valueOf(this.t.getSeenPlayers().length));
-        mojangstatisticsgenerator.a("uses_auth", Boolean.valueOf(this.onlineMode));
-        mojangstatisticsgenerator.a("gui_state", this.ag() ? "enabled" : "disabled");
-        mojangstatisticsgenerator.a("avg_tick_ms", Integer.valueOf((int) (MathHelper.a(this.j) * 1.0E-6D)));
-        mojangstatisticsgenerator.a("avg_sent_packet_count", Integer.valueOf((int) MathHelper.a(this.f)));
-        mojangstatisticsgenerator.a("avg_sent_packet_size", Integer.valueOf((int) MathHelper.a(this.g)));
-        mojangstatisticsgenerator.a("avg_rec_packet_count", Integer.valueOf((int) MathHelper.a(this.h)));
-        mojangstatisticsgenerator.a("avg_rec_packet_size", Integer.valueOf((int) MathHelper.a(this.i)));
-        int i = 0;
+    public void a(MojangStatisticsGenerator par1PlayerUsageSnooper)
+    {
+        par1PlayerUsageSnooper.a("whitelist_enabled", Boolean.valueOf(false));
+        par1PlayerUsageSnooper.a("whitelist_count", Integer.valueOf(0));
+        par1PlayerUsageSnooper.a("players_current", Integer.valueOf(this.y()));
+        par1PlayerUsageSnooper.a("players_max", Integer.valueOf(this.z()));
+        par1PlayerUsageSnooper.a("players_seen", Integer.valueOf(this.t.getSeenPlayers().length));
+        par1PlayerUsageSnooper.a("uses_auth", Boolean.valueOf(this.onlineMode));
+        par1PlayerUsageSnooper.a("gui_state", this.ag() ? "enabled" : "disabled");
+        par1PlayerUsageSnooper.a("avg_tick_ms", Integer.valueOf((int) (MathHelper.a(this.j) * 1.0E-6D)));
+        par1PlayerUsageSnooper.a("avg_sent_packet_count", Integer.valueOf((int) MathHelper.a(this.f)));
+        par1PlayerUsageSnooper.a("avg_sent_packet_size", Integer.valueOf((int) MathHelper.a(this.g)));
+        par1PlayerUsageSnooper.a("avg_rec_packet_count", Integer.valueOf((int) MathHelper.a(this.h)));
+        par1PlayerUsageSnooper.a("avg_rec_packet_size", Integer.valueOf((int) MathHelper.a(this.i)));
+        int var2 = 0;
 
-        for (int j = 0; j < this.worldServer.length; ++j) {
-            if (this.worldServer[j] != null) {
-                WorldServer worldserver = this.worldServer[j];
-                WorldData worlddata = worldserver.getWorldData();
-
-                mojangstatisticsgenerator.a("world[" + i + "][dimension]", Integer.valueOf(worldserver.worldProvider.dimension));
-                mojangstatisticsgenerator.a("world[" + i + "][mode]", worlddata.getGameType());
-                mojangstatisticsgenerator.a("world[" + i + "][difficulty]", Integer.valueOf(worldserver.difficulty));
-                mojangstatisticsgenerator.a("world[" + i + "][hardcore]", Boolean.valueOf(worlddata.isHardcore()));
-                mojangstatisticsgenerator.a("world[" + i + "][generator_name]", worlddata.getType().name());
-                mojangstatisticsgenerator.a("world[" + i + "][generator_version]", Integer.valueOf(worlddata.getType().getVersion()));
-                mojangstatisticsgenerator.a("world[" + i + "][height]", Integer.valueOf(this.D));
-                mojangstatisticsgenerator.a("world[" + i + "][chunks_loaded]", Integer.valueOf(worldserver.I().getLoadedChunks()));
-                ++i;
+        for (int var3 = 0; var3 < this.worldServer.length; ++var3)
+        {
+            if (this.worldServer[var3] != null)
+            {
+                WorldServer var4 = this.worldServer[var3];
+                WorldData var5 = var4.getWorldData();
+                par1PlayerUsageSnooper.a("world[" + var2 + "][dimension]", Integer.valueOf(var4.worldProvider.dimension));
+                par1PlayerUsageSnooper.a("world[" + var2 + "][mode]", var5.getGameType());
+                par1PlayerUsageSnooper.a("world[" + var2 + "][difficulty]", Integer.valueOf(var4.difficulty));
+                par1PlayerUsageSnooper.a("world[" + var2 + "][hardcore]", Boolean.valueOf(var5.isHardcore()));
+                par1PlayerUsageSnooper.a("world[" + var2 + "][generator_name]", var5.getType().name());
+                par1PlayerUsageSnooper.a("world[" + var2 + "][generator_version]", Integer.valueOf(var5.getType().getVersion()));
+                par1PlayerUsageSnooper.a("world[" + var2 + "][height]", Integer.valueOf(this.D));
+                par1PlayerUsageSnooper.a("world[" + var2 + "][chunks_loaded]", Integer.valueOf(var4.I().getLoadedChunks()));
+                ++var2;
             }
         }
 
-        mojangstatisticsgenerator.a("worlds", Integer.valueOf(i));
+        par1PlayerUsageSnooper.a("worlds", Integer.valueOf(var2));
     }
 
-    public void b(MojangStatisticsGenerator mojangstatisticsgenerator) {
-        mojangstatisticsgenerator.a("singleplayer", Boolean.valueOf(this.I()));
-        mojangstatisticsgenerator.a("server_brand", this.getServerModName());
-        mojangstatisticsgenerator.a("gui_supported", GraphicsEnvironment.isHeadless() ? "headless" : "supported");
-        mojangstatisticsgenerator.a("dedicated", Boolean.valueOf(this.T()));
+    public void b(MojangStatisticsGenerator par1PlayerUsageSnooper)
+    {
+        par1PlayerUsageSnooper.a("singleplayer", Boolean.valueOf(this.I()));
+        par1PlayerUsageSnooper.a("server_brand", this.getServerModName());
+        par1PlayerUsageSnooper.a("gui_supported", GraphicsEnvironment.isHeadless() ? "headless" : "supported");
+        par1PlayerUsageSnooper.a("dedicated", Boolean.valueOf(this.T()));
     }
 
-    public boolean getSnooperEnabled() {
+    /**
+     * Returns whether snooping is enabled or not.
+     */
+    public boolean getSnooperEnabled()
+    {
         return true;
     }
 
-    public int S() {
+    /**
+     * This is checked to be 16 upon receiving the packet, otherwise the packet is ignored.
+     */
+    public int S()
+    {
         return 16;
     }
 
     public abstract boolean T();
 
-    public boolean getOnlineMode() {
+    public boolean getOnlineMode()
+    {
         return this.onlineMode;
     }
 
-    public void setOnlineMode(boolean flag) {
-        this.onlineMode = flag;
+    public void setOnlineMode(boolean par1)
+    {
+        this.onlineMode = par1;
     }
 
-    public boolean getSpawnAnimals() {
+    public boolean getSpawnAnimals()
+    {
         return this.spawnAnimals;
     }
 
-    public void setSpawnAnimals(boolean flag) {
-        this.spawnAnimals = flag;
+    public void setSpawnAnimals(boolean par1)
+    {
+        this.spawnAnimals = par1;
     }
 
-    public boolean getSpawnNPCs() {
+    public boolean getSpawnNPCs()
+    {
         return this.spawnNPCs;
     }
 
-    public void setSpawnNPCs(boolean flag) {
-        this.spawnNPCs = flag;
+    public void setSpawnNPCs(boolean par1)
+    {
+        this.spawnNPCs = par1;
     }
 
-    public boolean getPvP() {
+    public boolean getPvP()
+    {
         return this.pvpMode;
     }
 
-    public void setPvP(boolean flag) {
-        this.pvpMode = flag;
+    public void setPvP(boolean par1)
+    {
+        this.pvpMode = par1;
     }
 
-    public boolean getAllowFlight() {
+    public boolean getAllowFlight()
+    {
         return this.allowFlight;
     }
 
-    public void setAllowFlight(boolean flag) {
-        this.allowFlight = flag;
+    public void setAllowFlight(boolean par1)
+    {
+        this.allowFlight = par1;
     }
 
+    /**
+     * Return whether command blocks are enabled.
+     */
     public abstract boolean getEnableCommandBlock();
 
-    public String getMotd() {
+    public String getMotd()
+    {
         return this.motd;
     }
 
-    public void setMotd(String s) {
-        this.motd = s;
+    public void setMotd(String par1Str)
+    {
+        this.motd = par1Str;
     }
 
-    public int getMaxBuildHeight() {
+    public int getMaxBuildHeight()
+    {
         return this.D;
     }
 
-    public void d(int i) {
-        this.D = i;
+    public void d(int par1)
+    {
+        this.D = par1;
     }
 
-    public boolean isStopped() {
+    public boolean isStopped()
+    {
         return this.isStopped;
     }
 
-    public ServerConfigurationManagerAbstract getServerConfigurationManager() {
+    public ServerConfigurationManagerAbstract getServerConfigurationManager()
+    {
         return this.t;
     }
 
-    public void a(ServerConfigurationManagerAbstract serverconfigurationmanagerabstract) {
-        this.t = serverconfigurationmanagerabstract;
+    public void a(ServerConfigurationManagerAbstract par1ServerConfigurationManager)
+    {
+        this.t = par1ServerConfigurationManager;
     }
 
-    public void a(EnumGamemode enumgamemode) {
-        for (int i = 0; i < this.worldServer.length; ++i) {
-            getServer().worldServer[i].getWorldData().setGameType(enumgamemode);
+    /**
+     * Sets the game type for all worlds.
+     */
+    public void a(EnumGamemode par1EnumGameType)
+    {
+        for (int var2 = 0; var2 < this.worldServer.length; ++var2)
+        {
+            getServer().worldServer[var2].getWorldData().setGameType(par1EnumGameType);
         }
     }
 
     public abstract ServerConnection ae();
 
-    public boolean ag() {
+    public boolean ag()
+    {
         return false;
     }
 
-    public abstract String a(EnumGamemode enumgamemode, boolean flag);
+    /**
+     * On dedicated does nothing. On integrated, sets commandsAllowedForAll, gameType and allows external connections.
+     */
+    public abstract String a(EnumGamemode var1, boolean var2);
 
-    public int ah() {
+    public int ah()
+    {
         return this.ticks;
     }
 
-    public void ai() {
+    public void ai()
+    {
         this.T = true;
     }
 
-    public ChunkCoordinates b() {
+    /**
+     * Return the position for this command sender.
+     */
+    public ChunkCoordinates b()
+    {
         return new ChunkCoordinates(0, 0, 0);
     }
 
-    public int getSpawnProtection() {
+    /**
+     * Return the spawn protection area's size.
+     */
+    public int getSpawnProtection()
+    {
         return 16;
     }
 
-    public static ServerConfigurationManagerAbstract a(MinecraftServer minecraftserver) {
-        return minecraftserver.t;
+    /**
+     * Gets the current player count, maximum player count, and player entity list.
+     */
+    public static ServerConfigurationManagerAbstract a(MinecraftServer par0MinecraftServer)
+    {
+        return par0MinecraftServer.t;
     }
 }

@@ -2,161 +2,258 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockPistonMoving extends BlockContainer {
-
-    public BlockPistonMoving(int i) {
-        super(i, Material.PISTON);
+public class BlockPistonMoving extends BlockContainer
+{
+    public BlockPistonMoving(int par1)
+    {
+        super(par1, Material.PISTON);
         this.c(-1.0F);
     }
 
-    public TileEntity a(World world) {
+    /**
+     * Returns a new instance of a block's tile entity class. Called on placing the block.
+     */
+    public TileEntity a(World par1World)
+    {
         return null;
     }
 
-    public void onPlace(World world, int i, int j, int k) {}
+    /**
+     * Called whenever the block is added into the world. Args: world, x, y, z
+     */
+    public void onPlace(World par1World, int par2, int par3, int par4) {}
 
-    public void remove(World world, int i, int j, int k, int l, int i1) {
-        TileEntity tileentity = world.getTileEntity(i, j, k);
+    /**
+     * ejects contained items into the world, and notifies neighbours of an update, as appropriate
+     */
+    public void remove(World par1World, int par2, int par3, int par4, int par5, int par6)
+    {
+        TileEntity var7 = par1World.getTileEntity(par2, par3, par4);
 
-        if (tileentity instanceof TileEntityPiston) {
-            ((TileEntityPiston) tileentity).f();
-        } else {
-            super.remove(world, i, j, k, l, i1);
+        if (var7 instanceof TileEntityPiston)
+        {
+            ((TileEntityPiston)var7).f();
+        }
+        else
+        {
+            super.remove(par1World, par2, par3, par4, par5, par6);
         }
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
         return false;
     }
 
-    public boolean canPlace(World world, int i, int j, int k, int l) {
+    /**
+     * checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4, int par5)
+    {
         return false;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return -1;
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
-        if (!world.isStatic && world.getTileEntity(i, j, k) == null) {
-            world.setTypeId(i, j, k, 0);
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
+        if (!par1World.isStatic && par1World.getTileEntity(par2, par3, par4) == null)
+        {
+            par1World.setTypeId(par2, par3, par4, 0);
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return 0;
     }
 
-    public void dropNaturally(World world, int i, int j, int k, int l, float f, int i1) {
-        if (!world.isStatic) {
-            TileEntityPiston tileentitypiston = this.d(world, i, j, k);
+    /**
+     * Drops the block items with a specified chance of dropping the specified items
+     */
+    public void dropNaturally(World par1World, int par2, int par3, int par4, int par5, float par6, int par7)
+    {
+        if (!par1World.isStatic)
+        {
+            TileEntityPiston var8 = this.d((IBlockAccess)par1World, par2, par3, par4);
 
-            if (tileentitypiston != null) {
-                Block.byId[tileentitypiston.a()].c(world, i, j, k, tileentitypiston.p(), 0);
+            if (var8 != null)
+            {
+                Block.byId[var8.a()].c(par1World, par2, par3, par4, var8.p(), 0);
             }
         }
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        if (!world.isStatic && world.getTileEntity(i, j, k) == null) {
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        if (!par1World.isStatic && par1World.getTileEntity(par2, par3, par4) == null)
+        {
             ;
         }
     }
 
-    public static TileEntity a(int i, int j, int k, boolean flag, boolean flag1) {
-        return new TileEntityPiston(i, j, k, flag, flag1);
+    /**
+     * gets a new TileEntityPiston created with the arguments provided.
+     */
+    public static TileEntity a(int par0, int par1, int par2, boolean par3, boolean par4)
+    {
+        return new TileEntityPiston(par0, par1, par2, par3, par4);
     }
 
-    public AxisAlignedBB e(World world, int i, int j, int k) {
-        TileEntityPiston tileentitypiston = this.d(world, i, j, k);
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
+    {
+        TileEntityPiston var5 = this.d((IBlockAccess)par1World, par2, par3, par4);
 
-        if (tileentitypiston == null) {
+        if (var5 == null)
+        {
             return null;
-        } else {
-            float f = tileentitypiston.a(0.0F);
+        }
+        else
+        {
+            float var6 = var5.a(0.0F);
 
-            if (tileentitypiston.b()) {
-                f = 1.0F - f;
+            if (var5.b())
+            {
+                var6 = 1.0F - var6;
             }
 
-            return this.b(world, i, j, k, tileentitypiston.a(), f, tileentitypiston.c());
+            return this.b(par1World, par2, par3, par4, var5.a(), var6, var5.c());
         }
     }
 
-    public void updateShape(IBlockAccess iblockaccess, int i, int j, int k) {
-        TileEntityPiston tileentitypiston = this.d(iblockaccess, i, j, k);
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void updateShape(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        TileEntityPiston var5 = this.d(par1IBlockAccess, par2, par3, par4);
 
-        if (tileentitypiston != null) {
-            Block block = Block.byId[tileentitypiston.a()];
+        if (var5 != null)
+        {
+            Block var6 = Block.byId[var5.a()];
 
-            if (block == null || block == this) {
+            if (var6 == null || var6 == this)
+            {
                 return;
             }
 
-            block.updateShape(iblockaccess, i, j, k);
-            float f = tileentitypiston.a(0.0F);
+            var6.updateShape(par1IBlockAccess, par2, par3, par4);
+            float var7 = var5.a(0.0F);
 
-            if (tileentitypiston.b()) {
-                f = 1.0F - f;
+            if (var5.b())
+            {
+                var7 = 1.0F - var7;
             }
 
-            int l = tileentitypiston.c();
-
-            this.minX = block.v() - (double) ((float) Facing.b[l] * f);
-            this.minY = block.x() - (double) ((float) Facing.c[l] * f);
-            this.minZ = block.z() - (double) ((float) Facing.d[l] * f);
-            this.maxX = block.w() - (double) ((float) Facing.b[l] * f);
-            this.maxY = block.y() - (double) ((float) Facing.c[l] * f);
-            this.maxZ = block.A() - (double) ((float) Facing.d[l] * f);
+            int var8 = var5.c();
+            this.minX = var6.v() - (double)((float) Facing.b[var8] * var7);
+            this.minY = var6.x() - (double)((float) Facing.c[var8] * var7);
+            this.minZ = var6.z() - (double)((float) Facing.d[var8] * var7);
+            this.maxX = var6.w() - (double)((float) Facing.b[var8] * var7);
+            this.maxY = var6.y() - (double)((float) Facing.c[var8] * var7);
+            this.maxZ = var6.A() - (double)((float) Facing.d[var8] * var7);
         }
     }
 
-    public AxisAlignedBB b(World world, int i, int j, int k, int l, float f, int i1) {
-        if (l != 0 && l != this.id) {
-            AxisAlignedBB axisalignedbb = Block.byId[l].e(world, i, j, k);
+    public AxisAlignedBB b(World par1World, int par2, int par3, int par4, int par5, float par6, int par7)
+    {
+        if (par5 != 0 && par5 != this.id)
+        {
+            AxisAlignedBB var8 = Block.byId[par5].e(par1World, par2, par3, par4);
 
-            if (axisalignedbb == null) {
+            if (var8 == null)
+            {
                 return null;
-            } else {
-                if (Facing.b[i1] < 0) {
-                    axisalignedbb.a -= (double) ((float) Facing.b[i1] * f);
-                } else {
-                    axisalignedbb.d -= (double) ((float) Facing.b[i1] * f);
-                }
-
-                if (Facing.c[i1] < 0) {
-                    axisalignedbb.b -= (double) ((float) Facing.c[i1] * f);
-                } else {
-                    axisalignedbb.e -= (double) ((float) Facing.c[i1] * f);
-                }
-
-                if (Facing.d[i1] < 0) {
-                    axisalignedbb.c -= (double) ((float) Facing.d[i1] * f);
-                } else {
-                    axisalignedbb.f -= (double) ((float) Facing.d[i1] * f);
-                }
-
-                return axisalignedbb;
             }
-        } else {
+            else
+            {
+                if (Facing.b[par7] < 0)
+                {
+                    var8.a -= (double)((float) Facing.b[par7] * par6);
+                }
+                else
+                {
+                    var8.d -= (double)((float) Facing.b[par7] * par6);
+                }
+
+                if (Facing.c[par7] < 0)
+                {
+                    var8.b -= (double)((float) Facing.c[par7] * par6);
+                }
+                else
+                {
+                    var8.e -= (double)((float) Facing.c[par7] * par6);
+                }
+
+                if (Facing.d[par7] < 0)
+                {
+                    var8.c -= (double)((float) Facing.d[par7] * par6);
+                }
+                else
+                {
+                    var8.f -= (double)((float) Facing.d[par7] * par6);
+                }
+
+                return var8;
+            }
+        }
+        else
+        {
             return null;
         }
     }
 
-    private TileEntityPiston d(IBlockAccess iblockaccess, int i, int j, int k) {
-        TileEntity tileentity = iblockaccess.getTileEntity(i, j, k);
-
-        return tileentity instanceof TileEntityPiston ? (TileEntityPiston) tileentity : null;
+    /**
+     * gets the piston tile entity at the specified location
+     */
+    private TileEntityPiston d(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        TileEntity var5 = par1IBlockAccess.getTileEntity(par2, par3, par4);
+        return var5 instanceof TileEntityPiston ? (TileEntityPiston)var5 : null;
     }
 }

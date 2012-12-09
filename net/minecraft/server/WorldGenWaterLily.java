@@ -2,18 +2,19 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenWaterLily extends WorldGenerator {
+public class WorldGenWaterLily extends WorldGenerator
+{
+    public boolean a(World par1World, Random par2Random, int par3, int par4, int par5)
+    {
+        for (int var6 = 0; var6 < 10; ++var6)
+        {
+            int var7 = par3 + par2Random.nextInt(8) - par2Random.nextInt(8);
+            int var8 = par4 + par2Random.nextInt(4) - par2Random.nextInt(4);
+            int var9 = par5 + par2Random.nextInt(8) - par2Random.nextInt(8);
 
-    public WorldGenWaterLily() {}
-
-    public boolean a(World world, Random random, int i, int j, int k) {
-        for (int l = 0; l < 10; ++l) {
-            int i1 = i + random.nextInt(8) - random.nextInt(8);
-            int j1 = j + random.nextInt(4) - random.nextInt(4);
-            int k1 = k + random.nextInt(8) - random.nextInt(8);
-
-            if (world.isEmpty(i1, j1, k1) && Block.WATER_LILY.canPlace(world, i1, j1, k1)) {
-                world.setRawTypeId(i1, j1, k1, Block.WATER_LILY.id);
+            if (par1World.isEmpty(var7, var8, var9) && Block.WATER_LILY.canPlace(par1World, var7, var8, var9))
+            {
+                par1World.setRawTypeId(var7, var8, var9, Block.WATER_LILY.id);
             }
         }
 

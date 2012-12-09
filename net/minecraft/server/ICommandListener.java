@@ -1,14 +1,26 @@
 package net.minecraft.server;
 
-public interface ICommandListener {
-
+public interface ICommandListener
+{
+    /**
+     * Gets the name of this command sender (usually username, but possibly "Rcon")
+     */
     String getName();
 
-    void sendMessage(String s);
+    void sendMessage(String var1);
 
-    boolean a(int i, String s);
+    /**
+     * Returns true if the command sender is allowed to use the given command.
+     */
+    boolean a(int var1, String var2);
 
-    String a(String s, Object... aobject);
+    /**
+     * Translates and formats the given string key with the given arguments.
+     */
+    String a(String var1, Object... var2);
 
+    /**
+     * Return the position for this command sender.
+     */
     ChunkCoordinates b();
 }

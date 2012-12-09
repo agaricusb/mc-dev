@@ -7,95 +7,128 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 
-public class RemoteControlSession extends RemoteConnectionThread {
-
+public class RemoteControlSession extends RemoteConnectionThread
+{
+    /**
+     * True if the client has succefssfully logged into the RCon, otherwise false
+     */
     private boolean g = false;
+
+    /** The client's Socket connection */
     private Socket h;
+
+    /** A buffer for incoming Socket data */
     private byte[] i = new byte[1460];
+
+    /** The RCon password */
     private String j;
 
-    RemoteControlSession(IMinecraftServer iminecraftserver, Socket socket) {
-        super(iminecraftserver);
-        this.h = socket;
+    RemoteControlSession(IMinecraftServer par1IServer, Socket par2Socket)
+    {
+        super(par1IServer);
+        this.h = par2Socket;
 
-        try {
+        try
+        {
             this.h.setSoTimeout(0);
-        } catch (Exception exception) {
+        }
+        catch (Exception var4)
+        {
             this.running = false;
         }
 
-        this.j = iminecraftserver.a("rcon.password", "");
-        this.info("Rcon connection from: " + socket.getInetAddress());
+        this.j = par1IServer.a("rcon.password", "");
+        this.info("Rcon connection from: " + par2Socket.getInetAddress());
     }
 
-    public void run() {
-        while (true) {
-            try {
-                if (!this.running) {
+    public void run()
+    {
+        while (true)
+        {
+            try
+            {
+                if (!this.running)
+                {
                     break;
                 }
 
-                BufferedInputStream bufferedinputstream = new BufferedInputStream(this.h.getInputStream());
-                int i = bufferedinputstream.read(this.i, 0, 1460);
+                BufferedInputStream var1 = new BufferedInputStream(this.h.getInputStream());
+                int var2 = var1.read(this.i, 0, 1460);
 
-                if (10 > i) {
-                    return;
-                }
+                if (10 <= var2)
+                {
+                    byte var3 = 0;
+                    int var4 = StatusChallengeUtils.b(this.i, 0, var2);
 
-                byte b0 = 0;
-                int j = StatusChallengeUtils.b(this.i, 0, i);
+                    if (var4 != var2 - 4)
+                    {
+                        return;
+                    }
 
-                if (j == i - 4) {
-                    int k = b0 + 4;
-                    int l = StatusChallengeUtils.b(this.i, k, i);
+                    int var21 = var3 + 4;
+                    int var5 = StatusChallengeUtils.b(this.i, var21, var2);
+                    var21 += 4;
+                    int var6 = StatusChallengeUtils.b(this.i, var21);
+                    var21 += 4;
 
-                    k += 4;
-                    int i1 = StatusChallengeUtils.b(this.i, k);
+                    switch (var6)
+                    {
+                        case 2:
+                            if (this.g)
+                            {
+                                String var8 = StatusChallengeUtils.a(this.i, var21, var2);
 
-                    k += 4;
-                    switch (i1) {
-                    case 2:
-                        if (this.g) {
-                            String s = StatusChallengeUtils.a(this.i, k, i);
+                                try
+                                {
+                                    this.a(var5, this.server.h(var8));
+                                }
+                                catch (Exception var16)
+                                {
+                                    this.a(var5, "Error executing: " + var8 + " (" + var16.getMessage() + ")");
+                                }
 
-                            try {
-                                this.a(l, this.server.h(s));
-                            } catch (Exception exception) {
-                                this.a(l, "Error executing: " + s + " (" + exception.getMessage() + ")");
+                                continue;
                             }
+
+                            this.f();
                             continue;
-                        }
 
-                        this.f();
-                        continue;
+                        case 3:
+                            String var7 = StatusChallengeUtils.a(this.i, var21, var2);
+                            int var10000 = var21 + var7.length();
 
-                    case 3:
-                        String s1 = StatusChallengeUtils.a(this.i, k, i);
-                        int j1 = k + s1.length();
+                            if (0 != var7.length() && var7.equals(this.j))
+                            {
+                                this.g = true;
+                                this.a(var5, 2, "");
+                                continue;
+                            }
 
-                        if (0 != s1.length() && s1.equals(this.j)) {
-                            this.g = true;
-                            this.a(l, 2, "");
+                            this.g = false;
+                            this.f();
                             continue;
-                        }
 
-                        this.g = false;
-                        this.f();
-                        continue;
-
-                    default:
-                        this.a(l, String.format("Unknown request %s", new Object[] { Integer.toHexString(i1)}));
-                        continue;
+                        default:
+                            this.a(var5, String.format("Unknown request %s", new Object[]{Integer.toHexString(var6)}));
+                            continue;
                     }
                 }
-            } catch (SocketTimeoutException sockettimeoutexception) {
+            }
+            catch (SocketTimeoutException var17)
+            {
                 break;
-            } catch (IOException ioexception) {
+            }
+            catch (IOException var18)
+            {
                 break;
-            } catch (Exception exception1) {
-                System.out.println(exception1);
+            }
+            catch (Exception var19)
+            {
+                System.out.println(var19);
                 break;
-            } finally {
+            }
+            finally
+            {
                 this.g();
             }
 
@@ -103,42 +136,61 @@ public class RemoteControlSession extends RemoteConnectionThread {
         }
     }
 
-    private void a(int i, int j, String s) {
-        ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream(1248);
-        DataOutputStream dataoutputstream = new DataOutputStream(bytearrayoutputstream);
-
-        dataoutputstream.writeInt(Integer.reverseBytes(s.length() + 10));
-        dataoutputstream.writeInt(Integer.reverseBytes(i));
-        dataoutputstream.writeInt(Integer.reverseBytes(j));
-        dataoutputstream.writeBytes(s);
-        dataoutputstream.write(0);
-        dataoutputstream.write(0);
-        this.h.getOutputStream().write(bytearrayoutputstream.toByteArray());
+    /**
+     * Sends the given response message to the client
+     */
+    private void a(int par1, int par2, String par3Str) throws IOException
+    {
+        ByteArrayOutputStream var4 = new ByteArrayOutputStream(1248);
+        DataOutputStream var5 = new DataOutputStream(var4);
+        var5.writeInt(Integer.reverseBytes(par3Str.length() + 10));
+        var5.writeInt(Integer.reverseBytes(par1));
+        var5.writeInt(Integer.reverseBytes(par2));
+        var5.writeBytes(par3Str);
+        var5.write(0);
+        var5.write(0);
+        this.h.getOutputStream().write(var4.toByteArray());
     }
 
-    private void f() {
+    /**
+     * Sends the standard RCon 'authorization failed' response packet
+     */
+    private void f() throws IOException
+    {
         this.a(-1, 2, "");
     }
 
-    private void a(int i, String s) {
-        int j = s.length();
+    /**
+     * Splits the response message into individual packets and sends each one
+     */
+    private void a(int par1, String par2Str) throws IOException
+    {
+        int var3 = par2Str.length();
 
-        do {
-            int k = 4096 <= j ? 4096 : j;
-
-            this.a(i, 0, s.substring(0, k));
-            s = s.substring(k);
-            j = s.length();
-        } while (0 != j);
-
+        do
+        {
+            int var4 = 4096 <= var3 ? 4096 : var3;
+            this.a(par1, 0, par2Str.substring(0, var4));
+            par2Str = par2Str.substring(var4);
+            var3 = par2Str.length();
+        }
+        while (0 != var3);
     }
 
-    private void g() {
-        if (null != this.h) {
-            try {
+    /**
+     * Closes the client socket
+     */
+    private void g()
+    {
+        if (null != this.h)
+        {
+            try
+            {
                 this.h.close();
-            } catch (IOException ioexception) {
-                this.warning("IO: " + ioexception.getMessage());
+            }
+            catch (IOException var2)
+            {
+                this.warning("IO: " + var2.getMessage());
             }
 
             this.h = null;

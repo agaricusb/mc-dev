@@ -1,24 +1,37 @@
 package net.minecraft.server;
 
-public class ConvertProgressUpdater implements IProgressUpdate {
-
+public class ConvertProgressUpdater implements IProgressUpdate
+{
     private long b;
 
+    /** Reference to the MinecraftServer object. */
     final MinecraftServer a;
 
-    public ConvertProgressUpdater(MinecraftServer minecraftserver) {
-        this.a = minecraftserver;
+    public ConvertProgressUpdater(MinecraftServer par1MinecraftServer)
+    {
+        this.a = par1MinecraftServer;
         this.b = System.currentTimeMillis();
     }
 
-    public void a(String s) {}
+    /**
+     * Shows the 'Saving level' string.
+     */
+    public void a(String par1Str) {}
 
-    public void a(int i) {
-        if (System.currentTimeMillis() - this.b >= 1000L) {
+    /**
+     * Updates the progress bar on the loading screen to the specified amount. Args: loadProgress
+     */
+    public void a(int par1)
+    {
+        if (System.currentTimeMillis() - this.b >= 1000L)
+        {
             this.b = System.currentTimeMillis();
-            MinecraftServer.log.info("Converting... " + i + "%");
+            MinecraftServer.log.info("Converting... " + par1 + "%");
         }
     }
 
-    public void c(String s) {}
+    /**
+     * Displays a string on the loading screen supposed to indicate what is being done currently.
+     */
+    public void c(String par1Str) {}
 }

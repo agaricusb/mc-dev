@@ -5,81 +5,110 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CommandBanIp extends CommandAbstract {
-
+public class CommandBanIp extends CommandAbstract
+{
     public static final Pattern a = Pattern.compile("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$");
 
-    public CommandBanIp() {}
-
-    public String c() {
+    public String c()
+    {
         return "ban-ip";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 3;
     }
 
-    public boolean b(ICommandListener icommandlistener) {
-        return MinecraftServer.getServer().getServerConfigurationManager().getIPBans().isEnabled() && super.b(icommandlistener);
+    /**
+     * Returns true if the given command sender is allowed to use this command.
+     */
+    public boolean b(ICommandListener par1ICommandSender)
+    {
+        return MinecraftServer.getServer().getServerConfigurationManager().getIPBans().isEnabled() && super.b(par1ICommandSender);
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.banip.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.banip.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length >= 1 && astring[0].length() > 1) {
-            Matcher matcher = a.matcher(astring[0]);
-            String s = null;
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length >= 1 && par2ArrayOfStr[0].length() > 1)
+        {
+            Matcher var3 = a.matcher(par2ArrayOfStr[0]);
+            String var4 = null;
 
-            if (astring.length >= 2) {
-                s = a(icommandlistener, astring, 1);
+            if (par2ArrayOfStr.length >= 2)
+            {
+                var4 = a(par1ICommandSender, par2ArrayOfStr, 1);
             }
 
-            if (matcher.matches()) {
-                this.a(icommandlistener, astring[0], s);
-            } else {
-                EntityPlayer entityplayer = MinecraftServer.getServer().getServerConfigurationManager().f(astring[0]);
+            if (var3.matches())
+            {
+                this.a(par1ICommandSender, par2ArrayOfStr[0], var4);
+            }
+            else
+            {
+                EntityPlayer var5 = MinecraftServer.getServer().getServerConfigurationManager().f(par2ArrayOfStr[0]);
 
-                if (entityplayer == null) {
+                if (var5 == null)
+                {
                     throw new ExceptionPlayerNotFound("commands.banip.invalid", new Object[0]);
                 }
 
-                this.a(icommandlistener, entityplayer.q(), s);
+                this.a(par1ICommandSender, var5.q(), var4);
             }
-        } else {
+        }
+        else
+        {
             throw new ExceptionUsage("commands.banip.usage", new Object[0]);
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return astring.length == 1 ? a(astring, MinecraftServer.getServer().getPlayers()) : null;
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return par2ArrayOfStr.length == 1 ? a(par2ArrayOfStr, MinecraftServer.getServer().getPlayers()) : null;
     }
 
-    protected void a(ICommandListener icommandlistener, String s, String s1) {
-        BanEntry banentry = new BanEntry(s);
+    /**
+     * Actually does the banning work.
+     */
+    protected void a(ICommandListener par1ICommandSender, String par2Str, String par3Str)
+    {
+        BanEntry var4 = new BanEntry(par2Str);
+        var4.setSource(par1ICommandSender.getName());
 
-        banentry.setSource(icommandlistener.getName());
-        if (s1 != null) {
-            banentry.setReason(s1);
+        if (par3Str != null)
+        {
+            var4.setReason(par3Str);
         }
 
-        MinecraftServer.getServer().getServerConfigurationManager().getIPBans().add(banentry);
-        List list = MinecraftServer.getServer().getServerConfigurationManager().j(s);
-        String[] astring = new String[list.size()];
-        int i = 0;
+        MinecraftServer.getServer().getServerConfigurationManager().getIPBans().add(var4);
+        List var5 = MinecraftServer.getServer().getServerConfigurationManager().j(par2Str);
+        String[] var6 = new String[var5.size()];
+        int var7 = 0;
+        EntityPlayer var9;
 
-        EntityPlayer entityplayer;
-
-        for (Iterator iterator = list.iterator(); iterator.hasNext(); astring[i++] = entityplayer.getLocalizedName()) {
-            entityplayer = (EntityPlayer) iterator.next();
-            entityplayer.netServerHandler.disconnect("You have been IP banned.");
+        for (Iterator var8 = var5.iterator(); var8.hasNext(); var6[var7++] = var9.getLocalizedName())
+        {
+            var9 = (EntityPlayer)var8.next();
+            var9.netServerHandler.disconnect("You have been IP banned.");
         }
 
-        if (list.isEmpty()) {
-            a(icommandlistener, "commands.banip.success", new Object[] { s});
-        } else {
-            a(icommandlistener, "commands.banip.success.players", new Object[] { s, a(astring)});
+        if (var5.isEmpty())
+        {
+            a(par1ICommandSender, "commands.banip.success", new Object[]{par2Str});
+        }
+        else
+        {
+            a(par1ICommandSender, "commands.banip.success.players", new Object[]{par2Str, a(var6)});
         }
     }
 }

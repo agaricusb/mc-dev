@@ -1,53 +1,76 @@
 package net.minecraft.server;
 
-public class ItemBed extends Item {
-
-    public ItemBed(int i) {
-        super(i);
+public class ItemBed extends Item
+{
+    public ItemBed(int par1)
+    {
+        super(par1);
         this.a(CreativeModeTab.c);
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
-        if (world.isStatic) {
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        if (par3World.isStatic)
+        {
             return true;
-        } else if (l != 1) {
+        }
+        else if (par7 != 1)
+        {
             return false;
-        } else {
-            ++j;
-            BlockBed blockbed = (BlockBed) Block.BED;
-            int i1 = MathHelper.floor((double) (entityhuman.yaw * 4.0F / 360.0F) + 0.5D) & 3;
-            byte b0 = 0;
-            byte b1 = 0;
+        }
+        else
+        {
+            ++par5;
+            BlockBed var11 = (BlockBed) Block.BED;
+            int var12 = MathHelper.floor((double) (par2EntityPlayer.yaw * 4.0F / 360.0F) + 0.5D) & 3;
+            byte var13 = 0;
+            byte var14 = 0;
 
-            if (i1 == 0) {
-                b1 = 1;
+            if (var12 == 0)
+            {
+                var14 = 1;
             }
 
-            if (i1 == 1) {
-                b0 = -1;
+            if (var12 == 1)
+            {
+                var13 = -1;
             }
 
-            if (i1 == 2) {
-                b1 = -1;
+            if (var12 == 2)
+            {
+                var14 = -1;
             }
 
-            if (i1 == 3) {
-                b0 = 1;
+            if (var12 == 3)
+            {
+                var13 = 1;
             }
 
-            if (entityhuman.a(i, j, k, l, itemstack) && entityhuman.a(i + b0, j, k + b1, l, itemstack)) {
-                if (world.isEmpty(i, j, k) && world.isEmpty(i + b0, j, k + b1) && world.v(i, j - 1, k) && world.v(i + b0, j - 1, k + b1)) {
-                    world.setTypeIdAndData(i, j, k, blockbed.id, i1);
-                    if (world.getTypeId(i, j, k) == blockbed.id) {
-                        world.setTypeIdAndData(i + b0, j, k + b1, blockbed.id, i1 + 8);
+            if (par2EntityPlayer.a(par4, par5, par6, par7, par1ItemStack) && par2EntityPlayer.a(par4 + var13, par5, par6 + var14, par7, par1ItemStack))
+            {
+                if (par3World.isEmpty(par4, par5, par6) && par3World.isEmpty(par4 + var13, par5, par6 + var14) && par3World.v(par4, par5 - 1, par6) && par3World.v(par4 + var13, par5 - 1, par6 + var14))
+                {
+                    par3World.setTypeIdAndData(par4, par5, par6, var11.id, var12);
+
+                    if (par3World.getTypeId(par4, par5, par6) == var11.id)
+                    {
+                        par3World.setTypeIdAndData(par4 + var13, par5, par6 + var14, var11.id, var12 + 8);
                     }
 
-                    --itemstack.count;
+                    --par1ItemStack.count;
                     return true;
-                } else {
+                }
+                else
+                {
                     return false;
                 }
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }

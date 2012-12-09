@@ -3,93 +3,141 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-public class BlockCauldron extends Block {
-
-    public BlockCauldron(int i) {
-        super(i, Material.ORE);
+public class BlockCauldron extends Block
+{
+    public BlockCauldron(int par1)
+    {
+        super(par1, Material.ORE);
         this.textureId = 154;
     }
 
-    public int a(int i, int j) {
-        return i == 1 ? 138 : (i == 0 ? 155 : 154);
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
+        return par1 == 1 ? 138 : (par1 == 0 ? 155 : 154);
     }
 
-    public void a(World world, int i, int j, int k, AxisAlignedBB axisalignedbb, List list, Entity entity) {
+    /**
+     * if the specified block is in the given AABB, add its collision bounding box to the given list
+     */
+    public void a(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB, List par6List, Entity par7Entity)
+    {
         this.a(0.0F, 0.0F, 0.0F, 1.0F, 0.3125F, 1.0F);
-        super.a(world, i, j, k, axisalignedbb, list, entity);
-        float f = 0.125F;
-
-        this.a(0.0F, 0.0F, 0.0F, f, 1.0F, 1.0F);
-        super.a(world, i, j, k, axisalignedbb, list, entity);
-        this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, f);
-        super.a(world, i, j, k, axisalignedbb, list, entity);
-        this.a(1.0F - f, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-        super.a(world, i, j, k, axisalignedbb, list, entity);
-        this.a(0.0F, 0.0F, 1.0F - f, 1.0F, 1.0F, 1.0F);
-        super.a(world, i, j, k, axisalignedbb, list, entity);
+        super.a(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+        float var8 = 0.125F;
+        this.a(0.0F, 0.0F, 0.0F, var8, 1.0F, 1.0F);
+        super.a(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+        this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, var8);
+        super.a(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+        this.a(1.0F - var8, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+        super.a(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
+        this.a(0.0F, 0.0F, 1.0F - var8, 1.0F, 1.0F, 1.0F);
+        super.a(par1World, par2, par3, par4, par5AxisAlignedBB, par6List, par7Entity);
         this.f();
     }
 
-    public void f() {
+    /**
+     * Sets the block's bounds for rendering it as an item
+     */
+    public void f()
+    {
         this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 24;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
-        if (world.isStatic) {
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
+        if (par1World.isStatic)
+        {
             return true;
-        } else {
-            ItemStack itemstack = entityhuman.inventory.getItemInHand();
+        }
+        else
+        {
+            ItemStack var10 = par5EntityPlayer.inventory.getItemInHand();
 
-            if (itemstack == null) {
+            if (var10 == null)
+            {
                 return true;
-            } else {
-                int i1 = world.getData(i, j, k);
+            }
+            else
+            {
+                int var11 = par1World.getData(par2, par3, par4);
 
-                if (itemstack.id == Item.WATER_BUCKET.id) {
-                    if (i1 < 3) {
-                        if (!entityhuman.abilities.canInstantlyBuild) {
-                            entityhuman.inventory.setItem(entityhuman.inventory.itemInHandIndex, new ItemStack(Item.BUCKET));
+                if (var10.id == Item.WATER_BUCKET.id)
+                {
+                    if (var11 < 3)
+                    {
+                        if (!par5EntityPlayer.abilities.canInstantlyBuild)
+                        {
+                            par5EntityPlayer.inventory.setItem(par5EntityPlayer.inventory.itemInHandIndex, new ItemStack(Item.BUCKET));
                         }
 
-                        world.setData(i, j, k, 3);
+                        par1World.setData(par2, par3, par4, 3);
                     }
 
                     return true;
-                } else {
-                    if (itemstack.id == Item.GLASS_BOTTLE.id) {
-                        if (i1 > 0) {
-                            ItemStack itemstack1 = new ItemStack(Item.POTION, 1, 0);
+                }
+                else
+                {
+                    if (var10.id == Item.GLASS_BOTTLE.id)
+                    {
+                        if (var11 > 0)
+                        {
+                            ItemStack var12 = new ItemStack(Item.POTION, 1, 0);
 
-                            if (!entityhuman.inventory.pickup(itemstack1)) {
-                                world.addEntity(new EntityItem(world, (double) i + 0.5D, (double) j + 1.5D, (double) k + 0.5D, itemstack1));
-                            } else if (entityhuman instanceof EntityPlayer) {
-                                ((EntityPlayer) entityhuman).updateInventory(entityhuman.defaultContainer);
+                            if (!par5EntityPlayer.inventory.pickup(var12))
+                            {
+                                par1World.addEntity(new EntityItem(par1World, (double) par2 + 0.5D, (double) par3 + 1.5D, (double) par4 + 0.5D, var12));
+                            }
+                            else if (par5EntityPlayer instanceof EntityPlayer)
+                            {
+                                ((EntityPlayer)par5EntityPlayer).updateInventory(par5EntityPlayer.defaultContainer);
                             }
 
-                            --itemstack.count;
-                            if (itemstack.count <= 0) {
-                                entityhuman.inventory.setItem(entityhuman.inventory.itemInHandIndex, (ItemStack) null);
+                            --var10.count;
+
+                            if (var10.count <= 0)
+                            {
+                                par5EntityPlayer.inventory.setItem(par5EntityPlayer.inventory.itemInHandIndex, (ItemStack) null);
                             }
 
-                            world.setData(i, j, k, i1 - 1);
+                            par1World.setData(par2, par3, par4, var11 - 1);
                         }
-                    } else if (i1 > 0 && itemstack.getItem() instanceof ItemArmor && ((ItemArmor) itemstack.getItem()).d() == EnumArmorMaterial.CLOTH) {
-                        ItemArmor itemarmor = (ItemArmor) itemstack.getItem();
-
-                        itemarmor.c(itemstack);
-                        world.setData(i, j, k, i1 - 1);
+                    }
+                    else if (var11 > 0 && var10.getItem() instanceof ItemArmor && ((ItemArmor)var10.getItem()).d() == EnumArmorMaterial.CLOTH)
+                    {
+                        ItemArmor var13 = (ItemArmor)var10.getItem();
+                        var13.c(var10);
+                        par1World.setData(par2, par3, par4, var11 - 1);
                         return true;
                     }
 
@@ -99,17 +147,27 @@ public class BlockCauldron extends Block {
         }
     }
 
-    public void f(World world, int i, int j, int k) {
-        if (world.random.nextInt(20) == 1) {
-            int l = world.getData(i, j, k);
+    /**
+     * currently only used by BlockCauldron to incrament meta-data during rain
+     */
+    public void f(World par1World, int par2, int par3, int par4)
+    {
+        if (par1World.random.nextInt(20) == 1)
+        {
+            int var5 = par1World.getData(par2, par3, par4);
 
-            if (l < 3) {
-                world.setData(i, j, k, l + 1);
+            if (var5 < 3)
+            {
+                par1World.setData(par2, par3, par4, var5 + 1);
             }
         }
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return Item.CAULDRON.id;
     }
 }

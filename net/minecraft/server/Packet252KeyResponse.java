@@ -2,44 +2,62 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.security.PrivateKey;
 import javax.crypto.SecretKey;
 
-public class Packet252KeyResponse extends Packet {
-
+public class Packet252KeyResponse extends Packet
+{
     private byte[] a = new byte[0];
     private byte[] b = new byte[0];
     private SecretKey c;
 
-    public Packet252KeyResponse() {}
-
-    public void a(DataInputStream datainputstream) {
-        this.a = b(datainputstream);
-        this.b = b(datainputstream);
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        this.a = b(par1DataInputStream);
+        this.b = b(par1DataInputStream);
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        a(dataoutputstream, this.a);
-        a(dataoutputstream, this.b);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        a(par1DataOutputStream, this.a);
+        a(par1DataOutputStream, this.b);
     }
 
-    public void handle(NetHandler nethandler) {
-        nethandler.a(this);
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
+    public void handle(NetHandler par1NetHandler)
+    {
+        par1NetHandler.a(this);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 2 + this.a.length + 2 + this.b.length;
     }
 
-    public SecretKey a(PrivateKey privatekey) {
-        return privatekey == null ? this.c : (this.c = MinecraftEncryption.a(privatekey, this.a));
+    public SecretKey a(PrivateKey par1PrivateKey)
+    {
+        return par1PrivateKey == null ? this.c : (this.c = MinecraftEncryption.a(par1PrivateKey, this.a));
     }
 
-    public SecretKey d() {
+    public SecretKey d()
+    {
         return this.a((PrivateKey) null);
     }
 
-    public byte[] b(PrivateKey privatekey) {
-        return privatekey == null ? this.b : MinecraftEncryption.b(privatekey, this.b);
+    public byte[] b(PrivateKey par1PrivateKey)
+    {
+        return par1PrivateKey == null ? this.b : MinecraftEncryption.b(par1PrivateKey, this.b);
     }
 }

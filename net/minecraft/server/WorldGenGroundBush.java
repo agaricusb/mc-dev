@@ -2,41 +2,49 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenGroundBush extends WorldGenerator {
-
+public class WorldGenGroundBush extends WorldGenerator
+{
     private int a;
     private int b;
 
-    public WorldGenGroundBush(int i, int j) {
-        this.b = i;
-        this.a = j;
+    public WorldGenGroundBush(int par1, int par2)
+    {
+        this.b = par1;
+        this.a = par2;
     }
 
-    public boolean a(World world, Random random, int i, int j, int k) {
-        int l;
+    public boolean a(World par1World, Random par2Random, int par3, int par4, int par5)
+    {
+        int var15;
 
-        for (boolean flag = false; ((l = world.getTypeId(i, j, k)) == 0 || l == Block.LEAVES.id) && j > 0; --j) {
+        for (boolean var6 = false; ((var15 = par1World.getTypeId(par3, par4, par5)) == 0 || var15 == Block.LEAVES.id) && par4 > 0; --par4)
+        {
             ;
         }
 
-        int i1 = world.getTypeId(i, j, k);
+        int var7 = par1World.getTypeId(par3, par4, par5);
 
-        if (i1 == Block.DIRT.id || i1 == Block.GRASS.id) {
-            ++j;
-            this.setTypeAndData(world, i, j, k, Block.LOG.id, this.b);
+        if (var7 == Block.DIRT.id || var7 == Block.GRASS.id)
+        {
+            ++par4;
+            this.setTypeAndData(par1World, par3, par4, par5, Block.LOG.id, this.b);
 
-            for (int j1 = j; j1 <= j + 2; ++j1) {
-                int k1 = j1 - j;
-                int l1 = 2 - k1;
+            for (int var8 = par4; var8 <= par4 + 2; ++var8)
+            {
+                int var9 = var8 - par4;
+                int var10 = 2 - var9;
 
-                for (int i2 = i - l1; i2 <= i + l1; ++i2) {
-                    int j2 = i2 - i;
+                for (int var11 = par3 - var10; var11 <= par3 + var10; ++var11)
+                {
+                    int var12 = var11 - par3;
 
-                    for (int k2 = k - l1; k2 <= k + l1; ++k2) {
-                        int l2 = k2 - k;
+                    for (int var13 = par5 - var10; var13 <= par5 + var10; ++var13)
+                    {
+                        int var14 = var13 - par5;
 
-                        if ((Math.abs(j2) != l1 || Math.abs(l2) != l1 || random.nextInt(2) != 0) && !Block.q[world.getTypeId(i2, j1, k2)]) {
-                            this.setTypeAndData(world, i2, j1, k2, Block.LEAVES.id, this.a);
+                        if ((Math.abs(var12) != var10 || Math.abs(var14) != var10 || par2Random.nextInt(2) != 0) && !Block.q[par1World.getTypeId(var11, var8, var13)])
+                        {
+                            this.setTypeAndData(par1World, var11, var8, var13, Block.LEAVES.id, this.a);
                         }
                     }
                 }

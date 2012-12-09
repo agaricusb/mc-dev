@@ -1,29 +1,38 @@
 package net.minecraft.server;
 
-public class ItemFishingRod extends Item {
-
-    public ItemFishingRod(int i) {
-        super(i);
+public class ItemFishingRod extends Item
+{
+    public ItemFishingRod(int par1)
+    {
+        super(par1);
         this.setMaxDurability(64);
         this.d(1);
         this.a(CreativeModeTab.i);
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        if (entityhuman.hookedFish != null) {
-            int i = entityhuman.hookedFish.c();
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        if (par3EntityPlayer.hookedFish != null)
+        {
+            int var4 = par3EntityPlayer.hookedFish.c();
+            par1ItemStack.damage(var4, par3EntityPlayer);
+            par3EntityPlayer.bH();
+        }
+        else
+        {
+            par2World.makeSound(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (d.nextFloat() * 0.4F + 0.8F));
 
-            itemstack.damage(i, entityhuman);
-            entityhuman.bH();
-        } else {
-            world.makeSound(entityhuman, "random.bow", 0.5F, 0.4F / (d.nextFloat() * 0.4F + 0.8F));
-            if (!world.isStatic) {
-                world.addEntity(new EntityFishingHook(world, entityhuman));
+            if (!par2World.isStatic)
+            {
+                par2World.addEntity(new EntityFishingHook(par2World, par3EntityPlayer));
             }
 
-            entityhuman.bH();
+            par3EntityPlayer.bH();
         }
 
-        return itemstack;
+        return par1ItemStack;
     }
 }

@@ -13,70 +13,98 @@ import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-public class NBTCompressedStreamTools {
+public class NBTCompressedStreamTools
+{
+    /**
+     * Load the gzipped compound from the inputstream.
+     */
+    public static NBTTagCompound a(InputStream par0InputStream) throws IOException
+    {
+        DataInputStream var1 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(par0InputStream)));
+        NBTTagCompound var2;
 
-    public static NBTTagCompound a(InputStream inputstream) {
-        DataInputStream datainputstream = new DataInputStream(new BufferedInputStream(new GZIPInputStream(inputstream)));
-
-        NBTTagCompound nbttagcompound;
-
-        try {
-            nbttagcompound = a((DataInput) datainputstream);
-        } finally {
-            datainputstream.close();
+        try
+        {
+            var2 = a((DataInput)var1); // read
+        }
+        finally
+        {
+            var1.close();
         }
 
-        return nbttagcompound;
+        return var2;
     }
 
-    public static void a(NBTTagCompound nbttagcompound, OutputStream outputstream) {
-        DataOutputStream dataoutputstream = new DataOutputStream(new GZIPOutputStream(outputstream));
+    /**
+     * Write the compound, gzipped, to the outputstream.
+     */
+    public static void a(NBTTagCompound par0NBTTagCompound, OutputStream par1OutputStream) throws IOException
+    {
+        DataOutputStream var2 = new DataOutputStream(new GZIPOutputStream(par1OutputStream));
 
-        try {
-            a(nbttagcompound, (DataOutput) dataoutputstream);
-        } finally {
-            dataoutputstream.close();
+        try
+        {
+            a(par0NBTTagCompound, (DataOutput)var2); // write
+        }
+        finally
+        {
+            var2.close();
         }
     }
 
-    public static NBTTagCompound a(byte[] abyte) {
-        DataInputStream datainputstream = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(abyte))));
+    public static NBTTagCompound a(byte[] par0ArrayOfByte) throws IOException
+    {
+        DataInputStream var1 = new DataInputStream(new BufferedInputStream(new GZIPInputStream(new ByteArrayInputStream(par0ArrayOfByte))));
+        NBTTagCompound var2;
 
-        NBTTagCompound nbttagcompound;
-
-        try {
-            nbttagcompound = a((DataInput) datainputstream);
-        } finally {
-            datainputstream.close();
+        try
+        {
+            var2 = a((DataInput)var1); // read
+        }
+        finally
+        {
+            var1.close();
         }
 
-        return nbttagcompound;
+        return var2;
     }
 
-    public static byte[] a(NBTTagCompound nbttagcompound) {
-        ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-        DataOutputStream dataoutputstream = new DataOutputStream(new GZIPOutputStream(bytearrayoutputstream));
+    public static byte[] a(NBTTagCompound par0NBTTagCompound) throws IOException
+    {
+        ByteArrayOutputStream var1 = new ByteArrayOutputStream();
+        DataOutputStream var2 = new DataOutputStream(new GZIPOutputStream(var1));
 
-        try {
-            a(nbttagcompound, (DataOutput) dataoutputstream);
-        } finally {
-            dataoutputstream.close();
+        try
+        {
+            a(par0NBTTagCompound, (DataOutput)var2); // write
+        }
+        finally
+        {
+            var2.close();
         }
 
-        return bytearrayoutputstream.toByteArray();
+        return var1.toByteArray();
     }
 
-    public static NBTTagCompound a(DataInput datainput) {
-        NBTBase nbtbase = NBTBase.b(datainput);
+    /**
+     * Reads from a CompressedStream.
+     */
+    public static NBTTagCompound a(DataInput par0DataInput) throws IOException
+    {
+        NBTBase var1 = NBTBase.b(par0DataInput);
 
-        if (nbtbase instanceof NBTTagCompound) {
-            return (NBTTagCompound) nbtbase;
-        } else {
+        if (var1 instanceof NBTTagCompound)
+        {
+            return (NBTTagCompound)var1;
+        }
+        else
+        {
             throw new IOException("Root tag must be a named compound tag");
         }
     }
 
-    public static void a(NBTTagCompound nbttagcompound, DataOutput dataoutput) {
-        NBTBase.a(nbttagcompound, dataoutput);
+    public static void a(NBTTagCompound par0NBTTagCompound, DataOutput par1DataOutput) throws IOException
+    {
+        NBTBase.a(par0NBTTagCompound, par1DataOutput);
     }
 }

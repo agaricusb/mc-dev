@@ -1,42 +1,58 @@
 package net.minecraft.server;
 
-public class ItemHoe extends Item {
-
+public class ItemHoe extends Item
+{
     protected EnumToolMaterial a;
 
-    public ItemHoe(int i, EnumToolMaterial enumtoolmaterial) {
-        super(i);
-        this.a = enumtoolmaterial;
+    public ItemHoe(int par1, EnumToolMaterial par2EnumToolMaterial)
+    {
+        super(par1);
+        this.a = par2EnumToolMaterial;
         this.maxStackSize = 1;
-        this.setMaxDurability(enumtoolmaterial.a());
+        this.setMaxDurability(par2EnumToolMaterial.a());
         this.a(CreativeModeTab.i);
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
-        if (!entityhuman.a(i, j, k, l, itemstack)) {
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        if (!par2EntityPlayer.a(par4, par5, par6, par7, par1ItemStack))
+        {
             return false;
-        } else {
-            int i1 = world.getTypeId(i, j, k);
-            int j1 = world.getTypeId(i, j + 1, k);
+        }
+        else
+        {
+            int var11 = par3World.getTypeId(par4, par5, par6);
+            int var12 = par3World.getTypeId(par4, par5 + 1, par6);
 
-            if ((l == 0 || j1 != 0 || i1 != Block.GRASS.id) && i1 != Block.DIRT.id) {
+            if ((par7 == 0 || var12 != 0 || var11 != Block.GRASS.id) && var11 != Block.DIRT.id)
+            {
                 return false;
-            } else {
-                Block block = Block.SOIL;
+            }
+            else
+            {
+                Block var13 = Block.SOIL;
+                par3World.makeSound((double) ((float) par4 + 0.5F), (double) ((float) par5 + 0.5F), (double) ((float) par6 + 0.5F), var13.stepSound.getStepSound(), (var13.stepSound.getVolume1() + 1.0F) / 2.0F, var13.stepSound.getVolume2() * 0.8F);
 
-                world.makeSound((double) ((float) i + 0.5F), (double) ((float) j + 0.5F), (double) ((float) k + 0.5F), block.stepSound.getStepSound(), (block.stepSound.getVolume1() + 1.0F) / 2.0F, block.stepSound.getVolume2() * 0.8F);
-                if (world.isStatic) {
+                if (par3World.isStatic)
+                {
                     return true;
-                } else {
-                    world.setTypeId(i, j, k, block.id);
-                    itemstack.damage(1, entityhuman);
+                }
+                else
+                {
+                    par3World.setTypeId(par4, par5, par6, var13.id);
+                    par1ItemStack.damage(1, par2EntityPlayer);
                     return true;
                 }
             }
         }
     }
 
-    public String g() {
+    public String g()
+    {
         return this.a.toString();
     }
 }

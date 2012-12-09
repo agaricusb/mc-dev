@@ -1,44 +1,57 @@
 package net.minecraft.server;
 
-public class WatchableObject {
-
+public class WatchableObject
+{
     private final int a;
+
+    /** id of max 31 */
     private final int b;
     private Object c;
     private boolean d;
 
-    public WatchableObject(int i, int j, Object object) {
-        this.b = j;
-        this.c = object;
-        this.a = i;
+    public WatchableObject(int par1, int par2, Object par3Obj)
+    {
+        this.b = par2;
+        this.c = par3Obj;
+        this.a = par1;
         this.d = true;
     }
 
-    public int a() {
+    public int a()
+    {
         return this.b;
     }
 
-    public void a(Object object) {
-        this.c = object;
+    public void a(Object par1Obj)
+    {
+        this.c = par1Obj;
     }
 
-    public Object b() {
+    public Object b()
+    {
         return this.c;
     }
 
-    public int c() {
+    public int c()
+    {
         return this.a;
     }
 
-    public boolean d() {
+    public boolean d()
+    {
         return this.d;
     }
 
-    public void a(boolean flag) {
-        this.d = flag;
+    public void a(boolean par1)
+    {
+        this.d = par1;
     }
 
-    static boolean a(WatchableObject watchableobject, boolean flag) {
-        return watchableobject.d = flag;
+    /**
+     * Set whether the specified watchable object is being watched.
+     */
+    static boolean a(WatchableObject par0WatchableObject, boolean par1)
+    {
+        return par0WatchableObject.d = par1;
     }
 }

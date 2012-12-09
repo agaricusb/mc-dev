@@ -1,66 +1,82 @@
 package net.minecraft.server;
 
-public class InventoryEnderChest extends InventorySubcontainer {
-
+public class InventoryEnderChest extends InventorySubcontainer
+{
     private TileEntityEnderChest a;
 
-    public InventoryEnderChest() {
+    public InventoryEnderChest()
+    {
         super("container.enderchest", 27);
     }
 
-    public void a(TileEntityEnderChest tileentityenderchest) {
-        this.a = tileentityenderchest;
+    public void a(TileEntityEnderChest par1TileEntityEnderChest)
+    {
+        this.a = par1TileEntityEnderChest;
     }
 
-    public void a(NBTTagList nbttaglist) {
-        int i;
+    public void a(NBTTagList par1NBTTagList)
+    {
+        int var2;
 
-        for (i = 0; i < this.getSize(); ++i) {
-            this.setItem(i, (ItemStack) null);
+        for (var2 = 0; var2 < this.getSize(); ++var2)
+        {
+            this.setItem(var2, (ItemStack) null);
         }
 
-        for (i = 0; i < nbttaglist.size(); ++i) {
-            NBTTagCompound nbttagcompound = (NBTTagCompound) nbttaglist.get(i);
-            int j = nbttagcompound.getByte("Slot") & 255;
+        for (var2 = 0; var2 < par1NBTTagList.size(); ++var2)
+        {
+            NBTTagCompound var3 = (NBTTagCompound)par1NBTTagList.get(var2);
+            int var4 = var3.getByte("Slot") & 255;
 
-            if (j >= 0 && j < this.getSize()) {
-                this.setItem(j, ItemStack.a(nbttagcompound));
+            if (var4 >= 0 && var4 < this.getSize())
+            {
+                this.setItem(var4, ItemStack.a(var3));
             }
         }
     }
 
-    public NBTTagList g() {
-        NBTTagList nbttaglist = new NBTTagList("EnderItems");
+    public NBTTagList g()
+    {
+        NBTTagList var1 = new NBTTagList("EnderItems");
 
-        for (int i = 0; i < this.getSize(); ++i) {
-            ItemStack itemstack = this.getItem(i);
+        for (int var2 = 0; var2 < this.getSize(); ++var2)
+        {
+            ItemStack var3 = this.getItem(var2);
 
-            if (itemstack != null) {
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-
-                nbttagcompound.setByte("Slot", (byte) i);
-                itemstack.save(nbttagcompound);
-                nbttaglist.add(nbttagcompound);
+            if (var3 != null)
+            {
+                NBTTagCompound var4 = new NBTTagCompound();
+                var4.setByte("Slot", (byte)var2);
+                var3.save(var4);
+                var1.add(var4);
             }
         }
 
-        return nbttaglist;
+        return var1;
     }
 
-    public boolean a_(EntityHuman entityhuman) {
-        return this.a != null && !this.a.a(entityhuman) ? false : super.a_(entityhuman);
+    /**
+     * Do not make give this method the name canInteractWith because it clashes with Container
+     */
+    public boolean a_(EntityHuman par1EntityPlayer)
+    {
+        return this.a != null && !this.a.a(par1EntityPlayer) ? false : super.a_(par1EntityPlayer);
     }
 
-    public void startOpen() {
-        if (this.a != null) {
+    public void startOpen()
+    {
+        if (this.a != null)
+        {
             this.a.a();
         }
 
         super.startOpen();
     }
 
-    public void f() {
-        if (this.a != null) {
+    public void f()
+    {
+        if (this.a != null)
+        {
             this.a.b();
         }
 

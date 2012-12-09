@@ -1,35 +1,49 @@
 package net.minecraft.server;
 
-public class ItemWithAuxData extends ItemBlock {
-
+public class ItemWithAuxData extends ItemBlock
+{
     private final Block a;
     private String[] b;
 
-    public ItemWithAuxData(int i, boolean flag) {
-        super(i);
+    public ItemWithAuxData(int par1, boolean par2)
+    {
+        super(par1);
         this.a = Block.byId[this.g()];
-        if (flag) {
+
+        if (par2)
+        {
             this.setMaxDurability(0);
             this.a(true);
         }
     }
 
-    public int filterData(int i) {
-        return i;
+    /**
+     * Returns the metadata of the block which this Item (ItemBlock) can place
+     */
+    public int filterData(int par1)
+    {
+        return par1;
     }
 
-    public ItemWithAuxData a(String[] astring) {
-        this.b = astring;
+    /**
+     * Sets the array of strings to be used for name lookups from item damage to metadata
+     */
+    public ItemWithAuxData a(String[] par1ArrayOfStr)
+    {
+        this.b = par1ArrayOfStr;
         return this;
     }
 
-    public String c_(ItemStack itemstack) {
-        if (this.b == null) {
-            return super.c_(itemstack);
-        } else {
-            int i = itemstack.getData();
-
-            return i >= 0 && i < this.b.length ? super.c_(itemstack) + "." + this.b[i] : super.c_(itemstack);
+    public String c_(ItemStack par1ItemStack)
+    {
+        if (this.b == null)
+        {
+            return super.c_(par1ItemStack);
+        }
+        else
+        {
+            int var2 = par1ItemStack.getData();
+            return var2 >= 0 && var2 < this.b.length ? super.c_(par1ItemStack) + "." + this.b[var2] : super.c_(par1ItemStack);
         }
     }
 }

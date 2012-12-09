@@ -2,55 +2,75 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenBonusChest extends WorldGenerator {
-
+public class WorldGenBonusChest extends WorldGenerator
+{
+    /**
+     * Instance of WeightedRandomChestContent what will randomly generate items into the Bonus Chest.
+     */
     private final StructurePieceTreasure[] a;
+
+    /**
+     * Value of this int will determine how much items gonna generate in Bonus Chest.
+     */
     private final int b;
 
-    public WorldGenBonusChest(StructurePieceTreasure[] astructurepiecetreasure, int i) {
-        this.a = astructurepiecetreasure;
-        this.b = i;
+    public WorldGenBonusChest(StructurePieceTreasure[] par1ArrayOfWeightedRandomChestContent, int par2)
+    {
+        this.a = par1ArrayOfWeightedRandomChestContent;
+        this.b = par2;
     }
 
-    public boolean a(World world, Random random, int i, int j, int k) {
-        int l;
+    public boolean a(World par1World, Random par2Random, int par3, int par4, int par5)
+    {
+        int var12;
 
-        for (boolean flag = false; ((l = world.getTypeId(i, j, k)) == 0 || l == Block.LEAVES.id) && j > 1; --j) {
+        for (boolean var6 = false; ((var12 = par1World.getTypeId(par3, par4, par5)) == 0 || var12 == Block.LEAVES.id) && par4 > 1; --par4)
+        {
             ;
         }
 
-        if (j < 1) {
+        if (par4 < 1)
+        {
             return false;
-        } else {
-            ++j;
+        }
+        else
+        {
+            ++par4;
 
-            for (int i1 = 0; i1 < 4; ++i1) {
-                int j1 = i + random.nextInt(4) - random.nextInt(4);
-                int k1 = j + random.nextInt(3) - random.nextInt(3);
-                int l1 = k + random.nextInt(4) - random.nextInt(4);
+            for (int var7 = 0; var7 < 4; ++var7)
+            {
+                int var8 = par3 + par2Random.nextInt(4) - par2Random.nextInt(4);
+                int var9 = par4 + par2Random.nextInt(3) - par2Random.nextInt(3);
+                int var10 = par5 + par2Random.nextInt(4) - par2Random.nextInt(4);
 
-                if (world.isEmpty(j1, k1, l1) && world.v(j1, k1 - 1, l1)) {
-                    world.setTypeId(j1, k1, l1, Block.CHEST.id);
-                    TileEntityChest tileentitychest = (TileEntityChest) world.getTileEntity(j1, k1, l1);
+                if (par1World.isEmpty(var8, var9, var10) && par1World.v(var8, var9 - 1, var10))
+                {
+                    par1World.setTypeId(var8, var9, var10, Block.CHEST.id);
+                    TileEntityChest var11 = (TileEntityChest)par1World.getTileEntity(var8, var9, var10);
 
-                    if (tileentitychest != null && tileentitychest != null) {
-                        StructurePieceTreasure.a(random, this.a, tileentitychest, this.b);
+                    if (var11 != null && var11 != null)
+                    {
+                        StructurePieceTreasure.a(par2Random, this.a, var11, this.b);
                     }
 
-                    if (world.isEmpty(j1 - 1, k1, l1) && world.v(j1 - 1, k1 - 1, l1)) {
-                        world.setTypeId(j1 - 1, k1, l1, Block.TORCH.id);
+                    if (par1World.isEmpty(var8 - 1, var9, var10) && par1World.v(var8 - 1, var9 - 1, var10))
+                    {
+                        par1World.setTypeId(var8 - 1, var9, var10, Block.TORCH.id);
                     }
 
-                    if (world.isEmpty(j1 + 1, k1, l1) && world.v(j1 - 1, k1 - 1, l1)) {
-                        world.setTypeId(j1 + 1, k1, l1, Block.TORCH.id);
+                    if (par1World.isEmpty(var8 + 1, var9, var10) && par1World.v(var8 - 1, var9 - 1, var10))
+                    {
+                        par1World.setTypeId(var8 + 1, var9, var10, Block.TORCH.id);
                     }
 
-                    if (world.isEmpty(j1, k1, l1 - 1) && world.v(j1 - 1, k1 - 1, l1)) {
-                        world.setTypeId(j1, k1, l1 - 1, Block.TORCH.id);
+                    if (par1World.isEmpty(var8, var9, var10 - 1) && par1World.v(var8 - 1, var9 - 1, var10))
+                    {
+                        par1World.setTypeId(var8, var9, var10 - 1, Block.TORCH.id);
                     }
 
-                    if (world.isEmpty(j1, k1, l1 + 1) && world.v(j1 - 1, k1 - 1, l1)) {
-                        world.setTypeId(j1, k1, l1 + 1, Block.TORCH.id);
+                    if (par1World.isEmpty(var8, var9, var10 + 1) && par1World.v(var8 - 1, var9 - 1, var10))
+                    {
+                        par1World.setTypeId(var8, var9, var10 + 1, Block.TORCH.id);
                     }
 
                     return true;

@@ -1,26 +1,41 @@
 package net.minecraft.server;
 
-public enum EnchantmentSlotType {
+public enum EnchantmentSlotType
+{
+    ALL,
+    ARMOR,
+    ARMOR_FEET,
+    ARMOR_LEGS,
+    ARMOR_TORSO,
+    ARMOR_HEAD,
+    WEAPON,
+    DIGGER,
+    BOW;
 
-    ALL("all", 0), ARMOR("armor", 1), ARMOR_FEET("armor_feet", 2), ARMOR_LEGS("armor_legs", 3), ARMOR_TORSO("armor_torso", 4), ARMOR_HEAD("armor_head", 5), WEAPON("weapon", 6), DIGGER("digger", 7), BOW("bow", 8);
-
-    private static final EnchantmentSlotType[] j = new EnchantmentSlotType[] { ALL, ARMOR, ARMOR_FEET, ARMOR_LEGS, ARMOR_TORSO, ARMOR_HEAD, WEAPON, DIGGER, BOW};
-
-    private EnchantmentSlotType(String s, int i) {}
-
-    public boolean canEnchant(Item item) {
-        if (this == ALL) {
+    /**
+     * Return true if the item passed can be enchanted by a enchantment of this type.
+     */
+    public boolean canEnchant(Item par1Item)
+    {
+        if (this == ALL)
+        {
             return true;
-        } else if (item instanceof ItemArmor) {
-            if (this == ARMOR) {
+        }
+        else if (par1Item instanceof ItemArmor)
+        {
+            if (this == ARMOR)
+            {
                 return true;
-            } else {
-                ItemArmor itemarmor = (ItemArmor) item;
-
-                return itemarmor.a == 0 ? this == ARMOR_HEAD : (itemarmor.a == 2 ? this == ARMOR_LEGS : (itemarmor.a == 1 ? this == ARMOR_TORSO : (itemarmor.a == 3 ? this == ARMOR_FEET : false)));
             }
-        } else {
-            return item instanceof ItemSword ? this == WEAPON : (item instanceof ItemTool ? this == DIGGER : (item instanceof ItemBow ? this == BOW : false));
+            else
+            {
+                ItemArmor var2 = (ItemArmor)par1Item;
+                return var2.a == 0 ? this == ARMOR_HEAD : (var2.a == 2 ? this == ARMOR_LEGS : (var2.a == 1 ? this == ARMOR_TORSO : (var2.a == 3 ? this == ARMOR_FEET : false)));
+            }
+        }
+        else
+        {
+            return par1Item instanceof ItemSword ? this == WEAPON : (par1Item instanceof ItemTool ? this == DIGGER : (par1Item instanceof ItemBow ? this == BOW : false));
         }
     }
 }

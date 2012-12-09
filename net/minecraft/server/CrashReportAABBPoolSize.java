@@ -2,26 +2,28 @@ package net.minecraft.server;
 
 import java.util.concurrent.Callable;
 
-class CrashReportAABBPoolSize implements Callable {
-
+class CrashReportAABBPoolSize implements Callable
+{
     final CrashReport a;
 
-    CrashReportAABBPoolSize(CrashReport crashreport) {
-        this.a = crashreport;
+    CrashReportAABBPoolSize(CrashReport par1CrashReport)
+    {
+        this.a = par1CrashReport;
     }
 
-    public String a() {
-        int i = AxisAlignedBB.a().c();
-        int j = 56 * i;
-        int k = j / 1024 / 1024;
-        int l = AxisAlignedBB.a().d();
-        int i1 = 56 * l;
-        int j1 = i1 / 1024 / 1024;
-
-        return i + " (" + j + " bytes; " + k + " MB) allocated, " + l + " (" + i1 + " bytes; " + j1 + " MB) used";
+    public String a()
+    {
+        int var1 = AxisAlignedBB.a().c();
+        int var2 = 56 * var1;
+        int var3 = var2 / 1024 / 1024;
+        int var4 = AxisAlignedBB.a().d();
+        int var5 = 56 * var4;
+        int var6 = var5 / 1024 / 1024;
+        return var1 + " (" + var2 + " bytes; " + var3 + " MB) allocated, " + var4 + " (" + var5 + " bytes; " + var6 + " MB) used";
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

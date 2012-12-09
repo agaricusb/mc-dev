@@ -1,106 +1,131 @@
 package net.minecraft.server;
 
-public class ItemEnderEye extends Item {
-
-    public ItemEnderEye(int i) {
-        super(i);
+public class ItemEnderEye extends Item
+{
+    public ItemEnderEye(int par1)
+    {
+        super(par1);
         this.a(CreativeModeTab.f);
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
-        int i1 = world.getTypeId(i, j, k);
-        int j1 = world.getData(i, j, k);
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        int var11 = par3World.getTypeId(par4, par5, par6);
+        int var12 = par3World.getData(par4, par5, par6);
 
-        if (entityhuman.a(i, j, k, l, itemstack) && i1 == Block.ENDER_PORTAL_FRAME.id && !BlockEnderPortalFrame.e(j1)) {
-            if (world.isStatic) {
+        if (par2EntityPlayer.a(par4, par5, par6, par7, par1ItemStack) && var11 == Block.ENDER_PORTAL_FRAME.id && !BlockEnderPortalFrame.e(var12))
+        {
+            if (par3World.isStatic)
+            {
                 return true;
-            } else {
-                world.setData(i, j, k, j1 + 4);
-                --itemstack.count;
+            }
+            else
+            {
+                par3World.setData(par4, par5, par6, var12 + 4);
+                --par1ItemStack.count;
+                int var13;
 
-                int k1;
-
-                for (k1 = 0; k1 < 16; ++k1) {
-                    double d0 = (double) ((float) i + (5.0F + d.nextFloat() * 6.0F) / 16.0F);
-                    double d1 = (double) ((float) j + 0.8125F);
-                    double d2 = (double) ((float) k + (5.0F + d.nextFloat() * 6.0F) / 16.0F);
-                    double d3 = 0.0D;
-                    double d4 = 0.0D;
-                    double d5 = 0.0D;
-
-                    world.addParticle("smoke", d0, d1, d2, d3, d4, d5);
+                for (var13 = 0; var13 < 16; ++var13)
+                {
+                    double var14 = (double)((float)par4 + (5.0F + d.nextFloat() * 6.0F) / 16.0F);
+                    double var16 = (double)((float)par5 + 0.8125F);
+                    double var18 = (double)((float)par6 + (5.0F + d.nextFloat() * 6.0F) / 16.0F);
+                    double var20 = 0.0D;
+                    double var22 = 0.0D;
+                    double var24 = 0.0D;
+                    par3World.addParticle("smoke", var14, var16, var18, var20, var22, var24);
                 }
 
-                k1 = j1 & 3;
-                int l1 = 0;
-                int i2 = 0;
-                boolean flag = false;
-                boolean flag1 = true;
-                int j2 = Direction.g[k1];
+                var13 = var12 & 3;
+                int var26 = 0;
+                int var15 = 0;
+                boolean var27 = false;
+                boolean var17 = true;
+                int var28 = Direction.g[var13];
+                int var19;
+                int var21;
+                int var23;
+                int var29;
+                int var30;
 
-                int k2;
-                int l2;
-                int i3;
-                int j3;
-                int k3;
+                for (var19 = -2; var19 <= 2; ++var19)
+                {
+                    var29 = par4 + Direction.a[var28] * var19;
+                    var21 = par6 + Direction.b[var28] * var19;
+                    var30 = par3World.getTypeId(var29, par5, var21);
 
-                for (k2 = -2; k2 <= 2; ++k2) {
-                    j3 = i + Direction.a[j2] * k2;
-                    k3 = k + Direction.b[j2] * k2;
-                    l2 = world.getTypeId(j3, j, k3);
-                    if (l2 == Block.ENDER_PORTAL_FRAME.id) {
-                        i3 = world.getData(j3, j, k3);
-                        if (!BlockEnderPortalFrame.e(i3)) {
-                            flag1 = false;
+                    if (var30 == Block.ENDER_PORTAL_FRAME.id)
+                    {
+                        var23 = par3World.getData(var29, par5, var21);
+
+                        if (!BlockEnderPortalFrame.e(var23))
+                        {
+                            var17 = false;
                             break;
                         }
 
-                        i2 = k2;
-                        if (!flag) {
-                            l1 = k2;
-                            flag = true;
+                        var15 = var19;
+
+                        if (!var27)
+                        {
+                            var26 = var19;
+                            var27 = true;
                         }
                     }
                 }
 
-                if (flag1 && i2 == l1 + 2) {
-                    for (k2 = l1; k2 <= i2; ++k2) {
-                        j3 = i + Direction.a[j2] * k2;
-                        k3 = k + Direction.b[j2] * k2;
-                        j3 += Direction.a[k1] * 4;
-                        k3 += Direction.b[k1] * 4;
-                        l2 = world.getTypeId(j3, j, k3);
-                        i3 = world.getData(j3, j, k3);
-                        if (l2 != Block.ENDER_PORTAL_FRAME.id || !BlockEnderPortalFrame.e(i3)) {
-                            flag1 = false;
+                if (var17 && var15 == var26 + 2)
+                {
+                    for (var19 = var26; var19 <= var15; ++var19)
+                    {
+                        var29 = par4 + Direction.a[var28] * var19;
+                        var21 = par6 + Direction.b[var28] * var19;
+                        var29 += Direction.a[var13] * 4;
+                        var21 += Direction.b[var13] * 4;
+                        var30 = par3World.getTypeId(var29, par5, var21);
+                        var23 = par3World.getData(var29, par5, var21);
+
+                        if (var30 != Block.ENDER_PORTAL_FRAME.id || !BlockEnderPortalFrame.e(var23))
+                        {
+                            var17 = false;
                             break;
                         }
                     }
 
-                    for (k2 = l1 - 1; k2 <= i2 + 1; k2 += 4) {
-                        for (j3 = 1; j3 <= 3; ++j3) {
-                            k3 = i + Direction.a[j2] * k2;
-                            l2 = k + Direction.b[j2] * k2;
-                            k3 += Direction.a[k1] * j3;
-                            l2 += Direction.b[k1] * j3;
-                            i3 = world.getTypeId(k3, j, l2);
-                            int l3 = world.getData(k3, j, l2);
+                    for (var19 = var26 - 1; var19 <= var15 + 1; var19 += 4)
+                    {
+                        for (var29 = 1; var29 <= 3; ++var29)
+                        {
+                            var21 = par4 + Direction.a[var28] * var19;
+                            var30 = par6 + Direction.b[var28] * var19;
+                            var21 += Direction.a[var13] * var29;
+                            var30 += Direction.b[var13] * var29;
+                            var23 = par3World.getTypeId(var21, par5, var30);
+                            int var31 = par3World.getData(var21, par5, var30);
 
-                            if (i3 != Block.ENDER_PORTAL_FRAME.id || !BlockEnderPortalFrame.e(l3)) {
-                                flag1 = false;
+                            if (var23 != Block.ENDER_PORTAL_FRAME.id || !BlockEnderPortalFrame.e(var31))
+                            {
+                                var17 = false;
                                 break;
                             }
                         }
                     }
 
-                    if (flag1) {
-                        for (k2 = l1; k2 <= i2; ++k2) {
-                            for (j3 = 1; j3 <= 3; ++j3) {
-                                k3 = i + Direction.a[j2] * k2;
-                                l2 = k + Direction.b[j2] * k2;
-                                k3 += Direction.a[k1] * j3;
-                                l2 += Direction.b[k1] * j3;
-                                world.setTypeId(k3, j, l2, Block.ENDER_PORTAL.id);
+                    if (var17)
+                    {
+                        for (var19 = var26; var19 <= var15; ++var19)
+                        {
+                            for (var29 = 1; var29 <= 3; ++var29)
+                            {
+                                var21 = par4 + Direction.a[var28] * var19;
+                                var30 = par6 + Direction.b[var28] * var19;
+                                var21 += Direction.a[var13] * var29;
+                                var30 += Direction.b[var13] * var29;
+                                par3World.setTypeId(var21, par5, var30, Block.ENDER_PORTAL.id);
                             }
                         }
                     }
@@ -108,38 +133,49 @@ public class ItemEnderEye extends Item {
 
                 return true;
             }
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        MovingObjectPosition movingobjectposition = this.a(world, entityhuman, false);
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        MovingObjectPosition var4 = this.a(par2World, par3EntityPlayer, false);
 
-        if (movingobjectposition != null && movingobjectposition.type == EnumMovingObjectType.TILE) {
-            int i = world.getTypeId(movingobjectposition.b, movingobjectposition.c, movingobjectposition.d);
+        if (var4 != null && var4.type == EnumMovingObjectType.TILE)
+        {
+            int var5 = par2World.getTypeId(var4.b, var4.c, var4.d);
 
-            if (i == Block.ENDER_PORTAL_FRAME.id) {
-                return itemstack;
+            if (var5 == Block.ENDER_PORTAL_FRAME.id)
+            {
+                return par1ItemStack;
             }
         }
 
-        if (!world.isStatic) {
-            ChunkPosition chunkposition = world.b("Stronghold", (int) entityhuman.locX, (int) entityhuman.locY, (int) entityhuman.locZ);
+        if (!par2World.isStatic)
+        {
+            ChunkPosition var7 = par2World.b("Stronghold", (int) par3EntityPlayer.locX, (int) par3EntityPlayer.locY, (int) par3EntityPlayer.locZ);
 
-            if (chunkposition != null) {
-                EntityEnderSignal entityendersignal = new EntityEnderSignal(world, entityhuman.locX, entityhuman.locY + 1.62D - (double) entityhuman.height, entityhuman.locZ);
+            if (var7 != null)
+            {
+                EntityEnderSignal var6 = new EntityEnderSignal(par2World, par3EntityPlayer.locX, par3EntityPlayer.locY + 1.62D - (double)par3EntityPlayer.height, par3EntityPlayer.locZ);
+                var6.a((double) var7.x, var7.y, (double) var7.z);
+                par2World.addEntity(var6);
+                par2World.makeSound(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (d.nextFloat() * 0.4F + 0.8F));
+                par2World.a((EntityHuman) null, 1002, (int) par3EntityPlayer.locX, (int) par3EntityPlayer.locY, (int) par3EntityPlayer.locZ, 0);
 
-                entityendersignal.a((double) chunkposition.x, chunkposition.y, (double) chunkposition.z);
-                world.addEntity(entityendersignal);
-                world.makeSound(entityhuman, "random.bow", 0.5F, 0.4F / (d.nextFloat() * 0.4F + 0.8F));
-                world.a((EntityHuman) null, 1002, (int) entityhuman.locX, (int) entityhuman.locY, (int) entityhuman.locZ, 0);
-                if (!entityhuman.abilities.canInstantlyBuild) {
-                    --itemstack.count;
+                if (!par3EntityPlayer.abilities.canInstantlyBuild)
+                {
+                    --par1ItemStack.count;
                 }
             }
         }
 
-        return itemstack;
+        return par1ItemStack;
     }
 }

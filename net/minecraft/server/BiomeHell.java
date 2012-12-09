@@ -1,9 +1,10 @@
 package net.minecraft.server;
 
-public class BiomeHell extends BiomeBase {
-
-    public BiomeHell(int i) {
-        super(i);
+public class BiomeHell extends BiomeBase
+{
+    public BiomeHell(int par1)
+    {
+        super(par1);
         this.J.clear();
         this.K.clear();
         this.L.clear();

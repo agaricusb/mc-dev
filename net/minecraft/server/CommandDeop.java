@@ -2,32 +2,44 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public class CommandDeop extends CommandAbstract {
-
-    public CommandDeop() {}
-
-    public String c() {
+public class CommandDeop extends CommandAbstract
+{
+    public String c()
+    {
         return "deop";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 3;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.deop.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.deop.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length == 1 && astring[0].length() > 0) {
-            MinecraftServer.getServer().getServerConfigurationManager().removeOp(astring[0]);
-            a(icommandlistener, "commands.deop.success", new Object[] { astring[0]});
-        } else {
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length == 1 && par2ArrayOfStr[0].length() > 0)
+        {
+            MinecraftServer.getServer().getServerConfigurationManager().removeOp(par2ArrayOfStr[0]);
+            a(par1ICommandSender, "commands.deop.success", new Object[]{par2ArrayOfStr[0]});
+        }
+        else
+        {
             throw new ExceptionUsage("commands.deop.usage", new Object[0]);
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return astring.length == 1 ? a(astring, MinecraftServer.getServer().getServerConfigurationManager().getOPs()) : null;
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return par2ArrayOfStr.length == 1 ? a(par2ArrayOfStr, MinecraftServer.getServer().getServerConfigurationManager().getOPs()) : null;
     }
 }

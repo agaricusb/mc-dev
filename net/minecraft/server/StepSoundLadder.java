@@ -1,12 +1,17 @@
 package net.minecraft.server;
 
-final class StepSoundLadder extends StepSound {
-
-    StepSoundLadder(String s, float f, float f1) {
-        super(s, f, f1);
+final class StepSoundLadder extends StepSound
+{
+    StepSoundLadder(String par1Str, float par2, float par3)
+    {
+        super(par1Str, par2, par3);
     }
 
-    public String getBreakSound() {
+    /**
+     * Used when a block breaks, EXA: Player break, Shep eating grass, etc..
+     */
+    public String getBreakSound()
+    {
         return "dig.wood";
     }
 }

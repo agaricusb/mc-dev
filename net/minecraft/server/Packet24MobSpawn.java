@@ -2,105 +2,146 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.List;
 
-public class Packet24MobSpawn extends Packet {
-
+public class Packet24MobSpawn extends Packet
+{
+    /** The entity ID. */
     public int a;
+
+    /** The type of mob. */
     public int b;
+
+    /** The X position of the entity. */
     public int c;
+
+    /** The Y position of the entity. */
     public int d;
+
+    /** The Z position of the entity. */
     public int e;
     public int f;
     public int g;
     public int h;
+
+    /** The yaw of the entity. */
     public byte i;
+
+    /** The pitch of the entity. */
     public byte j;
+
+    /** The yaw of the entity's head. */
     public byte k;
+
+    /** Indexed metadata for Mob, terminated by 0x7F */
     private DataWatcher s;
     private List t;
 
     public Packet24MobSpawn() {}
 
-    public Packet24MobSpawn(EntityLiving entityliving) {
-        this.a = entityliving.id;
-        this.b = (byte) EntityTypes.a(entityliving);
-        this.c = entityliving.ar.a(entityliving.locX);
-        this.d = MathHelper.floor(entityliving.locY * 32.0D);
-        this.e = entityliving.ar.a(entityliving.locZ);
-        this.i = (byte) ((int) (entityliving.yaw * 256.0F / 360.0F));
-        this.j = (byte) ((int) (entityliving.pitch * 256.0F / 360.0F));
-        this.k = (byte) ((int) (entityliving.ay * 256.0F / 360.0F));
-        double d0 = 3.9D;
-        double d1 = entityliving.motX;
-        double d2 = entityliving.motY;
-        double d3 = entityliving.motZ;
+    public Packet24MobSpawn(EntityLiving par1EntityLiving)
+    {
+        this.a = par1EntityLiving.id;
+        this.b = (byte) EntityTypes.a(par1EntityLiving);
+        this.c = par1EntityLiving.ar.a(par1EntityLiving.locX);
+        this.d = MathHelper.floor(par1EntityLiving.locY * 32.0D);
+        this.e = par1EntityLiving.ar.a(par1EntityLiving.locZ);
+        this.i = (byte)((int)(par1EntityLiving.yaw * 256.0F / 360.0F));
+        this.j = (byte)((int)(par1EntityLiving.pitch * 256.0F / 360.0F));
+        this.k = (byte)((int)(par1EntityLiving.ay * 256.0F / 360.0F));
+        double var2 = 3.9D;
+        double var4 = par1EntityLiving.motX;
+        double var6 = par1EntityLiving.motY;
+        double var8 = par1EntityLiving.motZ;
 
-        if (d1 < -d0) {
-            d1 = -d0;
+        if (var4 < -var2)
+        {
+            var4 = -var2;
         }
 
-        if (d2 < -d0) {
-            d2 = -d0;
+        if (var6 < -var2)
+        {
+            var6 = -var2;
         }
 
-        if (d3 < -d0) {
-            d3 = -d0;
+        if (var8 < -var2)
+        {
+            var8 = -var2;
         }
 
-        if (d1 > d0) {
-            d1 = d0;
+        if (var4 > var2)
+        {
+            var4 = var2;
         }
 
-        if (d2 > d0) {
-            d2 = d0;
+        if (var6 > var2)
+        {
+            var6 = var2;
         }
 
-        if (d3 > d0) {
-            d3 = d0;
+        if (var8 > var2)
+        {
+            var8 = var2;
         }
 
-        this.f = (int) (d1 * 8000.0D);
-        this.g = (int) (d2 * 8000.0D);
-        this.h = (int) (d3 * 8000.0D);
-        this.s = entityliving.getDataWatcher();
+        this.f = (int)(var4 * 8000.0D);
+        this.g = (int)(var6 * 8000.0D);
+        this.h = (int)(var8 * 8000.0D);
+        this.s = par1EntityLiving.getDataWatcher();
     }
 
-    public void a(DataInputStream datainputstream) {
-        this.a = datainputstream.readInt();
-        this.b = datainputstream.readByte() & 255;
-        this.c = datainputstream.readInt();
-        this.d = datainputstream.readInt();
-        this.e = datainputstream.readInt();
-        this.i = datainputstream.readByte();
-        this.j = datainputstream.readByte();
-        this.k = datainputstream.readByte();
-        this.f = datainputstream.readShort();
-        this.g = datainputstream.readShort();
-        this.h = datainputstream.readShort();
-        this.t = DataWatcher.a(datainputstream);
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        this.a = par1DataInputStream.readInt();
+        this.b = par1DataInputStream.readByte() & 255;
+        this.c = par1DataInputStream.readInt();
+        this.d = par1DataInputStream.readInt();
+        this.e = par1DataInputStream.readInt();
+        this.i = par1DataInputStream.readByte();
+        this.j = par1DataInputStream.readByte();
+        this.k = par1DataInputStream.readByte();
+        this.f = par1DataInputStream.readShort();
+        this.g = par1DataInputStream.readShort();
+        this.h = par1DataInputStream.readShort();
+        this.t = DataWatcher.a(par1DataInputStream);
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        dataoutputstream.writeInt(this.a);
-        dataoutputstream.writeByte(this.b & 255);
-        dataoutputstream.writeInt(this.c);
-        dataoutputstream.writeInt(this.d);
-        dataoutputstream.writeInt(this.e);
-        dataoutputstream.writeByte(this.i);
-        dataoutputstream.writeByte(this.j);
-        dataoutputstream.writeByte(this.k);
-        dataoutputstream.writeShort(this.f);
-        dataoutputstream.writeShort(this.g);
-        dataoutputstream.writeShort(this.h);
-        this.s.a(dataoutputstream);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        par1DataOutputStream.writeInt(this.a);
+        par1DataOutputStream.writeByte(this.b & 255);
+        par1DataOutputStream.writeInt(this.c);
+        par1DataOutputStream.writeInt(this.d);
+        par1DataOutputStream.writeInt(this.e);
+        par1DataOutputStream.writeByte(this.i);
+        par1DataOutputStream.writeByte(this.j);
+        par1DataOutputStream.writeByte(this.k);
+        par1DataOutputStream.writeShort(this.f);
+        par1DataOutputStream.writeShort(this.g);
+        par1DataOutputStream.writeShort(this.h);
+        this.s.a(par1DataOutputStream);
     }
 
-    public void handle(NetHandler nethandler) {
-        nethandler.a(this);
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
+    public void handle(NetHandler par1NetHandler)
+    {
+        par1NetHandler.a(this);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 26;
     }
 }

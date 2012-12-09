@@ -1,101 +1,164 @@
 package net.minecraft.server;
 
-public class EntitySilverfish extends EntityMonster {
-
+public class EntitySilverfish extends EntityMonster
+{
+    /**
+     * A cooldown before this entity will search for another Silverfish to join them in battle.
+     */
     private int d;
 
-    public EntitySilverfish(World world) {
-        super(world);
+    public EntitySilverfish(World par1World)
+    {
+        super(par1World);
         this.texture = "/mob/silverfish.png";
         this.a(0.3F, 0.7F);
         this.bG = 0.6F;
     }
 
-    public int getMaxHealth() {
+    public int getMaxHealth()
+    {
         return 8;
     }
 
-    protected boolean f_() {
+    /**
+     * returns if this entity triggers Block.onEntityWalking on the blocks they walk on. used for spiders and wolves to
+     * prevent them from trampling crops
+     */
+    protected boolean f_()
+    {
         return false;
     }
 
-    protected Entity findTarget() {
-        double d0 = 8.0D;
-
-        return this.world.findNearbyVulnerablePlayer(this, d0);
+    /**
+     * Finds the closest player within 16 blocks to attack, or null if this Entity isn't interested in attacking
+     * (Animals, Spiders at day, peaceful PigZombies).
+     */
+    protected Entity findTarget()
+    {
+        double var1 = 8.0D;
+        return this.world.findNearbyVulnerablePlayer(this, var1);
     }
 
-    protected String aY() {
+    /**
+     * Returns the sound this mob makes while it's alive.
+     */
+    protected String aY()
+    {
         return "mob.silverfish.say";
     }
 
-    protected String aZ() {
+    /**
+     * Returns the sound this mob makes when it is hurt.
+     */
+    protected String aZ()
+    {
         return "mob.silverfish.hit";
     }
 
-    protected String ba() {
+    /**
+     * Returns the sound this mob makes on death.
+     */
+    protected String ba()
+    {
         return "mob.silverfish.kill";
     }
 
-    public boolean damageEntity(DamageSource damagesource, int i) {
-        if (this.isInvulnerable()) {
+    /**
+     * Called when the entity is attacked.
+     */
+    public boolean damageEntity(DamageSource par1DamageSource, int par2)
+    {
+        if (this.isInvulnerable())
+        {
             return false;
-        } else {
-            if (this.d <= 0 && (damagesource instanceof EntityDamageSource || damagesource == DamageSource.MAGIC)) {
+        }
+        else
+        {
+            if (this.d <= 0 && (par1DamageSource instanceof EntityDamageSource || par1DamageSource == DamageSource.MAGIC))
+            {
                 this.d = 20;
             }
 
-            return super.damageEntity(damagesource, i);
+            return super.damageEntity(par1DamageSource, par2);
         }
     }
 
-    protected void a(Entity entity, float f) {
-        if (this.attackTicks <= 0 && f < 1.2F && entity.boundingBox.e > this.boundingBox.b && entity.boundingBox.b < this.boundingBox.e) {
+    /**
+     * Basic mob attack. Default to touch of death in EntityCreature. Overridden by each mob to define their attack.
+     */
+    protected void a(Entity par1Entity, float par2)
+    {
+        if (this.attackTicks <= 0 && par2 < 1.2F && par1Entity.boundingBox.e > this.boundingBox.b && par1Entity.boundingBox.b < this.boundingBox.e)
+        {
             this.attackTicks = 20;
-            entity.damageEntity(DamageSource.mobAttack(this), this.c(entity));
+            par1Entity.damageEntity(DamageSource.mobAttack(this), this.c(par1Entity));
         }
     }
 
-    protected void a(int i, int j, int k, int l) {
+    /**
+     * Plays step sound at given x, y, z for the entity
+     */
+    protected void a(int par1, int par2, int par3, int par4)
+    {
         this.makeSound("mob.silverfish.step", 0.15F, 1.0F);
     }
 
-    protected int getLootId() {
+    /**
+     * Returns the item ID for the item the mob drops on death.
+     */
+    protected int getLootId()
+    {
         return 0;
     }
 
-    public void j_() {
+    /**
+     * Called to update the entity's position/logic.
+     */
+    public void j_()
+    {
         this.aw = this.yaw;
         super.j_();
     }
 
-    protected void bn() {
+    protected void bn()
+    {
         super.bn();
-        if (!this.world.isStatic) {
-            int i;
-            int j;
-            int k;
-            int l;
 
-            if (this.d > 0) {
+        if (!this.world.isStatic)
+        {
+            int var1;
+            int var2;
+            int var3;
+            int var5;
+
+            if (this.d > 0)
+            {
                 --this.d;
-                if (this.d == 0) {
-                    i = MathHelper.floor(this.locX);
-                    j = MathHelper.floor(this.locY);
-                    k = MathHelper.floor(this.locZ);
-                    boolean flag = false;
 
-                    for (l = 0; !flag && l <= 5 && l >= -5; l = l <= 0 ? 1 - l : 0 - l) {
-                        for (int i1 = 0; !flag && i1 <= 10 && i1 >= -10; i1 = i1 <= 0 ? 1 - i1 : 0 - i1) {
-                            for (int j1 = 0; !flag && j1 <= 10 && j1 >= -10; j1 = j1 <= 0 ? 1 - j1 : 0 - j1) {
-                                int k1 = this.world.getTypeId(i + i1, j + l, k + j1);
+                if (this.d == 0)
+                {
+                    var1 = MathHelper.floor(this.locX);
+                    var2 = MathHelper.floor(this.locY);
+                    var3 = MathHelper.floor(this.locZ);
+                    boolean var4 = false;
 
-                                if (k1 == Block.MONSTER_EGGS.id) {
-                                    this.world.triggerEffect(2001, i + i1, j + l, k + j1, Block.MONSTER_EGGS.id + (this.world.getData(i + i1, j + l, k + j1) << 12));
-                                    this.world.setTypeId(i + i1, j + l, k + j1, 0);
-                                    Block.MONSTER_EGGS.postBreak(this.world, i + i1, j + l, k + j1, 0);
-                                    if (this.random.nextBoolean()) {
-                                        flag = true;
+                    for (var5 = 0; !var4 && var5 <= 5 && var5 >= -5; var5 = var5 <= 0 ? 1 - var5 : 0 - var5)
+                    {
+                        for (int var6 = 0; !var4 && var6 <= 10 && var6 >= -10; var6 = var6 <= 0 ? 1 - var6 : 0 - var6)
+                        {
+                            for (int var7 = 0; !var4 && var7 <= 10 && var7 >= -10; var7 = var7 <= 0 ? 1 - var7 : 0 - var7)
+                            {
+                                int var8 = this.world.getTypeId(var1 + var6, var2 + var5, var3 + var7);
+
+                                if (var8 == Block.MONSTER_EGGS.id)
+                                {
+                                    this.world.triggerEffect(2001, var1 + var6, var2 + var5, var3 + var7, Block.MONSTER_EGGS.id + (this.world.getData(var1 + var6, var2 + var5, var3 + var7) << 12));
+                                    this.world.setTypeId(var1 + var6, var2 + var5, var3 + var7, 0);
+                                    Block.MONSTER_EGGS.postBreak(this.world, var1 + var6, var2 + var5, var3 + var7, 0);
+
+                                    if (this.random.nextBoolean())
+                                    {
+                                        var4 = true;
                                         break;
                                     }
                                 }
@@ -105,49 +168,78 @@ public class EntitySilverfish extends EntityMonster {
                 }
             }
 
-            if (this.target == null && !this.k()) {
-                i = MathHelper.floor(this.locX);
-                j = MathHelper.floor(this.locY + 0.5D);
-                k = MathHelper.floor(this.locZ);
-                int l1 = this.random.nextInt(6);
+            if (this.target == null && !this.k())
+            {
+                var1 = MathHelper.floor(this.locX);
+                var2 = MathHelper.floor(this.locY + 0.5D);
+                var3 = MathHelper.floor(this.locZ);
+                int var9 = this.random.nextInt(6);
+                var5 = this.world.getTypeId(var1 + Facing.b[var9], var2 + Facing.c[var9], var3 + Facing.d[var9]);
 
-                l = this.world.getTypeId(i + Facing.b[l1], j + Facing.c[l1], k + Facing.d[l1]);
-                if (BlockMonsterEggs.e(l)) {
-                    this.world.setTypeIdAndData(i + Facing.b[l1], j + Facing.c[l1], k + Facing.d[l1], Block.MONSTER_EGGS.id, BlockMonsterEggs.f(l));
+                if (BlockMonsterEggs.e(var5))
+                {
+                    this.world.setTypeIdAndData(var1 + Facing.b[var9], var2 + Facing.c[var9], var3 + Facing.d[var9], Block.MONSTER_EGGS.id, BlockMonsterEggs.f(var5));
                     this.aR();
                     this.die();
-                } else {
+                }
+                else
+                {
                     this.i();
                 }
-            } else if (this.target != null && !this.k()) {
+            }
+            else if (this.target != null && !this.k())
+            {
                 this.target = null;
             }
         }
     }
 
-    public float a(int i, int j, int k) {
-        return this.world.getTypeId(i, j - 1, k) == Block.STONE.id ? 10.0F : super.a(i, j, k);
+    /**
+     * Takes a coordinate in and returns a weight to determine how likely this creature will try to path to the block.
+     * Args: x, y, z
+     */
+    public float a(int par1, int par2, int par3)
+    {
+        return this.world.getTypeId(par1, par2 - 1, par3) == Block.STONE.id ? 10.0F : super.a(par1, par2, par3);
     }
 
-    protected boolean i_() {
+    /**
+     * Checks to make sure the light is not too bright where the mob is spawning
+     */
+    protected boolean i_()
+    {
         return true;
     }
 
-    public boolean canSpawn() {
-        if (super.canSpawn()) {
-            EntityHuman entityhuman = this.world.findNearbyPlayer(this, 5.0D);
-
-            return entityhuman == null;
-        } else {
+    /**
+     * Checks if the entity's current position is a valid location to spawn this entity.
+     */
+    public boolean canSpawn()
+    {
+        if (super.canSpawn())
+        {
+            EntityHuman var1 = this.world.findNearbyPlayer(this, 5.0D);
+            return var1 == null;
+        }
+        else
+        {
             return false;
         }
     }
 
-    public int c(Entity entity) {
+    /**
+     * Returns the amount of damage a mob should deal.
+     */
+    public int c(Entity par1Entity)
+    {
         return 1;
     }
 
-    public EnumMonsterType getMonsterType() {
+    /**
+     * Get this Entity's EnumCreatureAttribute
+     */
+    public EnumMonsterType getMonsterType()
+    {
         return EnumMonsterType.ARTHROPOD;
     }
 }

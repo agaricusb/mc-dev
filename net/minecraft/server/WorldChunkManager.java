@@ -4,14 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class WorldChunkManager {
-
+public class WorldChunkManager
+{
     private GenLayer d;
+
+    /** A GenLayer containing the indices into BiomeGenBase.biomeList[] */
     private GenLayer e;
+
+    /** The biome list. */
     private BiomeCache f;
+
+    /** A list of biomes that the player can spawn in. */
     private List g;
 
-    protected WorldChunkManager() {
+    protected WorldChunkManager()
+    {
         this.f = new BiomeCache(this);
         this.g = new ArrayList();
         this.g.add(BiomeBase.FOREST);
@@ -23,123 +30,176 @@ public class WorldChunkManager {
         this.g.add(BiomeBase.JUNGLE_HILLS);
     }
 
-    public WorldChunkManager(long i, WorldType worldtype) {
+    public WorldChunkManager(long par1, WorldType par3WorldType)
+    {
         this();
-        GenLayer[] agenlayer = GenLayer.a(i, worldtype);
-
-        this.d = agenlayer[0];
-        this.e = agenlayer[1];
+        GenLayer[] var4 = GenLayer.a(par1, par3WorldType);
+        this.d = var4[0];
+        this.e = var4[1];
     }
 
-    public WorldChunkManager(World world) {
-        this(world.getSeed(), world.getWorldData().getType());
+    public WorldChunkManager(World par1World)
+    {
+        this(par1World.getSeed(), par1World.getWorldData().getType());
     }
 
-    public List a() {
+    /**
+     * Gets the list of valid biomes for the player to spawn in.
+     */
+    public List a()
+    {
         return this.g;
     }
 
-    public BiomeBase getBiome(int i, int j) {
-        return this.f.b(i, j);
+    /**
+     * Returns the BiomeGenBase related to the x, z position on the world.
+     */
+    public BiomeBase getBiome(int par1, int par2)
+    {
+        return this.f.b(par1, par2);
     }
 
-    public float[] getWetness(float[] afloat, int i, int j, int k, int l) {
+    /**
+     * Returns a list of rainfall values for the specified blocks. Args: listToReuse, x, z, width, length.
+     */
+    public float[] getWetness(float[] par1ArrayOfFloat, int par2, int par3, int par4, int par5)
+    {
         IntCache.a();
-        if (afloat == null || afloat.length < k * l) {
-            afloat = new float[k * l];
+
+        if (par1ArrayOfFloat == null || par1ArrayOfFloat.length < par4 * par5)
+        {
+            par1ArrayOfFloat = new float[par4 * par5];
         }
 
-        int[] aint = this.e.a(i, j, k, l);
+        int[] var6 = this.e.a(par2, par3, par4, par5);
 
-        for (int i1 = 0; i1 < k * l; ++i1) {
-            float f = (float) BiomeBase.biomes[aint[i1]].g() / 65536.0F;
+        for (int var7 = 0; var7 < par4 * par5; ++var7)
+        {
+            float var8 = (float) BiomeBase.biomes[var6[var7]].g() / 65536.0F;
 
-            if (f > 1.0F) {
-                f = 1.0F;
+            if (var8 > 1.0F)
+            {
+                var8 = 1.0F;
             }
 
-            afloat[i1] = f;
+            par1ArrayOfFloat[var7] = var8;
         }
 
-        return afloat;
+        return par1ArrayOfFloat;
     }
 
-    public float[] getTemperatures(float[] afloat, int i, int j, int k, int l) {
+    /**
+     * Returns a list of temperatures to use for the specified blocks.  Args: listToReuse, x, y, width, length
+     */
+    public float[] getTemperatures(float[] par1ArrayOfFloat, int par2, int par3, int par4, int par5)
+    {
         IntCache.a();
-        if (afloat == null || afloat.length < k * l) {
-            afloat = new float[k * l];
+
+        if (par1ArrayOfFloat == null || par1ArrayOfFloat.length < par4 * par5)
+        {
+            par1ArrayOfFloat = new float[par4 * par5];
         }
 
-        int[] aint = this.e.a(i, j, k, l);
+        int[] var6 = this.e.a(par2, par3, par4, par5);
 
-        for (int i1 = 0; i1 < k * l; ++i1) {
-            float f = (float) BiomeBase.biomes[aint[i1]].h() / 65536.0F;
+        for (int var7 = 0; var7 < par4 * par5; ++var7)
+        {
+            float var8 = (float) BiomeBase.biomes[var6[var7]].h() / 65536.0F;
 
-            if (f > 1.0F) {
-                f = 1.0F;
+            if (var8 > 1.0F)
+            {
+                var8 = 1.0F;
             }
 
-            afloat[i1] = f;
+            par1ArrayOfFloat[var7] = var8;
         }
 
-        return afloat;
+        return par1ArrayOfFloat;
     }
 
-    public BiomeBase[] getBiomes(BiomeBase[] abiomebase, int i, int j, int k, int l) {
+    /**
+     * Returns an array of biomes for the location input.
+     */
+    public BiomeBase[] getBiomes(BiomeBase[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5)
+    {
         IntCache.a();
-        if (abiomebase == null || abiomebase.length < k * l) {
-            abiomebase = new BiomeBase[k * l];
+
+        if (par1ArrayOfBiomeGenBase == null || par1ArrayOfBiomeGenBase.length < par4 * par5)
+        {
+            par1ArrayOfBiomeGenBase = new BiomeBase[par4 * par5];
         }
 
-        int[] aint = this.d.a(i, j, k, l);
+        int[] var6 = this.d.a(par2, par3, par4, par5);
 
-        for (int i1 = 0; i1 < k * l; ++i1) {
-            abiomebase[i1] = BiomeBase.biomes[aint[i1]];
+        for (int var7 = 0; var7 < par4 * par5; ++var7)
+        {
+            par1ArrayOfBiomeGenBase[var7] = BiomeBase.biomes[var6[var7]];
         }
 
-        return abiomebase;
+        return par1ArrayOfBiomeGenBase;
     }
 
-    public BiomeBase[] getBiomeBlock(BiomeBase[] abiomebase, int i, int j, int k, int l) {
-        return this.a(abiomebase, i, j, k, l, true);
+    /**
+     * Returns biomes to use for the blocks and loads the other data like temperature and humidity onto the
+     * WorldChunkManager Args: oldBiomeList, x, z, width, depth
+     */
+    public BiomeBase[] getBiomeBlock(BiomeBase[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5)
+    {
+        return this.a(par1ArrayOfBiomeGenBase, par2, par3, par4, par5, true);
     }
 
-    public BiomeBase[] a(BiomeBase[] abiomebase, int i, int j, int k, int l, boolean flag) {
+    /**
+     * Return a list of biomes for the specified blocks. Args: listToReuse, x, y, width, length, cacheFlag (if false,
+     * don't check biomeCache to avoid infinite loop in BiomeCacheBlock)
+     */
+    public BiomeBase[] a(BiomeBase[] par1ArrayOfBiomeGenBase, int par2, int par3, int par4, int par5, boolean par6)
+    {
         IntCache.a();
-        if (abiomebase == null || abiomebase.length < k * l) {
-            abiomebase = new BiomeBase[k * l];
+
+        if (par1ArrayOfBiomeGenBase == null || par1ArrayOfBiomeGenBase.length < par4 * par5)
+        {
+            par1ArrayOfBiomeGenBase = new BiomeBase[par4 * par5];
         }
 
-        if (flag && k == 16 && l == 16 && (i & 15) == 0 && (j & 15) == 0) {
-            BiomeBase[] abiomebase1 = this.f.e(i, j);
+        if (par6 && par4 == 16 && par5 == 16 && (par2 & 15) == 0 && (par3 & 15) == 0)
+        {
+            BiomeBase[] var9 = this.f.e(par2, par3);
+            System.arraycopy(var9, 0, par1ArrayOfBiomeGenBase, 0, par4 * par5);
+            return par1ArrayOfBiomeGenBase;
+        }
+        else
+        {
+            int[] var7 = this.e.a(par2, par3, par4, par5);
 
-            System.arraycopy(abiomebase1, 0, abiomebase, 0, k * l);
-            return abiomebase;
-        } else {
-            int[] aint = this.e.a(i, j, k, l);
-
-            for (int i1 = 0; i1 < k * l; ++i1) {
-                abiomebase[i1] = BiomeBase.biomes[aint[i1]];
+            for (int var8 = 0; var8 < par4 * par5; ++var8)
+            {
+                par1ArrayOfBiomeGenBase[var8] = BiomeBase.biomes[var7[var8]];
             }
 
-            return abiomebase;
+            return par1ArrayOfBiomeGenBase;
         }
     }
 
-    public boolean a(int i, int j, int k, List list) {
+    /**
+     * checks given Chunk's Biomes against List of allowed ones
+     */
+    public boolean a(int par1, int par2, int par3, List par4List)
+    {
         IntCache.a();
-        int l = i - k >> 2;
-        int i1 = j - k >> 2;
-        int j1 = i + k >> 2;
-        int k1 = j + k >> 2;
-        int l1 = j1 - l + 1;
-        int i2 = k1 - i1 + 1;
-        int[] aint = this.d.a(l, i1, l1, i2);
+        int var5 = par1 - par3 >> 2;
+        int var6 = par2 - par3 >> 2;
+        int var7 = par1 + par3 >> 2;
+        int var8 = par2 + par3 >> 2;
+        int var9 = var7 - var5 + 1;
+        int var10 = var8 - var6 + 1;
+        int[] var11 = this.d.a(var5, var6, var9, var10);
 
-        for (int j2 = 0; j2 < l1 * i2; ++j2) {
-            BiomeBase biomebase = BiomeBase.biomes[aint[j2]];
+        for (int var12 = 0; var12 < var9 * var10; ++var12)
+        {
+            BiomeBase var13 = BiomeBase.biomes[var11[var12]];
 
-            if (!list.contains(biomebase)) {
+            if (!par4List.contains(var13))
+            {
                 return false;
             }
         }
@@ -147,33 +207,43 @@ public class WorldChunkManager {
         return true;
     }
 
-    public ChunkPosition a(int i, int j, int k, List list, Random random) {
+    /**
+     * Finds a valid position within a range, that is once of the listed biomes.
+     */
+    public ChunkPosition a(int par1, int par2, int par3, List par4List, Random par5Random)
+    {
         IntCache.a();
-        int l = i - k >> 2;
-        int i1 = j - k >> 2;
-        int j1 = i + k >> 2;
-        int k1 = j + k >> 2;
-        int l1 = j1 - l + 1;
-        int i2 = k1 - i1 + 1;
-        int[] aint = this.d.a(l, i1, l1, i2);
-        ChunkPosition chunkposition = null;
-        int j2 = 0;
+        int var6 = par1 - par3 >> 2;
+        int var7 = par2 - par3 >> 2;
+        int var8 = par1 + par3 >> 2;
+        int var9 = par2 + par3 >> 2;
+        int var10 = var8 - var6 + 1;
+        int var11 = var9 - var7 + 1;
+        int[] var12 = this.d.a(var6, var7, var10, var11);
+        ChunkPosition var13 = null;
+        int var14 = 0;
 
-        for (int k2 = 0; k2 < l1 * i2; ++k2) {
-            int l2 = l + k2 % l1 << 2;
-            int i3 = i1 + k2 / l1 << 2;
-            BiomeBase biomebase = BiomeBase.biomes[aint[k2]];
+        for (int var15 = 0; var15 < var10 * var11; ++var15)
+        {
+            int var16 = var6 + var15 % var10 << 2;
+            int var17 = var7 + var15 / var10 << 2;
+            BiomeBase var18 = BiomeBase.biomes[var12[var15]];
 
-            if (list.contains(biomebase) && (chunkposition == null || random.nextInt(j2 + 1) == 0)) {
-                chunkposition = new ChunkPosition(l2, 0, i3);
-                ++j2;
+            if (par4List.contains(var18) && (var13 == null || par5Random.nextInt(var14 + 1) == 0))
+            {
+                var13 = new ChunkPosition(var16, 0, var17);
+                ++var14;
             }
         }
 
-        return chunkposition;
+        return var13;
     }
 
-    public void b() {
+    /**
+     * Calls the WorldChunkManager's biomeCache.cleanupCache()
+     */
+    public void b()
+    {
         this.f.a();
     }
 }

@@ -1,43 +1,60 @@
 package net.minecraft.server;
 
-public class ItemWrittenBook extends Item {
-
-    public ItemWrittenBook(int i) {
-        super(i);
+public class ItemWrittenBook extends Item
+{
+    public ItemWrittenBook(int par1)
+    {
+        super(par1);
         this.d(1);
     }
 
-    public static boolean a(NBTTagCompound nbttagcompound) {
-        if (!ItemBookAndQuill.a(nbttagcompound)) {
+    public static boolean a(NBTTagCompound par0NBTTagCompound)
+    {
+        if (!ItemBookAndQuill.a(par0NBTTagCompound))
+        {
             return false;
-        } else if (!nbttagcompound.hasKey("title")) {
+        }
+        else if (!par0NBTTagCompound.hasKey("title"))
+        {
             return false;
-        } else {
-            String s = nbttagcompound.getString("title");
-
-            return s != null && s.length() <= 16 ? nbttagcompound.hasKey("author") : false;
+        }
+        else
+        {
+            String var1 = par0NBTTagCompound.getString("title");
+            return var1 != null && var1.length() <= 16 ? par0NBTTagCompound.hasKey("author") : false;
         }
     }
 
-    public String j(ItemStack itemstack) {
-        if (itemstack.hasTag()) {
-            NBTTagCompound nbttagcompound = itemstack.getTag();
-            NBTTagString nbttagstring = (NBTTagString) nbttagcompound.get("title");
+    public String j(ItemStack par1ItemStack)
+    {
+        if (par1ItemStack.hasTag())
+        {
+            NBTTagCompound var2 = par1ItemStack.getTag();
+            NBTTagString var3 = (NBTTagString)var2.get("title");
 
-            if (nbttagstring != null) {
-                return nbttagstring.toString();
+            if (var3 != null)
+            {
+                return var3.toString();
             }
         }
 
-        return super.j(itemstack);
+        return super.j(par1ItemStack);
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        entityhuman.d(itemstack);
-        return itemstack;
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        par3EntityPlayer.d(par1ItemStack);
+        return par1ItemStack;
     }
 
-    public boolean q() {
+    /**
+     * If this function returns true (or the item is damageable), the ItemStack's NBT tag will be sent to the client.
+     */
+    public boolean q()
+    {
         return true;
     }
 }

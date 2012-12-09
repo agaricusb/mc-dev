@@ -1,52 +1,72 @@
 package net.minecraft.server;
 
-public class ItemFireball extends Item {
-
-    public ItemFireball(int i) {
-        super(i);
+public class ItemFireball extends Item
+{
+    public ItemFireball(int par1)
+    {
+        super(par1);
         this.a(CreativeModeTab.f);
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
-        if (world.isStatic) {
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        if (par3World.isStatic)
+        {
             return true;
-        } else {
-            if (l == 0) {
-                --j;
+        }
+        else
+        {
+            if (par7 == 0)
+            {
+                --par5;
             }
 
-            if (l == 1) {
-                ++j;
+            if (par7 == 1)
+            {
+                ++par5;
             }
 
-            if (l == 2) {
-                --k;
+            if (par7 == 2)
+            {
+                --par6;
             }
 
-            if (l == 3) {
-                ++k;
+            if (par7 == 3)
+            {
+                ++par6;
             }
 
-            if (l == 4) {
-                --i;
+            if (par7 == 4)
+            {
+                --par4;
             }
 
-            if (l == 5) {
-                ++i;
+            if (par7 == 5)
+            {
+                ++par4;
             }
 
-            if (!entityhuman.a(i, j, k, l, itemstack)) {
+            if (!par2EntityPlayer.a(par4, par5, par6, par7, par1ItemStack))
+            {
                 return false;
-            } else {
-                int i1 = world.getTypeId(i, j, k);
+            }
+            else
+            {
+                int var11 = par3World.getTypeId(par4, par5, par6);
 
-                if (i1 == 0) {
-                    world.makeSound((double) i + 0.5D, (double) j + 0.5D, (double) k + 0.5D, "fire.ignite", 1.0F, d.nextFloat() * 0.4F + 0.8F);
-                    world.setTypeId(i, j, k, Block.FIRE.id);
+                if (var11 == 0)
+                {
+                    par3World.makeSound((double) par4 + 0.5D, (double) par5 + 0.5D, (double) par6 + 0.5D, "fire.ignite", 1.0F, d.nextFloat() * 0.4F + 0.8F);
+                    par3World.setTypeId(par4, par5, par6, Block.FIRE.id);
                 }
 
-                if (!entityhuman.abilities.canInstantlyBuild) {
-                    --itemstack.count;
+                if (!par2EntityPlayer.abilities.canInstantlyBuild)
+                {
+                    --par1ItemStack.count;
                 }
 
                 return true;

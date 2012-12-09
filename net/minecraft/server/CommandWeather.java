@@ -3,50 +3,67 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-public class CommandWeather extends CommandAbstract {
-
-    public CommandWeather() {}
-
-    public String c() {
+public class CommandWeather extends CommandAbstract
+{
+    public String c()
+    {
         return "weather";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 2;
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length < 1) {
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length < 1)
+        {
             throw new ExceptionUsage("commands.weather.usage", new Object[0]);
-        } else {
-            int i = (300 + (new Random()).nextInt(600)) * 20;
+        }
+        else
+        {
+            int var3 = (300 + (new Random()).nextInt(600)) * 20;
 
-            if (astring.length >= 2) {
-                i = a(icommandlistener, astring[1], 1, 1000000) * 20;
+            if (par2ArrayOfStr.length >= 2)
+            {
+                var3 = a(par1ICommandSender, par2ArrayOfStr[1], 1, 1000000) * 20;
             }
 
-            WorldServer worldserver = MinecraftServer.getServer().worldServer[0];
-            WorldData worlddata = worldserver.getWorldData();
+            WorldServer var4 = MinecraftServer.getServer().worldServer[0];
+            WorldData var5 = var4.getWorldData();
+            var5.setWeatherDuration(var3);
+            var5.setThunderDuration(var3);
 
-            worlddata.setWeatherDuration(i);
-            worlddata.setThunderDuration(i);
-            if ("clear".equalsIgnoreCase(astring[0])) {
-                worlddata.setStorm(false);
-                worlddata.setThundering(false);
-                a(icommandlistener, "commands.weather.clear", new Object[0]);
-            } else if ("rain".equalsIgnoreCase(astring[0])) {
-                worlddata.setStorm(true);
-                worlddata.setThundering(false);
-                a(icommandlistener, "commands.weather.rain", new Object[0]);
-            } else if ("thunder".equalsIgnoreCase(astring[0])) {
-                worlddata.setStorm(true);
-                worlddata.setThundering(true);
-                a(icommandlistener, "commands.weather.thunder", new Object[0]);
+            if ("clear".equalsIgnoreCase(par2ArrayOfStr[0]))
+            {
+                var5.setStorm(false);
+                var5.setThundering(false);
+                a(par1ICommandSender, "commands.weather.clear", new Object[0]);
+            }
+            else if ("rain".equalsIgnoreCase(par2ArrayOfStr[0]))
+            {
+                var5.setStorm(true);
+                var5.setThundering(false);
+                a(par1ICommandSender, "commands.weather.rain", new Object[0]);
+            }
+            else if ("thunder".equalsIgnoreCase(par2ArrayOfStr[0]))
+            {
+                var5.setStorm(true);
+                var5.setThundering(true);
+                a(par1ICommandSender, "commands.weather.thunder", new Object[0]);
             }
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return astring.length == 1 ? a(astring, new String[] { "clear", "rain", "thunder"}) : null;
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return par2ArrayOfStr.length == 1 ? a(par2ArrayOfStr, new String[]{"clear", "rain", "thunder"}): null;
     }
 }

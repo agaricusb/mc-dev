@@ -2,65 +2,90 @@ package net.minecraft.server;
 
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.IOException;
 import java.util.Arrays;
 
-public class NBTTagIntArray extends NBTBase {
-
+public class NBTTagIntArray extends NBTBase
+{
+    /** The array of saved integers */
     public int[] data;
 
-    public NBTTagIntArray(String s) {
-        super(s);
+    public NBTTagIntArray(String par1Str)
+    {
+        super(par1Str);
     }
 
-    public NBTTagIntArray(String s, int[] aint) {
-        super(s);
-        this.data = aint;
+    public NBTTagIntArray(String par1Str, int[] par2ArrayOfInteger)
+    {
+        super(par1Str);
+        this.data = par2ArrayOfInteger;
     }
 
-    void write(DataOutput dataoutput) {
-        dataoutput.writeInt(this.data.length);
+    /**
+     * Write the actual data contents of the tag, implemented in NBT extension classes
+     */
+    void write(DataOutput par1DataOutput) throws IOException
+    {
+        par1DataOutput.writeInt(this.data.length);
 
-        for (int i = 0; i < this.data.length; ++i) {
-            dataoutput.writeInt(this.data[i]);
+        for (int var2 = 0; var2 < this.data.length; ++var2)
+        {
+            par1DataOutput.writeInt(this.data[var2]);
         }
     }
 
-    void load(DataInput datainput) {
-        int i = datainput.readInt();
+    /**
+     * Read the actual data contents of the tag, implemented in NBT extension classes
+     */
+    void load(DataInput par1DataInput) throws IOException
+    {
+        int var2 = par1DataInput.readInt();
+        this.data = new int[var2];
 
-        this.data = new int[i];
-
-        for (int j = 0; j < i; ++j) {
-            this.data[j] = datainput.readInt();
+        for (int var3 = 0; var3 < var2; ++var3)
+        {
+            this.data[var3] = par1DataInput.readInt();
         }
     }
 
-    public byte getTypeId() {
-        return (byte) 11;
+    /**
+     * Gets the type byte for the tag.
+     */
+    public byte getTypeId()
+    {
+        return (byte)11;
     }
 
-    public String toString() {
+    public String toString()
+    {
         return "[" + this.data.length + " bytes]";
     }
 
-    public NBTBase clone() {
-        int[] aint = new int[this.data.length];
-
-        System.arraycopy(this.data, 0, aint, 0, this.data.length);
-        return new NBTTagIntArray(this.getName(), aint);
+    /**
+     * Creates a clone of the tag.
+     */
+    public NBTBase clone()
+    {
+        int[] var1 = new int[this.data.length];
+        System.arraycopy(this.data, 0, var1, 0, this.data.length);
+        return new NBTTagIntArray(this.getName(), var1);
     }
 
-    public boolean equals(Object object) {
-        if (!super.equals(object)) {
+    public boolean equals(Object par1Obj)
+    {
+        if (!super.equals(par1Obj))
+        {
             return false;
-        } else {
-            NBTTagIntArray nbttagintarray = (NBTTagIntArray) object;
-
-            return this.data == null && nbttagintarray.data == null || this.data != null && Arrays.equals(this.data, nbttagintarray.data);
+        }
+        else
+        {
+            NBTTagIntArray var2 = (NBTTagIntArray)par1Obj;
+            return this.data == null && var2.data == null || this.data != null && Arrays.equals(this.data, var2.data);
         }
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         return super.hashCode() ^ Arrays.hashCode(this.data);
     }
 }

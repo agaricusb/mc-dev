@@ -1,22 +1,32 @@
 package net.minecraft.server;
 
-public class MaterialLiquid extends Material {
-
-    public MaterialLiquid(MaterialMapColor materialmapcolor) {
-        super(materialmapcolor);
+public class MaterialLiquid extends Material
+{
+    public MaterialLiquid(MaterialMapColor par1MapColor)
+    {
+        super(par1MapColor);
         this.i();
         this.n();
     }
 
-    public boolean isLiquid() {
+    /**
+     * Returns if blocks of these materials are liquids.
+     */
+    public boolean isLiquid()
+    {
         return true;
     }
 
-    public boolean isSolid() {
+    /**
+     * Returns if this material is considered solid or not
+     */
+    public boolean isSolid()
+    {
         return false;
     }
 
-    public boolean isBuildable() {
+    public boolean isBuildable()
+    {
         return false;
     }
 }

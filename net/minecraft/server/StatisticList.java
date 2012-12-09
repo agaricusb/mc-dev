@@ -7,90 +7,160 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class StatisticList {
-
+public class StatisticList
+{
+    /** Tracks one-off stats. */
     protected static Map a = new HashMap();
     public static List b = new ArrayList();
     public static List c = new ArrayList();
     public static List d = new ArrayList();
+
+    /** Tracks the number of times a given block or item has been mined. */
     public static List e = new ArrayList();
+
+    /** times the game has been started */
     public static Statistic f = (new CounterStatistic(1000, "stat.startGame")).h().g();
+
+    /** times a world has been created */
     public static Statistic g = (new CounterStatistic(1001, "stat.createWorld")).h().g();
+
+    /** the number of times you have loaded a world */
     public static Statistic h = (new CounterStatistic(1002, "stat.loadWorld")).h().g();
+
+    /** number of times you've joined a multiplayer world */
     public static Statistic i = (new CounterStatistic(1003, "stat.joinMultiplayer")).h().g();
+
+    /** number of times you've left a game */
     public static Statistic j = (new CounterStatistic(1004, "stat.leaveGame")).h().g();
+
+    /** number of minutes you have played */
     public static Statistic k = (new CounterStatistic(1100, "stat.playOneMinute", Statistic.i)).h().g();
+
+    /** distance you've walked */
     public static Statistic l = (new CounterStatistic(2000, "stat.walkOneCm", Statistic.j)).h().g();
+
+    /** distance you have swam */
     public static Statistic m = (new CounterStatistic(2001, "stat.swimOneCm", Statistic.j)).h().g();
+
+    /** the distance you have fallen */
     public static Statistic n = (new CounterStatistic(2002, "stat.fallOneCm", Statistic.j)).h().g();
+
+    /** the distance you've climbed */
     public static Statistic o = (new CounterStatistic(2003, "stat.climbOneCm", Statistic.j)).h().g();
+
+    /** the distance you've flown */
     public static Statistic p = (new CounterStatistic(2004, "stat.flyOneCm", Statistic.j)).h().g();
+
+    /** the distance you've dived */
     public static Statistic q = (new CounterStatistic(2005, "stat.diveOneCm", Statistic.j)).h().g();
+
+    /** the distance you've traveled by minecart */
     public static Statistic r = (new CounterStatistic(2006, "stat.minecartOneCm", Statistic.j)).h().g();
+
+    /** the distance you've traveled by boat */
     public static Statistic s = (new CounterStatistic(2007, "stat.boatOneCm", Statistic.j)).h().g();
+
+    /** the distance you've traveled by pig */
     public static Statistic t = (new CounterStatistic(2008, "stat.pigOneCm", Statistic.j)).h().g();
+
+    /** the times you've jumped */
     public static Statistic u = (new CounterStatistic(2010, "stat.jump")).h().g();
+
+    /** the distance you've dropped (or times you've fallen?) */
     public static Statistic v = (new CounterStatistic(2011, "stat.drop")).h().g();
+
+    /** the amount of damage you've dealt */
     public static Statistic w = (new CounterStatistic(2020, "stat.damageDealt")).g();
+
+    /** the amount of damage you have taken */
     public static Statistic x = (new CounterStatistic(2021, "stat.damageTaken")).g();
+
+    /** the number of times you have died */
     public static Statistic y = (new CounterStatistic(2022, "stat.deaths")).g();
+
+    /** the number of mobs you have killed */
     public static Statistic z = (new CounterStatistic(2023, "stat.mobKills")).g();
+
+    /** counts the number of times you've killed a player */
     public static Statistic A = (new CounterStatistic(2024, "stat.playerKills")).g();
     public static Statistic B = (new CounterStatistic(2025, "stat.fishCaught")).g();
     public static Statistic[] C = a("stat.mineBlock", 16777216);
+
+    /** Tracks the number of items a given block or item has been crafted. */
     public static Statistic[] D;
+
+    /** Tracks the number of times a given block or item has been used. */
     public static Statistic[] E;
+
+    /** Tracks the number of times a given block or item has been broken. */
     public static Statistic[] F;
     private static boolean G;
     private static boolean H;
 
+    /**
+     * This method simply NOPs. It is presumably used to call the static constructors on server start.
+     */
     public static void a() {}
 
-    public static void b() {
+    /**
+     * Initializes statistic fields related to breakable items and blocks.
+     */
+    public static void b()
+    {
         E = a(E, "stat.useItem", 16908288, 0, 256);
         F = b(F, "stat.breakItem", 16973824, 0, 256);
         G = true;
         d();
     }
 
-    public static void c() {
+    public static void c()
+    {
         E = a(E, "stat.useItem", 16908288, 256, 32000);
         F = b(F, "stat.breakItem", 16973824, 256, 32000);
         H = true;
         d();
     }
 
-    public static void d() {
-        if (G && H) {
-            HashSet hashset = new HashSet();
-            Iterator iterator = CraftingManager.getInstance().getRecipes().iterator();
+    /**
+     * Initializes statistics related to craftable items. Is only called after both block and item stats have been
+     * initialized.
+     */
+    public static void d()
+    {
+        if (G && H)
+        {
+            HashSet var0 = new HashSet();
+            Iterator var1 = CraftingManager.getInstance().getRecipes().iterator();
 
-            while (iterator.hasNext()) {
-                IRecipe irecipe = (IRecipe) iterator.next();
+            while (var1.hasNext())
+            {
+                IRecipe var2 = (IRecipe)var1.next();
 
-                if (irecipe.b() != null) {
-                    hashset.add(Integer.valueOf(irecipe.b().id));
+                if (var2.b() != null)
+                {
+                    var0.add(Integer.valueOf(var2.b().id));
                 }
             }
 
-            iterator = RecipesFurnace.getInstance().getRecipes().values().iterator();
+            var1 = RecipesFurnace.getInstance().getRecipes().values().iterator();
 
-            while (iterator.hasNext()) {
-                ItemStack itemstack = (ItemStack) iterator.next();
-
-                hashset.add(Integer.valueOf(itemstack.id));
+            while (var1.hasNext())
+            {
+                ItemStack var4 = (ItemStack)var1.next();
+                var0.add(Integer.valueOf(var4.id));
             }
 
             D = new Statistic[32000];
-            iterator = hashset.iterator();
+            var1 = var0.iterator();
 
-            while (iterator.hasNext()) {
-                Integer integer = (Integer) iterator.next();
+            while (var1.hasNext())
+            {
+                Integer var5 = (Integer)var1.next();
 
-                if (Item.byId[integer.intValue()] != null) {
-                    String s = LocaleI18n.get("stat.craftItem", new Object[] { Item.byId[integer.intValue()].t()});
-
-                    D[integer.intValue()] = (new CraftingStatistic(16842752 + integer.intValue(), s, integer.intValue())).g();
+                if (Item.byId[var5.intValue()] != null)
+                {
+                    String var3 = LocaleI18n.get("stat.craftItem", new Object[]{Item.byId[var5.intValue()].t()});
+                    D[var5.intValue()] = (new CraftingStatistic(16842752 + var5.intValue(), var3, var5.intValue())).g();
                 }
             }
 
@@ -98,86 +168,114 @@ public class StatisticList {
         }
     }
 
-    private static Statistic[] a(String s, int i) {
-        Statistic[] astatistic = new Statistic[256];
+    /**
+     * Initializes statistic fields related to minable items and blocks.
+     */
+    private static Statistic[] a(String par0Str, int par1)
+    {
+        Statistic[] var2 = new Statistic[256];
 
-        for (int j = 0; j < 256; ++j) {
-            if (Block.byId[j] != null && Block.byId[j].C()) {
-                String s1 = LocaleI18n.get(s, new Object[] { Block.byId[j].getName()});
-
-                astatistic[j] = (new CraftingStatistic(i + j, s1, j)).g();
-                e.add((CraftingStatistic) astatistic[j]);
+        for (int var3 = 0; var3 < 256; ++var3)
+        {
+            if (Block.byId[var3] != null && Block.byId[var3].C())
+            {
+                String var4 = LocaleI18n.get(par0Str, new Object[]{Block.byId[var3].getName()});
+                var2[var3] = (new CraftingStatistic(par1 + var3, var4, var3)).g();
+                e.add((CraftingStatistic)var2[var3]);
             }
         }
 
-        a(astatistic);
-        return astatistic;
+        a(var2);
+        return var2;
     }
 
-    private static Statistic[] a(Statistic[] astatistic, String s, int i, int j, int k) {
-        if (astatistic == null) {
-            astatistic = new Statistic[32000];
+    /**
+     * Initializes statistic fields related to usable items and blocks.
+     */
+    private static Statistic[] a(Statistic[] par0ArrayOfStatBase, String par1Str, int par2, int par3, int par4)
+    {
+        if (par0ArrayOfStatBase == null)
+        {
+            par0ArrayOfStatBase = new Statistic[32000];
         }
 
-        for (int l = j; l < k; ++l) {
-            if (Item.byId[l] != null) {
-                String s1 = LocaleI18n.get(s, new Object[] { Item.byId[l].t()});
+        for (int var5 = par3; var5 < par4; ++var5)
+        {
+            if (Item.byId[var5] != null)
+            {
+                String var6 = LocaleI18n.get(par1Str, new Object[]{Item.byId[var5].t()});
+                par0ArrayOfStatBase[var5] = (new CraftingStatistic(par2 + var5, var6, var5)).g();
 
-                astatistic[l] = (new CraftingStatistic(i + l, s1, l)).g();
-                if (l >= 256) {
-                    d.add((CraftingStatistic) astatistic[l]);
+                if (var5 >= 256)
+                {
+                    d.add((CraftingStatistic)par0ArrayOfStatBase[var5]);
                 }
             }
         }
 
-        a(astatistic);
-        return astatistic;
+        a(par0ArrayOfStatBase);
+        return par0ArrayOfStatBase;
     }
 
-    private static Statistic[] b(Statistic[] astatistic, String s, int i, int j, int k) {
-        if (astatistic == null) {
-            astatistic = new Statistic[32000];
+    private static Statistic[] b(Statistic[] par0ArrayOfStatBase, String par1Str, int par2, int par3, int par4)
+    {
+        if (par0ArrayOfStatBase == null)
+        {
+            par0ArrayOfStatBase = new Statistic[32000];
         }
 
-        for (int l = j; l < k; ++l) {
-            if (Item.byId[l] != null && Item.byId[l].n()) {
-                String s1 = LocaleI18n.get(s, new Object[] { Item.byId[l].t()});
-
-                astatistic[l] = (new CraftingStatistic(i + l, s1, l)).g();
+        for (int var5 = par3; var5 < par4; ++var5)
+        {
+            if (Item.byId[var5] != null && Item.byId[var5].n())
+            {
+                String var6 = LocaleI18n.get(par1Str, new Object[]{Item.byId[var5].t()});
+                par0ArrayOfStatBase[var5] = (new CraftingStatistic(par2 + var5, var6, var5)).g();
             }
         }
 
-        a(astatistic);
-        return astatistic;
+        a(par0ArrayOfStatBase);
+        return par0ArrayOfStatBase;
     }
 
-    private static void a(Statistic[] astatistic) {
-        a(astatistic, Block.STATIONARY_WATER.id, Block.WATER.id);
-        a(astatistic, Block.STATIONARY_LAVA.id, Block.STATIONARY_LAVA.id);
-        a(astatistic, Block.JACK_O_LANTERN.id, Block.PUMPKIN.id);
-        a(astatistic, Block.BURNING_FURNACE.id, Block.FURNACE.id);
-        a(astatistic, Block.GLOWING_REDSTONE_ORE.id, Block.REDSTONE_ORE.id);
-        a(astatistic, Block.DIODE_ON.id, Block.DIODE_OFF.id);
-        a(astatistic, Block.REDSTONE_TORCH_ON.id, Block.REDSTONE_TORCH_OFF.id);
-        a(astatistic, Block.RED_MUSHROOM.id, Block.BROWN_MUSHROOM.id);
-        a(astatistic, Block.DOUBLE_STEP.id, Block.STEP.id);
-        a(astatistic, Block.WOOD_DOUBLE_STEP.id, Block.WOOD_STEP.id);
-        a(astatistic, Block.GRASS.id, Block.DIRT.id);
-        a(astatistic, Block.SOIL.id, Block.DIRT.id);
+    /**
+     * Forces all dual blocks to count for each other on the stats list
+     */
+    private static void a(Statistic[] par0ArrayOfStatBase)
+    {
+        a(par0ArrayOfStatBase, Block.STATIONARY_WATER.id, Block.WATER.id);
+        a(par0ArrayOfStatBase, Block.STATIONARY_LAVA.id, Block.STATIONARY_LAVA.id);
+        a(par0ArrayOfStatBase, Block.JACK_O_LANTERN.id, Block.PUMPKIN.id);
+        a(par0ArrayOfStatBase, Block.BURNING_FURNACE.id, Block.FURNACE.id);
+        a(par0ArrayOfStatBase, Block.GLOWING_REDSTONE_ORE.id, Block.REDSTONE_ORE.id);
+        a(par0ArrayOfStatBase, Block.DIODE_ON.id, Block.DIODE_OFF.id);
+        a(par0ArrayOfStatBase, Block.REDSTONE_TORCH_ON.id, Block.REDSTONE_TORCH_OFF.id);
+        a(par0ArrayOfStatBase, Block.RED_MUSHROOM.id, Block.BROWN_MUSHROOM.id);
+        a(par0ArrayOfStatBase, Block.DOUBLE_STEP.id, Block.STEP.id);
+        a(par0ArrayOfStatBase, Block.WOOD_DOUBLE_STEP.id, Block.WOOD_STEP.id);
+        a(par0ArrayOfStatBase, Block.GRASS.id, Block.DIRT.id);
+        a(par0ArrayOfStatBase, Block.SOIL.id, Block.DIRT.id);
     }
 
-    private static void a(Statistic[] astatistic, int i, int j) {
-        if (astatistic[i] != null && astatistic[j] == null) {
-            astatistic[j] = astatistic[i];
-        } else {
-            b.remove(astatistic[i]);
-            e.remove(astatistic[i]);
-            c.remove(astatistic[i]);
-            astatistic[i] = astatistic[j];
+    /**
+     * Forces stats for one block to add to another block, such as idle and active furnaces
+     */
+    private static void a(Statistic[] par0ArrayOfStatBase, int par1, int par2)
+    {
+        if (par0ArrayOfStatBase[par1] != null && par0ArrayOfStatBase[par2] == null)
+        {
+            par0ArrayOfStatBase[par2] = par0ArrayOfStatBase[par1];
+        }
+        else
+        {
+            b.remove(par0ArrayOfStatBase[par1]);
+            e.remove(par0ArrayOfStatBase[par1]);
+            c.remove(par0ArrayOfStatBase[par1]);
+            par0ArrayOfStatBase[par1] = par0ArrayOfStatBase[par2];
         }
     }
 
-    static {
+    static
+    {
         AchievementList.a();
         G = false;
         H = false;

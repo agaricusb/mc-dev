@@ -1,82 +1,107 @@
 package net.minecraft.server;
 
-public class ItemDoor extends Item {
-
+public class ItemDoor extends Item
+{
     private Material a;
 
-    public ItemDoor(int i, Material material) {
-        super(i);
-        this.a = material;
+    public ItemDoor(int par1, Material par2Material)
+    {
+        super(par1);
+        this.a = par2Material;
         this.maxStackSize = 1;
         this.a(CreativeModeTab.d);
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
-        if (l != 1) {
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        if (par7 != 1)
+        {
             return false;
-        } else {
-            ++j;
-            Block block;
+        }
+        else
+        {
+            ++par5;
+            Block var11;
 
-            if (this.a == Material.WOOD) {
-                block = Block.WOODEN_DOOR;
-            } else {
-                block = Block.IRON_DOOR_BLOCK;
+            if (this.a == Material.WOOD)
+            {
+                var11 = Block.WOODEN_DOOR;
+            }
+            else
+            {
+                var11 = Block.IRON_DOOR_BLOCK;
             }
 
-            if (entityhuman.a(i, j, k, l, itemstack) && entityhuman.a(i, j + 1, k, l, itemstack)) {
-                if (!block.canPlace(world, i, j, k)) {
+            if (par2EntityPlayer.a(par4, par5, par6, par7, par1ItemStack) && par2EntityPlayer.a(par4, par5 + 1, par6, par7, par1ItemStack))
+            {
+                if (!var11.canPlace(par3World, par4, par5, par6))
+                {
                     return false;
-                } else {
-                    int i1 = MathHelper.floor((double) ((entityhuman.yaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
-
-                    place(world, i, j, k, i1, block);
-                    --itemstack.count;
+                }
+                else
+                {
+                    int var12 = MathHelper.floor((double) ((par2EntityPlayer.yaw + 180.0F) * 4.0F / 360.0F) - 0.5D) & 3;
+                    place(par3World, par4, par5, par6, var12, var11);
+                    --par1ItemStack.count;
                     return true;
                 }
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
     }
 
-    public static void place(World world, int i, int j, int k, int l, Block block) {
-        byte b0 = 0;
-        byte b1 = 0;
+    public static void place(World par0World, int par1, int par2, int par3, int par4, Block par5Block)
+    {
+        byte var6 = 0;
+        byte var7 = 0;
 
-        if (l == 0) {
-            b1 = 1;
+        if (par4 == 0)
+        {
+            var7 = 1;
         }
 
-        if (l == 1) {
-            b0 = -1;
+        if (par4 == 1)
+        {
+            var6 = -1;
         }
 
-        if (l == 2) {
-            b1 = -1;
+        if (par4 == 2)
+        {
+            var7 = -1;
         }
 
-        if (l == 3) {
-            b0 = 1;
+        if (par4 == 3)
+        {
+            var6 = 1;
         }
 
-        int i1 = (world.t(i - b0, j, k - b1) ? 1 : 0) + (world.t(i - b0, j + 1, k - b1) ? 1 : 0);
-        int j1 = (world.t(i + b0, j, k + b1) ? 1 : 0) + (world.t(i + b0, j + 1, k + b1) ? 1 : 0);
-        boolean flag = world.getTypeId(i - b0, j, k - b1) == block.id || world.getTypeId(i - b0, j + 1, k - b1) == block.id;
-        boolean flag1 = world.getTypeId(i + b0, j, k + b1) == block.id || world.getTypeId(i + b0, j + 1, k + b1) == block.id;
-        boolean flag2 = false;
+        int var8 = (par0World.t(par1 - var6, par2, par3 - var7) ? 1 : 0) + (par0World.t(par1 - var6, par2 + 1, par3 - var7) ? 1 : 0);
+        int var9 = (par0World.t(par1 + var6, par2, par3 + var7) ? 1 : 0) + (par0World.t(par1 + var6, par2 + 1, par3 + var7) ? 1 : 0);
+        boolean var10 = par0World.getTypeId(par1 - var6, par2, par3 - var7) == par5Block.id || par0World.getTypeId(par1 - var6, par2 + 1, par3 - var7) == par5Block.id;
+        boolean var11 = par0World.getTypeId(par1 + var6, par2, par3 + var7) == par5Block.id || par0World.getTypeId(par1 + var6, par2 + 1, par3 + var7) == par5Block.id;
+        boolean var12 = false;
 
-        if (flag && !flag1) {
-            flag2 = true;
-        } else if (j1 > i1) {
-            flag2 = true;
+        if (var10 && !var11)
+        {
+            var12 = true;
+        }
+        else if (var9 > var8)
+        {
+            var12 = true;
         }
 
-        world.suppressPhysics = true;
-        world.setTypeIdAndData(i, j, k, block.id, l);
-        world.setTypeIdAndData(i, j + 1, k, block.id, 8 | (flag2 ? 1 : 0));
-        world.suppressPhysics = false;
-        world.applyPhysics(i, j, k, block.id);
-        world.applyPhysics(i, j + 1, k, block.id);
+        par0World.suppressPhysics = true;
+        par0World.setTypeIdAndData(par1, par2, par3, par5Block.id, par4);
+        par0World.setTypeIdAndData(par1, par2 + 1, par3, par5Block.id, 8 | (var12 ? 1 : 0));
+        par0World.suppressPhysics = false;
+        par0World.applyPhysics(par1, par2, par3, par5Block.id);
+        par0World.applyPhysics(par1, par2 + 1, par3, par5Block.id);
     }
 }

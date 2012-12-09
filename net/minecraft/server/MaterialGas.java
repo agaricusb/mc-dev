@@ -1,21 +1,31 @@
 package net.minecraft.server;
 
-public class MaterialGas extends Material {
-
-    public MaterialGas(MaterialMapColor materialmapcolor) {
-        super(materialmapcolor);
+public class MaterialGas extends Material
+{
+    public MaterialGas(MaterialMapColor par1MapColor)
+    {
+        super(par1MapColor);
         this.i();
     }
 
-    public boolean isBuildable() {
+    public boolean isBuildable()
+    {
         return false;
     }
 
-    public boolean blocksLight() {
+    /**
+     * Will prevent grass from growing on dirt underneath and kill any grass below it if it returns true
+     */
+    public boolean blocksLight()
+    {
         return false;
     }
 
-    public boolean isSolid() {
+    /**
+     * Returns if this material is considered solid or not
+     */
+    public boolean isSolid()
+    {
         return false;
     }
 }

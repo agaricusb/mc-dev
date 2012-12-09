@@ -2,19 +2,22 @@ package net.minecraft.server;
 
 import java.util.concurrent.Callable;
 
-class CrashReportEntityType implements Callable {
-
+class CrashReportEntityType implements Callable
+{
     final Entity a;
 
-    CrashReportEntityType(Entity entity) {
-        this.a = entity;
+    CrashReportEntityType(Entity par1Entity)
+    {
+        this.a = par1Entity;
     }
 
-    public String a() {
+    public String a()
+    {
         return EntityTypes.b(this.a) + " (" + this.a.getClass().getCanonicalName() + ")";
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

@@ -2,19 +2,28 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public interface ICommand extends Comparable {
-
+public interface ICommand extends Comparable
+{
     String c();
 
-    String a(ICommandListener icommandlistener);
+    String a(ICommandListener var1);
 
     List b();
 
-    void b(ICommandListener icommandlistener, String[] astring);
+    void b(ICommandListener var1, String[] var2);
 
-    boolean b(ICommandListener icommandlistener);
+    /**
+     * Returns true if the given command sender is allowed to use this command.
+     */
+    boolean b(ICommandListener var1);
 
-    List a(ICommandListener icommandlistener, String[] astring);
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    List a(ICommandListener var1, String[] var2);
 
-    boolean a(int i);
+    /**
+     * Return whether the specified command parameter index is a username parameter.
+     */
+    boolean a(int var1);
 }

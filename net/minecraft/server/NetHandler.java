@@ -1,284 +1,424 @@
 package net.minecraft.server;
 
-public abstract class NetHandler {
-
-    public NetHandler() {}
-
+public abstract class NetHandler
+{
+    /**
+     * determine if it is a server handler
+     */
     public abstract boolean a();
 
-    public void a(Packet51MapChunk packet51mapchunk) {}
+    /**
+     * Handle Packet51MapChunk (full chunk update of blocks, metadata, light levels, and optionally biome data)
+     */
+    public void a(Packet51MapChunk par1Packet51MapChunk) {}
 
-    public void onUnhandledPacket(Packet packet) {}
+    /**
+     * Default handler called for packets that don't have their own handlers in NetServerHandler; kicks player from the
+     * server.
+     */
+    public void onUnhandledPacket(Packet par1Packet) {}
 
-    public void a(String s, Object[] aobject) {}
+    public void a(String par1Str, Object[] par2ArrayOfObj) {}
 
-    public void a(Packet255KickDisconnect packet255kickdisconnect) {
-        this.onUnhandledPacket(packet255kickdisconnect);
+    public void a(Packet255KickDisconnect par1Packet255KickDisconnect)
+    {
+        this.onUnhandledPacket(par1Packet255KickDisconnect);
     }
 
-    public void a(Packet1Login packet1login) {
-        this.onUnhandledPacket(packet1login);
+    public void a(Packet1Login par1Packet1Login)
+    {
+        this.onUnhandledPacket(par1Packet1Login);
     }
 
-    public void a(Packet10Flying packet10flying) {
-        this.onUnhandledPacket(packet10flying);
+    public void a(Packet10Flying par1Packet10Flying)
+    {
+        this.onUnhandledPacket(par1Packet10Flying);
     }
 
-    public void a(Packet52MultiBlockChange packet52multiblockchange) {
-        this.onUnhandledPacket(packet52multiblockchange);
+    public void a(Packet52MultiBlockChange par1Packet52MultiBlockChange)
+    {
+        this.onUnhandledPacket(par1Packet52MultiBlockChange);
     }
 
-    public void a(Packet14BlockDig packet14blockdig) {
-        this.onUnhandledPacket(packet14blockdig);
+    public void a(Packet14BlockDig par1Packet14BlockDig)
+    {
+        this.onUnhandledPacket(par1Packet14BlockDig);
     }
 
-    public void a(Packet53BlockChange packet53blockchange) {
-        this.onUnhandledPacket(packet53blockchange);
+    public void a(Packet53BlockChange par1Packet53BlockChange)
+    {
+        this.onUnhandledPacket(par1Packet53BlockChange);
     }
 
-    public void a(Packet20NamedEntitySpawn packet20namedentityspawn) {
-        this.onUnhandledPacket(packet20namedentityspawn);
+    public void a(Packet20NamedEntitySpawn par1Packet20NamedEntitySpawn)
+    {
+        this.onUnhandledPacket(par1Packet20NamedEntitySpawn);
     }
 
-    public void a(Packet30Entity packet30entity) {
-        this.onUnhandledPacket(packet30entity);
+    public void a(Packet30Entity par1Packet30Entity)
+    {
+        this.onUnhandledPacket(par1Packet30Entity);
     }
 
-    public void a(Packet34EntityTeleport packet34entityteleport) {
-        this.onUnhandledPacket(packet34entityteleport);
+    public void a(Packet34EntityTeleport par1Packet34EntityTeleport)
+    {
+        this.onUnhandledPacket(par1Packet34EntityTeleport);
     }
 
-    public void a(Packet15Place packet15place) {
-        this.onUnhandledPacket(packet15place);
+    public void a(Packet15Place par1Packet15Place)
+    {
+        this.onUnhandledPacket(par1Packet15Place);
     }
 
-    public void a(Packet16BlockItemSwitch packet16blockitemswitch) {
-        this.onUnhandledPacket(packet16blockitemswitch);
+    public void a(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
+    {
+        this.onUnhandledPacket(par1Packet16BlockItemSwitch);
     }
 
-    public void a(Packet29DestroyEntity packet29destroyentity) {
-        this.onUnhandledPacket(packet29destroyentity);
+    public void a(Packet29DestroyEntity par1Packet29DestroyEntity)
+    {
+        this.onUnhandledPacket(par1Packet29DestroyEntity);
     }
 
-    public void a(Packet21PickupSpawn packet21pickupspawn) {
-        this.onUnhandledPacket(packet21pickupspawn);
+    public void a(Packet21PickupSpawn par1Packet21PickupSpawn)
+    {
+        this.onUnhandledPacket(par1Packet21PickupSpawn);
     }
 
-    public void a(Packet22Collect packet22collect) {
-        this.onUnhandledPacket(packet22collect);
+    public void a(Packet22Collect par1Packet22Collect)
+    {
+        this.onUnhandledPacket(par1Packet22Collect);
     }
 
-    public void a(Packet3Chat packet3chat) {
-        this.onUnhandledPacket(packet3chat);
+    public void a(Packet3Chat par1Packet3Chat)
+    {
+        this.onUnhandledPacket(par1Packet3Chat);
     }
 
-    public void a(Packet23VehicleSpawn packet23vehiclespawn) {
-        this.onUnhandledPacket(packet23vehiclespawn);
+    public void a(Packet23VehicleSpawn par1Packet23VehicleSpawn)
+    {
+        this.onUnhandledPacket(par1Packet23VehicleSpawn);
     }
 
-    public void a(Packet18ArmAnimation packet18armanimation) {
-        this.onUnhandledPacket(packet18armanimation);
+    public void a(Packet18ArmAnimation par1Packet18Animation)
+    {
+        this.onUnhandledPacket(par1Packet18Animation);
     }
 
-    public void a(Packet19EntityAction packet19entityaction) {
-        this.onUnhandledPacket(packet19entityaction);
+    /**
+     * runs registerPacket on the given Packet19EntityAction
+     */
+    public void a(Packet19EntityAction par1Packet19EntityAction)
+    {
+        this.onUnhandledPacket(par1Packet19EntityAction);
     }
 
-    public void a(Packet2Handshake packet2handshake) {
-        this.onUnhandledPacket(packet2handshake);
+    public void a(Packet2Handshake par1Packet2ClientProtocol)
+    {
+        this.onUnhandledPacket(par1Packet2ClientProtocol);
     }
 
-    public void a(Packet253KeyRequest packet253keyrequest) {
-        this.onUnhandledPacket(packet253keyrequest);
+    public void a(Packet253KeyRequest par1Packet253ServerAuthData)
+    {
+        this.onUnhandledPacket(par1Packet253ServerAuthData);
     }
 
-    public void a(Packet252KeyResponse packet252keyresponse) {
-        this.onUnhandledPacket(packet252keyresponse);
+    public void a(Packet252KeyResponse par1Packet252SharedKey)
+    {
+        this.onUnhandledPacket(par1Packet252SharedKey);
     }
 
-    public void a(Packet24MobSpawn packet24mobspawn) {
-        this.onUnhandledPacket(packet24mobspawn);
+    public void a(Packet24MobSpawn par1Packet24MobSpawn)
+    {
+        this.onUnhandledPacket(par1Packet24MobSpawn);
     }
 
-    public void a(Packet4UpdateTime packet4updatetime) {
-        this.onUnhandledPacket(packet4updatetime);
+    public void a(Packet4UpdateTime par1Packet4UpdateTime)
+    {
+        this.onUnhandledPacket(par1Packet4UpdateTime);
     }
 
-    public void a(Packet6SpawnPosition packet6spawnposition) {
-        this.onUnhandledPacket(packet6spawnposition);
+    public void a(Packet6SpawnPosition par1Packet6SpawnPosition)
+    {
+        this.onUnhandledPacket(par1Packet6SpawnPosition);
     }
 
-    public void a(Packet28EntityVelocity packet28entityvelocity) {
-        this.onUnhandledPacket(packet28entityvelocity);
+    /**
+     * Packet handler
+     */
+    public void a(Packet28EntityVelocity par1Packet28EntityVelocity)
+    {
+        this.onUnhandledPacket(par1Packet28EntityVelocity);
     }
 
-    public void a(Packet40EntityMetadata packet40entitymetadata) {
-        this.onUnhandledPacket(packet40entitymetadata);
+    /**
+     * Packet handler
+     */
+    public void a(Packet40EntityMetadata par1Packet40EntityMetadata)
+    {
+        this.onUnhandledPacket(par1Packet40EntityMetadata);
     }
 
-    public void a(Packet39AttachEntity packet39attachentity) {
-        this.onUnhandledPacket(packet39attachentity);
+    /**
+     * Packet handler
+     */
+    public void a(Packet39AttachEntity par1Packet39AttachEntity)
+    {
+        this.onUnhandledPacket(par1Packet39AttachEntity);
     }
 
-    public void a(Packet7UseEntity packet7useentity) {
-        this.onUnhandledPacket(packet7useentity);
+    public void a(Packet7UseEntity par1Packet7UseEntity)
+    {
+        this.onUnhandledPacket(par1Packet7UseEntity);
     }
 
-    public void a(Packet38EntityStatus packet38entitystatus) {
-        this.onUnhandledPacket(packet38entitystatus);
+    /**
+     * Packet handler
+     */
+    public void a(Packet38EntityStatus par1Packet38EntityStatus)
+    {
+        this.onUnhandledPacket(par1Packet38EntityStatus);
     }
 
-    public void a(Packet8UpdateHealth packet8updatehealth) {
-        this.onUnhandledPacket(packet8updatehealth);
+    /**
+     * Recieves player health from the server and then proceeds to set it locally on the client.
+     */
+    public void a(Packet8UpdateHealth par1Packet8UpdateHealth)
+    {
+        this.onUnhandledPacket(par1Packet8UpdateHealth);
     }
 
-    public void a(Packet9Respawn packet9respawn) {
-        this.onUnhandledPacket(packet9respawn);
+    /**
+     * respawns the player
+     */
+    public void a(Packet9Respawn par1Packet9Respawn)
+    {
+        this.onUnhandledPacket(par1Packet9Respawn);
     }
 
-    public void a(Packet60Explosion packet60explosion) {
-        this.onUnhandledPacket(packet60explosion);
+    public void a(Packet60Explosion par1Packet60Explosion)
+    {
+        this.onUnhandledPacket(par1Packet60Explosion);
     }
 
-    public void a(Packet100OpenWindow packet100openwindow) {
-        this.onUnhandledPacket(packet100openwindow);
+    public void a(Packet100OpenWindow par1Packet100OpenWindow)
+    {
+        this.onUnhandledPacket(par1Packet100OpenWindow);
     }
 
-    public void handleContainerClose(Packet101CloseWindow packet101closewindow) {
-        this.onUnhandledPacket(packet101closewindow);
+    public void handleContainerClose(Packet101CloseWindow par1Packet101CloseWindow)
+    {
+        this.onUnhandledPacket(par1Packet101CloseWindow);
     }
 
-    public void a(Packet102WindowClick packet102windowclick) {
-        this.onUnhandledPacket(packet102windowclick);
+    public void a(Packet102WindowClick par1Packet102WindowClick)
+    {
+        this.onUnhandledPacket(par1Packet102WindowClick);
     }
 
-    public void a(Packet103SetSlot packet103setslot) {
-        this.onUnhandledPacket(packet103setslot);
+    public void a(Packet103SetSlot par1Packet103SetSlot)
+    {
+        this.onUnhandledPacket(par1Packet103SetSlot);
     }
 
-    public void a(Packet104WindowItems packet104windowitems) {
-        this.onUnhandledPacket(packet104windowitems);
+    public void a(Packet104WindowItems par1Packet104WindowItems)
+    {
+        this.onUnhandledPacket(par1Packet104WindowItems);
     }
 
-    public void a(Packet130UpdateSign packet130updatesign) {
-        this.onUnhandledPacket(packet130updatesign);
+    /**
+     * Updates Client side signs
+     */
+    public void a(Packet130UpdateSign par1Packet130UpdateSign)
+    {
+        this.onUnhandledPacket(par1Packet130UpdateSign);
     }
 
-    public void a(Packet105CraftProgressBar packet105craftprogressbar) {
-        this.onUnhandledPacket(packet105craftprogressbar);
+    public void a(Packet105CraftProgressBar par1Packet105UpdateProgressbar)
+    {
+        this.onUnhandledPacket(par1Packet105UpdateProgressbar);
     }
 
-    public void a(Packet5EntityEquipment packet5entityequipment) {
-        this.onUnhandledPacket(packet5entityequipment);
+    public void a(Packet5EntityEquipment par1Packet5PlayerInventory)
+    {
+        this.onUnhandledPacket(par1Packet5PlayerInventory);
     }
 
-    public void a(Packet106Transaction packet106transaction) {
-        this.onUnhandledPacket(packet106transaction);
+    public void a(Packet106Transaction par1Packet106Transaction)
+    {
+        this.onUnhandledPacket(par1Packet106Transaction);
     }
 
-    public void a(Packet25EntityPainting packet25entitypainting) {
-        this.onUnhandledPacket(packet25entitypainting);
+    /**
+     * Packet handler
+     */
+    public void a(Packet25EntityPainting par1Packet25EntityPainting)
+    {
+        this.onUnhandledPacket(par1Packet25EntityPainting);
     }
 
-    public void a(Packet54PlayNoteBlock packet54playnoteblock) {
-        this.onUnhandledPacket(packet54playnoteblock);
+    public void a(Packet54PlayNoteBlock par1Packet54PlayNoteBlock)
+    {
+        this.onUnhandledPacket(par1Packet54PlayNoteBlock);
     }
 
-    public void a(Packet200Statistic packet200statistic) {
-        this.onUnhandledPacket(packet200statistic);
+    /**
+     * runs registerPacket on the given Packet200Statistic
+     */
+    public void a(Packet200Statistic par1Packet200Statistic)
+    {
+        this.onUnhandledPacket(par1Packet200Statistic);
     }
 
-    public void a(Packet17EntityLocationAction packet17entitylocationaction) {
-        this.onUnhandledPacket(packet17entitylocationaction);
+    public void a(Packet17EntityLocationAction par1Packet17Sleep)
+    {
+        this.onUnhandledPacket(par1Packet17Sleep);
     }
 
-    public void a(Packet70Bed packet70bed) {
-        this.onUnhandledPacket(packet70bed);
+    public void a(Packet70Bed par1Packet70GameEvent)
+    {
+        this.onUnhandledPacket(par1Packet70GameEvent);
     }
 
-    public void a(Packet71Weather packet71weather) {
-        this.onUnhandledPacket(packet71weather);
+    /**
+     * Handles weather packet
+     */
+    public void a(Packet71Weather par1Packet71Weather)
+    {
+        this.onUnhandledPacket(par1Packet71Weather);
     }
 
-    public void a(Packet131ItemData packet131itemdata) {
-        this.onUnhandledPacket(packet131itemdata);
+    /**
+     * Contains logic for handling packets containing arbitrary unique item data. Currently this is only for maps.
+     */
+    public void a(Packet131ItemData par1Packet131MapData)
+    {
+        this.onUnhandledPacket(par1Packet131MapData);
     }
 
-    public void a(Packet61WorldEvent packet61worldevent) {
-        this.onUnhandledPacket(packet61worldevent);
+    public void a(Packet61WorldEvent par1Packet61DoorChange)
+    {
+        this.onUnhandledPacket(par1Packet61DoorChange);
     }
 
-    public void a(Packet254GetInfo packet254getinfo) {
-        this.onUnhandledPacket(packet254getinfo);
+    /**
+     * Handle a server ping packet.
+     */
+    public void a(Packet254GetInfo par1Packet254ServerPing)
+    {
+        this.onUnhandledPacket(par1Packet254ServerPing);
     }
 
-    public void a(Packet41MobEffect packet41mobeffect) {
-        this.onUnhandledPacket(packet41mobeffect);
+    /**
+     * Handle an entity effect packet.
+     */
+    public void a(Packet41MobEffect par1Packet41EntityEffect)
+    {
+        this.onUnhandledPacket(par1Packet41EntityEffect);
     }
 
-    public void a(Packet42RemoveMobEffect packet42removemobeffect) {
-        this.onUnhandledPacket(packet42removemobeffect);
+    /**
+     * Handle a remove entity effect packet.
+     */
+    public void a(Packet42RemoveMobEffect par1Packet42RemoveEntityEffect)
+    {
+        this.onUnhandledPacket(par1Packet42RemoveEntityEffect);
     }
 
-    public void a(Packet201PlayerInfo packet201playerinfo) {
-        this.onUnhandledPacket(packet201playerinfo);
+    /**
+     * Handle a player information packet.
+     */
+    public void a(Packet201PlayerInfo par1Packet201PlayerInfo)
+    {
+        this.onUnhandledPacket(par1Packet201PlayerInfo);
     }
 
-    public void a(Packet0KeepAlive packet0keepalive) {
-        this.onUnhandledPacket(packet0keepalive);
+    /**
+     * Handle a keep alive packet.
+     */
+    public void a(Packet0KeepAlive par1Packet0KeepAlive)
+    {
+        this.onUnhandledPacket(par1Packet0KeepAlive);
     }
 
-    public void a(Packet43SetExperience packet43setexperience) {
-        this.onUnhandledPacket(packet43setexperience);
+    /**
+     * Handle an experience packet.
+     */
+    public void a(Packet43SetExperience par1Packet43Experience)
+    {
+        this.onUnhandledPacket(par1Packet43Experience);
     }
 
-    public void a(Packet107SetCreativeSlot packet107setcreativeslot) {
-        this.onUnhandledPacket(packet107setcreativeslot);
+    /**
+     * Handle a creative slot packet.
+     */
+    public void a(Packet107SetCreativeSlot par1Packet107CreativeSetSlot)
+    {
+        this.onUnhandledPacket(par1Packet107CreativeSetSlot);
     }
 
-    public void a(Packet26AddExpOrb packet26addexporb) {
-        this.onUnhandledPacket(packet26addexporb);
+    /**
+     * Handle a entity experience orb packet.
+     */
+    public void a(Packet26AddExpOrb par1Packet26EntityExpOrb)
+    {
+        this.onUnhandledPacket(par1Packet26EntityExpOrb);
     }
 
-    public void a(Packet108ButtonClick packet108buttonclick) {}
+    public void a(Packet108ButtonClick par1Packet108EnchantItem) {}
 
-    public void a(Packet250CustomPayload packet250custompayload) {}
+    public void a(Packet250CustomPayload par1Packet250CustomPayload) {}
 
-    public void a(Packet35EntityHeadRotation packet35entityheadrotation) {
-        this.onUnhandledPacket(packet35entityheadrotation);
+    public void a(Packet35EntityHeadRotation par1Packet35EntityHeadRotation)
+    {
+        this.onUnhandledPacket(par1Packet35EntityHeadRotation);
     }
 
-    public void a(Packet132TileEntityData packet132tileentitydata) {
-        this.onUnhandledPacket(packet132tileentitydata);
+    public void a(Packet132TileEntityData par1Packet132TileEntityData)
+    {
+        this.onUnhandledPacket(par1Packet132TileEntityData);
     }
 
-    public void a(Packet202Abilities packet202abilities) {
-        this.onUnhandledPacket(packet202abilities);
+    /**
+     * Handle a player abilities packet.
+     */
+    public void a(Packet202Abilities par1Packet202PlayerAbilities)
+    {
+        this.onUnhandledPacket(par1Packet202PlayerAbilities);
     }
 
-    public void a(Packet203TabComplete packet203tabcomplete) {
-        this.onUnhandledPacket(packet203tabcomplete);
+    public void a(Packet203TabComplete par1Packet203AutoComplete)
+    {
+        this.onUnhandledPacket(par1Packet203AutoComplete);
     }
 
-    public void a(Packet204LocaleAndViewDistance packet204localeandviewdistance) {
-        this.onUnhandledPacket(packet204localeandviewdistance);
+    public void a(Packet204LocaleAndViewDistance par1Packet204ClientInfo)
+    {
+        this.onUnhandledPacket(par1Packet204ClientInfo);
     }
 
-    public void a(Packet62NamedSoundEffect packet62namedsoundeffect) {
-        this.onUnhandledPacket(packet62namedsoundeffect);
+    public void a(Packet62NamedSoundEffect par1Packet62LevelSound)
+    {
+        this.onUnhandledPacket(par1Packet62LevelSound);
     }
 
-    public void a(Packet55BlockBreakAnimation packet55blockbreakanimation) {
-        this.onUnhandledPacket(packet55blockbreakanimation);
+    public void a(Packet55BlockBreakAnimation par1Packet55BlockDestroy)
+    {
+        this.onUnhandledPacket(par1Packet55BlockDestroy);
     }
 
-    public void a(Packet205ClientCommand packet205clientcommand) {}
+    public void a(Packet205ClientCommand par1Packet205ClientCommand) {}
 
-    public void a(Packet56MapChunkBulk packet56mapchunkbulk) {
-        this.onUnhandledPacket(packet56mapchunkbulk);
+    public void a(Packet56MapChunkBulk par1Packet56MapChunks)
+    {
+        this.onUnhandledPacket(par1Packet56MapChunks);
     }
 
-    public boolean b() {
+    /**
+     * packet.processPacket is only called if this returns true
+     */
+    public boolean b()
+    {
         return false;
     }
 }

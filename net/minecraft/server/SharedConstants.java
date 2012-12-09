@@ -3,51 +3,73 @@ package net.minecraft.server;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-public class SharedConstants {
-
+public class SharedConstants
+{
+    /**
+     * This String have the characters allowed in any text drawing of minecraft.
+     */
     public static final String allowedCharacters = a();
-    public static final char[] b = new char[] { '/', '\n', '\r', '\t', '\u0000', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':'};
 
-    public SharedConstants() {}
+    /**
+     * Array of the special characters that are allowed in any text drawing of Minecraft.
+     */
+    public static final char[] b = new char[] {'/', '\n', '\r', '\t', '\u0000', '\f', '`', '?', '*', '\\', '<', '>', '|', '\"', ':'};
 
-    private static String a() {
-        String s = "";
+    /**
+     * Load the font.txt resource file, that is on UTF-8 format. This file contains the characters that minecraft can
+     * render Strings on screen.
+     */
+    private static String a()
+    {
+        String var0 = "";
 
-        try {
-            BufferedReader bufferedreader = new BufferedReader(new InputStreamReader(SharedConstants.class.getResourceAsStream("/font.txt"), "UTF-8"));
-            String s1 = "";
+        try
+        {
+            BufferedReader var1 = new BufferedReader(new InputStreamReader(SharedConstants.class.getResourceAsStream("/font.txt"), "UTF-8"));
+            String var2 = "";
 
-            while ((s1 = bufferedreader.readLine()) != null) {
-                if (!s1.startsWith("#")) {
-                    s = s + s1;
+            while ((var2 = var1.readLine()) != null)
+            {
+                if (!var2.startsWith("#"))
+                {
+                    var0 = var0 + var2;
                 }
             }
 
-            bufferedreader.close();
-        } catch (Exception exception) {
+            var1.close();
+        }
+        catch (Exception var3)
+        {
             ;
         }
 
-        return s;
+        return var0;
     }
 
-    public static final boolean isAllowedChatCharacter(char c0) {
-        return c0 != 167 && (allowedCharacters.indexOf(c0) >= 0 || c0 > 32);
+    public static final boolean isAllowedChatCharacter(char par0)
+    {
+        return par0 != 167 && (allowedCharacters.indexOf(par0) >= 0 || par0 > 32);
     }
 
-    public static String a(String s) {
-        StringBuilder stringbuilder = new StringBuilder();
-        char[] achar = s.toCharArray();
-        int i = achar.length;
+    /**
+     * Filter string by only keeping those characters for which isAllowedCharacter() returns true.
+     */
+    public static String a(String par0Str)
+    {
+        StringBuilder var1 = new StringBuilder();
+        char[] var2 = par0Str.toCharArray();
+        int var3 = var2.length;
 
-        for (int j = 0; j < i; ++j) {
-            char c0 = achar[j];
+        for (int var4 = 0; var4 < var3; ++var4)
+        {
+            char var5 = var2[var4];
 
-            if (isAllowedChatCharacter(c0)) {
-                stringbuilder.append(c0);
+            if (isAllowedChatCharacter(var5))
+            {
+                var1.append(var5);
             }
         }
 
-        return stringbuilder.toString();
+        return var1.toString();
     }
 }

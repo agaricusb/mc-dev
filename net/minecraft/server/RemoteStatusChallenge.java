@@ -4,44 +4,70 @@ import java.net.DatagramPacket;
 import java.util.Date;
 import java.util.Random;
 
-class RemoteStatusChallenge {
-
+class RemoteStatusChallenge
+{
+    /** The creation timestamp for this auth */
     private long time;
+
+    /** A random integer value to be used for client response authentication */
     private int token;
+
+    /** A client-provided request ID associated with this query */
     private byte[] identity;
+
+    /** A unique string of bytes used to verify client auth */
     private byte[] response;
+
+    /** The request ID stored as a String */
     private String f;
 
+    /** The RConThreadQuery that this is probably an inner class of */
     final RemoteStatusListener a;
 
-    public RemoteStatusChallenge(RemoteStatusListener remotestatuslistener, DatagramPacket datagrampacket) {
-        this.a = remotestatuslistener;
+    public RemoteStatusChallenge(RemoteStatusListener par1RConThreadQuery, DatagramPacket par2DatagramPacket)
+    {
+        this.a = par1RConThreadQuery;
         this.time = (new Date()).getTime();
-        byte[] abyte = datagrampacket.getData();
-
+        byte[] var3 = par2DatagramPacket.getData();
         this.identity = new byte[4];
-        this.identity[0] = abyte[3];
-        this.identity[1] = abyte[4];
-        this.identity[2] = abyte[5];
-        this.identity[3] = abyte[6];
+        this.identity[0] = var3[3];
+        this.identity[1] = var3[4];
+        this.identity[2] = var3[5];
+        this.identity[3] = var3[6];
         this.f = new String(this.identity);
         this.token = (new Random()).nextInt(16777216);
-        this.response = String.format("\t%s%d, new Object[] { this.f, Integer.valueOf(this.token)}).getBytes();
+        this.response = String.format("\t%s%d\u0000", new Object[] {this.f, Integer.valueOf(this.token)}).getBytes();
     }
 
-    public Boolean isExpired(long i) {
-        return Boolean.valueOf(this.time < i);
+    /**
+     * Returns true if the auth's creation timestamp is less than the given time, otherwise false
+     */
+    public Boolean isExpired(long par1)
+    {
+        return Boolean.valueOf(this.time < par1);
     }
 
-    public int getToken() {
+    /**
+     * Returns the random challenge number assigned to this auth
+     */
+    public int getToken()
+    {
         return this.token;
     }
 
-    public byte[] getChallengeResponse() {
+    /**
+     * Returns the auth challenge value
+     */
+    public byte[] getChallengeResponse()
+    {
         return this.response;
     }
 
-    public byte[] getIdentityToken() {
+    /**
+     * Returns the request ID provided by the client.
+     */
+    public byte[] getIdentityToken()
+    {
         return this.identity;
     }
 }

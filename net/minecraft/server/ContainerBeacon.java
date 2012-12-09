@@ -1,98 +1,137 @@
 package net.minecraft.server;
 
-public class ContainerBeacon extends Container {
-
+public class ContainerBeacon extends Container
+{
     private TileEntityBeacon a;
+
+    /**
+     * This beacon's slot where you put in Emerald, Diamond, Gold or Iron Ingot.
+     */
     private final SlotBeacon f;
     private int g;
     private int h;
     private int i;
 
-    public ContainerBeacon(PlayerInventory playerinventory, TileEntityBeacon tileentitybeacon) {
-        this.a = tileentitybeacon;
-        this.a(this.f = new SlotBeacon(this, tileentitybeacon, 0, 136, 110));
-        byte b0 = 36;
-        short short1 = 137;
+    public ContainerBeacon(PlayerInventory par1InventoryPlayer, TileEntityBeacon par2TileEntityBeacon)
+    {
+        this.a = par2TileEntityBeacon;
+        this.a(this.f = new SlotBeacon(this, par2TileEntityBeacon, 0, 136, 110));
+        byte var3 = 36;
+        short var4 = 137;
+        int var5;
 
-        int i;
-
-        for (i = 0; i < 3; ++i) {
-            for (int j = 0; j < 9; ++j) {
-                this.a(new Slot(playerinventory, j + i * 9 + 9, b0 + j * 18, short1 + i * 18));
+        for (var5 = 0; var5 < 3; ++var5)
+        {
+            for (int var6 = 0; var6 < 9; ++var6)
+            {
+                this.a(new Slot(par1InventoryPlayer, var6 + var5 * 9 + 9, var3 + var6 * 18, var4 + var5 * 18));
             }
         }
 
-        for (i = 0; i < 9; ++i) {
-            this.a(new Slot(playerinventory, i, b0 + i * 18, 58 + short1));
+        for (var5 = 0; var5 < 9; ++var5)
+        {
+            this.a(new Slot(par1InventoryPlayer, var5, var3 + var5 * 18, 58 + var4));
         }
 
-        this.g = tileentitybeacon.k();
-        this.h = tileentitybeacon.i();
-        this.i = tileentitybeacon.j();
+        this.g = par2TileEntityBeacon.k();
+        this.h = par2TileEntityBeacon.i();
+        this.i = par2TileEntityBeacon.j();
     }
 
-    public void addSlotListener(ICrafting icrafting) {
-        super.addSlotListener(icrafting);
-        icrafting.setContainerData(this, 0, this.g);
-        icrafting.setContainerData(this, 1, this.h);
-        icrafting.setContainerData(this, 2, this.i);
+    public void addSlotListener(ICrafting par1ICrafting)
+    {
+        super.addSlotListener(par1ICrafting);
+        par1ICrafting.setContainerData(this, 0, this.g);
+        par1ICrafting.setContainerData(this, 1, this.h);
+        par1ICrafting.setContainerData(this, 2, this.i);
     }
 
-    public void b() {
+    /**
+     * Updates crafting matrix; called from onCraftMatrixChanged. Args: none
+     */
+    public void b()
+    {
         super.b();
     }
 
-    public TileEntityBeacon d() {
+    /**
+     * Returns the Tile Entity behind this beacon inventory / container
+     */
+    public TileEntityBeacon d()
+    {
         return this.a;
     }
 
-    public boolean a(EntityHuman entityhuman) {
-        return this.a.a_(entityhuman);
+    public boolean a(EntityHuman par1EntityPlayer)
+    {
+        return this.a.a_(par1EntityPlayer);
     }
 
-    public ItemStack b(EntityHuman entityhuman, int i) {
-        ItemStack itemstack = null;
-        Slot slot = (Slot) this.c.get(i);
+    /**
+     * Take a stack from the specified inventory slot.
+     */
+    public ItemStack b(EntityHuman par1EntityPlayer, int par2)
+    {
+        ItemStack var3 = null;
+        Slot var4 = (Slot)this.c.get(par2);
 
-        if (slot != null && slot.d()) {
-            ItemStack itemstack1 = slot.getItem();
+        if (var4 != null && var4.d())
+        {
+            ItemStack var5 = var4.getItem();
+            var3 = var5.cloneItemStack();
 
-            itemstack = itemstack1.cloneItemStack();
-            if (i == 0) {
-                if (!this.a(itemstack1, 1, 37, true)) {
+            if (par2 == 0)
+            {
+                if (!this.a(var5, 1, 37, true))
+                {
                     return null;
                 }
 
-                slot.a(itemstack1, itemstack);
-            } else if (!this.f.d() && this.f.isAllowed(itemstack1) && itemstack1.count == 1) {
-                if (!this.a(itemstack1, 0, 1, false)) {
+                var4.a(var5, var3);
+            }
+            else if (!this.f.d() && this.f.isAllowed(var5) && var5.count == 1)
+            {
+                if (!this.a(var5, 0, 1, false))
+                {
                     return null;
                 }
-            } else if (i >= 1 && i < 28) {
-                if (!this.a(itemstack1, 28, 37, false)) {
+            }
+            else if (par2 >= 1 && par2 < 28)
+            {
+                if (!this.a(var5, 28, 37, false))
+                {
                     return null;
                 }
-            } else if (i >= 28 && i < 37) {
-                if (!this.a(itemstack1, 1, 28, false)) {
+            }
+            else if (par2 >= 28 && par2 < 37)
+            {
+                if (!this.a(var5, 1, 28, false))
+                {
                     return null;
                 }
-            } else if (!this.a(itemstack1, 1, 37, false)) {
+            }
+            else if (!this.a(var5, 1, 37, false))
+            {
                 return null;
             }
 
-            if (itemstack1.count == 0) {
-                slot.set((ItemStack) null);
-            } else {
-                slot.e();
+            if (var5.count == 0)
+            {
+                var4.set((ItemStack) null);
+            }
+            else
+            {
+                var4.e();
             }
 
-            if (itemstack1.count == itemstack.count) {
+            if (var5.count == var3.count)
+            {
                 return null;
             }
 
-            slot.a(entityhuman, itemstack1);
+            var4.a(par1EntityPlayer, var5);
         }
 
-        return itemstack;
+        return var3;
     }
 }

@@ -2,45 +2,60 @@ package net.minecraft.server;
 
 import java.io.IOException;
 
-class NetworkWriterThread extends Thread {
-
+class NetworkWriterThread extends Thread
+{
     final NetworkManager a;
 
-    NetworkWriterThread(NetworkManager networkmanager, String s) {
-        super(s);
-        this.a = networkmanager;
+    NetworkWriterThread(NetworkManager par1TcpConnection, String par2Str)
+    {
+        super(par2Str);
+        this.a = par1TcpConnection;
     }
 
-    public void run() {
+    public void run()
+    {
         NetworkManager.b.getAndIncrement();
 
-        try {
-            while (NetworkManager.a(this.a)) {
-                boolean flag;
+        try
+        {
+            while (NetworkManager.a(this.a))
+            {
+                boolean var1;
 
-                for (flag = false; NetworkManager.d(this.a); flag = true) {
+                for (var1 = false; NetworkManager.d(this.a); var1 = true)
+                {
                     ;
                 }
 
-                try {
-                    if (flag && NetworkManager.e(this.a) != null) {
+                try
+                {
+                    if (var1 && NetworkManager.e(this.a) != null)
+                    {
                         NetworkManager.e(this.a).flush();
                     }
-                } catch (IOException ioexception) {
-                    if (!NetworkManager.f(this.a)) {
-                        NetworkManager.a(this.a, (Exception) ioexception);
+                }
+                catch (IOException var8)
+                {
+                    if (!NetworkManager.f(this.a))
+                    {
+                        NetworkManager.a(this.a, var8);
                     }
 
-                    ioexception.printStackTrace();
+                    var8.printStackTrace();
                 }
 
-                try {
+                try
+                {
                     sleep(2L);
-                } catch (InterruptedException interruptedexception) {
+                }
+                catch (InterruptedException var7)
+                {
                     ;
                 }
             }
-        } finally {
+        }
+        finally
+        {
             NetworkManager.b.getAndDecrement();
         }
     }

@@ -1,20 +1,32 @@
 package net.minecraft.server;
 
-public class Tuple {
-
+public class Tuple
+{
+    /** First Object in the Tuple */
     private Object a;
+
+    /** Second Object in the Tuple */
     private Object b;
 
-    public Tuple(Object object, Object object1) {
-        this.a = object;
-        this.b = object1;
+    public Tuple(Object par1Obj, Object par2Obj)
+    {
+        this.a = par1Obj;
+        this.b = par2Obj;
     }
 
-    public Object a() {
+    /**
+     * Get the first Object in the Tuple
+     */
+    public Object a()
+    {
         return this.a;
     }
 
-    public Object b() {
+    /**
+     * Get the second Object in the Tuple
+     */
+    public Object b()
+    {
         return this.b;
     }
 }

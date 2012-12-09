@@ -1,39 +1,64 @@
 package net.minecraft.server;
 
-public class PathfinderGoalSit extends PathfinderGoal {
-
+public class PathfinderGoalSit extends PathfinderGoal
+{
     private EntityTameableAnimal a;
+
+    /** If the EntityTameable is sitting. */
     private boolean b = false;
 
-    public PathfinderGoalSit(EntityTameableAnimal entitytameableanimal) {
-        this.a = entitytameableanimal;
+    public PathfinderGoalSit(EntityTameableAnimal par1EntityTameable)
+    {
+        this.a = par1EntityTameable;
         this.a(5);
     }
 
-    public boolean a() {
-        if (!this.a.isTamed()) {
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
+        if (!this.a.isTamed())
+        {
             return false;
-        } else if (this.a.H()) {
+        }
+        else if (this.a.H())
+        {
             return false;
-        } else if (!this.a.onGround) {
+        }
+        else if (!this.a.onGround)
+        {
             return false;
-        } else {
-            EntityLiving entityliving = this.a.getOwner();
-
-            return entityliving == null ? true : (this.a.e(entityliving) < 144.0D && entityliving.aC() != null ? false : this.b);
+        }
+        else
+        {
+            EntityLiving var1 = this.a.getOwner();
+            return var1 == null ? true : (this.a.e(var1) < 144.0D && var1.aC() != null ? false : this.b);
         }
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.a.getNavigation().g();
         this.a.setSitting(true);
     }
 
-    public void d() {
+    /**
+     * Resets the task
+     */
+    public void d()
+    {
         this.a.setSitting(false);
     }
 
-    public void a(boolean flag) {
-        this.b = flag;
+    /**
+     * Sets the sitting flag.
+     */
+    public void a(boolean par1)
+    {
+        this.b = par1;
     }
 }

@@ -1,33 +1,48 @@
 package net.minecraft.server;
 
-class NetworkMasterThread extends Thread {
-
+class NetworkMasterThread extends Thread
+{
     final NetworkManager a;
 
-    NetworkMasterThread(NetworkManager networkmanager) {
-        this.a = networkmanager;
+    NetworkMasterThread(NetworkManager par1TcpConnection)
+    {
+        this.a = par1TcpConnection;
     }
 
-    public void run() {
-        try {
+    @SuppressWarnings("deprecation")
+    public void run()
+    {
+        try
+        {
             Thread.sleep(5000L);
-            if (NetworkManager.g(this.a).isAlive()) {
-                try {
+
+            if (NetworkManager.g(this.a).isAlive())
+            {
+                try
+                {
                     NetworkManager.g(this.a).stop();
-                } catch (Throwable throwable) {
+                }
+                catch (Throwable var3)
+                {
                     ;
                 }
             }
 
-            if (NetworkManager.h(this.a).isAlive()) {
-                try {
+            if (NetworkManager.h(this.a).isAlive())
+            {
+                try
+                {
                     NetworkManager.h(this.a).stop();
-                } catch (Throwable throwable1) {
+                }
+                catch (Throwable var2)
+                {
                     ;
                 }
             }
-        } catch (InterruptedException interruptedexception) {
-            interruptedexception.printStackTrace();
+        }
+        catch (InterruptedException var4)
+        {
+            var4.printStackTrace();
         }
     }
 }

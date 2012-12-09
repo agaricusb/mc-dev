@@ -1,16 +1,26 @@
 package net.minecraft.server;
 
-public class ItemInWorldManager {
-
+public class ItemInWorldManager
+{
+    /** The world object that this object is connected to. */
     public World world;
+
+    /** The EntityPlayerMP object that this object is connected to. */
     public EntityPlayer player;
     private EnumGamemode gamemode;
+
+    /** True if the player is destroying a block */
     private boolean d;
     private int lastDigTick;
     private int f;
     private int g;
     private int h;
     private int currentTick;
+
+    /**
+     * Set to true when the "finished destroying block" packet is received but the block wasn't fully damaged yet. The
+     * block will not be destroyed while this is false.
+     */
     private boolean j;
     private int k;
     private int l;
@@ -18,243 +28,334 @@ public class ItemInWorldManager {
     private int n;
     private int o;
 
-    public ItemInWorldManager(World world) {
+    public ItemInWorldManager(World par1World)
+    {
         this.gamemode = EnumGamemode.NONE;
         this.o = -1;
-        this.world = world;
+        this.world = par1World;
     }
 
-    public void setGameMode(EnumGamemode enumgamemode) {
-        this.gamemode = enumgamemode;
-        enumgamemode.a(this.player.abilities);
+    public void setGameMode(EnumGamemode par1EnumGameType)
+    {
+        this.gamemode = par1EnumGameType;
+        par1EnumGameType.a(this.player.abilities);
         this.player.updateAbilities();
     }
 
-    public EnumGamemode getGameMode() {
+    public EnumGamemode getGameMode()
+    {
         return this.gamemode;
     }
 
-    public boolean isCreative() {
+    /**
+     * Get if we are in creative game mode.
+     */
+    public boolean isCreative()
+    {
         return this.gamemode.d();
     }
 
-    public void b(EnumGamemode enumgamemode) {
-        if (this.gamemode == EnumGamemode.NONE) {
-            this.gamemode = enumgamemode;
+    /**
+     * if the gameType is currently NOT_SET then change it to par1
+     */
+    public void b(EnumGamemode par1EnumGameType)
+    {
+        if (this.gamemode == EnumGamemode.NONE)
+        {
+            this.gamemode = par1EnumGameType;
         }
 
         this.setGameMode(this.gamemode);
     }
 
-    public void a() {
+    public void a()
+    {
         ++this.currentTick;
-        int i;
-        float f;
-        int j;
+        int var1;
+        float var4;
+        int var5;
 
-        if (this.j) {
-            i = this.currentTick - this.n;
-            int k = this.world.getTypeId(this.k, this.l, this.m);
+        if (this.j)
+        {
+            var1 = this.currentTick - this.n;
+            int var2 = this.world.getTypeId(this.k, this.l, this.m);
 
-            if (k == 0) {
+            if (var2 == 0)
+            {
                 this.j = false;
-            } else {
-                Block block = Block.byId[k];
+            }
+            else
+            {
+                Block var3 = Block.byId[var2];
+                var4 = var3.getDamage(this.player, this.player.world, this.k, this.l, this.m) * (float)(var1 + 1);
+                var5 = (int)(var4 * 10.0F);
 
-                f = block.getDamage(this.player, this.player.world, this.k, this.l, this.m) * (float) (i + 1);
-                j = (int) (f * 10.0F);
-                if (j != this.o) {
-                    this.world.g(this.player.id, this.k, this.l, this.m, j);
-                    this.o = j;
+                if (var5 != this.o)
+                {
+                    this.world.g(this.player.id, this.k, this.l, this.m, var5);
+                    this.o = var5;
                 }
 
-                if (f >= 1.0F) {
+                if (var4 >= 1.0F)
+                {
                     this.j = false;
                     this.breakBlock(this.k, this.l, this.m);
                 }
             }
-        } else if (this.d) {
-            i = this.world.getTypeId(this.f, this.g, this.h);
-            Block block1 = Block.byId[i];
+        }
+        else if (this.d)
+        {
+            var1 = this.world.getTypeId(this.f, this.g, this.h);
+            Block var6 = Block.byId[var1];
 
-            if (block1 == null) {
+            if (var6 == null)
+            {
                 this.world.g(this.player.id, this.f, this.g, this.h, -1);
                 this.o = -1;
                 this.d = false;
-            } else {
-                int l = this.currentTick - this.lastDigTick;
+            }
+            else
+            {
+                int var7 = this.currentTick - this.lastDigTick;
+                var4 = var6.getDamage(this.player, this.player.world, this.f, this.g, this.h) * (float)(var7 + 1);
+                var5 = (int)(var4 * 10.0F);
 
-                f = block1.getDamage(this.player, this.player.world, this.f, this.g, this.h) * (float) (l + 1);
-                j = (int) (f * 10.0F);
-                if (j != this.o) {
-                    this.world.g(this.player.id, this.f, this.g, this.h, j);
-                    this.o = j;
+                if (var5 != this.o)
+                {
+                    this.world.g(this.player.id, this.f, this.g, this.h, var5);
+                    this.o = var5;
                 }
             }
         }
     }
 
-    public void dig(int i, int j, int k, int l) {
-        if (!this.gamemode.isAdventure() || this.player.f(i, j, k)) {
-            if (this.isCreative()) {
-                if (!this.world.douseFire((EntityHuman) null, i, j, k, l)) {
-                    this.breakBlock(i, j, k);
+    public void dig(int par1, int par2, int par3, int par4)
+    {
+        if (!this.gamemode.isAdventure() || this.player.f(par1, par2, par3))
+        {
+            if (this.isCreative())
+            {
+                if (!this.world.douseFire((EntityHuman) null, par1, par2, par3, par4))
+                {
+                    this.breakBlock(par1, par2, par3);
                 }
-            } else {
-                this.world.douseFire(this.player, i, j, k, l);
+            }
+            else
+            {
+                this.world.douseFire(this.player, par1, par2, par3, par4);
                 this.lastDigTick = this.currentTick;
-                float f = 1.0F;
-                int i1 = this.world.getTypeId(i, j, k);
+                float var5 = 1.0F;
+                int var6 = this.world.getTypeId(par1, par2, par3);
 
-                if (i1 > 0) {
-                    Block.byId[i1].attack(this.world, i, j, k, this.player);
-                    f = Block.byId[i1].getDamage(this.player, this.player.world, i, j, k);
+                if (var6 > 0)
+                {
+                    Block.byId[var6].attack(this.world, par1, par2, par3, this.player);
+                    var5 = Block.byId[var6].getDamage(this.player, this.player.world, par1, par2, par3);
                 }
 
-                if (i1 > 0 && f >= 1.0F) {
-                    this.breakBlock(i, j, k);
-                } else {
+                if (var6 > 0 && var5 >= 1.0F)
+                {
+                    this.breakBlock(par1, par2, par3);
+                }
+                else
+                {
                     this.d = true;
-                    this.f = i;
-                    this.g = j;
-                    this.h = k;
-                    int j1 = (int) (f * 10.0F);
-
-                    this.world.g(this.player.id, i, j, k, j1);
-                    this.o = j1;
+                    this.f = par1;
+                    this.g = par2;
+                    this.h = par3;
+                    int var7 = (int)(var5 * 10.0F);
+                    this.world.g(this.player.id, par1, par2, par3, var7);
+                    this.o = var7;
                 }
             }
         }
     }
 
-    public void a(int i, int j, int k) {
-        if (i == this.f && j == this.g && k == this.h) {
-            int l = this.currentTick - this.lastDigTick;
-            int i1 = this.world.getTypeId(i, j, k);
+    public void a(int par1, int par2, int par3)
+    {
+        if (par1 == this.f && par2 == this.g && par3 == this.h)
+        {
+            int var4 = this.currentTick - this.lastDigTick;
+            int var5 = this.world.getTypeId(par1, par2, par3);
 
-            if (i1 != 0) {
-                Block block = Block.byId[i1];
-                float f = block.getDamage(this.player, this.player.world, i, j, k) * (float) (l + 1);
+            if (var5 != 0)
+            {
+                Block var6 = Block.byId[var5];
+                float var7 = var6.getDamage(this.player, this.player.world, par1, par2, par3) * (float)(var4 + 1);
 
-                if (f >= 0.7F) {
+                if (var7 >= 0.7F)
+                {
                     this.d = false;
-                    this.world.g(this.player.id, i, j, k, -1);
-                    this.breakBlock(i, j, k);
-                } else if (!this.j) {
+                    this.world.g(this.player.id, par1, par2, par3, -1);
+                    this.breakBlock(par1, par2, par3);
+                }
+                else if (!this.j)
+                {
                     this.d = false;
                     this.j = true;
-                    this.k = i;
-                    this.l = j;
-                    this.m = k;
+                    this.k = par1;
+                    this.l = par2;
+                    this.m = par3;
                     this.n = this.lastDigTick;
                 }
             }
         }
     }
 
-    public void c(int i, int j, int k) {
+    /**
+     * note: this ignores the pars passed in and continues to destroy the onClickedBlock
+     */
+    public void c(int par1, int par2, int par3)
+    {
         this.d = false;
         this.world.g(this.player.id, this.f, this.g, this.h, -1);
     }
 
-    private boolean d(int i, int j, int k) {
-        Block block = Block.byId[this.world.getTypeId(i, j, k)];
-        int l = this.world.getData(i, j, k);
+    /**
+     * Removes a block and triggers the appropriate events
+     */
+    private boolean d(int par1, int par2, int par3)
+    {
+        Block var4 = Block.byId[this.world.getTypeId(par1, par2, par3)];
+        int var5 = this.world.getData(par1, par2, par3);
 
-        if (block != null) {
-            block.a(this.world, i, j, k, l, this.player);
+        if (var4 != null)
+        {
+            var4.a(this.world, par1, par2, par3, var5, this.player);
         }
 
-        boolean flag = this.world.setTypeId(i, j, k, 0);
+        boolean var6 = this.world.setTypeId(par1, par2, par3, 0);
 
-        if (block != null && flag) {
-            block.postBreak(this.world, i, j, k, l);
+        if (var4 != null && var6)
+        {
+            var4.postBreak(this.world, par1, par2, par3, var5);
         }
 
-        return flag;
+        return var6;
     }
 
-    public boolean breakBlock(int i, int j, int k) {
-        if (this.gamemode.isAdventure() && !this.player.f(i, j, k)) {
+    /**
+     * Attempts to harvest a block at the given coordinate
+     */
+    public boolean breakBlock(int par1, int par2, int par3)
+    {
+        if (this.gamemode.isAdventure() && !this.player.f(par1, par2, par3))
+        {
             return false;
-        } else {
-            int l = this.world.getTypeId(i, j, k);
-            int i1 = this.world.getData(i, j, k);
+        }
+        else
+        {
+            int var4 = this.world.getTypeId(par1, par2, par3);
+            int var5 = this.world.getData(par1, par2, par3);
+            this.world.a(this.player, 2001, par1, par2, par3, var4 + (this.world.getData(par1, par2, par3) << 12));
+            boolean var6 = this.d(par1, par2, par3);
 
-            this.world.a(this.player, 2001, i, j, k, l + (this.world.getData(i, j, k) << 12));
-            boolean flag = this.d(i, j, k);
+            if (this.isCreative())
+            {
+                this.player.netServerHandler.sendPacket(new Packet53BlockChange(par1, par2, par3, this.world));
+            }
+            else
+            {
+                ItemStack var7 = this.player.bT();
+                boolean var8 = this.player.b(Block.byId[var4]);
 
-            if (this.isCreative()) {
-                this.player.netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, this.world));
-            } else {
-                ItemStack itemstack = this.player.bT();
-                boolean flag1 = this.player.b(Block.byId[l]);
+                if (var7 != null)
+                {
+                    var7.a(this.world, var4, par1, par2, par3, this.player);
 
-                if (itemstack != null) {
-                    itemstack.a(this.world, l, i, j, k, this.player);
-                    if (itemstack.count == 0) {
+                    if (var7.count == 0)
+                    {
                         this.player.bU();
                     }
                 }
 
-                if (flag && flag1) {
-                    Block.byId[l].a(this.world, this.player, i, j, k, i1);
+                if (var6 && var8)
+                {
+                    Block.byId[var4].a(this.world, this.player, par1, par2, par3, var5);
                 }
             }
 
-            return flag;
+            return var6;
         }
     }
 
-    public boolean useItem(EntityHuman entityhuman, World world, ItemStack itemstack) {
-        int i = itemstack.count;
-        int j = itemstack.getData();
-        ItemStack itemstack1 = itemstack.a(world, entityhuman);
+    /**
+     * Attempts to right-click use an item by the given EntityPlayer in the given World
+     */
+    public boolean useItem(EntityHuman par1EntityPlayer, World par2World, ItemStack par3ItemStack)
+    {
+        int var4 = par3ItemStack.count;
+        int var5 = par3ItemStack.getData();
+        ItemStack var6 = par3ItemStack.a(par2World, par1EntityPlayer);
 
-        if (itemstack1 == itemstack && (itemstack1 == null || itemstack1.count == i && itemstack1.m() <= 0 && itemstack1.getData() == j)) {
+        if (var6 == par3ItemStack && (var6 == null || var6.count == var4 && var6.m() <= 0 && var6.getData() == var5))
+        {
             return false;
-        } else {
-            entityhuman.inventory.items[entityhuman.inventory.itemInHandIndex] = itemstack1;
-            if (this.isCreative()) {
-                itemstack1.count = i;
-                if (itemstack1.f()) {
-                    itemstack1.setData(j);
+        }
+        else
+        {
+            par1EntityPlayer.inventory.items[par1EntityPlayer.inventory.itemInHandIndex] = var6;
+
+            if (this.isCreative())
+            {
+                var6.count = var4;
+
+                if (var6.f())
+                {
+                    var6.setData(var5);
                 }
             }
 
-            if (itemstack1.count == 0) {
-                entityhuman.inventory.items[entityhuman.inventory.itemInHandIndex] = null;
+            if (var6.count == 0)
+            {
+                par1EntityPlayer.inventory.items[par1EntityPlayer.inventory.itemInHandIndex] = null;
             }
 
-            if (!entityhuman.bM()) {
-                ((EntityPlayer) entityhuman).updateInventory(entityhuman.defaultContainer);
+            if (!par1EntityPlayer.bM())
+            {
+                ((EntityPlayer)par1EntityPlayer).updateInventory(par1EntityPlayer.defaultContainer);
             }
 
             return true;
         }
     }
 
-    public boolean interact(EntityHuman entityhuman, World world, ItemStack itemstack, int i, int j, int k, int l, float f, float f1, float f2) {
-        int i1 = world.getTypeId(i, j, k);
+    /**
+     * Activate the clicked on block, otherwise use the held item. Args: player, world, itemStack, x, y, z, side,
+     * xOffset, yOffset, zOffset
+     */
+    public boolean interact(EntityHuman par1EntityPlayer, World par2World, ItemStack par3ItemStack, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        int var11 = par2World.getTypeId(par4, par5, par6);
 
-        if (i1 > 0 && Block.byId[i1].interact(world, i, j, k, entityhuman, l, f, f1, f2)) {
+        if (var11 > 0 && Block.byId[var11].interact(par2World, par4, par5, par6, par1EntityPlayer, par7, par8, par9, par10))
+        {
             return true;
-        } else if (itemstack == null) {
+        }
+        else if (par3ItemStack == null)
+        {
             return false;
-        } else if (this.isCreative()) {
-            int j1 = itemstack.getData();
-            int k1 = itemstack.count;
-            boolean flag = itemstack.placeItem(entityhuman, world, i, j, k, l, f, f1, f2);
-
-            itemstack.setData(j1);
-            itemstack.count = k1;
-            return flag;
-        } else {
-            return itemstack.placeItem(entityhuman, world, i, j, k, l, f, f1, f2);
+        }
+        else if (this.isCreative())
+        {
+            int var12 = par3ItemStack.getData();
+            int var13 = par3ItemStack.count;
+            boolean var14 = par3ItemStack.placeItem(par1EntityPlayer, par2World, par4, par5, par6, par7, par8, par9, par10);
+            par3ItemStack.setData(var12);
+            par3ItemStack.count = var13;
+            return var14;
+        }
+        else
+        {
+            return par3ItemStack.placeItem(par1EntityPlayer, par2World, par4, par5, par6, par7, par8, par9, par10);
         }
     }
 
-    public void a(WorldServer worldserver) {
-        this.world = worldserver;
+    /**
+     * Sets the world instance.
+     */
+    public void a(WorldServer par1WorldServer)
+    {
+        this.world = par1WorldServer;
     }
 }

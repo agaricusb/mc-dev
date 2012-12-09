@@ -2,155 +2,226 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockFurnace extends BlockContainer {
-
+public class BlockFurnace extends BlockContainer
+{
+    /**
+     * Is the random generator used by furnace to drop the inventory contents in random directions.
+     */
     private Random a = new Random();
+
+    /** True if this is an active furnace, false if idle */
     private final boolean b;
+
+    /**
+     * This flag is used to prevent the furnace inventory to be dropped upon block removal, is used internally when the
+     * furnace block changes from idle to active and vice-versa.
+     */
     private static boolean c = false;
 
-    protected BlockFurnace(int i, boolean flag) {
-        super(i, Material.STONE);
-        this.b = flag;
+    protected BlockFurnace(int par1, boolean par2)
+    {
+        super(par1, Material.STONE);
+        this.b = par2;
         this.textureId = 45;
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return Block.FURNACE.id;
     }
 
-    public void onPlace(World world, int i, int j, int k) {
-        super.onPlace(world, i, j, k);
-        this.l(world, i, j, k);
+    /**
+     * Called whenever the block is added into the world. Args: world, x, y, z
+     */
+    public void onPlace(World par1World, int par2, int par3, int par4)
+    {
+        super.onPlace(par1World, par2, par3, par4);
+        this.l(par1World, par2, par3, par4);
     }
 
-    private void l(World world, int i, int j, int k) {
-        if (!world.isStatic) {
-            int l = world.getTypeId(i, j, k - 1);
-            int i1 = world.getTypeId(i, j, k + 1);
-            int j1 = world.getTypeId(i - 1, j, k);
-            int k1 = world.getTypeId(i + 1, j, k);
-            byte b0 = 3;
+    /**
+     * set a blocks direction
+     */
+    private void l(World par1World, int par2, int par3, int par4)
+    {
+        if (!par1World.isStatic)
+        {
+            int var5 = par1World.getTypeId(par2, par3, par4 - 1);
+            int var6 = par1World.getTypeId(par2, par3, par4 + 1);
+            int var7 = par1World.getTypeId(par2 - 1, par3, par4);
+            int var8 = par1World.getTypeId(par2 + 1, par3, par4);
+            byte var9 = 3;
 
-            if (Block.q[l] && !Block.q[i1]) {
-                b0 = 3;
+            if (Block.q[var5] && !Block.q[var6])
+            {
+                var9 = 3;
             }
 
-            if (Block.q[i1] && !Block.q[l]) {
-                b0 = 2;
+            if (Block.q[var6] && !Block.q[var5])
+            {
+                var9 = 2;
             }
 
-            if (Block.q[j1] && !Block.q[k1]) {
-                b0 = 5;
+            if (Block.q[var7] && !Block.q[var8])
+            {
+                var9 = 5;
             }
 
-            if (Block.q[k1] && !Block.q[j1]) {
-                b0 = 4;
+            if (Block.q[var8] && !Block.q[var7])
+            {
+                var9 = 4;
             }
 
-            world.setData(i, j, k, b0);
+            par1World.setData(par2, par3, par4, var9);
         }
     }
 
-    public int a(int i) {
-        return i == 1 ? this.textureId + 17 : (i == 0 ? this.textureId + 17 : (i == 3 ? this.textureId - 1 : this.textureId));
+    /**
+     * Returns the block texture based on the side being looked at.  Args: side
+     */
+    public int a(int par1)
+    {
+        return par1 == 1 ? this.textureId + 17 : (par1 == 0 ? this.textureId + 17 : (par1 == 3 ? this.textureId - 1 : this.textureId));
     }
 
-    public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
-        if (world.isStatic) {
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
+        if (par1World.isStatic)
+        {
             return true;
-        } else {
-            TileEntityFurnace tileentityfurnace = (TileEntityFurnace) world.getTileEntity(i, j, k);
+        }
+        else
+        {
+            TileEntityFurnace var10 = (TileEntityFurnace)par1World.getTileEntity(par2, par3, par4);
 
-            if (tileentityfurnace != null) {
-                entityhuman.openFurnace(tileentityfurnace);
+            if (var10 != null)
+            {
+                par5EntityPlayer.openFurnace(var10);
             }
 
             return true;
         }
     }
 
-    public static void a(boolean flag, World world, int i, int j, int k) {
-        int l = world.getData(i, j, k);
-        TileEntity tileentity = world.getTileEntity(i, j, k);
-
+    /**
+     * Update which block ID the furnace is using depending on whether or not it is burning
+     */
+    public static void a(boolean par0, World par1World, int par2, int par3, int par4)
+    {
+        int var5 = par1World.getData(par2, par3, par4);
+        TileEntity var6 = par1World.getTileEntity(par2, par3, par4);
         c = true;
-        if (flag) {
-            world.setTypeId(i, j, k, Block.BURNING_FURNACE.id);
-        } else {
-            world.setTypeId(i, j, k, Block.FURNACE.id);
+
+        if (par0)
+        {
+            par1World.setTypeId(par2, par3, par4, Block.BURNING_FURNACE.id);
+        }
+        else
+        {
+            par1World.setTypeId(par2, par3, par4, Block.FURNACE.id);
         }
 
         c = false;
-        world.setData(i, j, k, l);
-        if (tileentity != null) {
-            tileentity.s();
-            world.setTileEntity(i, j, k, tileentity);
+        par1World.setData(par2, par3, par4, var5);
+
+        if (var6 != null)
+        {
+            var6.s();
+            par1World.setTileEntity(par2, par3, par4, var6);
         }
     }
 
-    public TileEntity a(World world) {
+    /**
+     * Returns a new instance of a block's tile entity class. Called on placing the block.
+     */
+    public TileEntity a(World par1World)
+    {
         return new TileEntityFurnace();
     }
 
-    public void postPlace(World world, int i, int j, int k, EntityLiving entityliving) {
-        int l = MathHelper.floor((double) (entityliving.yaw * 4.0F / 360.0F) + 0.5D) & 3;
+    /**
+     * Called when the block is placed in the world.
+     */
+    public void postPlace(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving)
+    {
+        int var6 = MathHelper.floor((double) (par5EntityLiving.yaw * 4.0F / 360.0F) + 0.5D) & 3;
 
-        if (l == 0) {
-            world.setData(i, j, k, 2);
+        if (var6 == 0)
+        {
+            par1World.setData(par2, par3, par4, 2);
         }
 
-        if (l == 1) {
-            world.setData(i, j, k, 5);
+        if (var6 == 1)
+        {
+            par1World.setData(par2, par3, par4, 5);
         }
 
-        if (l == 2) {
-            world.setData(i, j, k, 3);
+        if (var6 == 2)
+        {
+            par1World.setData(par2, par3, par4, 3);
         }
 
-        if (l == 3) {
-            world.setData(i, j, k, 4);
+        if (var6 == 3)
+        {
+            par1World.setData(par2, par3, par4, 4);
         }
     }
 
-    public void remove(World world, int i, int j, int k, int l, int i1) {
-        if (!c) {
-            TileEntityFurnace tileentityfurnace = (TileEntityFurnace) world.getTileEntity(i, j, k);
+    /**
+     * ejects contained items into the world, and notifies neighbours of an update, as appropriate
+     */
+    public void remove(World par1World, int par2, int par3, int par4, int par5, int par6)
+    {
+        if (!c)
+        {
+            TileEntityFurnace var7 = (TileEntityFurnace)par1World.getTileEntity(par2, par3, par4);
 
-            if (tileentityfurnace != null) {
-                for (int j1 = 0; j1 < tileentityfurnace.getSize(); ++j1) {
-                    ItemStack itemstack = tileentityfurnace.getItem(j1);
+            if (var7 != null)
+            {
+                for (int var8 = 0; var8 < var7.getSize(); ++var8)
+                {
+                    ItemStack var9 = var7.getItem(var8);
 
-                    if (itemstack != null) {
-                        float f = this.a.nextFloat() * 0.8F + 0.1F;
-                        float f1 = this.a.nextFloat() * 0.8F + 0.1F;
-                        float f2 = this.a.nextFloat() * 0.8F + 0.1F;
+                    if (var9 != null)
+                    {
+                        float var10 = this.a.nextFloat() * 0.8F + 0.1F;
+                        float var11 = this.a.nextFloat() * 0.8F + 0.1F;
+                        float var12 = this.a.nextFloat() * 0.8F + 0.1F;
 
-                        while (itemstack.count > 0) {
-                            int k1 = this.a.nextInt(21) + 10;
+                        while (var9.count > 0)
+                        {
+                            int var13 = this.a.nextInt(21) + 10;
 
-                            if (k1 > itemstack.count) {
-                                k1 = itemstack.count;
+                            if (var13 > var9.count)
+                            {
+                                var13 = var9.count;
                             }
 
-                            itemstack.count -= k1;
-                            EntityItem entityitem = new EntityItem(world, (double) ((float) i + f), (double) ((float) j + f1), (double) ((float) k + f2), new ItemStack(itemstack.id, k1, itemstack.getData()));
+                            var9.count -= var13;
+                            EntityItem var14 = new EntityItem(par1World, (double)((float)par2 + var10), (double)((float)par3 + var11), (double)((float)par4 + var12), new ItemStack(var9.id, var13, var9.getData()));
 
-                            if (itemstack.hasTag()) {
-                                entityitem.itemStack.setTag((NBTTagCompound) itemstack.getTag().clone());
+                            if (var9.hasTag())
+                            {
+                                var14.itemStack.setTag((NBTTagCompound) var9.getTag().clone());
                             }
 
-                            float f3 = 0.05F;
-
-                            entityitem.motX = (double) ((float) this.a.nextGaussian() * f3);
-                            entityitem.motY = (double) ((float) this.a.nextGaussian() * f3 + 0.2F);
-                            entityitem.motZ = (double) ((float) this.a.nextGaussian() * f3);
-                            world.addEntity(entityitem);
+                            float var15 = 0.05F;
+                            var14.motX = (double)((float)this.a.nextGaussian() * var15);
+                            var14.motY = (double)((float)this.a.nextGaussian() * var15 + 0.2F);
+                            var14.motZ = (double)((float)this.a.nextGaussian() * var15);
+                            par1World.addEntity(var14);
                         }
                     }
                 }
             }
         }
 
-        super.remove(world, i, j, k, l, i1);
+        super.remove(par1World, par2, par3, par4, par5, par6);
     }
 }

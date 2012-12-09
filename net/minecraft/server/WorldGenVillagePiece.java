@@ -3,170 +3,236 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-abstract class WorldGenVillagePiece extends StructurePiece {
-
+abstract class WorldGenVillagePiece extends StructurePiece
+{
+    /** The number of villagers that have been spawned in this component. */
     private int a;
+
+    /** The starting piece of the village. */
     protected WorldGenVillageStartPiece k;
 
-    protected WorldGenVillagePiece(WorldGenVillageStartPiece worldgenvillagestartpiece, int i) {
-        super(i);
-        this.k = worldgenvillagestartpiece;
+    protected WorldGenVillagePiece(WorldGenVillageStartPiece par1ComponentVillageStartPiece, int par2)
+    {
+        super(par2);
+        this.k = par1ComponentVillageStartPiece;
     }
 
-    protected StructurePiece a(WorldGenVillageStartPiece worldgenvillagestartpiece, List list, Random random, int i, int j) {
-        switch (this.f) {
-        case 0:
-            return WorldGenVillagePieces.a(worldgenvillagestartpiece, list, random, this.e.a - 1, this.e.b + i, this.e.c + j, 1, this.c());
+    /**
+     * Gets the next village component, with the bounding box shifted -1 in the X and Z direction.
+     */
+    protected StructurePiece a(WorldGenVillageStartPiece par1ComponentVillageStartPiece, List par2List, Random par3Random, int par4, int par5)
+    {
+        switch (this.f)
+        {
+            case 0:
+                return WorldGenVillagePieces.a(par1ComponentVillageStartPiece, par2List, par3Random, this.e.a - 1, this.e.b + par4, this.e.c + par5, 1, this.c());
 
-        case 1:
-            return WorldGenVillagePieces.a(worldgenvillagestartpiece, list, random, this.e.a + j, this.e.b + i, this.e.c - 1, 2, this.c());
+            case 1:
+                return WorldGenVillagePieces.a(par1ComponentVillageStartPiece, par2List, par3Random, this.e.a + par5, this.e.b + par4, this.e.c - 1, 2, this.c());
 
-        case 2:
-            return WorldGenVillagePieces.a(worldgenvillagestartpiece, list, random, this.e.a - 1, this.e.b + i, this.e.c + j, 1, this.c());
+            case 2:
+                return WorldGenVillagePieces.a(par1ComponentVillageStartPiece, par2List, par3Random, this.e.a - 1, this.e.b + par4, this.e.c + par5, 1, this.c());
 
-        case 3:
-            return WorldGenVillagePieces.a(worldgenvillagestartpiece, list, random, this.e.a + j, this.e.b + i, this.e.c - 1, 2, this.c());
+            case 3:
+                return WorldGenVillagePieces.a(par1ComponentVillageStartPiece, par2List, par3Random, this.e.a + par5, this.e.b + par4, this.e.c - 1, 2, this.c());
 
-        default:
-            return null;
+            default:
+                return null;
         }
     }
 
-    protected StructurePiece b(WorldGenVillageStartPiece worldgenvillagestartpiece, List list, Random random, int i, int j) {
-        switch (this.f) {
-        case 0:
-            return WorldGenVillagePieces.a(worldgenvillagestartpiece, list, random, this.e.d + 1, this.e.b + i, this.e.c + j, 3, this.c());
+    /**
+     * Gets the next village component, with the bounding box shifted +1 in the X and Z direction.
+     */
+    protected StructurePiece b(WorldGenVillageStartPiece par1ComponentVillageStartPiece, List par2List, Random par3Random, int par4, int par5)
+    {
+        switch (this.f)
+        {
+            case 0:
+                return WorldGenVillagePieces.a(par1ComponentVillageStartPiece, par2List, par3Random, this.e.d + 1, this.e.b + par4, this.e.c + par5, 3, this.c());
 
-        case 1:
-            return WorldGenVillagePieces.a(worldgenvillagestartpiece, list, random, this.e.a + j, this.e.b + i, this.e.f + 1, 0, this.c());
+            case 1:
+                return WorldGenVillagePieces.a(par1ComponentVillageStartPiece, par2List, par3Random, this.e.a + par5, this.e.b + par4, this.e.f + 1, 0, this.c());
 
-        case 2:
-            return WorldGenVillagePieces.a(worldgenvillagestartpiece, list, random, this.e.d + 1, this.e.b + i, this.e.c + j, 3, this.c());
+            case 2:
+                return WorldGenVillagePieces.a(par1ComponentVillageStartPiece, par2List, par3Random, this.e.d + 1, this.e.b + par4, this.e.c + par5, 3, this.c());
 
-        case 3:
-            return WorldGenVillagePieces.a(worldgenvillagestartpiece, list, random, this.e.a + j, this.e.b + i, this.e.f + 1, 0, this.c());
+            case 3:
+                return WorldGenVillagePieces.a(par1ComponentVillageStartPiece, par2List, par3Random, this.e.a + par5, this.e.b + par4, this.e.f + 1, 0, this.c());
 
-        default:
-            return null;
+            default:
+                return null;
         }
     }
 
-    protected int b(World world, StructureBoundingBox structureboundingbox) {
-        int i = 0;
-        int j = 0;
+    /**
+     * Discover the y coordinate that will serve as the ground level of the supplied BoundingBox. (A median of all the
+     * levels in the BB's horizontal rectangle).
+     */
+    protected int b(World par1World, StructureBoundingBox par2StructureBoundingBox)
+    {
+        int var3 = 0;
+        int var4 = 0;
 
-        for (int k = this.e.c; k <= this.e.f; ++k) {
-            for (int l = this.e.a; l <= this.e.d; ++l) {
-                if (structureboundingbox.b(l, 64, k)) {
-                    i += Math.max(world.i(l, k), world.worldProvider.getSeaLevel());
-                    ++j;
+        for (int var5 = this.e.c; var5 <= this.e.f; ++var5)
+        {
+            for (int var6 = this.e.a; var6 <= this.e.d; ++var6)
+            {
+                if (par2StructureBoundingBox.b(var6, 64, var5))
+                {
+                    var3 += Math.max(par1World.i(var6, var5), par1World.worldProvider.getSeaLevel());
+                    ++var4;
                 }
             }
         }
 
-        if (j == 0) {
+        if (var4 == 0)
+        {
             return -1;
-        } else {
-            return i / j;
+        }
+        else
+        {
+            return var3 / var4;
         }
     }
 
-    protected static boolean a(StructureBoundingBox structureboundingbox) {
-        return structureboundingbox != null && structureboundingbox.b > 10;
+    protected static boolean a(StructureBoundingBox par0StructureBoundingBox)
+    {
+        return par0StructureBoundingBox != null && par0StructureBoundingBox.b > 10;
     }
 
-    protected void a(World world, StructureBoundingBox structureboundingbox, int i, int j, int k, int l) {
-        if (this.a < l) {
-            for (int i1 = this.a; i1 < l; ++i1) {
-                int j1 = this.a(i + i1, k);
-                int k1 = this.a(j);
-                int l1 = this.b(i + i1, k);
+    /**
+     * Spawns a number of villagers in this component. Parameters: world, component bounding box, x offset, y offset, z
+     * offset, number of villagers
+     */
+    protected void a(World par1World, StructureBoundingBox par2StructureBoundingBox, int par3, int par4, int par5, int par6)
+    {
+        if (this.a < par6)
+        {
+            for (int var7 = this.a; var7 < par6; ++var7)
+            {
+                int var8 = this.a(par3 + var7, par5);
+                int var9 = this.a(par4);
+                int var10 = this.b(par3 + var7, par5);
 
-                if (!structureboundingbox.b(j1, k1, l1)) {
+                if (!par2StructureBoundingBox.b(var8, var9, var10))
+                {
                     break;
                 }
 
                 ++this.a;
-                EntityVillager entityvillager = new EntityVillager(world, this.b(i1));
-
-                entityvillager.setPositionRotation((double) j1 + 0.5D, (double) k1, (double) l1 + 0.5D, 0.0F, 0.0F);
-                world.addEntity(entityvillager);
+                EntityVillager var11 = new EntityVillager(par1World, this.b(var7));
+                var11.setPositionRotation((double) var8 + 0.5D, (double) var9, (double) var10 + 0.5D, 0.0F, 0.0F);
+                par1World.addEntity(var11);
             }
         }
     }
 
-    protected int b(int i) {
+    /**
+     * Returns the villager type to spawn in this component, based on the number of villagers already spawned.
+     */
+    protected int b(int par1)
+    {
         return 0;
     }
 
-    protected int d(int i, int j) {
-        if (this.k.b) {
-            if (i == Block.LOG.id) {
+    /**
+     * Gets the replacement block for the current biome
+     */
+    protected int d(int par1, int par2)
+    {
+        if (this.k.b)
+        {
+            if (par1 == Block.LOG.id)
+            {
                 return Block.SANDSTONE.id;
             }
 
-            if (i == Block.COBBLESTONE.id) {
+            if (par1 == Block.COBBLESTONE.id)
+            {
                 return Block.SANDSTONE.id;
             }
 
-            if (i == Block.WOOD.id) {
+            if (par1 == Block.WOOD.id)
+            {
                 return Block.SANDSTONE.id;
             }
 
-            if (i == Block.WOOD_STAIRS.id) {
+            if (par1 == Block.WOOD_STAIRS.id)
+            {
                 return Block.SANDSTONE_STAIRS.id;
             }
 
-            if (i == Block.COBBLESTONE_STAIRS.id) {
+            if (par1 == Block.COBBLESTONE_STAIRS.id)
+            {
                 return Block.SANDSTONE_STAIRS.id;
             }
 
-            if (i == Block.GRAVEL.id) {
+            if (par1 == Block.GRAVEL.id)
+            {
                 return Block.SANDSTONE.id;
             }
         }
 
-        return i;
+        return par1;
     }
 
-    protected int e(int i, int j) {
-        if (this.k.b) {
-            if (i == Block.LOG.id) {
+    /**
+     * Gets the replacement block metadata for the current biome
+     */
+    protected int e(int par1, int par2)
+    {
+        if (this.k.b)
+        {
+            if (par1 == Block.LOG.id)
+            {
                 return 0;
             }
 
-            if (i == Block.COBBLESTONE.id) {
+            if (par1 == Block.COBBLESTONE.id)
+            {
                 return 0;
             }
 
-            if (i == Block.WOOD.id) {
+            if (par1 == Block.WOOD.id)
+            {
                 return 2;
             }
         }
 
-        return j;
+        return par2;
     }
 
-    protected void a(World world, int i, int j, int k, int l, int i1, StructureBoundingBox structureboundingbox) {
-        int j1 = this.d(i, j);
-        int k1 = this.e(i, j);
-
-        super.a(world, j1, k1, k, l, i1, structureboundingbox);
+    /**
+     * current Position depends on currently set Coordinates mode, is computed here
+     */
+    protected void a(World par1World, int par2, int par3, int par4, int par5, int par6, StructureBoundingBox par7StructureBoundingBox)
+    {
+        int var8 = this.d(par2, par3);
+        int var9 = this.e(par2, par3);
+        super.a(par1World, var8, var9, par4, par5, par6, par7StructureBoundingBox);
     }
 
-    protected void a(World world, StructureBoundingBox structureboundingbox, int i, int j, int k, int l, int i1, int j1, int k1, int l1, boolean flag) {
-        int i2 = this.d(k1, 0);
-        int j2 = this.e(k1, 0);
-        int k2 = this.d(l1, 0);
-        int l2 = this.e(l1, 0);
-
-        super.a(world, structureboundingbox, i, j, k, l, i1, j1, i2, j2, k2, l2, flag);
+    /**
+     * arguments: (World worldObj, StructureBoundingBox structBB, int minX, int minY, int minZ, int maxX, int maxY, int
+     * maxZ, int placeBlockId, int replaceBlockId, boolean alwaysreplace)
+     */
+    protected void a(World par1World, StructureBoundingBox par2StructureBoundingBox, int par3, int par4, int par5, int par6, int par7, int par8, int par9, int par10, boolean par11)
+    {
+        int var12 = this.d(par9, 0);
+        int var13 = this.e(par9, 0);
+        int var14 = this.d(par10, 0);
+        int var15 = this.e(par10, 0);
+        super.a(par1World, par2StructureBoundingBox, par3, par4, par5, par6, par7, par8, var12, var13, var14, var15, par11);
     }
 
-    protected void b(World world, int i, int j, int k, int l, int i1, StructureBoundingBox structureboundingbox) {
-        int j1 = this.d(i, j);
-        int k1 = this.e(i, j);
-
-        super.b(world, j1, k1, k, l, i1, structureboundingbox);
+    /**
+     * Overwrites air and liquids from selected position downwards, stops at hitting anything else.
+     */
+    protected void b(World par1World, int par2, int par3, int par4, int par5, int par6, StructureBoundingBox par7StructureBoundingBox)
+    {
+        int var8 = this.d(par2, par3);
+        int var9 = this.e(par2, par3);
+        super.b(par1World, var8, var9, par4, par5, par6, par7StructureBoundingBox);
     }
 }

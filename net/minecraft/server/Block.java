@@ -3,8 +3,11 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-public class Block {
-
+public class Block
+{
+    /**
+     * used as foreach item, if item.tab = current tab, display it on the screen
+     */
     private CreativeModeTab creativeTab;
     public static final StepSound d = new StepSound("stone", 1.0F, 1.0F);
     public static final StepSound e = new StepSound("wood", 1.0F, 1.0F);
@@ -18,15 +21,31 @@ public class Block {
     public static final StepSound m = new StepSound("snow", 1.0F, 1.0F);
     public static final StepSound n = new StepSoundLadder("ladder", 1.0F, 1.0F);
     public static final StepSound o = new StepSoundAnvil("anvil", 0.3F, 1.0F);
+
+    /** List of ly/ff (BlockType) containing the already registered blocks. */
     public static final Block[] byId = new Block[4096];
+
+    /**
+     * An array of 4096 booleans corresponding to the result of the isOpaqueCube() method for each block ID
+     */
     public static final boolean[] q = new boolean[4096];
+
+    /** How much light is subtracted for going through this block */
     public static final int[] lightBlock = new int[4096];
+
+    /** Array of booleans that tells if a block can grass */
     public static final boolean[] s = new boolean[4096];
+
+    /** Amount of light emitted */
     public static final int[] lightEmission = new int[4096];
     public static final boolean[] u = new boolean[4096];
+
+    /**
+     * Flag if block ID should use the brightest neighbor light value as its own
+     */
     public static boolean[] v = new boolean[4096];
     public static final Block STONE = (new BlockStone(1, 1)).c(1.5F).b(10.0F).a(h).b("stone");
-    public static final BlockGrass GRASS = (BlockGrass) (new BlockGrass(2)).c(0.6F).a(g).b("grass");
+    public static final BlockGrass GRASS = (BlockGrass)(new BlockGrass(2)).c(0.6F).a(g).b("grass");
     public static final Block DIRT = (new BlockDirt(3, 2)).c(0.5F).a(f).b("dirt");
     public static final Block COBBLESTONE = (new Block(4, 16, Material.STONE)).c(2.0F).b(10.0F).a(h).b("stonebrick").a(CreativeModeTab.b);
     public static final Block WOOD = (new BlockWood(5)).c(2.0F).b(5.0F).a(e).b("wood").r();
@@ -35,6 +54,8 @@ public class Block {
     public static final Block WATER = (new BlockFlowing(8, Material.WATER)).c(100.0F).h(3).b("water").D().r();
     public static final Block STATIONARY_WATER = (new BlockStationary(9, Material.WATER)).c(100.0F).h(3).b("water").D().r();
     public static final Block LAVA = (new BlockFlowing(10, Material.LAVA)).c(0.0F).a(1.0F).h(255).b("lava").D().r();
+
+    /** Stationary lava source block */
     public static final Block STATIONARY_LAVA = (new BlockStationary(11, Material.LAVA)).c(100.0F).a(1.0F).h(255).b("lava").D().r();
     public static final Block SAND = (new BlockSand(12, 18)).c(0.5F).a(l).b("sand");
     public static final Block GRAVEL = (new BlockGravel(13, 19)).c(0.6F).a(f).b("gravel");
@@ -42,7 +63,7 @@ public class Block {
     public static final Block IRON_ORE = (new BlockOre(15, 33)).c(3.0F).b(5.0F).a(h).b("oreIron");
     public static final Block COAL_ORE = (new BlockOre(16, 34)).c(3.0F).b(5.0F).a(h).b("oreCoal");
     public static final Block LOG = (new BlockLog(17)).c(2.0F).a(e).b("log").r();
-    public static final BlockLeaves LEAVES = (BlockLeaves) (new BlockLeaves(18, 52)).c(0.2F).h(1).a(g).b("leaves").r();
+    public static final BlockLeaves LEAVES = (BlockLeaves)(new BlockLeaves(18, 52)).c(0.2F).h(1).a(g).b("leaves").r();
     public static final Block SPONGE = (new BlockSponge(19)).c(0.6F).a(g).b("sponge");
     public static final Block GLASS = (new BlockGlass(20, 49, Material.SHATTERABLE, false)).c(0.3F).a(j).b("glass");
     public static final Block LAPIS_ORE = (new BlockOre(21, 160)).c(3.0F).b(5.0F).a(h).b("oreLapis");
@@ -55,27 +76,31 @@ public class Block {
     public static final Block DETECTOR_RAIL = (new BlockMinecartDetector(28, 195)).c(0.7F).a(i).b("detectorRail").r();
     public static final Block PISTON_STICKY = (new BlockPiston(29, 106, true)).b("pistonStickyBase").r();
     public static final Block WEB = (new BlockWeb(30, 11)).h(1).c(4.0F).b("web");
-    public static final BlockLongGrass LONG_GRASS = (BlockLongGrass) (new BlockLongGrass(31, 39)).c(0.0F).a(g).b("tallgrass");
-    public static final BlockDeadBush DEAD_BUSH = (BlockDeadBush) (new BlockDeadBush(32, 55)).c(0.0F).a(g).b("deadbush");
+    public static final BlockLongGrass LONG_GRASS = (BlockLongGrass)(new BlockLongGrass(31, 39)).c(0.0F).a(g).b("tallgrass");
+    public static final BlockDeadBush DEAD_BUSH = (BlockDeadBush)(new BlockDeadBush(32, 55)).c(0.0F).a(g).b("deadbush");
     public static final Block PISTON = (new BlockPiston(33, 107, false)).b("pistonBase").r();
-    public static final BlockPistonExtension PISTON_EXTENSION = (BlockPistonExtension) (new BlockPistonExtension(34, 107)).r();
+    public static final BlockPistonExtension PISTON_EXTENSION = (BlockPistonExtension)(new BlockPistonExtension(34, 107)).r();
     public static final Block WOOL = (new BlockCloth()).c(0.8F).a(k).b("cloth").r();
     public static final BlockPistonMoving PISTON_MOVING = new BlockPistonMoving(36);
-    public static final BlockFlower YELLOW_FLOWER = (BlockFlower) (new BlockFlower(37, 13)).c(0.0F).a(g).b("flower");
-    public static final BlockFlower RED_ROSE = (BlockFlower) (new BlockFlower(38, 12)).c(0.0F).a(g).b("rose");
-    public static final BlockFlower BROWN_MUSHROOM = (BlockFlower) (new BlockMushroom(39, 29)).c(0.0F).a(g).a(0.125F).b("mushroom");
-    public static final BlockFlower RED_MUSHROOM = (BlockFlower) (new BlockMushroom(40, 28)).c(0.0F).a(g).b("mushroom");
+    public static final BlockFlower YELLOW_FLOWER = (BlockFlower)(new BlockFlower(37, 13)).c(0.0F).a(g).b("flower");
+    public static final BlockFlower RED_ROSE = (BlockFlower)(new BlockFlower(38, 12)).c(0.0F).a(g).b("rose");
+    public static final BlockFlower BROWN_MUSHROOM = (BlockFlower)(new BlockMushroom(39, 29)).c(0.0F).a(g).a(0.125F).b("mushroom");
+    public static final BlockFlower RED_MUSHROOM = (BlockFlower)(new BlockMushroom(40, 28)).c(0.0F).a(g).b("mushroom");
     public static final Block GOLD_BLOCK = (new BlockOreBlock(41, 23)).c(3.0F).b(10.0F).a(i).b("blockGold");
     public static final Block IRON_BLOCK = (new BlockOreBlock(42, 22)).c(5.0F).b(10.0F).a(i).b("blockIron");
-    public static final BlockStepAbstract DOUBLE_STEP = (BlockStepAbstract) (new BlockStep(43, true)).c(2.0F).b(10.0F).a(h).b("stoneSlab");
-    public static final BlockStepAbstract STEP = (BlockStepAbstract) (new BlockStep(44, false)).c(2.0F).b(10.0F).a(h).b("stoneSlab");
+
+    /** stoneDoubleSlab */
+    public static final BlockStepAbstract DOUBLE_STEP = (BlockStepAbstract)(new BlockStep(43, true)).c(2.0F).b(10.0F).a(h).b("stoneSlab");
+
+    /** stoneSingleSlab */
+    public static final BlockStepAbstract STEP = (BlockStepAbstract)(new BlockStep(44, false)).c(2.0F).b(10.0F).a(h).b("stoneSlab");
     public static final Block BRICK = (new Block(45, 7, Material.STONE)).c(2.0F).b(10.0F).a(h).b("brick").a(CreativeModeTab.b);
     public static final Block TNT = (new BlockTNT(46, 8)).c(0.0F).a(g).b("tnt");
     public static final Block BOOKSHELF = (new BlockBookshelf(47, 35)).c(1.5F).a(e).b("bookshelf");
     public static final Block MOSSY_COBBLESTONE = (new Block(48, 36, Material.STONE)).c(2.0F).b(10.0F).a(h).b("stoneMoss").a(CreativeModeTab.b);
     public static final Block OBSIDIAN = (new BlockObsidian(49, 37)).c(50.0F).b(2000.0F).a(h).b("obsidian");
     public static final Block TORCH = (new BlockTorch(50, 80)).c(0.0F).a(0.9375F).a(e).b("torch").r();
-    public static final BlockFire FIRE = (BlockFire) (new BlockFire(51, 31)).c(0.0F).a(1.0F).a(e).b("fire").D();
+    public static final BlockFire FIRE = (BlockFire)(new BlockFire(51, 31)).c(0.0F).a(1.0F).a(e).b("fire").D();
     public static final Block MOB_SPAWNER = (new BlockMobSpawner(52, 65)).c(5.0F).a(i).b("mobSpawner").D();
     public static final Block WOOD_STAIRS = (new BlockStairs(53, WOOD, 0)).b("stairsWood").r();
     public static final Block CHEST = (new BlockChest(54)).c(2.5F).a(e).b("chest").r();
@@ -114,11 +139,17 @@ public class Block {
     public static final Block NETHERRACK = (new BlockBloodStone(87, 103)).c(0.4F).a(h).b("hellrock");
     public static final Block SOUL_SAND = (new BlockSlowSand(88, 104)).c(0.5F).a(l).b("hellsand");
     public static final Block GLOWSTONE = (new BlockLightStone(89, 105, Material.SHATTERABLE)).c(0.3F).a(j).a(1.0F).b("lightgem");
-    public static final BlockPortal PORTAL = (BlockPortal) (new BlockPortal(90, 14)).c(-1.0F).a(j).a(0.75F).b("portal");
+
+    /** The purple teleport blocks inside the obsidian circle */
+    public static final BlockPortal PORTAL = (BlockPortal)(new BlockPortal(90, 14)).c(-1.0F).a(j).a(0.75F).b("portal");
     public static final Block JACK_O_LANTERN = (new BlockPumpkin(91, 102, true)).c(1.0F).a(e).a(1.0F).b("litpumpkin").r();
     public static final Block CAKE_BLOCK = (new BlockCake(92, 121)).c(0.5F).a(k).b("cake").D().r();
     public static final Block DIODE_OFF = (new BlockDiode(93, false)).c(0.0F).a(e).b("diode").D().r();
     public static final Block DIODE_ON = (new BlockDiode(94, true)).c(0.0F).a(0.625F).a(e).b("diode").D().r();
+
+    /**
+     * April fools secret locked chest, only spawns on new chunks on 1st April.
+     */
     public static final Block LOCKED_CHEST = (new BlockLockedChest(95)).c(0.0F).a(1.0F).a(e).b("lockedchest").b(true).r();
     public static final Block TRAP_DOOR = (new BlockTrapdoor(96, Material.WOOD)).c(3.0F).a(e).b("trapdoor").D().r();
     public static final Block MONSTER_EGGS = (new BlockMonsterEggs(97)).c(0.75F).b("monsterStoneEgg");
@@ -134,7 +165,7 @@ public class Block {
     public static final Block FENCE_GATE = (new BlockFenceGate(107, 4)).c(2.0F).b(5.0F).a(e).b("fenceGate").r();
     public static final Block BRICK_STAIRS = (new BlockStairs(108, BRICK, 0)).b("stairsBrick").r();
     public static final Block STONE_STAIRS = (new BlockStairs(109, SMOOTH_BRICK, 0)).b("stairsStoneBrickSmooth").r();
-    public static final BlockMycel MYCEL = (BlockMycel) (new BlockMycel(110)).c(0.6F).a(g).b("mycel");
+    public static final BlockMycel MYCEL = (BlockMycel)(new BlockMycel(110)).c(0.6F).a(g).b("mycel");
     public static final Block WATER_LILY = (new BlockWaterLily(111, 76)).c(0.0F).a(g).b("waterlily");
     public static final Block NETHER_BRICK = (new Block(112, 224, Material.STONE)).c(2.0F).b(10.0F).a(h).b("netherBrick").a(CreativeModeTab.b);
     public static final Block NETHER_FENCE = (new BlockFence(113, 224, Material.STONE)).c(2.0F).b(10.0F).a(h).b("netherFence");
@@ -149,13 +180,13 @@ public class Block {
     public static final Block DRAGON_EGG = (new BlockDragonEgg(122, 167)).c(3.0F).b(15.0F).a(h).a(0.125F).b("dragonEgg");
     public static final Block REDSTONE_LAMP_OFF = (new BlockRedstoneLamp(123, false)).c(0.3F).a(j).b("redstoneLight").a(CreativeModeTab.d);
     public static final Block REDSTONE_LAMP_ON = (new BlockRedstoneLamp(124, true)).c(0.3F).a(j).b("redstoneLight");
-    public static final BlockStepAbstract WOOD_DOUBLE_STEP = (BlockStepAbstract) (new BlockWoodStep(125, true)).c(2.0F).b(5.0F).a(e).b("woodSlab");
-    public static final BlockStepAbstract WOOD_STEP = (BlockStepAbstract) (new BlockWoodStep(126, false)).c(2.0F).b(5.0F).a(e).b("woodSlab");
+    public static final BlockStepAbstract WOOD_DOUBLE_STEP = (BlockStepAbstract)(new BlockWoodStep(125, true)).c(2.0F).b(5.0F).a(e).b("woodSlab");
+    public static final BlockStepAbstract WOOD_STEP = (BlockStepAbstract)(new BlockWoodStep(126, false)).c(2.0F).b(5.0F).a(e).b("woodSlab");
     public static final Block COCOA = (new BlockCocoa(127)).c(0.2F).b(5.0F).a(e).b("cocoa").r();
     public static final Block SANDSTONE_STAIRS = (new BlockStairs(128, SANDSTONE, 0)).b("stairsSandStone").r();
     public static final Block EMERALD_ORE = (new BlockOre(129, 171)).c(3.0F).b(5.0F).a(h).b("oreEmerald");
     public static final Block ENDER_CHEST = (new BlockEnderChest(130)).c(22.5F).b(1000.0F).a(h).b("enderChest").r().a(0.5F);
-    public static final BlockTripwireHook TRIPWIRE_SOURCE = (BlockTripwireHook) (new BlockTripwireHook(131)).b("tripWireSource").r();
+    public static final BlockTripwireHook TRIPWIRE_SOURCE = (BlockTripwireHook)(new BlockTripwireHook(131)).b("tripWireSource").r();
     public static final Block TRIPWIRE = (new BlockTripwire(132)).b("tripWire").r();
     public static final Block EMERALD_BLOCK = (new BlockOreBlock(133, 25)).c(5.0F).b(10.0F).a(i).b("blockEmerald");
     public static final Block SPRUCE_WOOD_STAIRS = (new BlockStairs(134, WOOD, 1)).b("stairsWoodSpruce").r();
@@ -170,521 +201,923 @@ public class Block {
     public static final Block WOOD_BUTTON = (new BlockButton(143, WOOD.textureId, true)).c(0.5F).a(e).b("button").r();
     public static final Block SKULL = (new BlockSkull(144)).c(1.0F).a(h).b("skull").r();
     public static final Block ANVIL = (new BlockAnvil(145)).c(5.0F).a(o).b(2000.0F).b("anvil").r();
+
+    /**
+     * The index of the texture to be displayed for this block. May vary based on graphics settings. Mostly seems to
+     * come from terrain.png, and the index is 0-based (grass is 0).
+     */
     public int textureId;
+
+    /** ID of the block. */
     public final int id;
+
+    /** Indicates how many hits it takes to break a block. */
     protected float strength;
+
+    /** Indicates the blocks resistance to explosions. */
     protected float durability;
+
+    /**
+     * set to true when Block's constructor is called through the chain of super()'s. Note: Never used
+     */
     protected boolean cp;
+
+    /**
+     * If this field is true, the block is counted for statistics (mined or placed)
+     */
     protected boolean cq;
+
+    /**
+     * Flags whether or not this block is of a type that needs random ticking. Ref-counted by ExtendedBlockStorage in
+     * order to broadly cull a chunk from the random chunk update list for efficiency's sake.
+     */
     protected boolean cr;
+
+    /** true if the Block contains a Tile Entity */
     protected boolean isTileEntity;
+
+    /** minimum X for the block bounds (local coordinates) */
     protected double minX;
+
+    /** minimum Y for the block bounds (local coordinates) */
     protected double minY;
+
+    /** minimum Z for the block bounds (local coordinates) */
     protected double minZ;
+
+    /** maximum X for the block bounds (local coordinates) */
     protected double maxX;
+
+    /** maximum Y for the block bounds (local coordinates) */
     protected double maxY;
+
+    /** maximum Z for the block bounds (local coordinates) */
     protected double maxZ;
+
+    /** Sound of stepping on the block */
     public StepSound stepSound;
     public float cA;
+
+    /** Block material definition. */
     public final Material material;
+
+    /**
+     * Determines how much velocity is maintained while moving on top of this block
+     */
     public float frictionFactor;
     private String name;
 
-    protected Block(int i, Material material) {
+    protected Block(int par1, Material par2Material)
+    {
         this.cp = true;
         this.cq = true;
         this.stepSound = d;
         this.cA = 1.0F;
         this.frictionFactor = 0.6F;
-        if (byId[i] != null) {
-            throw new IllegalArgumentException("Slot " + i + " is already occupied by " + byId[i] + " when adding " + this);
-        } else {
-            this.material = material;
-            byId[i] = this;
-            this.id = i;
+
+        if (byId[par1] != null)
+        {
+            throw new IllegalArgumentException("Slot " + par1 + " is already occupied by " + byId[par1] + " when adding " + this);
+        }
+        else
+        {
+            this.material = par2Material;
+            byId[par1] = this;
+            this.id = par1;
             this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-            q[i] = this.c();
-            lightBlock[i] = this.c() ? 255 : 0;
-            s[i] = !material.blocksLight();
+            q[par1] = this.c();
+            lightBlock[par1] = this.c() ? 255 : 0;
+            s[par1] = !par2Material.blocksLight();
         }
     }
 
-    protected Block r() {
+    /**
+     * Blocks with this attribute will not notify all near blocks when it's metadata change. The default behavior is
+     * always notify every neightbor block when anything changes.
+     */
+    protected Block r()
+    {
         u[this.id] = true;
         return this;
     }
 
+    /**
+     * This method is called on a block after all other blocks gets already created. You can use it to reference and
+     * configure something on the block that needs the others ones.
+     */
     protected void t_() {}
 
-    protected Block(int i, int j, Material material) {
-        this(i, material);
-        this.textureId = j;
+    protected Block(int par1, int par2, Material par3Material)
+    {
+        this(par1, par3Material);
+        this.textureId = par2;
     }
 
-    protected Block a(StepSound stepsound) {
-        this.stepSound = stepsound;
+    /**
+     * Sets the footstep sound for the block. Returns the object for convenience in constructing.
+     */
+    protected Block a(StepSound par1StepSound)
+    {
+        this.stepSound = par1StepSound;
         return this;
     }
 
-    protected Block h(int i) {
-        lightBlock[this.id] = i;
+    /**
+     * Sets how much light is blocked going through this block. Returns the object for convenience in constructing.
+     */
+    protected Block h(int par1)
+    {
+        lightBlock[this.id] = par1;
         return this;
     }
 
-    protected Block a(float f) {
-        lightEmission[this.id] = (int) (15.0F * f);
+    /**
+     * Sets the amount of light emitted by a block from 0.0f to 1.0f (converts internally to 0-15). Returns the object
+     * for convenience in constructing.
+     */
+    protected Block a(float par1)
+    {
+        lightEmission[this.id] = (int)(15.0F * par1);
         return this;
     }
 
-    protected Block b(float f) {
-        this.durability = f * 3.0F;
+    /**
+     * Sets the the blocks resistance to explosions. Returns the object for convenience in constructing.
+     */
+    protected Block b(float par1)
+    {
+        this.durability = par1 * 3.0F;
         return this;
     }
 
-    public static boolean i(int i) {
-        Block block = byId[i];
-
-        return block == null ? false : block.material.k() && block.b();
+    public static boolean i(int par0)
+    {
+        Block var1 = byId[par0];
+        return var1 == null ? false : var1.material.k() && var1.b();
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return true;
     }
 
-    public boolean c(IBlockAccess iblockaccess, int i, int j, int k) {
+    public boolean c(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
         return !this.material.isSolid();
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 0;
     }
 
-    protected Block c(float f) {
-        this.strength = f;
-        if (this.durability < f * 5.0F) {
-            this.durability = f * 5.0F;
+    /**
+     * Sets how many hits it takes to break a block.
+     */
+    protected Block c(float par1)
+    {
+        this.strength = par1;
+
+        if (this.durability < par1 * 5.0F)
+        {
+            this.durability = par1 * 5.0F;
         }
 
         return this;
     }
 
-    protected Block s() {
+    /**
+     * This method will make the hardness of the block equals to -1, and the block is indestructible.
+     */
+    protected Block s()
+    {
         this.c(-1.0F);
         return this;
     }
 
-    public float m(World world, int i, int j, int k) {
+    /**
+     * Returns the block hardness at a location. Args: world, x, y, z
+     */
+    public float m(World par1World, int par2, int par3, int par4)
+    {
         return this.strength;
     }
 
-    protected Block b(boolean flag) {
-        this.cr = flag;
+    /**
+     * Sets whether this block type will receive random update ticks
+     */
+    protected Block b(boolean par1)
+    {
+        this.cr = par1;
         return this;
     }
 
-    public boolean isTicking() {
+    /**
+     * Returns whether or not this block is of a type that needs random ticking. Called for ref-counting purposes by
+     * ExtendedBlockStorage in order to broadly cull a chunk from the random chunk update list for efficiency's sake.
+     */
+    public boolean isTicking()
+    {
         return this.cr;
     }
 
-    public boolean u() {
+    public boolean u()
+    {
         return this.isTileEntity;
     }
 
-    protected final void a(float f, float f1, float f2, float f3, float f4, float f5) {
-        this.minX = (double) f;
-        this.minY = (double) f1;
-        this.minZ = (double) f2;
-        this.maxX = (double) f3;
-        this.maxY = (double) f4;
-        this.maxZ = (double) f5;
+    /**
+     * Sets the bounds of the block.  minX, minY, minZ, maxX, maxY, maxZ
+     */
+    protected final void a(float par1, float par2, float par3, float par4, float par5, float par6)
+    {
+        this.minX = (double)par1;
+        this.minY = (double)par2;
+        this.minZ = (double)par3;
+        this.maxX = (double)par4;
+        this.maxY = (double)par5;
+        this.maxZ = (double)par6;
     }
 
-    public boolean a_(IBlockAccess iblockaccess, int i, int j, int k, int l) {
-        return iblockaccess.getMaterial(i, j, k).isBuildable();
+    /**
+     * Returns Returns true if the given side of this block type should be rendered (if it's solid or not), if the
+     * adjacent block is at the given coordinates. Args: blockAccess, x, y, z, side
+     */
+    public boolean a_(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    {
+        return par1IBlockAccess.getMaterial(par2, par3, par4).isBuildable();
     }
 
-    public int a(int i, int j) {
-        return this.a(i);
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
+        return this.a(par1);
     }
 
-    public int a(int i) {
+    /**
+     * Returns the block texture based on the side being looked at.  Args: side
+     */
+    public int a(int par1)
+    {
         return this.textureId;
     }
 
-    public void a(World world, int i, int j, int k, AxisAlignedBB axisalignedbb, List list, Entity entity) {
-        AxisAlignedBB axisalignedbb1 = this.e(world, i, j, k);
+    /**
+     * if the specified block is in the given AABB, add its collision bounding box to the given list
+     */
+    public void a(World par1World, int par2, int par3, int par4, AxisAlignedBB par5AxisAlignedBB, List par6List, Entity par7Entity)
+    {
+        AxisAlignedBB var8 = this.e(par1World, par2, par3, par4);
 
-        if (axisalignedbb1 != null && axisalignedbb.a(axisalignedbb1)) {
-            list.add(axisalignedbb1);
+        if (var8 != null && par5AxisAlignedBB.a(var8))
+        {
+            par6List.add(var8);
         }
     }
 
-    public AxisAlignedBB e(World world, int i, int j, int k) {
-        return AxisAlignedBB.a().a((double) i + this.minX, (double) j + this.minY, (double) k + this.minZ, (double) i + this.maxX, (double) j + this.maxY, (double) k + this.maxZ);
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
+    {
+        return AxisAlignedBB.a().a((double) par2 + this.minX, (double) par3 + this.minY, (double) par4 + this.minZ, (double) par2 + this.maxX, (double) par3 + this.maxY, (double) par4 + this.maxZ);
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return true;
     }
 
-    public boolean a(int i, boolean flag) {
+    /**
+     * Returns whether this block is collideable based on the arguments passed in Args: blockMetaData, unknownFlag
+     */
+    public boolean a(int par1, boolean par2)
+    {
         return this.m();
     }
 
-    public boolean m() {
+    /**
+     * Returns if this block is collidable (only used by Fire). Args: x, y, z
+     */
+    public boolean m()
+    {
         return true;
     }
 
-    public void b(World world, int i, int j, int k, Random random) {}
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random) {}
 
-    public void postBreak(World world, int i, int j, int k, int l) {}
+    /**
+     * Called right before the block is destroyed by a player.  Args: world, x, y, z, metaData
+     */
+    public void postBreak(World par1World, int par2, int par3, int par4, int par5) {}
 
-    public void doPhysics(World world, int i, int j, int k, int l) {}
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5) {}
 
-    public int r_() {
+    /**
+     * How many world ticks before ticking
+     */
+    public int r_()
+    {
         return 10;
     }
 
-    public void onPlace(World world, int i, int j, int k) {}
+    /**
+     * Called whenever the block is added into the world. Args: world, x, y, z
+     */
+    public void onPlace(World par1World, int par2, int par3, int par4) {}
 
-    public void remove(World world, int i, int j, int k, int l, int i1) {}
+    /**
+     * ejects contained items into the world, and notifies neighbours of an update, as appropriate
+     */
+    public void remove(World par1World, int par2, int par3, int par4, int par5, int par6) {}
 
-    public int a(Random random) {
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    public int a(Random par1Random)
+    {
         return 1;
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return this.id;
     }
 
-    public float getDamage(EntityHuman entityhuman, World world, int i, int j, int k) {
-        float f = this.m(world, i, j, k);
-
-        return f < 0.0F ? 0.0F : (!entityhuman.b(this) ? 1.0F / f / 100.0F : entityhuman.a(this) / f / 30.0F);
+    /**
+     * Gets the hardness of block at the given coordinates in the given world, relative to the ability of the given
+     * EntityPlayer.
+     */
+    public float getDamage(EntityHuman par1EntityPlayer, World par2World, int par3, int par4, int par5)
+    {
+        float var6 = this.m(par2World, par3, par4, par5);
+        return var6 < 0.0F ? 0.0F : (!par1EntityPlayer.b(this) ? 1.0F / var6 / 100.0F : par1EntityPlayer.a(this) / var6 / 30.0F);
     }
 
-    public final void c(World world, int i, int j, int k, int l, int i1) {
-        this.dropNaturally(world, i, j, k, l, 1.0F, i1);
+    /**
+     * Drops the specified block items
+     */
+    public final void c(World par1World, int par2, int par3, int par4, int par5, int par6)
+    {
+        this.dropNaturally(par1World, par2, par3, par4, par5, 1.0F, par6);
     }
 
-    public void dropNaturally(World world, int i, int j, int k, int l, float f, int i1) {
-        if (!world.isStatic) {
-            int j1 = this.getDropCount(i1, world.random);
+    /**
+     * Drops the block items with a specified chance of dropping the specified items
+     */
+    public void dropNaturally(World par1World, int par2, int par3, int par4, int par5, float par6, int par7)
+    {
+        if (!par1World.isStatic)
+        {
+            int var8 = this.getDropCount(par7, par1World.random);
 
-            for (int k1 = 0; k1 < j1; ++k1) {
-                if (world.random.nextFloat() <= f) {
-                    int l1 = this.getDropType(l, world.random, i1);
+            for (int var9 = 0; var9 < var8; ++var9)
+            {
+                if (par1World.random.nextFloat() <= par6)
+                {
+                    int var10 = this.getDropType(par5, par1World.random, par7);
 
-                    if (l1 > 0) {
-                        this.b(world, i, j, k, new ItemStack(l1, 1, this.getDropData(l)));
+                    if (var10 > 0)
+                    {
+                        this.b(par1World, par2, par3, par4, new ItemStack(var10, 1, this.getDropData(par5)));
                     }
                 }
             }
         }
     }
 
-    protected void b(World world, int i, int j, int k, ItemStack itemstack) {
-        if (!world.isStatic && world.getGameRules().getBoolean("doTileDrops")) {
-            float f = 0.7F;
-            double d0 = (double) (world.random.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-            double d1 = (double) (world.random.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-            double d2 = (double) (world.random.nextFloat() * f) + (double) (1.0F - f) * 0.5D;
-            EntityItem entityitem = new EntityItem(world, (double) i + d0, (double) j + d1, (double) k + d2, itemstack);
-
-            entityitem.pickupDelay = 10;
-            world.addEntity(entityitem);
+    /**
+     * Spawns EntityItem in the world for the given ItemStack if the world is not remote.
+     */
+    protected void b(World par1World, int par2, int par3, int par4, ItemStack par5ItemStack)
+    {
+        if (!par1World.isStatic && par1World.getGameRules().getBoolean("doTileDrops"))
+        {
+            float var6 = 0.7F;
+            double var7 = (double)(par1World.random.nextFloat() * var6) + (double)(1.0F - var6) * 0.5D;
+            double var9 = (double)(par1World.random.nextFloat() * var6) + (double)(1.0F - var6) * 0.5D;
+            double var11 = (double)(par1World.random.nextFloat() * var6) + (double)(1.0F - var6) * 0.5D;
+            EntityItem var13 = new EntityItem(par1World, (double)par2 + var7, (double)par3 + var9, (double)par4 + var11, par5ItemStack);
+            var13.pickupDelay = 10;
+            par1World.addEntity(var13);
         }
     }
 
-    protected void f(World world, int i, int j, int k, int l) {
-        if (!world.isStatic) {
-            while (l > 0) {
-                int i1 = EntityExperienceOrb.getOrbValue(l);
-
-                l -= i1;
-                world.addEntity(new EntityExperienceOrb(world, (double) i + 0.5D, (double) j + 0.5D, (double) k + 0.5D, i1));
+    /**
+     * called by spawner, ore, redstoneOre blocks
+     */
+    protected void f(World par1World, int par2, int par3, int par4, int par5)
+    {
+        if (!par1World.isStatic)
+        {
+            while (par5 > 0)
+            {
+                int var6 = EntityExperienceOrb.getOrbValue(par5);
+                par5 -= var6;
+                par1World.addEntity(new EntityExperienceOrb(par1World, (double) par2 + 0.5D, (double) par3 + 0.5D, (double) par4 + 0.5D, var6));
             }
         }
     }
 
-    public int getDropData(int i) {
+    /**
+     * Determines the damage on the item the block drops. Used in cloth and wood.
+     */
+    public int getDropData(int par1)
+    {
         return 0;
     }
 
-    public float a(Entity entity) {
+    /**
+     * Returns how much this block can resist explosions from the passed in entity.
+     */
+    public float a(Entity par1Entity)
+    {
         return this.durability / 5.0F;
     }
 
-    public MovingObjectPosition a(World world, int i, int j, int k, Vec3D vec3d, Vec3D vec3d1) {
-        this.updateShape(world, i, j, k);
-        vec3d = vec3d.add((double) (-i), (double) (-j), (double) (-k));
-        vec3d1 = vec3d1.add((double) (-i), (double) (-j), (double) (-k));
-        Vec3D vec3d2 = vec3d.b(vec3d1, this.minX);
-        Vec3D vec3d3 = vec3d.b(vec3d1, this.maxX);
-        Vec3D vec3d4 = vec3d.c(vec3d1, this.minY);
-        Vec3D vec3d5 = vec3d.c(vec3d1, this.maxY);
-        Vec3D vec3d6 = vec3d.d(vec3d1, this.minZ);
-        Vec3D vec3d7 = vec3d.d(vec3d1, this.maxZ);
+    /**
+     * Ray traces through the blocks collision from start vector to end vector returning a ray trace hit. Args: world,
+     * x, y, z, startVec, endVec
+     */
+    public MovingObjectPosition a(World par1World, int par2, int par3, int par4, Vec3D par5Vec3, Vec3D par6Vec3)
+    {
+        this.updateShape(par1World, par2, par3, par4);
+        par5Vec3 = par5Vec3.add((double) (-par2), (double) (-par3), (double) (-par4));
+        par6Vec3 = par6Vec3.add((double) (-par2), (double) (-par3), (double) (-par4));
+        Vec3D var7 = par5Vec3.b(par6Vec3, this.minX);
+        Vec3D var8 = par5Vec3.b(par6Vec3, this.maxX);
+        Vec3D var9 = par5Vec3.c(par6Vec3, this.minY);
+        Vec3D var10 = par5Vec3.c(par6Vec3, this.maxY);
+        Vec3D var11 = par5Vec3.d(par6Vec3, this.minZ);
+        Vec3D var12 = par5Vec3.d(par6Vec3, this.maxZ);
 
-        if (!this.a(vec3d2)) {
-            vec3d2 = null;
+        if (!this.a(var7))
+        {
+            var7 = null;
         }
 
-        if (!this.a(vec3d3)) {
-            vec3d3 = null;
+        if (!this.a(var8))
+        {
+            var8 = null;
         }
 
-        if (!this.b(vec3d4)) {
-            vec3d4 = null;
+        if (!this.b(var9))
+        {
+            var9 = null;
         }
 
-        if (!this.b(vec3d5)) {
-            vec3d5 = null;
+        if (!this.b(var10))
+        {
+            var10 = null;
         }
 
-        if (!this.c(vec3d6)) {
-            vec3d6 = null;
+        if (!this.c(var11))
+        {
+            var11 = null;
         }
 
-        if (!this.c(vec3d7)) {
-            vec3d7 = null;
+        if (!this.c(var12))
+        {
+            var12 = null;
         }
 
-        Vec3D vec3d8 = null;
+        Vec3D var13 = null;
 
-        if (vec3d2 != null && (vec3d8 == null || vec3d.distanceSquared(vec3d2) < vec3d.distanceSquared(vec3d8))) {
-            vec3d8 = vec3d2;
+        if (var7 != null && (var13 == null || par5Vec3.distanceSquared(var7) < par5Vec3.distanceSquared(var13)))
+        {
+            var13 = var7;
         }
 
-        if (vec3d3 != null && (vec3d8 == null || vec3d.distanceSquared(vec3d3) < vec3d.distanceSquared(vec3d8))) {
-            vec3d8 = vec3d3;
+        if (var8 != null && (var13 == null || par5Vec3.distanceSquared(var8) < par5Vec3.distanceSquared(var13)))
+        {
+            var13 = var8;
         }
 
-        if (vec3d4 != null && (vec3d8 == null || vec3d.distanceSquared(vec3d4) < vec3d.distanceSquared(vec3d8))) {
-            vec3d8 = vec3d4;
+        if (var9 != null && (var13 == null || par5Vec3.distanceSquared(var9) < par5Vec3.distanceSquared(var13)))
+        {
+            var13 = var9;
         }
 
-        if (vec3d5 != null && (vec3d8 == null || vec3d.distanceSquared(vec3d5) < vec3d.distanceSquared(vec3d8))) {
-            vec3d8 = vec3d5;
+        if (var10 != null && (var13 == null || par5Vec3.distanceSquared(var10) < par5Vec3.distanceSquared(var13)))
+        {
+            var13 = var10;
         }
 
-        if (vec3d6 != null && (vec3d8 == null || vec3d.distanceSquared(vec3d6) < vec3d.distanceSquared(vec3d8))) {
-            vec3d8 = vec3d6;
+        if (var11 != null && (var13 == null || par5Vec3.distanceSquared(var11) < par5Vec3.distanceSquared(var13)))
+        {
+            var13 = var11;
         }
 
-        if (vec3d7 != null && (vec3d8 == null || vec3d.distanceSquared(vec3d7) < vec3d.distanceSquared(vec3d8))) {
-            vec3d8 = vec3d7;
+        if (var12 != null && (var13 == null || par5Vec3.distanceSquared(var12) < par5Vec3.distanceSquared(var13)))
+        {
+            var13 = var12;
         }
 
-        if (vec3d8 == null) {
+        if (var13 == null)
+        {
             return null;
-        } else {
-            byte b0 = -1;
+        }
+        else
+        {
+            byte var14 = -1;
 
-            if (vec3d8 == vec3d2) {
-                b0 = 4;
+            if (var13 == var7)
+            {
+                var14 = 4;
             }
 
-            if (vec3d8 == vec3d3) {
-                b0 = 5;
+            if (var13 == var8)
+            {
+                var14 = 5;
             }
 
-            if (vec3d8 == vec3d4) {
-                b0 = 0;
+            if (var13 == var9)
+            {
+                var14 = 0;
             }
 
-            if (vec3d8 == vec3d5) {
-                b0 = 1;
+            if (var13 == var10)
+            {
+                var14 = 1;
             }
 
-            if (vec3d8 == vec3d6) {
-                b0 = 2;
+            if (var13 == var11)
+            {
+                var14 = 2;
             }
 
-            if (vec3d8 == vec3d7) {
-                b0 = 3;
+            if (var13 == var12)
+            {
+                var14 = 3;
             }
 
-            return new MovingObjectPosition(i, j, k, b0, vec3d8.add((double) i, (double) j, (double) k));
+            return new MovingObjectPosition(par2, par3, par4, var14, var13.add((double) par2, (double) par3, (double) par4));
         }
     }
 
-    private boolean a(Vec3D vec3d) {
-        return vec3d == null ? false : vec3d.d >= this.minY && vec3d.d <= this.maxY && vec3d.e >= this.minZ && vec3d.e <= this.maxZ;
+    /**
+     * Checks if a vector is within the Y and Z bounds of the block.
+     */
+    private boolean a(Vec3D par1Vec3)
+    {
+        return par1Vec3 == null ? false : par1Vec3.d >= this.minY && par1Vec3.d <= this.maxY && par1Vec3.e >= this.minZ && par1Vec3.e <= this.maxZ;
     }
 
-    private boolean b(Vec3D vec3d) {
-        return vec3d == null ? false : vec3d.c >= this.minX && vec3d.c <= this.maxX && vec3d.e >= this.minZ && vec3d.e <= this.maxZ;
+    /**
+     * Checks if a vector is within the X and Z bounds of the block.
+     */
+    private boolean b(Vec3D par1Vec3)
+    {
+        return par1Vec3 == null ? false : par1Vec3.c >= this.minX && par1Vec3.c <= this.maxX && par1Vec3.e >= this.minZ && par1Vec3.e <= this.maxZ;
     }
 
-    private boolean c(Vec3D vec3d) {
-        return vec3d == null ? false : vec3d.c >= this.minX && vec3d.c <= this.maxX && vec3d.d >= this.minY && vec3d.d <= this.maxY;
+    /**
+     * Checks if a vector is within the X and Y bounds of the block.
+     */
+    private boolean c(Vec3D par1Vec3)
+    {
+        return par1Vec3 == null ? false : par1Vec3.c >= this.minX && par1Vec3.c <= this.maxX && par1Vec3.d >= this.minY && par1Vec3.d <= this.maxY;
     }
 
-    public void wasExploded(World world, int i, int j, int k) {}
+    /**
+     * Called upon the block being destroyed by an explosion
+     */
+    public void wasExploded(World par1World, int par2, int par3, int par4) {}
 
-    public boolean canPlace(World world, int i, int j, int k, int l) {
-        return this.canPlace(world, i, j, k);
+    /**
+     * checks to see if you can place this block can be placed on that side of a block: BlockLever overrides
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4, int par5)
+    {
+        return this.canPlace(par1World, par2, par3, par4);
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        int l = world.getTypeId(i, j, k);
-
-        return l == 0 || byId[l].material.isReplaceable();
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        int var5 = par1World.getTypeId(par2, par3, par4);
+        return var5 == 0 || byId[var5].material.isReplaceable();
     }
 
-    public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
         return false;
     }
 
-    public void b(World world, int i, int j, int k, Entity entity) {}
+    /**
+     * Called whenever an entity is walking on top of this block. Args: world, x, y, z, entity
+     */
+    public void b(World par1World, int par2, int par3, int par4, Entity par5Entity) {}
 
-    public int getPlacedData(World world, int i, int j, int k, int l, float f, float f1, float f2, int i1) {
-        return i1;
+    public int getPlacedData(World par1World, int par2, int par3, int par4, int par5, float par6, float par7, float par8, int par9)
+    {
+        return par9;
     }
 
-    public void attack(World world, int i, int j, int k, EntityHuman entityhuman) {}
+    /**
+     * Called when the block is clicked by a player. Args: x, y, z, entityPlayer
+     */
+    public void attack(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer) {}
 
-    public void a(World world, int i, int j, int k, Entity entity, Vec3D vec3d) {}
+    /**
+     * Can add to the passed in vector for a movement vector to be applied to the entity. Args: x, y, z, entity, vec3d
+     */
+    public void a(World par1World, int par2, int par3, int par4, Entity par5Entity, Vec3D par6Vec3) {}
 
-    public void updateShape(IBlockAccess iblockaccess, int i, int j, int k) {}
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void updateShape(IBlockAccess par1IBlockAccess, int par2, int par3, int par4) {}
 
-    public final double v() {
+    public final double v()
+    {
         return this.minX;
     }
 
-    public final double w() {
+    /**
+     * returns the block bounderies maxX value
+     */
+    public final double w()
+    {
         return this.maxX;
     }
 
-    public final double x() {
+    /**
+     * returns the block bounderies minY value
+     */
+    public final double x()
+    {
         return this.minY;
     }
 
-    public final double y() {
+    /**
+     * returns the block bounderies maxY value
+     */
+    public final double y()
+    {
         return this.maxY;
     }
 
-    public final double z() {
+    /**
+     * returns the block bounderies minZ value
+     */
+    public final double z()
+    {
         return this.minZ;
     }
 
-    public final double A() {
+    /**
+     * returns the block bounderies maxZ value
+     */
+    public final double A()
+    {
         return this.maxZ;
     }
 
-    public boolean b(IBlockAccess iblockaccess, int i, int j, int k, int l) {
+    /**
+     * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
+     * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
+     * Y, Z, side
+     */
+    public boolean b(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    {
         return false;
     }
 
-    public boolean isPowerSource() {
+    /**
+     * Can this block provide power. Only wire currently seems to have this change based on its state.
+     */
+    public boolean isPowerSource()
+    {
         return false;
     }
 
-    public void a(World world, int i, int j, int k, Entity entity) {}
+    /**
+     * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
+     */
+    public void a(World par1World, int par2, int par3, int par4, Entity par5Entity) {}
 
-    public boolean c(IBlockAccess iblockaccess, int i, int j, int k, int l) {
+    /**
+     * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
+     * side
+     */
+    public boolean c(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    {
         return false;
     }
 
+    /**
+     * Sets the block's bounds for rendering it as an item
+     */
     public void f() {}
 
-    public void a(World world, EntityHuman entityhuman, int i, int j, int k, int l) {
-        entityhuman.a(StatisticList.C[this.id], 1);
-        entityhuman.j(0.025F);
-        if (this.s_() && EnchantmentManager.hasSilkTouchEnchantment(entityhuman)) {
-            ItemStack itemstack = this.f_(l);
+    /**
+     * Called when the player destroys a block with an item that can harvest it. (i, j, k) are the coordinates of the
+     * block and l is the block's subtype/damage.
+     */
+    public void a(World par1World, EntityHuman par2EntityPlayer, int par3, int par4, int par5, int par6)
+    {
+        par2EntityPlayer.a(StatisticList.C[this.id], 1);
+        par2EntityPlayer.j(0.025F);
 
-            if (itemstack != null) {
-                this.b(world, i, j, k, itemstack);
+        if (this.s_() && EnchantmentManager.hasSilkTouchEnchantment(par2EntityPlayer))
+        {
+            ItemStack var8 = this.f_(par6);
+
+            if (var8 != null)
+            {
+                this.b(par1World, par3, par4, par5, var8);
             }
-        } else {
-            int i1 = EnchantmentManager.getBonusBlockLootEnchantmentLevel(entityhuman);
-
-            this.c(world, i, j, k, l, i1);
+        }
+        else
+        {
+            int var7 = EnchantmentManager.getBonusBlockLootEnchantmentLevel(par2EntityPlayer);
+            this.c(par1World, par3, par4, par5, par6, var7);
         }
     }
 
-    protected boolean s_() {
+    /**
+     * Return true if a player with Silk Touch can harvest this block directly, and not its normal drops.
+     */
+    protected boolean s_()
+    {
         return this.b() && !this.isTileEntity;
     }
 
-    protected ItemStack f_(int i) {
-        int j = 0;
+    /**
+     * Returns an item stack containing a single instance of the current block type. 'i' is the block's subtype/damage
+     * and is ignored for blocks which do not support subtypes. Blocks which cannot be harvested should return null.
+     */
+    protected ItemStack f_(int par1)
+    {
+        int var2 = 0;
 
-        if (this.id >= 0 && this.id < Item.byId.length && Item.byId[this.id].l()) {
-            j = i;
+        if (this.id >= 0 && this.id < Item.byId.length && Item.byId[this.id].l())
+        {
+            var2 = par1;
         }
 
-        return new ItemStack(this.id, 1, j);
+        return new ItemStack(this.id, 1, var2);
     }
 
-    public int getDropCount(int i, Random random) {
-        return this.a(random);
+    /**
+     * Returns the usual quantity dropped by the block plus a bonus of 1 to 'i' (inclusive).
+     */
+    public int getDropCount(int par1, Random par2Random)
+    {
+        return this.a(par2Random);
     }
 
-    public boolean d(World world, int i, int j, int k) {
+    /**
+     * Can this block stay at this position.  Similar to canPlaceBlockAt except gets checked often with plants.
+     */
+    public boolean d(World par1World, int par2, int par3, int par4)
+    {
         return true;
     }
 
-    public void postPlace(World world, int i, int j, int k, EntityLiving entityliving) {}
+    /**
+     * Called when the block is placed in the world.
+     */
+    public void postPlace(World par1World, int par2, int par3, int par4, EntityLiving par5EntityLiving) {}
 
-    public void postPlace(World world, int i, int j, int k, int l) {}
+    public void postPlace(World par1World, int par2, int par3, int par4, int par5) {}
 
-    public Block b(String s) {
-        this.name = "tile." + s;
+    /**
+     * set name of block from language file
+     */
+    public Block b(String par1Str)
+    {
+        this.name = "tile." + par1Str;
         return this;
     }
 
-    public String getName() {
+    /**
+     * gets the localized version of the name of this block using StatCollector.translateToLocal. Used for the statistic
+     * page.
+     */
+    public String getName()
+    {
         return LocaleI18n.get(this.a() + ".name");
     }
 
-    public String a() {
+    public String a()
+    {
         return this.name;
     }
 
-    public void b(World world, int i, int j, int k, int l, int i1) {}
+    /**
+     * Called when the block receives a BlockEvent - see World.addBlockEvent. By default, passes it on to the tile
+     * entity at this location. Args: world, x, y, z, blockID, EventID, event parameter
+     */
+    public void b(World par1World, int par2, int par3, int par4, int par5, int par6) {}
 
-    public boolean C() {
+    /**
+     * Return the state of blocks statistics flags - if the block is counted for mined and placed.
+     */
+    public boolean C()
+    {
         return this.cq;
     }
 
-    protected Block D() {
+    /**
+     * Disable statistics for the block, the block will no count for mined or placed.
+     */
+    protected Block D()
+    {
         this.cq = false;
         return this;
     }
 
-    public int q_() {
+    /**
+     * Returns the mobility information of the block, 0 = free, 1 = can't push but can move over, 2 = total immobility
+     * and stop pistons
+     */
+    public int q_()
+    {
         return this.material.getPushReaction();
     }
 
-    public void a(World world, int i, int j, int k, Entity entity, float f) {}
+    /**
+     * Block's chance to react to an entity falling on it.
+     */
+    public void a(World par1World, int par2, int par3, int par4, Entity par5Entity, float par6) {}
 
-    public int getDropData(World world, int i, int j, int k) {
-        return this.getDropData(world.getData(i, j, k));
+    /**
+     * Get the block's damage value (for use with pick block).
+     */
+    public int getDropData(World par1World, int par2, int par3, int par4)
+    {
+        return this.getDropData(par1World.getData(par2, par3, par4));
     }
 
-    public Block a(CreativeModeTab creativemodetab) {
-        this.creativeTab = creativemodetab;
+    /**
+     * sets the CreativeTab to display this block on
+     */
+    public Block a(CreativeModeTab par1CreativeTabs)
+    {
+        this.creativeTab = par1CreativeTabs;
         return this;
     }
 
-    public void a(World world, int i, int j, int k, int l, EntityHuman entityhuman) {}
+    /**
+     * Called when the block is attempted to be harvested
+     */
+    public void a(World par1World, int par2, int par3, int par4, int par5, EntityHuman par6EntityPlayer) {}
 
-    public void h(World world, int i, int j, int k, int l) {}
+    /**
+     * Called when this block is set (with meta data).
+     */
+    public void h(World par1World, int par2, int par3, int par4, int par5) {}
 
-    public void f(World world, int i, int j, int k) {}
+    /**
+     * currently only used by BlockCauldron to incrament meta-data during rain
+     */
+    public void f(World par1World, int par2, int par3, int par4) {}
 
-    public boolean l() {
+    public boolean l()
+    {
         return true;
     }
 
-    public boolean a(Explosion explosion) {
+    /**
+     * Return whether this block can drop from an explosion.
+     */
+    public boolean a(Explosion par1Explosion)
+    {
         return true;
     }
 
-    static {
+    static
+    {
         Item.byId[WOOL.id] = (new ItemCloth(WOOL.id - 256)).b("cloth");
         Item.byId[LOG.id] = (new ItemMultiTexture(LOG.id - 256, LOG, BlockLog.a)).b("log");
         Item.byId[WOOD.id] = (new ItemMultiTexture(WOOD.id - 256, WOOD, BlockWood.a)).b("wood");
@@ -698,43 +1131,51 @@ public class Block {
         Item.byId[SAPLING.id] = (new ItemMultiTexture(SAPLING.id - 256, SAPLING, BlockSapling.a)).b("sapling");
         Item.byId[LEAVES.id] = (new ItemLeaves(LEAVES.id - 256)).b("leaves");
         Item.byId[VINE.id] = new ItemWithAuxData(VINE.id - 256, false);
-        Item.byId[LONG_GRASS.id] = (new ItemWithAuxData(LONG_GRASS.id - 256, true)).a(new String[] { "shrub", "grass", "fern"});
+        Item.byId[LONG_GRASS.id] = (new ItemWithAuxData(LONG_GRASS.id - 256, true)).a(new String[]{"shrub", "grass", "fern"});
         Item.byId[WATER_LILY.id] = new ItemWaterLily(WATER_LILY.id - 256);
         Item.byId[PISTON.id] = new ItemPiston(PISTON.id - 256);
         Item.byId[PISTON_STICKY.id] = new ItemPiston(PISTON_STICKY.id - 256);
         Item.byId[COBBLE_WALL.id] = (new ItemMultiTexture(COBBLE_WALL.id - 256, COBBLE_WALL, BlockCobbleWall.a)).b("cobbleWall");
         Item.byId[ANVIL.id] = (new ItemAnvil(ANVIL)).b("anvil");
 
-        for (int i = 0; i < 256; ++i) {
-            if (byId[i] != null) {
-                if (Item.byId[i] == null) {
-                    Item.byId[i] = new ItemBlock(i - 256);
-                    byId[i].t_();
+        for (int var0 = 0; var0 < 256; ++var0)
+        {
+            if (byId[var0] != null)
+            {
+                if (Item.byId[var0] == null)
+                {
+                    Item.byId[var0] = new ItemBlock(var0 - 256);
+                    byId[var0].t_();
                 }
 
-                boolean flag = false;
+                boolean var1 = false;
 
-                if (i > 0 && byId[i].d() == 10) {
-                    flag = true;
+                if (var0 > 0 && byId[var0].d() == 10)
+                {
+                    var1 = true;
                 }
 
-                if (i > 0 && byId[i] instanceof BlockStepAbstract) {
-                    flag = true;
+                if (var0 > 0 && byId[var0] instanceof BlockStepAbstract)
+                {
+                    var1 = true;
                 }
 
-                if (i == SOIL.id) {
-                    flag = true;
+                if (var0 == SOIL.id)
+                {
+                    var1 = true;
                 }
 
-                if (s[i]) {
-                    flag = true;
+                if (s[var0])
+                {
+                    var1 = true;
                 }
 
-                if (lightBlock[i] == 0) {
-                    flag = true;
+                if (lightBlock[var0] == 0)
+                {
+                    var1 = true;
                 }
 
-                v[i] = flag;
+                v[var0] = var1;
             }
         }
 

@@ -1,43 +1,70 @@
 package net.minecraft.server;
 
-public abstract class EntityWaterAnimal extends EntityCreature implements IAnimal {
-
-    public EntityWaterAnimal(World world) {
-        super(world);
+public abstract class EntityWaterAnimal extends EntityCreature implements IAnimal
+{
+    public EntityWaterAnimal(World par1World)
+    {
+        super(par1World);
     }
 
-    public boolean bc() {
+    public boolean bc()
+    {
         return true;
     }
 
-    public boolean canSpawn() {
+    /**
+     * Checks if the entity's current position is a valid location to spawn this entity.
+     */
+    public boolean canSpawn()
+    {
         return this.world.b(this.boundingBox);
     }
 
-    public int aN() {
+    /**
+     * Get number of ticks, at least during which the living entity will be silent.
+     */
+    public int aN()
+    {
         return 120;
     }
 
-    protected boolean bj() {
+    /**
+     * Determines if an entity can be despawned, used on idle far away entities
+     */
+    protected boolean bj()
+    {
         return true;
     }
 
-    protected int getExpValue(EntityHuman entityhuman) {
+    /**
+     * Get the experience points the entity currently has.
+     */
+    protected int getExpValue(EntityHuman par1EntityPlayer)
+    {
         return 1 + this.world.random.nextInt(3);
     }
 
-    public void y() {
-        int i = this.getAirTicks();
-
+    /**
+     * Gets called every tick from main Entity class
+     */
+    public void y()
+    {
+        int var1 = this.getAirTicks();
         super.y();
-        if (this.isAlive() && !this.a(Material.WATER)) {
-            --i;
-            this.setAirTicks(i);
-            if (this.getAirTicks() == -20) {
+
+        if (this.isAlive() && !this.a(Material.WATER))
+        {
+            --var1;
+            this.setAirTicks(var1);
+
+            if (this.getAirTicks() == -20)
+            {
                 this.setAirTicks(0);
                 this.damageEntity(DamageSource.DROWN, 2);
             }
-        } else {
+        }
+        else
+        {
             this.setAirTicks(300);
         }
     }

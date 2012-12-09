@@ -1,195 +1,285 @@
 package net.minecraft.server;
 
-public abstract class EntityCreature extends EntityLiving {
-
+public abstract class EntityCreature extends EntityLiving
+{
     private PathEntity pathEntity;
+
+    /** The Entity this EntityCreature is set to attack. */
     protected Entity target;
+
+    /**
+     * returns true if a creature has attacked recently only used for creepers and skeletons
+     */
     protected boolean b = false;
+
+    /** Used to make a creature speed up and wander away when hit. */
     protected int c = 0;
 
-    public EntityCreature(World world) {
-        super(world);
+    public EntityCreature(World par1World)
+    {
+        super(par1World);
     }
 
-    protected boolean h() {
+    /**
+     * Disables a mob's ability to move on its own while true.
+     */
+    protected boolean h()
+    {
         return false;
     }
 
-    protected void bn() {
+    protected void bn()
+    {
         this.world.methodProfiler.a("ai");
-        if (this.c > 0) {
+
+        if (this.c > 0)
+        {
             --this.c;
         }
 
         this.b = this.h();
-        float f = 16.0F;
+        float var1 = 16.0F;
 
-        if (this.target == null) {
+        if (this.target == null)
+        {
             this.target = this.findTarget();
-            if (this.target != null) {
-                this.pathEntity = this.world.findPath(this, this.target, f, true, false, false, true);
-            }
-        } else if (this.target.isAlive()) {
-            float f1 = this.target.d((Entity) this);
 
-            if (this.n(this.target)) {
-                this.a(this.target, f1);
+            if (this.target != null)
+            {
+                this.pathEntity = this.world.findPath(this, this.target, var1, true, false, false, true);
             }
-        } else {
+        }
+        else if (this.target.isAlive())
+        {
+            float var2 = this.target.d(this);
+
+            if (this.n(this.target))
+            {
+                this.a(this.target, var2);
+            }
+        }
+        else
+        {
             this.target = null;
         }
 
         this.world.methodProfiler.b();
-        if (!this.b && this.target != null && (this.pathEntity == null || this.random.nextInt(20) == 0)) {
-            this.pathEntity = this.world.findPath(this, this.target, f, true, false, false, true);
-        } else if (!this.b && (this.pathEntity == null && this.random.nextInt(180) == 0 || this.random.nextInt(120) == 0 || this.c > 0) && this.bA < 100) {
+
+        if (!this.b && this.target != null && (this.pathEntity == null || this.random.nextInt(20) == 0))
+        {
+            this.pathEntity = this.world.findPath(this, this.target, var1, true, false, false, true);
+        }
+        else if (!this.b && (this.pathEntity == null && this.random.nextInt(180) == 0 || this.random.nextInt(120) == 0 || this.c > 0) && this.bA < 100)
+        {
             this.i();
         }
 
-        int i = MathHelper.floor(this.boundingBox.b + 0.5D);
-        boolean flag = this.H();
-        boolean flag1 = this.J();
-
+        int var21 = MathHelper.floor(this.boundingBox.b + 0.5D);
+        boolean var3 = this.H();
+        boolean var4 = this.J();
         this.pitch = 0.0F;
-        if (this.pathEntity != null && this.random.nextInt(100) != 0) {
-            this.world.methodProfiler.a("followpath");
-            Vec3D vec3d = this.pathEntity.a((Entity) this);
-            double d0 = (double) (this.width * 2.0F);
 
-            while (vec3d != null && vec3d.d(this.locX, vec3d.d, this.locZ) < d0 * d0) {
+        if (this.pathEntity != null && this.random.nextInt(100) != 0)
+        {
+            this.world.methodProfiler.a("followpath");
+            Vec3D var5 = this.pathEntity.a(this);
+            double var6 = (double)(this.width * 2.0F);
+
+            while (var5 != null && var5.d(this.locX, var5.d, this.locZ) < var6 * var6)
+            {
                 this.pathEntity.a();
-                if (this.pathEntity.b()) {
-                    vec3d = null;
+
+                if (this.pathEntity.b())
+                {
+                    var5 = null;
                     this.pathEntity = null;
-                } else {
-                    vec3d = this.pathEntity.a((Entity) this);
+                }
+                else
+                {
+                    var5 = this.pathEntity.a(this);
                 }
             }
 
             this.bE = false;
-            if (vec3d != null) {
-                double d1 = vec3d.c - this.locX;
-                double d2 = vec3d.e - this.locZ;
-                double d3 = vec3d.d - (double) i;
-                float f2 = (float) (Math.atan2(d2, d1) * 180.0D / 3.1415927410125732D) - 90.0F;
-                float f3 = MathHelper.g(f2 - this.yaw);
 
+            if (var5 != null)
+            {
+                double var8 = var5.c - this.locX;
+                double var10 = var5.e - this.locZ;
+                double var12 = var5.d - (double)var21;
+                float var14 = (float)(Math.atan2(var10, var8) * 180.0D / Math.PI) - 90.0F;
+                float var15 = MathHelper.g(var14 - this.yaw);
                 this.bC = this.bG;
-                if (f3 > 30.0F) {
-                    f3 = 30.0F;
+
+                if (var15 > 30.0F)
+                {
+                    var15 = 30.0F;
                 }
 
-                if (f3 < -30.0F) {
-                    f3 = -30.0F;
+                if (var15 < -30.0F)
+                {
+                    var15 = -30.0F;
                 }
 
-                this.yaw += f3;
-                if (this.b && this.target != null) {
-                    double d4 = this.target.locX - this.locX;
-                    double d5 = this.target.locZ - this.locZ;
-                    float f4 = this.yaw;
+                this.yaw += var15;
 
-                    this.yaw = (float) (Math.atan2(d5, d4) * 180.0D / 3.1415927410125732D) - 90.0F;
-                    f3 = (f4 - this.yaw + 90.0F) * 3.1415927F / 180.0F;
-                    this.bB = -MathHelper.sin(f3) * this.bC * 1.0F;
-                    this.bC = MathHelper.cos(f3) * this.bC * 1.0F;
+                if (this.b && this.target != null)
+                {
+                    double var16 = this.target.locX - this.locX;
+                    double var18 = this.target.locZ - this.locZ;
+                    float var20 = this.yaw;
+                    this.yaw = (float)(Math.atan2(var18, var16) * 180.0D / Math.PI) - 90.0F;
+                    var15 = (var20 - this.yaw + 90.0F) * (float)Math.PI / 180.0F;
+                    this.bB = -MathHelper.sin(var15) * this.bC * 1.0F;
+                    this.bC = MathHelper.cos(var15) * this.bC * 1.0F;
                 }
 
-                if (d3 > 0.0D) {
+                if (var12 > 0.0D)
+                {
                     this.bE = true;
                 }
             }
 
-            if (this.target != null) {
+            if (this.target != null)
+            {
                 this.a(this.target, 30.0F, 30.0F);
             }
 
-            if (this.positionChanged && !this.k()) {
+            if (this.positionChanged && !this.k())
+            {
                 this.bE = true;
             }
 
-            if (this.random.nextFloat() < 0.8F && (flag || flag1)) {
+            if (this.random.nextFloat() < 0.8F && (var3 || var4))
+            {
                 this.bE = true;
             }
 
             this.world.methodProfiler.b();
-        } else {
+        }
+        else
+        {
             super.bn();
             this.pathEntity = null;
         }
     }
 
-    protected void i() {
+    /**
+     * Time remaining during which the Animal is sped up and flees.
+     */
+    protected void i()
+    {
         this.world.methodProfiler.a("stroll");
-        boolean flag = false;
-        int i = -1;
-        int j = -1;
-        int k = -1;
-        float f = -99999.0F;
+        boolean var1 = false;
+        int var2 = -1;
+        int var3 = -1;
+        int var4 = -1;
+        float var5 = -99999.0F;
 
-        for (int l = 0; l < 10; ++l) {
-            int i1 = MathHelper.floor(this.locX + (double) this.random.nextInt(13) - 6.0D);
-            int j1 = MathHelper.floor(this.locY + (double) this.random.nextInt(7) - 3.0D);
-            int k1 = MathHelper.floor(this.locZ + (double) this.random.nextInt(13) - 6.0D);
-            float f1 = this.a(i1, j1, k1);
+        for (int var6 = 0; var6 < 10; ++var6)
+        {
+            int var7 = MathHelper.floor(this.locX + (double) this.random.nextInt(13) - 6.0D);
+            int var8 = MathHelper.floor(this.locY + (double) this.random.nextInt(7) - 3.0D);
+            int var9 = MathHelper.floor(this.locZ + (double) this.random.nextInt(13) - 6.0D);
+            float var10 = this.a(var7, var8, var9);
 
-            if (f1 > f) {
-                f = f1;
-                i = i1;
-                j = j1;
-                k = k1;
-                flag = true;
+            if (var10 > var5)
+            {
+                var5 = var10;
+                var2 = var7;
+                var3 = var8;
+                var4 = var9;
+                var1 = true;
             }
         }
 
-        if (flag) {
-            this.pathEntity = this.world.a(this, i, j, k, 10.0F, true, false, false, true);
+        if (var1)
+        {
+            this.pathEntity = this.world.a(this, var2, var3, var4, 10.0F, true, false, false, true);
         }
 
         this.world.methodProfiler.b();
     }
 
-    protected void a(Entity entity, float f) {}
+    /**
+     * Basic mob attack. Default to touch of death in EntityCreature. Overridden by each mob to define their attack.
+     */
+    protected void a(Entity par1Entity, float par2) {}
 
-    public float a(int i, int j, int k) {
+    /**
+     * Takes a coordinate in and returns a weight to determine how likely this creature will try to path to the block.
+     * Args: x, y, z
+     */
+    public float a(int par1, int par2, int par3)
+    {
         return 0.0F;
     }
 
-    protected Entity findTarget() {
+    /**
+     * Finds the closest player within 16 blocks to attack, or null if this Entity isn't interested in attacking
+     * (Animals, Spiders at day, peaceful PigZombies).
+     */
+    protected Entity findTarget()
+    {
         return null;
     }
 
-    public boolean canSpawn() {
-        int i = MathHelper.floor(this.locX);
-        int j = MathHelper.floor(this.boundingBox.b);
-        int k = MathHelper.floor(this.locZ);
-
-        return super.canSpawn() && this.a(i, j, k) >= 0.0F;
+    /**
+     * Checks if the entity's current position is a valid location to spawn this entity.
+     */
+    public boolean canSpawn()
+    {
+        int var1 = MathHelper.floor(this.locX);
+        int var2 = MathHelper.floor(this.boundingBox.b);
+        int var3 = MathHelper.floor(this.locZ);
+        return super.canSpawn() && this.a(var1, var2, var3) >= 0.0F;
     }
 
-    public boolean k() {
+    /**
+     * if the entity got a PathEntity it returns true, else false
+     */
+    public boolean k()
+    {
         return this.pathEntity != null;
     }
 
-    public void setPathEntity(PathEntity pathentity) {
-        this.pathEntity = pathentity;
+    /**
+     * sets the pathToEntity
+     */
+    public void setPathEntity(PathEntity par1PathEntity)
+    {
+        this.pathEntity = par1PathEntity;
     }
 
-    public Entity l() {
+    /**
+     * returns the target Entity
+     */
+    public Entity l()
+    {
         return this.target;
     }
 
-    public void setTarget(Entity entity) {
-        this.target = entity;
+    /**
+     * Sets the entity which is to be attacked.
+     */
+    public void setTarget(Entity par1Entity)
+    {
+        this.target = par1Entity;
     }
 
-    public float bB() {
-        float f = super.bB();
+    /**
+     * This method returns a value to be applied directly to entity speed, this factor is less than 1 when a slowdown
+     * potion effect is applied, more than 1 when a haste potion effect is applied and 2 for fleeing entities.
+     */
+    public float bB()
+    {
+        float var1 = super.bB();
 
-        if (this.c > 0 && !this.be()) {
-            f *= 2.0F;
+        if (this.c > 0 && !this.be())
+        {
+            var1 *= 2.0F;
         }
 
-        return f;
+        return var1;
     }
 }

@@ -2,60 +2,81 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public class CommandGive extends CommandAbstract {
-
-    public CommandGive() {}
-
-    public String c() {
+public class CommandGive extends CommandAbstract
+{
+    public String c()
+    {
         return "give";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 2;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.give.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.give.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length >= 2) {
-            EntityPlayer entityplayer = c(icommandlistener, astring[0]);
-            int i = a(icommandlistener, astring[1], 1);
-            int j = 1;
-            int k = 0;
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length >= 2)
+        {
+            EntityPlayer var3 = c(par1ICommandSender, par2ArrayOfStr[0]);
+            int var4 = a(par1ICommandSender, par2ArrayOfStr[1], 1);
+            int var5 = 1;
+            int var6 = 0;
 
-            if (Item.byId[i] == null) {
-                throw new ExceptionInvalidNumber("commands.give.notFound", new Object[] { Integer.valueOf(i)});
-            } else {
-                if (astring.length >= 3) {
-                    j = a(icommandlistener, astring[2], 1, 64);
-                }
-
-                if (astring.length >= 4) {
-                    k = a(icommandlistener, astring[3]);
-                }
-
-                ItemStack itemstack = new ItemStack(i, j, k);
-                EntityItem entityitem = entityplayer.drop(itemstack);
-
-                entityitem.pickupDelay = 0;
-                a(icommandlistener, "commands.give.success", new Object[] { Item.byId[i].i(itemstack), Integer.valueOf(i), Integer.valueOf(j), entityplayer.getLocalizedName()});
+            if (Item.byId[var4] == null)
+            {
+                throw new ExceptionInvalidNumber("commands.give.notFound", new Object[] {Integer.valueOf(var4)});
             }
-        } else {
+            else
+            {
+                if (par2ArrayOfStr.length >= 3)
+                {
+                    var5 = a(par1ICommandSender, par2ArrayOfStr[2], 1, 64);
+                }
+
+                if (par2ArrayOfStr.length >= 4)
+                {
+                    var6 = a(par1ICommandSender, par2ArrayOfStr[3]);
+                }
+
+                ItemStack var7 = new ItemStack(var4, var5, var6);
+                EntityItem var8 = var3.drop(var7);
+                var8.pickupDelay = 0;
+                a(par1ICommandSender, "commands.give.success", new Object[]{Item.byId[var4].i(var7), Integer.valueOf(var4), Integer.valueOf(var5), var3.getLocalizedName()});
+            }
+        }
+        else
+        {
             throw new ExceptionUsage("commands.give.usage", new Object[0]);
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return astring.length == 1 ? a(astring, this.d()) : null;
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return par2ArrayOfStr.length == 1 ? a(par2ArrayOfStr, this.d()) : null;
     }
 
-    protected String[] d() {
+    protected String[] d()
+    {
         return MinecraftServer.getServer().getPlayers();
     }
 
-    public boolean a(int i) {
-        return i == 0;
+    /**
+     * Return whether the specified command parameter index is a username parameter.
+     */
+    public boolean a(int par1)
+    {
+        return par1 == 0;
     }
 }

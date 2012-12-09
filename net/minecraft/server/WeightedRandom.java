@@ -4,74 +4,104 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
-public class WeightedRandom {
+public class WeightedRandom
+{
+    /**
+     * Returns the total weight of all items in a collection.
+     */
+    public static int a(Collection par0Collection)
+    {
+        int var1 = 0;
+        WeightedRandomChoice var3;
 
-    public static int a(Collection collection) {
-        int i = 0;
-
-        WeightedRandomChoice weightedrandomchoice;
-
-        for (Iterator iterator = collection.iterator(); iterator.hasNext(); i += weightedrandomchoice.a) {
-            weightedrandomchoice = (WeightedRandomChoice) iterator.next();
+        for (Iterator var2 = par0Collection.iterator(); var2.hasNext(); var1 += var3.a)
+        {
+            var3 = (WeightedRandomChoice)var2.next();
         }
 
-        return i;
+        return var1;
     }
 
-    public static WeightedRandomChoice a(Random random, Collection collection, int i) {
-        if (i <= 0) {
+    /**
+     * Returns a random choice from the input items, with a total weight value.
+     */
+    public static WeightedRandomChoice a(Random par0Random, Collection par1Collection, int par2)
+    {
+        if (par2 <= 0)
+        {
             throw new IllegalArgumentException();
-        } else {
-            int j = random.nextInt(i);
-            Iterator iterator = collection.iterator();
+        }
+        else
+        {
+            int var3 = par0Random.nextInt(par2);
+            Iterator var4 = par1Collection.iterator();
+            WeightedRandomChoice var5;
 
-            WeightedRandomChoice weightedrandomchoice;
-
-            do {
-                if (!iterator.hasNext()) {
+            do
+            {
+                if (!var4.hasNext())
+                {
                     return null;
                 }
 
-                weightedrandomchoice = (WeightedRandomChoice) iterator.next();
-                j -= weightedrandomchoice.a;
-            } while (j >= 0);
+                var5 = (WeightedRandomChoice)var4.next();
+                var3 -= var5.a;
+            }
+            while (var3 >= 0);
 
-            return weightedrandomchoice;
+            return var5;
         }
     }
 
-    public static WeightedRandomChoice a(Random random, Collection collection) {
-        return a(random, collection, a(collection));
+    /**
+     * Returns a random choice from the input items.
+     */
+    public static WeightedRandomChoice a(Random par0Random, Collection par1Collection)
+    {
+        return a(par0Random, par1Collection, a(par1Collection));
     }
 
-    public static int a(WeightedRandomChoice[] aweightedrandomchoice) {
-        int i = 0;
-        WeightedRandomChoice[] aweightedrandomchoice1 = aweightedrandomchoice;
-        int j = aweightedrandomchoice.length;
+    /**
+     * Returns the total weight of all items in a array.
+     */
+    public static int a(WeightedRandomChoice[] par0ArrayOfWeightedRandomItem)
+    {
+        int var1 = 0;
+        WeightedRandomChoice[] var2 = par0ArrayOfWeightedRandomItem;
+        int var3 = par0ArrayOfWeightedRandomItem.length;
 
-        for (int k = 0; k < j; ++k) {
-            WeightedRandomChoice weightedrandomchoice = aweightedrandomchoice1[k];
-
-            i += weightedrandomchoice.a;
+        for (int var4 = 0; var4 < var3; ++var4)
+        {
+            WeightedRandomChoice var5 = var2[var4];
+            var1 += var5.a;
         }
 
-        return i;
+        return var1;
     }
 
-    public static WeightedRandomChoice a(Random random, WeightedRandomChoice[] aweightedrandomchoice, int i) {
-        if (i <= 0) {
+    /**
+     * Returns a random choice from the input array of items, with a total weight value.
+     */
+    public static WeightedRandomChoice a(Random par0Random, WeightedRandomChoice[] par1ArrayOfWeightedRandomItem, int par2)
+    {
+        if (par2 <= 0)
+        {
             throw new IllegalArgumentException();
-        } else {
-            int j = random.nextInt(i);
-            WeightedRandomChoice[] aweightedrandomchoice1 = aweightedrandomchoice;
-            int k = aweightedrandomchoice.length;
+        }
+        else
+        {
+            int var3 = par0Random.nextInt(par2);
+            WeightedRandomChoice[] var4 = par1ArrayOfWeightedRandomItem;
+            int var5 = par1ArrayOfWeightedRandomItem.length;
 
-            for (int l = 0; l < k; ++l) {
-                WeightedRandomChoice weightedrandomchoice = aweightedrandomchoice1[l];
+            for (int var6 = 0; var6 < var5; ++var6)
+            {
+                WeightedRandomChoice var7 = var4[var6];
+                var3 -= var7.a;
 
-                j -= weightedrandomchoice.a;
-                if (j < 0) {
-                    return weightedrandomchoice;
+                if (var3 < 0)
+                {
+                    return var7;
                 }
             }
 
@@ -79,7 +109,11 @@ public class WeightedRandom {
         }
     }
 
-    public static WeightedRandomChoice a(Random random, WeightedRandomChoice[] aweightedrandomchoice) {
-        return a(random, aweightedrandomchoice, a(aweightedrandomchoice));
+    /**
+     * Returns a random choice from the input items.
+     */
+    public static WeightedRandomChoice a(Random par0Random, WeightedRandomChoice[] par1ArrayOfWeightedRandomItem)
+    {
+        return a(par0Random, par1ArrayOfWeightedRandomItem, a(par1ArrayOfWeightedRandomItem));
     }
 }

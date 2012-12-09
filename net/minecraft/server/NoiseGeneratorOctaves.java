@@ -2,52 +2,70 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class NoiseGeneratorOctaves extends NoiseGenerator {
-
+public class NoiseGeneratorOctaves extends NoiseGenerator
+{
+    /**
+     * Collection of noise generation functions.  Output is combined to produce different octaves of noise.
+     */
     private NoiseGeneratorPerlin[] a;
     private int b;
 
-    public NoiseGeneratorOctaves(Random random, int i) {
-        this.b = i;
-        this.a = new NoiseGeneratorPerlin[i];
+    public NoiseGeneratorOctaves(Random par1Random, int par2)
+    {
+        this.b = par2;
+        this.a = new NoiseGeneratorPerlin[par2];
 
-        for (int j = 0; j < i; ++j) {
-            this.a[j] = new NoiseGeneratorPerlin(random);
+        for (int var3 = 0; var3 < par2; ++var3)
+        {
+            this.a[var3] = new NoiseGeneratorPerlin(par1Random);
         }
     }
 
-    public double[] a(double[] adouble, int i, int j, int k, int l, int i1, int j1, double d0, double d1, double d2) {
-        if (adouble == null) {
-            adouble = new double[l * i1 * j1];
-        } else {
-            for (int k1 = 0; k1 < adouble.length; ++k1) {
-                adouble[k1] = 0.0D;
+    /**
+     * pars:(par2,3,4=noiseOffset ; so that adjacent noise segments connect) (pars5,6,7=x,y,zArraySize),(pars8,10,12 =
+     * x,y,z noiseScale)
+     */
+    public double[] a(double[] par1ArrayOfDouble, int par2, int par3, int par4, int par5, int par6, int par7, double par8, double par10, double par12)
+    {
+        if (par1ArrayOfDouble == null)
+        {
+            par1ArrayOfDouble = new double[par5 * par6 * par7];
+        }
+        else
+        {
+            for (int var14 = 0; var14 < par1ArrayOfDouble.length; ++var14)
+            {
+                par1ArrayOfDouble[var14] = 0.0D;
             }
         }
 
-        double d3 = 1.0D;
+        double var27 = 1.0D;
 
-        for (int l1 = 0; l1 < this.b; ++l1) {
-            double d4 = (double) i * d3 * d0;
-            double d5 = (double) j * d3 * d1;
-            double d6 = (double) k * d3 * d2;
-            long i2 = MathHelper.d(d4);
-            long j2 = MathHelper.d(d6);
-
-            d4 -= (double) i2;
-            d6 -= (double) j2;
-            i2 %= 16777216L;
-            j2 %= 16777216L;
-            d4 += (double) i2;
-            d6 += (double) j2;
-            this.a[l1].a(adouble, d4, d5, d6, l, i1, j1, d0 * d3, d1 * d3, d2 * d3, d3);
-            d3 /= 2.0D;
+        for (int var16 = 0; var16 < this.b; ++var16)
+        {
+            double var17 = (double)par2 * var27 * par8;
+            double var19 = (double)par3 * var27 * par10;
+            double var21 = (double)par4 * var27 * par12;
+            long var23 = MathHelper.d(var17);
+            long var25 = MathHelper.d(var21);
+            var17 -= (double)var23;
+            var21 -= (double)var25;
+            var23 %= 16777216L;
+            var25 %= 16777216L;
+            var17 += (double)var23;
+            var21 += (double)var25;
+            this.a[var16].a(par1ArrayOfDouble, var17, var19, var21, par5, par6, par7, par8 * var27, par10 * var27, par12 * var27, var27);
+            var27 /= 2.0D;
         }
 
-        return adouble;
+        return par1ArrayOfDouble;
     }
 
-    public double[] a(double[] adouble, int i, int j, int k, int l, double d0, double d1, double d2) {
-        return this.a(adouble, i, 10, j, k, 1, l, d0, 1.0D, d1);
+    /**
+     * Bouncer function to the main one with some default arguments.
+     */
+    public double[] a(double[] par1ArrayOfDouble, int par2, int par3, int par4, int par5, double par6, double par8, double par10)
+    {
+        return this.a(par1ArrayOfDouble, par2, 10, par3, par4, 1, par5, par6, 1.0D, par8);
     }
 }

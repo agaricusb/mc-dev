@@ -4,62 +4,87 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class FileIOThread implements Runnable {
-
+public class FileIOThread implements Runnable
+{
+    /** Instance of ThreadedFileIOBase */
     public static final FileIOThread a = new FileIOThread();
     private List b = Collections.synchronizedList(new ArrayList());
     private volatile long c = 0L;
     private volatile long d = 0L;
     private volatile boolean e = false;
 
-    private FileIOThread() {
-        Thread thread = new Thread(this, "File IO Thread");
-
-        thread.setPriority(1);
-        thread.start();
+    private FileIOThread()
+    {
+        Thread var1 = new Thread(this, "File IO Thread");
+        var1.setPriority(1);
+        var1.start();
     }
 
-    public void run() {
-        this.b();
+    public void run()
+    {
+        while (true)
+        {
+            this.b();
+        }
     }
 
-    private void b() {
-        for (int i = 0; i < this.b.size(); ++i) {
-            IAsyncChunkSaver iasyncchunksaver = (IAsyncChunkSaver) this.b.get(i);
-            boolean flag = iasyncchunksaver.c();
+    /**
+     * Process the items that are in the queue
+     */
+    private void b()
+    {
+        for (int var1 = 0; var1 < this.b.size(); ++var1)
+        {
+            IAsyncChunkSaver var2 = (IAsyncChunkSaver)this.b.get(var1);
+            boolean var3 = var2.c();
 
-            if (!flag) {
-                this.b.remove(i--);
+            if (!var3)
+            {
+                this.b.remove(var1--);
                 ++this.d;
             }
 
-            try {
+            try
+            {
                 Thread.sleep(this.e ? 0L : 10L);
-            } catch (InterruptedException interruptedexception) {
-                interruptedexception.printStackTrace();
+            }
+            catch (InterruptedException var6)
+            {
+                var6.printStackTrace();
             }
         }
 
-        if (this.b.isEmpty()) {
-            try {
+        if (this.b.isEmpty())
+        {
+            try
+            {
                 Thread.sleep(25L);
-            } catch (InterruptedException interruptedexception1) {
-                interruptedexception1.printStackTrace();
+            }
+            catch (InterruptedException var5)
+            {
+                var5.printStackTrace();
             }
         }
     }
 
-    public void a(IAsyncChunkSaver iasyncchunksaver) {
-        if (!this.b.contains(iasyncchunksaver)) {
+    /**
+     * threaded io
+     */
+    public void a(IAsyncChunkSaver par1IThreadedFileIO)
+    {
+        if (!this.b.contains(par1IThreadedFileIO))
+        {
             ++this.c;
-            this.b.add(iasyncchunksaver);
+            this.b.add(par1IThreadedFileIO);
         }
     }
 
-    public void a() {
+    public void a() throws InterruptedException
+    {
         this.e = true;
 
-        while (this.c != this.d) {
+        while (this.c != this.d)
+        {
             Thread.sleep(10L);
         }
 

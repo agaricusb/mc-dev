@@ -1,90 +1,133 @@
 package net.minecraft.server;
 
-public class PathfinderGoalMakeLove extends PathfinderGoal {
-
+public class PathfinderGoalMakeLove extends PathfinderGoal
+{
     private EntityVillager b;
     private EntityVillager c;
     private World d;
     private int e = 0;
     Village a;
 
-    public PathfinderGoalMakeLove(EntityVillager entityvillager) {
-        this.b = entityvillager;
-        this.d = entityvillager.world;
+    public PathfinderGoalMakeLove(EntityVillager par1EntityVillager)
+    {
+        this.b = par1EntityVillager;
+        this.d = par1EntityVillager.world;
         this.a(3);
     }
 
-    public boolean a() {
-        if (this.b.getAge() != 0) {
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
+        if (this.b.aE() != 0)
+        {
             return false;
-        } else if (this.b.aB().nextInt(500) != 0) {
+        }
+        else if (this.b.aB().nextInt(500) != 0)
+        {
             return false;
-        } else {
+        }
+        else
+        {
             this.a = this.d.villages.getClosestVillage(MathHelper.floor(this.b.locX), MathHelper.floor(this.b.locY), MathHelper.floor(this.b.locZ), 0);
-            if (this.a == null) {
-                return false;
-            } else if (!this.f()) {
-                return false;
-            } else {
-                Entity entity = this.d.a(EntityVillager.class, this.b.boundingBox.grow(8.0D, 3.0D, 8.0D), (Entity) this.b);
 
-                if (entity == null) {
+            if (this.a == null)
+            {
+                return false;
+            }
+            else if (!this.f())
+            {
+                return false;
+            }
+            else
+            {
+                Entity var1 = this.d.a(EntityVillager.class, this.b.boundingBox.grow(8.0D, 3.0D, 8.0D), this.b);
+
+                if (var1 == null)
+                {
                     return false;
-                } else {
-                    this.c = (EntityVillager) entity;
-                    return this.c.getAge() == 0;
+                }
+                else
+                {
+                    this.c = (EntityVillager)var1;
+                    return this.c.aE() == 0;
                 }
             }
         }
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.e = 300;
         this.b.f(true);
     }
 
-    public void d() {
+    /**
+     * Resets the task
+     */
+    public void d()
+    {
         this.a = null;
         this.c = null;
         this.b.f(false);
     }
 
-    public boolean b() {
-        return this.e >= 0 && this.f() && this.b.getAge() == 0;
+    /**
+     * Returns whether an in-progress EntityAIBase should continue executing
+     */
+    public boolean b()
+    {
+        return this.e >= 0 && this.f() && this.b.aE() == 0;
     }
 
-    public void e() {
+    /**
+     * Updates the task
+     */
+    public void e()
+    {
         --this.e;
         this.b.getControllerLook().a(this.c, 10.0F, 30.0F);
-        if (this.b.e(this.c) > 2.25D) {
-            this.b.getNavigation().a((EntityLiving) this.c, 0.25F);
-        } else if (this.e == 0 && this.c.n()) {
+
+        if (this.b.e(this.c) > 2.25D)
+        {
+            this.b.getNavigation().a(this.c, 0.25F);
+        }
+        else if (this.e == 0 && this.c.n())
+        {
             this.g();
         }
 
-        if (this.b.aB().nextInt(35) == 0) {
+        if (this.b.aB().nextInt(35) == 0)
+        {
             this.d.broadcastEntityEffect(this.b, (byte) 12);
         }
     }
 
-    private boolean f() {
-        if (!this.a.i()) {
+    private boolean f()
+    {
+        if (!this.a.i())
+        {
             return false;
-        } else {
-            int i = (int) ((double) ((float) this.a.getDoorCount()) * 0.35D);
-
-            return this.a.getPopulationCount() < i;
+        }
+        else
+        {
+            int var1 = (int)((double)((float)this.a.getDoorCount()) * 0.35D);
+            return this.a.getPopulationCount() < var1;
         }
     }
 
-    private void g() {
-        EntityVillager entityvillager = this.b.b((EntityAgeable) this.c);
-
+    private void g()
+    {
+        EntityVillager var1 = this.b.b(this.c);
         this.c.setAge(6000);
         this.b.setAge(6000);
-        entityvillager.setAge(-24000);
-        entityvillager.setPositionRotation(this.b.locX, this.b.locY, this.b.locZ, 0.0F, 0.0F);
-        this.d.addEntity(entityvillager);
-        this.d.broadcastEntityEffect(entityvillager, (byte) 12);
+        var1.setAge(-24000);
+        var1.setPositionRotation(this.b.locX, this.b.locY, this.b.locZ, 0.0F, 0.0F);
+        this.d.addEntity(var1);
+        this.d.broadcastEntityEffect(var1, (byte) 12);
     }
 }

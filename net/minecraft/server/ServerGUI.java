@@ -14,80 +14,100 @@ import javax.swing.UIManager;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
-public class ServerGUI extends JComponent {
-
+public class ServerGUI extends JComponent
+{
+    /** Reference to the logger. */
     public static Logger a = Logger.getLogger("Minecraft");
+
+    /** This is set to true after server GUI window has been initialized. */
     private static boolean b = false;
     private DedicatedServer c;
 
-    public static void a(DedicatedServer dedicatedserver) {
-        try {
+    /**
+     * Sets up the server GUI
+     */
+    public static void a(DedicatedServer par0DedicatedServer)
+    {
+        try
+        {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception exception) {
+        }
+        catch (Exception var3)
+        {
             ;
         }
 
-        ServerGUI servergui = new ServerGUI(dedicatedserver);
-
+        ServerGUI var1 = new ServerGUI(par0DedicatedServer);
         b = true;
-        JFrame jframe = new JFrame("Minecraft server");
-
-        jframe.add(servergui);
-        jframe.pack();
-        jframe.setLocationRelativeTo((Component) null);
-        jframe.setVisible(true);
-        jframe.addWindowListener(new ServerWindowAdapter(dedicatedserver));
+        JFrame var2 = new JFrame("Minecraft server");
+        var2.add(var1);
+        var2.pack();
+        var2.setLocationRelativeTo((Component)null);
+        var2.setVisible(true);
+        var2.addWindowListener(new ServerWindowAdapter(par0DedicatedServer));
     }
 
-    public ServerGUI(DedicatedServer dedicatedserver) {
-        this.c = dedicatedserver;
+    public ServerGUI(DedicatedServer par1DedicatedServer)
+    {
+        this.c = par1DedicatedServer;
         this.setPreferredSize(new Dimension(854, 480));
         this.setLayout(new BorderLayout());
 
-        try {
+        try
+        {
             this.add(this.d(), "Center");
             this.add(this.b(), "West");
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        }
+        catch (Exception var3)
+        {
+            var3.printStackTrace();
         }
     }
 
-    private JComponent b() {
-        JPanel jpanel = new JPanel(new BorderLayout());
-
-        jpanel.add(new GuiStatsComponent(this.c), "North");
-        jpanel.add(this.c(), "Center");
-        jpanel.setBorder(new TitledBorder(new EtchedBorder(), "Stats"));
-        return jpanel;
+    /**
+     * Returns a new JPanel with a new GuiStatsComponent inside.
+     */
+    private JComponent b()
+    {
+        JPanel var1 = new JPanel(new BorderLayout());
+        var1.add(new GuiStatsComponent(this.c), "North");
+        var1.add(this.c(), "Center");
+        var1.setBorder(new TitledBorder(new EtchedBorder(), "Stats"));
+        return var1;
     }
 
-    private JComponent c() {
-        PlayerListBox playerlistbox = new PlayerListBox(this.c);
-        JScrollPane jscrollpane = new JScrollPane(playerlistbox, 22, 30);
-
-        jscrollpane.setBorder(new TitledBorder(new EtchedBorder(), "Players"));
-        return jscrollpane;
+    /**
+     * Returns a new JScrollPane with a new PlayerListBox inside.
+     */
+    private JComponent c()
+    {
+        PlayerListBox var1 = new PlayerListBox(this.c);
+        JScrollPane var2 = new JScrollPane(var1, 22, 30);
+        var2.setBorder(new TitledBorder(new EtchedBorder(), "Players"));
+        return var2;
     }
 
-    private JComponent d() {
-        JPanel jpanel = new JPanel(new BorderLayout());
-        JTextArea jtextarea = new JTextArea();
-
-        a.addHandler(new GuiLogOutputHandler(jtextarea));
-        JScrollPane jscrollpane = new JScrollPane(jtextarea, 22, 30);
-
-        jtextarea.setEditable(false);
-        JTextField jtextfield = new JTextField();
-
-        jtextfield.addActionListener(new ServerGuiCommandListener(this, jtextfield));
-        jtextarea.addFocusListener(new ServerGuiFocusAdapter(this));
-        jpanel.add(jscrollpane, "Center");
-        jpanel.add(jtextfield, "South");
-        jpanel.setBorder(new TitledBorder(new EtchedBorder(), "Log and chat"));
-        return jpanel;
+    /**
+     * Returns a new JPanel with a new GuiStatsComponent inside.
+     */
+    private JComponent d()
+    {
+        JPanel var1 = new JPanel(new BorderLayout());
+        JTextArea var2 = new JTextArea();
+        a.addHandler(new GuiLogOutputHandler(var2));
+        JScrollPane var3 = new JScrollPane(var2, 22, 30);
+        var2.setEditable(false);
+        JTextField var4 = new JTextField();
+        var4.addActionListener(new ServerGuiCommandListener(this, var4));
+        var2.addFocusListener(new ServerGuiFocusAdapter(this));
+        var1.add(var3, "Center");
+        var1.add(var4, "South");
+        var1.setBorder(new TitledBorder(new EtchedBorder(), "Log and chat"));
+        return var1;
     }
 
-    static DedicatedServer a(ServerGUI servergui) {
-        return servergui.c;
+    static DedicatedServer a(ServerGUI par0ServerGUI)
+    {
+        return par0ServerGUI.c;
     }
 }

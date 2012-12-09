@@ -3,8 +3,8 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-public class ChunkProviderTheEnd implements IChunkProvider {
-
+public class ChunkProviderTheEnd implements IChunkProvider
+{
     private Random i;
     private NoiseGeneratorOctaves j;
     private NoiseGeneratorOctaves k;
@@ -13,6 +13,8 @@ public class ChunkProviderTheEnd implements IChunkProvider {
     public NoiseGeneratorOctaves b;
     private World m;
     private double[] n;
+
+    /** The biomes that are used to generate the chunk */
     private BiomeBase[] o;
     double[] c;
     double[] d;
@@ -21,9 +23,10 @@ public class ChunkProviderTheEnd implements IChunkProvider {
     double[] g;
     int[][] h = new int[32][32];
 
-    public ChunkProviderTheEnd(World world, long i) {
-        this.m = world;
-        this.i = new Random(i);
+    public ChunkProviderTheEnd(World par1World, long par2)
+    {
+        this.m = par1World;
+        this.i = new Random(par2);
         this.j = new NoiseGeneratorOctaves(this.i, 16);
         this.k = new NoiseGeneratorOctaves(this.i, 16);
         this.l = new NoiseGeneratorOctaves(this.i, 8);
@@ -31,97 +34,119 @@ public class ChunkProviderTheEnd implements IChunkProvider {
         this.b = new NoiseGeneratorOctaves(this.i, 16);
     }
 
-    public void a(int i, int j, byte[] abyte, BiomeBase[] abiomebase) {
-        byte b0 = 2;
-        int k = b0 + 1;
-        byte b1 = 33;
-        int l = b0 + 1;
+    public void a(int par1, int par2, byte[] par3ArrayOfByte, BiomeBase[] par4ArrayOfBiomeGenBase)
+    {
+        byte var5 = 2;
+        int var6 = var5 + 1;
+        byte var7 = 33;
+        int var8 = var5 + 1;
+        this.n = this.a(this.n, par1 * var5, 0, par2 * var5, var6, var7, var8);
 
-        this.n = this.a(this.n, i * b0, 0, j * b0, k, b1, l);
+        for (int var9 = 0; var9 < var5; ++var9)
+        {
+            for (int var10 = 0; var10 < var5; ++var10)
+            {
+                for (int var11 = 0; var11 < 32; ++var11)
+                {
+                    double var12 = 0.25D;
+                    double var14 = this.n[((var9 + 0) * var8 + var10 + 0) * var7 + var11 + 0];
+                    double var16 = this.n[((var9 + 0) * var8 + var10 + 1) * var7 + var11 + 0];
+                    double var18 = this.n[((var9 + 1) * var8 + var10 + 0) * var7 + var11 + 0];
+                    double var20 = this.n[((var9 + 1) * var8 + var10 + 1) * var7 + var11 + 0];
+                    double var22 = (this.n[((var9 + 0) * var8 + var10 + 0) * var7 + var11 + 1] - var14) * var12;
+                    double var24 = (this.n[((var9 + 0) * var8 + var10 + 1) * var7 + var11 + 1] - var16) * var12;
+                    double var26 = (this.n[((var9 + 1) * var8 + var10 + 0) * var7 + var11 + 1] - var18) * var12;
+                    double var28 = (this.n[((var9 + 1) * var8 + var10 + 1) * var7 + var11 + 1] - var20) * var12;
 
-        for (int i1 = 0; i1 < b0; ++i1) {
-            for (int j1 = 0; j1 < b0; ++j1) {
-                for (int k1 = 0; k1 < 32; ++k1) {
-                    double d0 = 0.25D;
-                    double d1 = this.n[((i1 + 0) * l + j1 + 0) * b1 + k1 + 0];
-                    double d2 = this.n[((i1 + 0) * l + j1 + 1) * b1 + k1 + 0];
-                    double d3 = this.n[((i1 + 1) * l + j1 + 0) * b1 + k1 + 0];
-                    double d4 = this.n[((i1 + 1) * l + j1 + 1) * b1 + k1 + 0];
-                    double d5 = (this.n[((i1 + 0) * l + j1 + 0) * b1 + k1 + 1] - d1) * d0;
-                    double d6 = (this.n[((i1 + 0) * l + j1 + 1) * b1 + k1 + 1] - d2) * d0;
-                    double d7 = (this.n[((i1 + 1) * l + j1 + 0) * b1 + k1 + 1] - d3) * d0;
-                    double d8 = (this.n[((i1 + 1) * l + j1 + 1) * b1 + k1 + 1] - d4) * d0;
+                    for (int var30 = 0; var30 < 4; ++var30)
+                    {
+                        double var31 = 0.125D;
+                        double var33 = var14;
+                        double var35 = var16;
+                        double var37 = (var18 - var14) * var31;
+                        double var39 = (var20 - var16) * var31;
 
-                    for (int l1 = 0; l1 < 4; ++l1) {
-                        double d9 = 0.125D;
-                        double d10 = d1;
-                        double d11 = d2;
-                        double d12 = (d3 - d1) * d9;
-                        double d13 = (d4 - d2) * d9;
+                        for (int var41 = 0; var41 < 8; ++var41)
+                        {
+                            int var42 = var41 + var9 * 8 << 11 | 0 + var10 * 8 << 7 | var11 * 4 + var30;
+                            short var43 = 128;
+                            double var44 = 0.125D;
+                            double var46 = var33;
+                            double var48 = (var35 - var33) * var44;
 
-                        for (int i2 = 0; i2 < 8; ++i2) {
-                            int j2 = i2 + i1 * 8 << 11 | 0 + j1 * 8 << 7 | k1 * 4 + l1;
-                            short short1 = 128;
-                            double d14 = 0.125D;
-                            double d15 = d10;
-                            double d16 = (d11 - d10) * d14;
+                            for (int var50 = 0; var50 < 8; ++var50)
+                            {
+                                int var51 = 0;
 
-                            for (int k2 = 0; k2 < 8; ++k2) {
-                                int l2 = 0;
-
-                                if (d15 > 0.0D) {
-                                    l2 = Block.WHITESTONE.id;
+                                if (var46 > 0.0D)
+                                {
+                                    var51 = Block.WHITESTONE.id;
                                 }
 
-                                abyte[j2] = (byte) l2;
-                                j2 += short1;
-                                d15 += d16;
+                                par3ArrayOfByte[var42] = (byte)var51;
+                                var42 += var43;
+                                var46 += var48;
                             }
 
-                            d10 += d12;
-                            d11 += d13;
+                            var33 += var37;
+                            var35 += var39;
                         }
 
-                        d1 += d5;
-                        d2 += d6;
-                        d3 += d7;
-                        d4 += d8;
+                        var14 += var22;
+                        var16 += var24;
+                        var18 += var26;
+                        var20 += var28;
                     }
                 }
             }
         }
     }
 
-    public void b(int i, int j, byte[] abyte, BiomeBase[] abiomebase) {
-        for (int k = 0; k < 16; ++k) {
-            for (int l = 0; l < 16; ++l) {
-                byte b0 = 1;
-                int i1 = -1;
-                byte b1 = (byte) Block.WHITESTONE.id;
-                byte b2 = (byte) Block.WHITESTONE.id;
+    public void b(int par1, int par2, byte[] par3ArrayOfByte, BiomeBase[] par4ArrayOfBiomeGenBase)
+    {
+        for (int var5 = 0; var5 < 16; ++var5)
+        {
+            for (int var6 = 0; var6 < 16; ++var6)
+            {
+                byte var7 = 1;
+                int var8 = -1;
+                byte var9 = (byte) Block.WHITESTONE.id;
+                byte var10 = (byte) Block.WHITESTONE.id;
 
-                for (int j1 = 127; j1 >= 0; --j1) {
-                    int k1 = (l * 16 + k) * 128 + j1;
-                    byte b3 = abyte[k1];
+                for (int var11 = 127; var11 >= 0; --var11)
+                {
+                    int var12 = (var6 * 16 + var5) * 128 + var11;
+                    byte var13 = par3ArrayOfByte[var12];
 
-                    if (b3 == 0) {
-                        i1 = -1;
-                    } else if (b3 == Block.STONE.id) {
-                        if (i1 == -1) {
-                            if (b0 <= 0) {
-                                b1 = 0;
-                                b2 = (byte) Block.WHITESTONE.id;
+                    if (var13 == 0)
+                    {
+                        var8 = -1;
+                    }
+                    else if (var13 == Block.STONE.id)
+                    {
+                        if (var8 == -1)
+                        {
+                            if (var7 <= 0)
+                            {
+                                var9 = 0;
+                                var10 = (byte) Block.WHITESTONE.id;
                             }
 
-                            i1 = b0;
-                            if (j1 >= 0) {
-                                abyte[k1] = b1;
-                            } else {
-                                abyte[k1] = b2;
+                            var8 = var7;
+
+                            if (var11 >= 0)
+                            {
+                                par3ArrayOfByte[var12] = var9;
                             }
-                        } else if (i1 > 0) {
-                            --i1;
-                            abyte[k1] = b2;
+                            else
+                            {
+                                par3ArrayOfByte[var12] = var10;
+                            }
+                        }
+                        else if (var8 > 0)
+                        {
+                            --var8;
+                            par3ArrayOfByte[var12] = var10;
                         }
                     }
                 }
@@ -129,183 +154,252 @@ public class ChunkProviderTheEnd implements IChunkProvider {
         }
     }
 
-    public Chunk getChunkAt(int i, int j) {
-        return this.getOrCreateChunk(i, j);
+    /**
+     * loads or generates the chunk at the chunk location specified
+     */
+    public Chunk getChunkAt(int par1, int par2)
+    {
+        return this.getOrCreateChunk(par1, par2);
     }
 
-    public Chunk getOrCreateChunk(int i, int j) {
-        this.i.setSeed((long) i * 341873128712L + (long) j * 132897987541L);
-        byte[] abyte = new byte['\u8000'];
+    /**
+     * Will return back a chunk, if it doesn't exist and its not a MP client it will generates all the blocks for the
+     * specified chunk from the map seed and chunk seed
+     */
+    public Chunk getOrCreateChunk(int par1, int par2)
+    {
+        this.i.setSeed((long)par1 * 341873128712L + (long)par2 * 132897987541L);
+        byte[] var3 = new byte[32768];
+        this.o = this.m.getWorldChunkManager().getBiomeBlock(this.o, par1 * 16, par2 * 16, 16, 16);
+        this.a(par1, par2, var3, this.o);
+        this.b(par1, par2, var3, this.o);
+        Chunk var4 = new Chunk(this.m, var3, par1, par2);
+        byte[] var5 = var4.m();
 
-        this.o = this.m.getWorldChunkManager().getBiomeBlock(this.o, i * 16, j * 16, 16, 16);
-        this.a(i, j, abyte, this.o);
-        this.b(i, j, abyte, this.o);
-        Chunk chunk = new Chunk(this.m, abyte, i, j);
-        byte[] abyte1 = chunk.m();
-
-        for (int k = 0; k < abyte1.length; ++k) {
-            abyte1[k] = (byte) this.o[k].id;
+        for (int var6 = 0; var6 < var5.length; ++var6)
+        {
+            var5[var6] = (byte)this.o[var6].id;
         }
 
-        chunk.initLighting();
-        return chunk;
+        var4.initLighting();
+        return var4;
     }
 
-    private double[] a(double[] adouble, int i, int j, int k, int l, int i1, int j1) {
-        if (adouble == null) {
-            adouble = new double[l * i1 * j1];
+    /**
+     * generates a subset of the level's terrain data. Takes 7 arguments: the [empty] noise array, the position, and the
+     * size.
+     */
+    private double[] a(double[] par1ArrayOfDouble, int par2, int par3, int par4, int par5, int par6, int par7)
+    {
+        if (par1ArrayOfDouble == null)
+        {
+            par1ArrayOfDouble = new double[par5 * par6 * par7];
         }
 
-        double d0 = 684.412D;
-        double d1 = 684.412D;
+        double var8 = 684.412D;
+        double var10 = 684.412D;
+        this.f = this.a.a(this.f, par2, par4, par5, par7, 1.121D, 1.121D, 0.5D);
+        this.g = this.b.a(this.g, par2, par4, par5, par7, 200.0D, 200.0D, 0.5D);
+        var8 *= 2.0D;
+        this.c = this.l.a(this.c, par2, par3, par4, par5, par6, par7, var8 / 80.0D, var10 / 160.0D, var8 / 80.0D);
+        this.d = this.j.a(this.d, par2, par3, par4, par5, par6, par7, var8, var10, var8);
+        this.e = this.k.a(this.e, par2, par3, par4, par5, par6, par7, var8, var10, var8);
+        int var12 = 0;
+        int var13 = 0;
 
-        this.f = this.a.a(this.f, i, k, l, j1, 1.121D, 1.121D, 0.5D);
-        this.g = this.b.a(this.g, i, k, l, j1, 200.0D, 200.0D, 0.5D);
-        d0 *= 2.0D;
-        this.c = this.l.a(this.c, i, j, k, l, i1, j1, d0 / 80.0D, d1 / 160.0D, d0 / 80.0D);
-        this.d = this.j.a(this.d, i, j, k, l, i1, j1, d0, d1, d0);
-        this.e = this.k.a(this.e, i, j, k, l, i1, j1, d0, d1, d0);
-        int k1 = 0;
-        int l1 = 0;
+        for (int var14 = 0; var14 < par5; ++var14)
+        {
+            for (int var15 = 0; var15 < par7; ++var15)
+            {
+                double var16 = (this.f[var13] + 256.0D) / 512.0D;
 
-        for (int i2 = 0; i2 < l; ++i2) {
-            for (int j2 = 0; j2 < j1; ++j2) {
-                double d2 = (this.f[l1] + 256.0D) / 512.0D;
-
-                if (d2 > 1.0D) {
-                    d2 = 1.0D;
+                if (var16 > 1.0D)
+                {
+                    var16 = 1.0D;
                 }
 
-                double d3 = this.g[l1] / 8000.0D;
+                double var18 = this.g[var13] / 8000.0D;
 
-                if (d3 < 0.0D) {
-                    d3 = -d3 * 0.3D;
+                if (var18 < 0.0D)
+                {
+                    var18 = -var18 * 0.3D;
                 }
 
-                d3 = d3 * 3.0D - 2.0D;
-                float f = (float) (i2 + i - 0) / 1.0F;
-                float f1 = (float) (j2 + k - 0) / 1.0F;
-                float f2 = 100.0F - MathHelper.c(f * f + f1 * f1) * 8.0F;
+                var18 = var18 * 3.0D - 2.0D;
+                float var20 = (float)(var14 + par2 - 0) / 1.0F;
+                float var21 = (float)(var15 + par4 - 0) / 1.0F;
+                float var22 = 100.0F - MathHelper.c(var20 * var20 + var21 * var21) * 8.0F;
 
-                if (f2 > 80.0F) {
-                    f2 = 80.0F;
+                if (var22 > 80.0F)
+                {
+                    var22 = 80.0F;
                 }
 
-                if (f2 < -100.0F) {
-                    f2 = -100.0F;
+                if (var22 < -100.0F)
+                {
+                    var22 = -100.0F;
                 }
 
-                if (d3 > 1.0D) {
-                    d3 = 1.0D;
+                if (var18 > 1.0D)
+                {
+                    var18 = 1.0D;
                 }
 
-                d3 /= 8.0D;
-                d3 = 0.0D;
-                if (d2 < 0.0D) {
-                    d2 = 0.0D;
+                var18 /= 8.0D;
+                var18 = 0.0D;
+
+                if (var16 < 0.0D)
+                {
+                    var16 = 0.0D;
                 }
 
-                d2 += 0.5D;
-                d3 = d3 * (double) i1 / 16.0D;
-                ++l1;
-                double d4 = (double) i1 / 2.0D;
+                var16 += 0.5D;
+                var18 = var18 * (double)par6 / 16.0D;
+                ++var13;
+                double var23 = (double)par6 / 2.0D;
 
-                for (int k2 = 0; k2 < i1; ++k2) {
-                    double d5 = 0.0D;
-                    double d6 = ((double) k2 - d4) * 8.0D / d2;
+                for (int var25 = 0; var25 < par6; ++var25)
+                {
+                    double var26 = 0.0D;
+                    double var28 = ((double)var25 - var23) * 8.0D / var16;
 
-                    if (d6 < 0.0D) {
-                        d6 *= -1.0D;
+                    if (var28 < 0.0D)
+                    {
+                        var28 *= -1.0D;
                     }
 
-                    double d7 = this.d[k1] / 512.0D;
-                    double d8 = this.e[k1] / 512.0D;
-                    double d9 = (this.c[k1] / 10.0D + 1.0D) / 2.0D;
+                    double var30 = this.d[var12] / 512.0D;
+                    double var32 = this.e[var12] / 512.0D;
+                    double var34 = (this.c[var12] / 10.0D + 1.0D) / 2.0D;
 
-                    if (d9 < 0.0D) {
-                        d5 = d7;
-                    } else if (d9 > 1.0D) {
-                        d5 = d8;
-                    } else {
-                        d5 = d7 + (d8 - d7) * d9;
+                    if (var34 < 0.0D)
+                    {
+                        var26 = var30;
+                    }
+                    else if (var34 > 1.0D)
+                    {
+                        var26 = var32;
+                    }
+                    else
+                    {
+                        var26 = var30 + (var32 - var30) * var34;
                     }
 
-                    d5 -= 8.0D;
-                    d5 += (double) f2;
-                    byte b0 = 2;
-                    double d10;
+                    var26 -= 8.0D;
+                    var26 += (double)var22;
+                    byte var36 = 2;
+                    double var37;
 
-                    if (k2 > i1 / 2 - b0) {
-                        d10 = (double) ((float) (k2 - (i1 / 2 - b0)) / 64.0F);
-                        if (d10 < 0.0D) {
-                            d10 = 0.0D;
+                    if (var25 > par6 / 2 - var36)
+                    {
+                        var37 = (double)((float)(var25 - (par6 / 2 - var36)) / 64.0F);
+
+                        if (var37 < 0.0D)
+                        {
+                            var37 = 0.0D;
                         }
 
-                        if (d10 > 1.0D) {
-                            d10 = 1.0D;
+                        if (var37 > 1.0D)
+                        {
+                            var37 = 1.0D;
                         }
 
-                        d5 = d5 * (1.0D - d10) + -3000.0D * d10;
+                        var26 = var26 * (1.0D - var37) + -3000.0D * var37;
                     }
 
-                    b0 = 8;
-                    if (k2 < b0) {
-                        d10 = (double) ((float) (b0 - k2) / ((float) b0 - 1.0F));
-                        d5 = d5 * (1.0D - d10) + -30.0D * d10;
+                    var36 = 8;
+
+                    if (var25 < var36)
+                    {
+                        var37 = (double)((float)(var36 - var25) / ((float)var36 - 1.0F));
+                        var26 = var26 * (1.0D - var37) + -30.0D * var37;
                     }
 
-                    adouble[k1] = d5;
-                    ++k1;
+                    par1ArrayOfDouble[var12] = var26;
+                    ++var12;
                 }
             }
         }
 
-        return adouble;
+        return par1ArrayOfDouble;
     }
 
-    public boolean isChunkLoaded(int i, int j) {
+    /**
+     * Checks to see if a chunk exists at x, y
+     */
+    public boolean isChunkLoaded(int par1, int par2)
+    {
         return true;
     }
 
-    public void getChunkAt(IChunkProvider ichunkprovider, int i, int j) {
+    /**
+     * Populates chunk with ores etc etc
+     */
+    public void getChunkAt(IChunkProvider par1IChunkProvider, int par2, int par3)
+    {
         BlockSand.instaFall = true;
-        int k = i * 16;
-        int l = j * 16;
-        BiomeBase biomebase = this.m.getBiome(k + 16, l + 16);
-
-        biomebase.a(this.m, this.m.random, k, l);
+        int var4 = par2 * 16;
+        int var5 = par3 * 16;
+        BiomeBase var6 = this.m.getBiome(var4 + 16, var5 + 16);
+        var6.a(this.m, this.m.random, var4, var5);
         BlockSand.instaFall = false;
     }
 
-    public boolean saveChunks(boolean flag, IProgressUpdate iprogressupdate) {
+    /**
+     * Two modes of operation: if passed true, save all Chunks in one go.  If passed false, save up to two chunks.
+     * Return true if all chunks have been saved.
+     */
+    public boolean saveChunks(boolean par1, IProgressUpdate par2IProgressUpdate)
+    {
         return true;
     }
 
-    public boolean unloadChunks() {
+    /**
+     * Unloads the 100 oldest chunks from memory, due to a bug with chunkSet.add() never being called it thinks the list
+     * is always empty and will not remove any chunks.
+     */
+    public boolean unloadChunks()
+    {
         return false;
     }
 
-    public boolean canSave() {
+    /**
+     * Returns if the IChunkProvider supports saving.
+     */
+    public boolean canSave()
+    {
         return true;
     }
 
-    public String getName() {
+    /**
+     * Converts the instance data to a readable string.
+     */
+    public String getName()
+    {
         return "RandomLevelSource";
     }
 
-    public List getMobsFor(EnumCreatureType enumcreaturetype, int i, int j, int k) {
-        BiomeBase biomebase = this.m.getBiome(i, k);
-
-        return biomebase == null ? null : biomebase.getMobs(enumcreaturetype);
+    /**
+     * Returns a list of creatures of the specified type that can spawn at the given location.
+     */
+    public List getMobsFor(EnumCreatureType par1EnumCreatureType, int par2, int par3, int par4)
+    {
+        BiomeBase var5 = this.m.getBiome(par2, par4);
+        return var5 == null ? null : var5.getMobs(par1EnumCreatureType);
     }
 
-    public ChunkPosition findNearestMapFeature(World world, String s, int i, int j, int k) {
+    /**
+     * Returns the location of the closest structure of the specified type. If not found returns null.
+     */
+    public ChunkPosition findNearestMapFeature(World par1World, String par2Str, int par3, int par4, int par5)
+    {
         return null;
     }
 
-    public int getLoadedChunks() {
+    public int getLoadedChunks()
+    {
         return 0;
     }
 
-    public void recreateStructures(int i, int j) {}
+    public void recreateStructures(int par1, int par2) {}
 }

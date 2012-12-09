@@ -8,54 +8,86 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Logger;
 
-public class NetServerHandler extends NetHandler {
-
+public class NetServerHandler extends NetHandler
+{
+    /** The logging system. */
     public static Logger logger = Logger.getLogger("Minecraft");
+
+    /** The underlying network manager for this server handler. */
     public INetworkManager networkManager;
+
+    /** This is set to true whenever a player disconnects from the server. */
     public boolean disconnected = false;
+
+    /** Reference to the MinecraftServer object. */
     private MinecraftServer minecraftServer;
+
+    /** Reference to the EntityPlayerMP object. */
     public EntityPlayer player;
+
+    /** incremented each tick */
     private int f;
+
+    /** holds the amount of tick the player is floating */
     private int g;
     private boolean h;
     private int i;
     private long j;
+
+    /** The Java Random object. */
     private static Random k = new Random();
     private long l;
     private int m = 0;
     private int x = 0;
+
+    /** The last known x position for this connection. */
     private double y;
+
+    /** The last known y position for this connection. */
     private double z;
+
+    /** The last known z position for this connection. */
     private double q;
+
+    /** is true when the player has moved since his last movement packet */
     private boolean checkMovement = true;
     private IntHashMap s = new IntHashMap();
 
-    public NetServerHandler(MinecraftServer minecraftserver, INetworkManager inetworkmanager, EntityPlayer entityplayer) {
-        this.minecraftServer = minecraftserver;
-        this.networkManager = inetworkmanager;
-        inetworkmanager.a(this);
-        this.player = entityplayer;
-        entityplayer.netServerHandler = this;
+    public NetServerHandler(MinecraftServer par1, INetworkManager par2, EntityPlayer par3)
+    {
+        this.minecraftServer = par1;
+        this.networkManager = par2;
+        par2.a(this);
+        this.player = par3;
+        par3.netServerHandler = this;
     }
 
-    public void d() {
+    /**
+     * handle all the packets for the connection
+     */
+    public void d()
+    {
         this.h = false;
         ++this.f;
         this.minecraftServer.methodProfiler.a("packetflow");
         this.networkManager.b();
         this.minecraftServer.methodProfiler.c("keepAlive");
-        if ((long) this.f - this.l > 20L) {
-            this.l = (long) this.f;
+
+        if ((long)this.f - this.l > 20L)
+        {
+            this.l = (long)this.f;
             this.j = System.nanoTime() / 1000000L;
             this.i = k.nextInt();
             this.sendPacket(new Packet0KeepAlive(this.i));
         }
 
-        if (this.m > 0) {
+        if (this.m > 0)
+        {
             --this.m;
         }
 
-        if (this.x > 0) {
+        if (this.x > 0)
+        {
             --this.x;
         }
 
@@ -63,75 +95,92 @@ public class NetServerHandler extends NetHandler {
         this.minecraftServer.methodProfiler.b();
     }
 
-    public void disconnect(String s) {
-        if (!this.disconnected) {
+    /**
+     * Kick the offending player and give a reason why
+     */
+    public void disconnect(String par1Str)
+    {
+        if (!this.disconnected)
+        {
             this.player.l();
-            this.sendPacket(new Packet255KickDisconnect(s));
+            this.sendPacket(new Packet255KickDisconnect(par1Str));
             this.networkManager.d();
-            this.minecraftServer.getServerConfigurationManager().sendAll(new Packet3Chat("\u00A7e" + this.player.name + " left the game."));
+            this.minecraftServer.getServerConfigurationManager().sendAll(new Packet3Chat("\u00a7e" + this.player.name + " left the game."));
             this.minecraftServer.getServerConfigurationManager().disconnect(this.player);
             this.disconnected = true;
         }
     }
 
-    public void a(Packet10Flying packet10flying) {
-        WorldServer worldserver = this.minecraftServer.getWorldServer(this.player.dimension);
-
+    public void a(Packet10Flying par1Packet10Flying)
+    {
+        WorldServer var2 = this.minecraftServer.getWorldServer(this.player.dimension);
         this.h = true;
-        if (!this.player.viewingCredits) {
-            double d0;
 
-            if (!this.checkMovement) {
-                d0 = packet10flying.y - this.z;
-                if (packet10flying.x == this.y && d0 * d0 < 0.01D && packet10flying.z == this.q) {
+        if (!this.player.viewingCredits)
+        {
+            double var3;
+
+            if (!this.checkMovement)
+            {
+                var3 = par1Packet10Flying.y - this.z;
+
+                if (par1Packet10Flying.x == this.y && var3 * var3 < 0.01D && par1Packet10Flying.z == this.q)
+                {
                     this.checkMovement = true;
                 }
             }
 
-            if (this.checkMovement) {
-                double d1;
-                double d2;
-                double d3;
-                double d4;
+            if (this.checkMovement)
+            {
+                double var5;
+                double var7;
+                double var9;
+                double var13;
 
-                if (this.player.vehicle != null) {
-                    float f = this.player.yaw;
-                    float f1 = this.player.pitch;
-
+                if (this.player.vehicle != null)
+                {
+                    float var34 = this.player.yaw;
+                    float var4 = this.player.pitch;
                     this.player.vehicle.V();
-                    d1 = this.player.locX;
-                    d2 = this.player.locY;
-                    d3 = this.player.locZ;
-                    double d5 = 0.0D;
+                    var5 = this.player.locX;
+                    var7 = this.player.locY;
+                    var9 = this.player.locZ;
+                    double var35 = 0.0D;
+                    var13 = 0.0D;
 
-                    d4 = 0.0D;
-                    if (packet10flying.hasLook) {
-                        f = packet10flying.yaw;
-                        f1 = packet10flying.pitch;
+                    if (par1Packet10Flying.hasLook)
+                    {
+                        var34 = par1Packet10Flying.yaw;
+                        var4 = par1Packet10Flying.pitch;
                     }
 
-                    if (packet10flying.hasPos && packet10flying.y == -999.0D && packet10flying.stance == -999.0D) {
-                        if (Math.abs(packet10flying.x) > 1.0D || Math.abs(packet10flying.z) > 1.0D) {
+                    if (par1Packet10Flying.hasPos && par1Packet10Flying.y == -999.0D && par1Packet10Flying.stance == -999.0D)
+                    {
+                        if (Math.abs(par1Packet10Flying.x) > 1.0D || Math.abs(par1Packet10Flying.z) > 1.0D)
+                        {
                             System.err.println(this.player.name + " was caught trying to crash the server with an invalid position.");
                             this.disconnect("Nope!");
                             return;
                         }
 
-                        d5 = packet10flying.x;
-                        d4 = packet10flying.z;
+                        var35 = par1Packet10Flying.x;
+                        var13 = par1Packet10Flying.z;
                     }
 
-                    this.player.onGround = packet10flying.g;
+                    this.player.onGround = par1Packet10Flying.g;
                     this.player.g();
-                    this.player.move(d5, 0.0D, d4);
-                    this.player.setLocation(d1, d2, d3, f, f1);
-                    this.player.motX = d5;
-                    this.player.motZ = d4;
-                    if (this.player.vehicle != null) {
-                        worldserver.vehicleEnteredWorld(this.player.vehicle, true);
+                    this.player.move(var35, 0.0D, var13);
+                    this.player.setLocation(var5, var7, var9, var34, var4);
+                    this.player.motX = var35;
+                    this.player.motZ = var13;
+
+                    if (this.player.vehicle != null)
+                    {
+                        var2.vehicleEnteredWorld(this.player.vehicle, true);
                     }
 
-                    if (this.player.vehicle != null) {
+                    if (this.player.vehicle != null)
+                    {
                         this.player.vehicle.V();
                     }
 
@@ -139,450 +188,597 @@ public class NetServerHandler extends NetHandler {
                     this.y = this.player.locX;
                     this.z = this.player.locY;
                     this.q = this.player.locZ;
-                    worldserver.playerJoinedWorld(this.player);
+                    var2.playerJoinedWorld(this.player);
                     return;
                 }
 
-                if (this.player.isSleeping()) {
+                if (this.player.isSleeping())
+                {
                     this.player.g();
                     this.player.setLocation(this.y, this.z, this.q, this.player.yaw, this.player.pitch);
-                    worldserver.playerJoinedWorld(this.player);
+                    var2.playerJoinedWorld(this.player);
                     return;
                 }
 
-                d0 = this.player.locY;
+                var3 = this.player.locY;
                 this.y = this.player.locX;
                 this.z = this.player.locY;
                 this.q = this.player.locZ;
-                d1 = this.player.locX;
-                d2 = this.player.locY;
-                d3 = this.player.locZ;
-                float f2 = this.player.yaw;
-                float f3 = this.player.pitch;
+                var5 = this.player.locX;
+                var7 = this.player.locY;
+                var9 = this.player.locZ;
+                float var11 = this.player.yaw;
+                float var12 = this.player.pitch;
 
-                if (packet10flying.hasPos && packet10flying.y == -999.0D && packet10flying.stance == -999.0D) {
-                    packet10flying.hasPos = false;
+                if (par1Packet10Flying.hasPos && par1Packet10Flying.y == -999.0D && par1Packet10Flying.stance == -999.0D)
+                {
+                    par1Packet10Flying.hasPos = false;
                 }
 
-                if (packet10flying.hasPos) {
-                    d1 = packet10flying.x;
-                    d2 = packet10flying.y;
-                    d3 = packet10flying.z;
-                    d4 = packet10flying.stance - packet10flying.y;
-                    if (!this.player.isSleeping() && (d4 > 1.65D || d4 < 0.1D)) {
+                if (par1Packet10Flying.hasPos)
+                {
+                    var5 = par1Packet10Flying.x;
+                    var7 = par1Packet10Flying.y;
+                    var9 = par1Packet10Flying.z;
+                    var13 = par1Packet10Flying.stance - par1Packet10Flying.y;
+
+                    if (!this.player.isSleeping() && (var13 > 1.65D || var13 < 0.1D))
+                    {
                         this.disconnect("Illegal stance");
-                        logger.warning(this.player.name + " had an illegal stance: " + d4);
+                        logger.warning(this.player.name + " had an illegal stance: " + var13);
                         return;
                     }
 
-                    if (Math.abs(packet10flying.x) > 3.2E7D || Math.abs(packet10flying.z) > 3.2E7D) {
+                    if (Math.abs(par1Packet10Flying.x) > 3.2E7D || Math.abs(par1Packet10Flying.z) > 3.2E7D)
+                    {
                         this.disconnect("Illegal position");
                         return;
                     }
                 }
 
-                if (packet10flying.hasLook) {
-                    f2 = packet10flying.yaw;
-                    f3 = packet10flying.pitch;
+                if (par1Packet10Flying.hasLook)
+                {
+                    var11 = par1Packet10Flying.yaw;
+                    var12 = par1Packet10Flying.pitch;
                 }
 
                 this.player.g();
                 this.player.W = 0.0F;
-                this.player.setLocation(this.y, this.z, this.q, f2, f3);
-                if (!this.checkMovement) {
+                this.player.setLocation(this.y, this.z, this.q, var11, var12);
+
+                if (!this.checkMovement)
+                {
                     return;
                 }
 
-                d4 = d1 - this.player.locX;
-                double d6 = d2 - this.player.locY;
-                double d7 = d3 - this.player.locZ;
-                double d8 = Math.min(Math.abs(d4), Math.abs(this.player.motX));
-                double d9 = Math.min(Math.abs(d6), Math.abs(this.player.motY));
-                double d10 = Math.min(Math.abs(d7), Math.abs(this.player.motZ));
-                double d11 = d8 * d8 + d9 * d9 + d10 * d10;
+                var13 = var5 - this.player.locX;
+                double var15 = var7 - this.player.locY;
+                double var17 = var9 - this.player.locZ;
+                double var19 = Math.min(Math.abs(var13), Math.abs(this.player.motX));
+                double var21 = Math.min(Math.abs(var15), Math.abs(this.player.motY));
+                double var23 = Math.min(Math.abs(var17), Math.abs(this.player.motZ));
+                double var25 = var19 * var19 + var21 * var21 + var23 * var23;
 
-                if (d11 > 100.0D && (!this.minecraftServer.I() || !this.minecraftServer.H().equals(this.player.name))) {
-                    logger.warning(this.player.name + " moved too quickly! " + d4 + "," + d6 + "," + d7 + " (" + d8 + ", " + d9 + ", " + d10 + ")");
+                if (var25 > 100.0D && (!this.minecraftServer.I() || !this.minecraftServer.H().equals(this.player.name)))
+                {
+                    logger.warning(this.player.name + " moved too quickly! " + var13 + "," + var15 + "," + var17 + " (" + var19 + ", " + var21 + ", " + var23 + ")");
                     this.a(this.y, this.z, this.q, this.player.yaw, this.player.pitch);
                     return;
                 }
 
-                float f4 = 0.0625F;
-                boolean flag = worldserver.getCubes(this.player, this.player.boundingBox.clone().shrink((double) f4, (double) f4, (double) f4)).isEmpty();
+                float var27 = 0.0625F;
+                boolean var28 = var2.getCubes(this.player, this.player.boundingBox.clone().shrink((double) var27, (double) var27, (double) var27)).isEmpty();
 
-                if (this.player.onGround && !packet10flying.g && d6 > 0.0D) {
+                if (this.player.onGround && !par1Packet10Flying.g && var15 > 0.0D)
+                {
                     this.player.j(0.2F);
                 }
 
-                this.player.move(d4, d6, d7);
-                this.player.onGround = packet10flying.g;
-                this.player.checkMovement(d4, d6, d7);
-                double d12 = d6;
+                this.player.move(var13, var15, var17);
+                this.player.onGround = par1Packet10Flying.g;
+                this.player.checkMovement(var13, var15, var17);
+                double var29 = var15;
+                var13 = var5 - this.player.locX;
+                var15 = var7 - this.player.locY;
 
-                d4 = d1 - this.player.locX;
-                d6 = d2 - this.player.locY;
-                if (d6 > -0.5D || d6 < 0.5D) {
-                    d6 = 0.0D;
+                if (var15 > -0.5D || var15 < 0.5D)
+                {
+                    var15 = 0.0D;
                 }
 
-                d7 = d3 - this.player.locZ;
-                d11 = d4 * d4 + d6 * d6 + d7 * d7;
-                boolean flag1 = false;
+                var17 = var9 - this.player.locZ;
+                var25 = var13 * var13 + var15 * var15 + var17 * var17;
+                boolean var31 = false;
 
-                if (d11 > 0.0625D && !this.player.isSleeping() && !this.player.itemInWorldManager.isCreative()) {
-                    flag1 = true;
+                if (var25 > 0.0625D && !this.player.isSleeping() && !this.player.itemInWorldManager.isCreative())
+                {
+                    var31 = true;
                     logger.warning(this.player.name + " moved wrongly!");
                 }
 
-                this.player.setLocation(d1, d2, d3, f2, f3);
-                boolean flag2 = worldserver.getCubes(this.player, this.player.boundingBox.clone().shrink((double) f4, (double) f4, (double) f4)).isEmpty();
+                this.player.setLocation(var5, var7, var9, var11, var12);
+                boolean var32 = var2.getCubes(this.player, this.player.boundingBox.clone().shrink((double) var27, (double) var27, (double) var27)).isEmpty();
 
-                if (flag && (flag1 || !flag2) && !this.player.isSleeping()) {
-                    this.a(this.y, this.z, this.q, f2, f3);
+                if (var28 && (var31 || !var32) && !this.player.isSleeping())
+                {
+                    this.a(this.y, this.z, this.q, var11, var12);
                     return;
                 }
 
-                AxisAlignedBB axisalignedbb = this.player.boundingBox.clone().grow((double) f4, (double) f4, (double) f4).a(0.0D, -0.55D, 0.0D);
+                AxisAlignedBB var33 = this.player.boundingBox.clone().grow((double) var27, (double) var27, (double) var27).a(0.0D, -0.55D, 0.0D);
 
-                if (!this.minecraftServer.getAllowFlight() && !this.player.itemInWorldManager.isCreative() && !worldserver.c(axisalignedbb)) {
-                    if (d12 >= -0.03125D) {
+                if (!this.minecraftServer.getAllowFlight() && !this.player.itemInWorldManager.isCreative() && !var2.c(var33))
+                {
+                    if (var29 >= -0.03125D)
+                    {
                         ++this.g;
-                        if (this.g > 80) {
+
+                        if (this.g > 80)
+                        {
                             logger.warning(this.player.name + " was kicked for floating too long!");
                             this.disconnect("Flying is not enabled on this server");
                             return;
                         }
                     }
-                } else {
+                }
+                else
+                {
                     this.g = 0;
                 }
 
-                this.player.onGround = packet10flying.g;
+                this.player.onGround = par1Packet10Flying.g;
                 this.minecraftServer.getServerConfigurationManager().d(this.player);
-                this.player.b(this.player.locY - d0, packet10flying.g);
+                this.player.b(this.player.locY - var3, par1Packet10Flying.g);
             }
         }
     }
 
-    public void a(double d0, double d1, double d2, float f, float f1) {
+    /**
+     * Moves the player to the specified destination and rotation
+     */
+    public void a(double par1, double par3, double par5, float par7, float par8)
+    {
         this.checkMovement = false;
-        this.y = d0;
-        this.z = d1;
-        this.q = d2;
-        this.player.setLocation(d0, d1, d2, f, f1);
-        this.player.netServerHandler.sendPacket(new Packet13PlayerLookMove(d0, d1 + 1.6200000047683716D, d1, d2, f, f1, false));
+        this.y = par1;
+        this.z = par3;
+        this.q = par5;
+        this.player.setLocation(par1, par3, par5, par7, par8);
+        this.player.netServerHandler.sendPacket(new Packet13PlayerLookMove(par1, par3 + 1.6200000047683716D, par3, par5, par7, par8, false));
     }
 
-    public void a(Packet14BlockDig packet14blockdig) {
-        WorldServer worldserver = this.minecraftServer.getWorldServer(this.player.dimension);
+    public void a(Packet14BlockDig par1Packet14BlockDig)
+    {
+        WorldServer var2 = this.minecraftServer.getWorldServer(this.player.dimension);
 
-        if (packet14blockdig.e == 4) {
+        if (par1Packet14BlockDig.e == 4)
+        {
             this.player.bR();
-        } else if (packet14blockdig.e == 5) {
+        }
+        else if (par1Packet14BlockDig.e == 5)
+        {
             this.player.bO();
-        } else {
-            boolean flag = worldserver.worldProvider.dimension != 0 || this.minecraftServer.getServerConfigurationManager().getOPs().isEmpty() || this.minecraftServer.getServerConfigurationManager().isOp(this.player.name) || this.minecraftServer.I();
-            boolean flag1 = false;
+        }
+        else
+        {
+            boolean var3 = var2.worldProvider.dimension != 0 || this.minecraftServer.getServerConfigurationManager().getOPs().isEmpty() || this.minecraftServer.getServerConfigurationManager().isOp(this.player.name) || this.minecraftServer.I();
+            boolean var4 = false;
 
-            if (packet14blockdig.e == 0) {
-                flag1 = true;
+            if (par1Packet14BlockDig.e == 0)
+            {
+                var4 = true;
             }
 
-            if (packet14blockdig.e == 2) {
-                flag1 = true;
+            if (par1Packet14BlockDig.e == 2)
+            {
+                var4 = true;
             }
 
-            int i = packet14blockdig.a;
-            int j = packet14blockdig.b;
-            int k = packet14blockdig.c;
+            int var5 = par1Packet14BlockDig.a;
+            int var6 = par1Packet14BlockDig.b;
+            int var7 = par1Packet14BlockDig.c;
 
-            if (flag1) {
-                double d0 = this.player.locX - ((double) i + 0.5D);
-                double d1 = this.player.locY - ((double) j + 0.5D) + 1.5D;
-                double d2 = this.player.locZ - ((double) k + 0.5D);
-                double d3 = d0 * d0 + d1 * d1 + d2 * d2;
+            if (var4)
+            {
+                double var8 = this.player.locX - ((double)var5 + 0.5D);
+                double var10 = this.player.locY - ((double)var6 + 0.5D) + 1.5D;
+                double var12 = this.player.locZ - ((double)var7 + 0.5D);
+                double var14 = var8 * var8 + var10 * var10 + var12 * var12;
 
-                if (d3 > 36.0D) {
+                if (var14 > 36.0D)
+                {
                     return;
                 }
 
-                if (j >= this.minecraftServer.getMaxBuildHeight()) {
+                if (var6 >= this.minecraftServer.getMaxBuildHeight())
+                {
                     return;
                 }
             }
 
-            ChunkCoordinates chunkcoordinates = worldserver.getSpawn();
-            int l = MathHelper.a(i - chunkcoordinates.x);
-            int i1 = MathHelper.a(k - chunkcoordinates.z);
+            ChunkCoordinates var19 = var2.getSpawn();
+            int var9 = MathHelper.a(var5 - var19.x);
+            int var20 = MathHelper.a(var7 - var19.z);
 
-            if (l > i1) {
-                i1 = l;
+            if (var9 > var20)
+            {
+                var20 = var9;
             }
 
-            if (packet14blockdig.e == 0) {
-                if (i1 <= this.minecraftServer.getSpawnProtection() && !flag) {
-                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, worldserver));
-                } else {
-                    this.player.itemInWorldManager.dig(i, j, k, packet14blockdig.face);
+            if (par1Packet14BlockDig.e == 0)
+            {
+                if (var20 <= this.minecraftServer.getSpawnProtection() && !var3)
+                {
+                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
                 }
-            } else if (packet14blockdig.e == 2) {
-                this.player.itemInWorldManager.a(i, j, k);
-                if (worldserver.getTypeId(i, j, k) != 0) {
-                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, worldserver));
+                else
+                {
+                    this.player.itemInWorldManager.dig(var5, var6, var7, par1Packet14BlockDig.face);
                 }
-            } else if (packet14blockdig.e == 1) {
-                this.player.itemInWorldManager.c(i, j, k);
-                if (worldserver.getTypeId(i, j, k) != 0) {
-                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, worldserver));
-                }
-            } else if (packet14blockdig.e == 3) {
-                double d4 = this.player.locX - ((double) i + 0.5D);
-                double d5 = this.player.locY - ((double) j + 0.5D);
-                double d6 = this.player.locZ - ((double) k + 0.5D);
-                double d7 = d4 * d4 + d5 * d5 + d6 * d6;
+            }
+            else if (par1Packet14BlockDig.e == 2)
+            {
+                this.player.itemInWorldManager.a(var5, var6, var7);
 
-                if (d7 < 256.0D) {
-                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, worldserver));
+                if (var2.getTypeId(var5, var6, var7) != 0)
+                {
+                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
+                }
+            }
+            else if (par1Packet14BlockDig.e == 1)
+            {
+                this.player.itemInWorldManager.c(var5, var6, var7);
+
+                if (var2.getTypeId(var5, var6, var7) != 0)
+                {
+                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
+                }
+            }
+            else if (par1Packet14BlockDig.e == 3)
+            {
+                double var11 = this.player.locX - ((double)var5 + 0.5D);
+                double var13 = this.player.locY - ((double)var6 + 0.5D);
+                double var15 = this.player.locZ - ((double)var7 + 0.5D);
+                double var17 = var11 * var11 + var13 * var13 + var15 * var15;
+
+                if (var17 < 256.0D)
+                {
+                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
                 }
             }
         }
     }
 
-    public void a(Packet15Place packet15place) {
-        WorldServer worldserver = this.minecraftServer.getWorldServer(this.player.dimension);
-        ItemStack itemstack = this.player.inventory.getItemInHand();
-        boolean flag = false;
-        int i = packet15place.d();
-        int j = packet15place.f();
-        int k = packet15place.g();
-        int l = packet15place.getFace();
-        boolean flag1 = worldserver.worldProvider.dimension != 0 || this.minecraftServer.getServerConfigurationManager().getOPs().isEmpty() || this.minecraftServer.getServerConfigurationManager().isOp(this.player.name) || this.minecraftServer.I();
+    public void a(Packet15Place par1Packet15Place)
+    {
+        WorldServer var2 = this.minecraftServer.getWorldServer(this.player.dimension);
+        ItemStack var3 = this.player.inventory.getItemInHand();
+        boolean var4 = false;
+        int var5 = par1Packet15Place.d();
+        int var6 = par1Packet15Place.f();
+        int var7 = par1Packet15Place.g();
+        int var8 = par1Packet15Place.getFace();
+        boolean var9 = var2.worldProvider.dimension != 0 || this.minecraftServer.getServerConfigurationManager().getOPs().isEmpty() || this.minecraftServer.getServerConfigurationManager().isOp(this.player.name) || this.minecraftServer.I();
 
-        if (packet15place.getFace() == 255) {
-            if (itemstack == null) {
+        if (par1Packet15Place.getFace() == 255)
+        {
+            if (var3 == null)
+            {
                 return;
             }
 
-            this.player.itemInWorldManager.useItem(this.player, worldserver, itemstack);
-        } else if (packet15place.f() >= this.minecraftServer.getMaxBuildHeight() - 1 && (packet15place.getFace() == 1 || packet15place.f() >= this.minecraftServer.getMaxBuildHeight())) {
-            this.player.netServerHandler.sendPacket(new Packet3Chat("\u00A77Height limit for building is " + this.minecraftServer.getMaxBuildHeight()));
-            flag = true;
-        } else {
-            ChunkCoordinates chunkcoordinates = worldserver.getSpawn();
-            int i1 = MathHelper.a(i - chunkcoordinates.x);
-            int j1 = MathHelper.a(k - chunkcoordinates.z);
+            this.player.itemInWorldManager.useItem(this.player, var2, var3);
+        }
+        else if (par1Packet15Place.f() >= this.minecraftServer.getMaxBuildHeight() - 1 && (par1Packet15Place.getFace() == 1 || par1Packet15Place.f() >= this.minecraftServer.getMaxBuildHeight()))
+        {
+            this.player.netServerHandler.sendPacket(new Packet3Chat("\u00a77Height limit for building is " + this.minecraftServer.getMaxBuildHeight()));
+            var4 = true;
+        }
+        else
+        {
+            ChunkCoordinates var10 = var2.getSpawn();
+            int var11 = MathHelper.a(var5 - var10.x);
+            int var12 = MathHelper.a(var7 - var10.z);
 
-            if (i1 > j1) {
-                j1 = i1;
+            if (var11 > var12)
+            {
+                var12 = var11;
             }
 
-            if (this.checkMovement && this.player.e((double) i + 0.5D, (double) j + 0.5D, (double) k + 0.5D) < 64.0D && (j1 > this.minecraftServer.getSpawnProtection() || flag1)) {
-                this.player.itemInWorldManager.interact(this.player, worldserver, itemstack, i, j, k, l, packet15place.j(), packet15place.l(), packet15place.m());
+            if (this.checkMovement && this.player.e((double) var5 + 0.5D, (double) var6 + 0.5D, (double) var7 + 0.5D) < 64.0D && (var12 > this.minecraftServer.getSpawnProtection() || var9))
+            {
+                this.player.itemInWorldManager.interact(this.player, var2, var3, var5, var6, var7, var8, par1Packet15Place.j(), par1Packet15Place.l(), par1Packet15Place.m());
             }
 
-            flag = true;
+            var4 = true;
         }
 
-        if (flag) {
-            this.player.netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, worldserver));
-            if (l == 0) {
-                --j;
+        if (var4)
+        {
+            this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
+
+            if (var8 == 0)
+            {
+                --var6;
             }
 
-            if (l == 1) {
-                ++j;
+            if (var8 == 1)
+            {
+                ++var6;
             }
 
-            if (l == 2) {
-                --k;
+            if (var8 == 2)
+            {
+                --var7;
             }
 
-            if (l == 3) {
-                ++k;
+            if (var8 == 3)
+            {
+                ++var7;
             }
 
-            if (l == 4) {
-                --i;
+            if (var8 == 4)
+            {
+                --var5;
             }
 
-            if (l == 5) {
-                ++i;
+            if (var8 == 5)
+            {
+                ++var5;
             }
 
-            this.player.netServerHandler.sendPacket(new Packet53BlockChange(i, j, k, worldserver));
+            this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
         }
 
-        itemstack = this.player.inventory.getItemInHand();
-        if (itemstack != null && itemstack.count == 0) {
+        var3 = this.player.inventory.getItemInHand();
+
+        if (var3 != null && var3.count == 0)
+        {
             this.player.inventory.items[this.player.inventory.itemInHandIndex] = null;
-            itemstack = null;
+            var3 = null;
         }
 
-        if (itemstack == null || itemstack.m() == 0) {
+        if (var3 == null || var3.m() == 0)
+        {
             this.player.h = true;
             this.player.inventory.items[this.player.inventory.itemInHandIndex] = ItemStack.b(this.player.inventory.items[this.player.inventory.itemInHandIndex]);
-            Slot slot = this.player.activeContainer.a((IInventory) this.player.inventory, this.player.inventory.itemInHandIndex);
-
+            Slot var13 = this.player.activeContainer.a(this.player.inventory, this.player.inventory.itemInHandIndex);
             this.player.activeContainer.b();
             this.player.h = false;
-            if (!ItemStack.matches(this.player.inventory.getItemInHand(), packet15place.getItemStack())) {
-                this.sendPacket(new Packet103SetSlot(this.player.activeContainer.windowId, slot.g, this.player.inventory.getItemInHand()));
+
+            if (!ItemStack.matches(this.player.inventory.getItemInHand(), par1Packet15Place.getItemStack()))
+            {
+                this.sendPacket(new Packet103SetSlot(this.player.activeContainer.windowId, var13.g, this.player.inventory.getItemInHand()));
             }
         }
     }
 
-    public void a(String s, Object[] aobject) {
-        logger.info(this.player.name + " lost connection: " + s);
-        this.minecraftServer.getServerConfigurationManager().sendAll(new Packet3Chat("\u00A7e" + this.player.name + " left the game."));
+    public void a(String par1Str, Object[] par2ArrayOfObj)
+    {
+        logger.info(this.player.name + " lost connection: " + par1Str);
+        this.minecraftServer.getServerConfigurationManager().sendAll(new Packet3Chat("\u00a7e" + this.player.name + " left the game."));
         this.minecraftServer.getServerConfigurationManager().disconnect(this.player);
         this.disconnected = true;
-        if (this.minecraftServer.I() && this.player.name.equals(this.minecraftServer.H())) {
+
+        if (this.minecraftServer.I() && this.player.name.equals(this.minecraftServer.H()))
+        {
             logger.info("Stopping singleplayer server as player logged out");
             this.minecraftServer.safeShutdown();
         }
     }
 
-    public void onUnhandledPacket(Packet packet) {
-        logger.warning(this.getClass() + " wasn\'t prepared to deal with a " + packet.getClass());
+    /**
+     * Default handler called for packets that don't have their own handlers in NetServerHandler; kicks player from the
+     * server.
+     */
+    public void onUnhandledPacket(Packet par1Packet)
+    {
+        logger.warning(this.getClass() + " wasn\'t prepared to deal with a " + par1Packet.getClass());
         this.disconnect("Protocol error, unexpected packet");
     }
 
-    public void sendPacket(Packet packet) {
-        if (packet instanceof Packet3Chat) {
-            Packet3Chat packet3chat = (Packet3Chat) packet;
-            int i = this.player.getChatFlags();
+    /**
+     * Adds the packet to the underlying network manager's send queue.
+     */
+    public void sendPacket(Packet par1Packet)
+    {
+        if (par1Packet instanceof Packet3Chat)
+        {
+            Packet3Chat var2 = (Packet3Chat)par1Packet;
+            int var3 = this.player.getChatFlags();
 
-            if (i == 2) {
+            if (var3 == 2)
+            {
                 return;
             }
 
-            if (i == 1 && !packet3chat.isServer()) {
+            if (var3 == 1 && !var2.isServer())
+            {
                 return;
             }
         }
 
-        this.networkManager.queue(packet);
+        this.networkManager.queue(par1Packet);
     }
 
-    public void a(Packet16BlockItemSwitch packet16blockitemswitch) {
-        if (packet16blockitemswitch.itemInHandIndex >= 0 && packet16blockitemswitch.itemInHandIndex < PlayerInventory.getHotbarSize()) {
-            this.player.inventory.itemInHandIndex = packet16blockitemswitch.itemInHandIndex;
-        } else {
+    public void a(Packet16BlockItemSwitch par1Packet16BlockItemSwitch)
+    {
+        if (par1Packet16BlockItemSwitch.itemInHandIndex >= 0 && par1Packet16BlockItemSwitch.itemInHandIndex < PlayerInventory.getHotbarSize())
+        {
+            this.player.inventory.itemInHandIndex = par1Packet16BlockItemSwitch.itemInHandIndex;
+        }
+        else
+        {
             logger.warning(this.player.name + " tried to set an invalid carried item");
         }
     }
 
-    public void a(Packet3Chat packet3chat) {
-        if (this.player.getChatFlags() == 2) {
+    public void a(Packet3Chat par1Packet3Chat)
+    {
+        if (this.player.getChatFlags() == 2)
+        {
             this.sendPacket(new Packet3Chat("Cannot send chat message."));
-        } else {
-            String s = packet3chat.message;
+        }
+        else
+        {
+            String var2 = par1Packet3Chat.message;
 
-            if (s.length() > 100) {
+            if (var2.length() > 100)
+            {
                 this.disconnect("Chat message too long");
-            } else {
-                s = s.trim();
+            }
+            else
+            {
+                var2 = var2.trim();
 
-                for (int i = 0; i < s.length(); ++i) {
-                    if (!SharedConstants.isAllowedChatCharacter(s.charAt(i))) {
+                for (int var3 = 0; var3 < var2.length(); ++var3)
+                {
+                    if (!SharedConstants.isAllowedChatCharacter(var2.charAt(var3)))
+                    {
                         this.disconnect("Illegal characters in chat");
                         return;
                     }
                 }
 
-                if (s.startsWith("/")) {
-                    this.handleCommand(s);
-                } else {
-                    if (this.player.getChatFlags() == 1) {
+                if (var2.startsWith("/"))
+                {
+                    this.handleCommand(var2);
+                }
+                else
+                {
+                    if (this.player.getChatFlags() == 1)
+                    {
                         this.sendPacket(new Packet3Chat("Cannot send chat message."));
                         return;
                     }
 
-                    s = "<" + this.player.name + "> " + s;
-                    logger.info(s);
-                    this.minecraftServer.getServerConfigurationManager().sendAll(new Packet3Chat(s, false));
+                    var2 = "<" + this.player.name + "> " + var2;
+                    logger.info(var2);
+                    this.minecraftServer.getServerConfigurationManager().sendAll(new Packet3Chat(var2, false));
                 }
 
                 this.m += 20;
-                if (this.m > 200 && !this.minecraftServer.getServerConfigurationManager().isOp(this.player.name)) {
+
+                if (this.m > 200 && !this.minecraftServer.getServerConfigurationManager().isOp(this.player.name))
+                {
                     this.disconnect("disconnect.spam");
                 }
             }
         }
     }
 
-    private void handleCommand(String s) {
-        this.minecraftServer.getCommandHandler().a(this.player, s);
+    /**
+     * Processes a / command
+     */
+    private void handleCommand(String par1Str)
+    {
+        this.minecraftServer.getCommandHandler().a(this.player, par1Str);
     }
 
-    public void a(Packet18ArmAnimation packet18armanimation) {
-        if (packet18armanimation.b == 1) {
+    public void a(Packet18ArmAnimation par1Packet18Animation)
+    {
+        if (par1Packet18Animation.b == 1)
+        {
             this.player.bH();
         }
     }
 
-    public void a(Packet19EntityAction packet19entityaction) {
-        if (packet19entityaction.animation == 1) {
+    /**
+     * runs registerPacket on the given Packet19EntityAction
+     */
+    public void a(Packet19EntityAction par1Packet19EntityAction)
+    {
+        if (par1Packet19EntityAction.animation == 1)
+        {
             this.player.setSneaking(true);
-        } else if (packet19entityaction.animation == 2) {
+        }
+        else if (par1Packet19EntityAction.animation == 2)
+        {
             this.player.setSneaking(false);
-        } else if (packet19entityaction.animation == 4) {
+        }
+        else if (par1Packet19EntityAction.animation == 4)
+        {
             this.player.setSprinting(true);
-        } else if (packet19entityaction.animation == 5) {
+        }
+        else if (par1Packet19EntityAction.animation == 5)
+        {
             this.player.setSprinting(false);
-        } else if (packet19entityaction.animation == 3) {
+        }
+        else if (par1Packet19EntityAction.animation == 3)
+        {
             this.player.a(false, true, true);
             this.checkMovement = false;
         }
     }
 
-    public void a(Packet255KickDisconnect packet255kickdisconnect) {
+    public void a(Packet255KickDisconnect par1Packet255KickDisconnect)
+    {
         this.networkManager.a("disconnect.quitting", new Object[0]);
     }
 
-    public int lowPriorityCount() {
+    /**
+     * return the number of chuckDataPackets from the netManager
+     */
+    public int lowPriorityCount()
+    {
         return this.networkManager.e();
     }
 
-    public void a(Packet7UseEntity packet7useentity) {
-        WorldServer worldserver = this.minecraftServer.getWorldServer(this.player.dimension);
-        Entity entity = worldserver.getEntity(packet7useentity.target);
+    public void a(Packet7UseEntity par1Packet7UseEntity)
+    {
+        WorldServer var2 = this.minecraftServer.getWorldServer(this.player.dimension);
+        Entity var3 = var2.getEntity(par1Packet7UseEntity.target);
 
-        if (entity != null) {
-            boolean flag = this.player.n(entity);
-            double d0 = 36.0D;
+        if (var3 != null)
+        {
+            boolean var4 = this.player.n(var3);
+            double var5 = 36.0D;
 
-            if (!flag) {
-                d0 = 9.0D;
+            if (!var4)
+            {
+                var5 = 9.0D;
             }
 
-            if (this.player.e(entity) < d0) {
-                if (packet7useentity.action == 0) {
-                    this.player.p(entity);
-                } else if (packet7useentity.action == 1) {
-                    this.player.attack(entity);
+            if (this.player.e(var3) < var5)
+            {
+                if (par1Packet7UseEntity.action == 0)
+                {
+                    this.player.p(var3);
+                }
+                else if (par1Packet7UseEntity.action == 1)
+                {
+                    this.player.attack(var3);
                 }
             }
         }
     }
 
-    public void a(Packet205ClientCommand packet205clientcommand) {
-        if (packet205clientcommand.a == 1) {
-            if (this.player.viewingCredits) {
+    public void a(Packet205ClientCommand par1Packet205ClientCommand)
+    {
+        if (par1Packet205ClientCommand.a == 1)
+        {
+            if (this.player.viewingCredits)
+            {
                 this.player = this.minecraftServer.getServerConfigurationManager().moveToWorld(this.player, 0, true);
-            } else if (this.player.p().getWorldData().isHardcore()) {
-                if (this.minecraftServer.I() && this.player.name.equals(this.minecraftServer.H())) {
+            }
+            else if (this.player.p().getWorldData().isHardcore())
+            {
+                if (this.minecraftServer.I() && this.player.name.equals(this.minecraftServer.H()))
+                {
                     this.player.netServerHandler.disconnect("You have died. Game over, man, it\'s game over!");
                     this.minecraftServer.P();
-                } else {
-                    BanEntry banentry = new BanEntry(this.player.name);
-
-                    banentry.setReason("Death in Hardcore");
-                    this.minecraftServer.getServerConfigurationManager().getNameBans().add(banentry);
+                }
+                else
+                {
+                    BanEntry var2 = new BanEntry(this.player.name);
+                    var2.setReason("Death in Hardcore");
+                    this.minecraftServer.getServerConfigurationManager().getNameBans().add(var2);
                     this.player.netServerHandler.disconnect("You have died. Game over, man, it\'s game over!");
                 }
-            } else {
-                if (this.player.getHealth() > 0) {
+            }
+            else
+            {
+                if (this.player.getHealth() > 0)
+                {
                     return;
                 }
 
@@ -591,279 +787,387 @@ public class NetServerHandler extends NetHandler {
         }
     }
 
-    public boolean b() {
+    /**
+     * packet.processPacket is only called if this returns true
+     */
+    public boolean b()
+    {
         return true;
     }
 
-    public void a(Packet9Respawn packet9respawn) {}
+    /**
+     * respawns the player
+     */
+    public void a(Packet9Respawn par1Packet9Respawn) {}
 
-    public void handleContainerClose(Packet101CloseWindow packet101closewindow) {
+    public void handleContainerClose(Packet101CloseWindow par1Packet101CloseWindow)
+    {
         this.player.k();
     }
 
-    public void a(Packet102WindowClick packet102windowclick) {
-        if (this.player.activeContainer.windowId == packet102windowclick.a && this.player.activeContainer.c(this.player)) {
-            ItemStack itemstack = this.player.activeContainer.clickItem(packet102windowclick.slot, packet102windowclick.button, packet102windowclick.shift, this.player);
+    public void a(Packet102WindowClick par1Packet102WindowClick)
+    {
+        if (this.player.activeContainer.windowId == par1Packet102WindowClick.a && this.player.activeContainer.c(this.player))
+        {
+            ItemStack var2 = this.player.activeContainer.clickItem(par1Packet102WindowClick.slot, par1Packet102WindowClick.button, par1Packet102WindowClick.shift, this.player);
 
-            if (ItemStack.matches(packet102windowclick.item, itemstack)) {
-                this.player.netServerHandler.sendPacket(new Packet106Transaction(packet102windowclick.a, packet102windowclick.d, true));
+            if (ItemStack.matches(par1Packet102WindowClick.item, var2))
+            {
+                this.player.netServerHandler.sendPacket(new Packet106Transaction(par1Packet102WindowClick.a, par1Packet102WindowClick.d, true));
                 this.player.h = true;
                 this.player.activeContainer.b();
                 this.player.broadcastCarriedItem();
                 this.player.h = false;
-            } else {
-                this.s.a(this.player.activeContainer.windowId, Short.valueOf(packet102windowclick.d));
-                this.player.netServerHandler.sendPacket(new Packet106Transaction(packet102windowclick.a, packet102windowclick.d, false));
+            }
+            else
+            {
+                this.s.a(this.player.activeContainer.windowId, Short.valueOf(par1Packet102WindowClick.d));
+                this.player.netServerHandler.sendPacket(new Packet106Transaction(par1Packet102WindowClick.a, par1Packet102WindowClick.d, false));
                 this.player.activeContainer.a(this.player, false);
-                ArrayList arraylist = new ArrayList();
+                ArrayList var3 = new ArrayList();
 
-                for (int i = 0; i < this.player.activeContainer.c.size(); ++i) {
-                    arraylist.add(((Slot) this.player.activeContainer.c.get(i)).getItem());
+                for (int var4 = 0; var4 < this.player.activeContainer.c.size(); ++var4)
+                {
+                    var3.add(((Slot)this.player.activeContainer.c.get(var4)).getItem());
                 }
 
-                this.player.a(this.player.activeContainer, arraylist);
+                this.player.a(this.player.activeContainer, var3);
             }
         }
     }
 
-    public void a(Packet108ButtonClick packet108buttonclick) {
-        if (this.player.activeContainer.windowId == packet108buttonclick.a && this.player.activeContainer.c(this.player)) {
-            this.player.activeContainer.a((EntityHuman) this.player, packet108buttonclick.b);
+    public void a(Packet108ButtonClick par1Packet108EnchantItem)
+    {
+        if (this.player.activeContainer.windowId == par1Packet108EnchantItem.a && this.player.activeContainer.c(this.player))
+        {
+            this.player.activeContainer.a(this.player, par1Packet108EnchantItem.b);
             this.player.activeContainer.b();
         }
     }
 
-    public void a(Packet107SetCreativeSlot packet107setcreativeslot) {
-        if (this.player.itemInWorldManager.isCreative()) {
-            boolean flag = packet107setcreativeslot.slot < 0;
-            ItemStack itemstack = packet107setcreativeslot.b;
-            boolean flag1 = packet107setcreativeslot.slot >= 1 && packet107setcreativeslot.slot < 36 + PlayerInventory.getHotbarSize();
-            boolean flag2 = itemstack == null || itemstack.id < Item.byId.length && itemstack.id >= 0 && Item.byId[itemstack.id] != null;
-            boolean flag3 = itemstack == null || itemstack.getData() >= 0 && itemstack.getData() >= 0 && itemstack.count <= 64 && itemstack.count > 0;
+    /**
+     * Handle a creative slot packet.
+     */
+    public void a(Packet107SetCreativeSlot par1Packet107CreativeSetSlot)
+    {
+        if (this.player.itemInWorldManager.isCreative())
+        {
+            boolean var2 = par1Packet107CreativeSetSlot.slot < 0;
+            ItemStack var3 = par1Packet107CreativeSetSlot.b;
+            boolean var4 = par1Packet107CreativeSetSlot.slot >= 1 && par1Packet107CreativeSetSlot.slot < 36 + PlayerInventory.getHotbarSize();
+            boolean var5 = var3 == null || var3.id < Item.byId.length && var3.id >= 0 && Item.byId[var3.id] != null;
+            boolean var6 = var3 == null || var3.getData() >= 0 && var3.getData() >= 0 && var3.count <= 64 && var3.count > 0;
 
-            if (flag1 && flag2 && flag3) {
-                if (itemstack == null) {
-                    this.player.defaultContainer.setItem(packet107setcreativeslot.slot, (ItemStack) null);
-                } else {
-                    this.player.defaultContainer.setItem(packet107setcreativeslot.slot, itemstack);
+            if (var4 && var5 && var6)
+            {
+                if (var3 == null)
+                {
+                    this.player.defaultContainer.setItem(par1Packet107CreativeSetSlot.slot, (ItemStack) null);
+                }
+                else
+                {
+                    this.player.defaultContainer.setItem(par1Packet107CreativeSetSlot.slot, var3);
                 }
 
                 this.player.defaultContainer.a(this.player, true);
-            } else if (flag && flag2 && flag3 && this.x < 200) {
+            }
+            else if (var2 && var5 && var6 && this.x < 200)
+            {
                 this.x += 20;
-                EntityItem entityitem = this.player.drop(itemstack);
+                EntityItem var7 = this.player.drop(var3);
 
-                if (entityitem != null) {
-                    entityitem.c();
+                if (var7 != null)
+                {
+                    var7.c();
                 }
             }
         }
     }
 
-    public void a(Packet106Transaction packet106transaction) {
-        Short oshort = (Short) this.s.get(this.player.activeContainer.windowId);
+    public void a(Packet106Transaction par1Packet106Transaction)
+    {
+        Short var2 = (Short)this.s.get(this.player.activeContainer.windowId);
 
-        if (oshort != null && packet106transaction.b == oshort.shortValue() && this.player.activeContainer.windowId == packet106transaction.a && !this.player.activeContainer.c(this.player)) {
+        if (var2 != null && par1Packet106Transaction.b == var2.shortValue() && this.player.activeContainer.windowId == par1Packet106Transaction.a && !this.player.activeContainer.c(this.player))
+        {
             this.player.activeContainer.a(this.player, true);
         }
     }
 
-    public void a(Packet130UpdateSign packet130updatesign) {
-        WorldServer worldserver = this.minecraftServer.getWorldServer(this.player.dimension);
+    /**
+     * Updates Client side signs
+     */
+    public void a(Packet130UpdateSign par1Packet130UpdateSign)
+    {
+        WorldServer var2 = this.minecraftServer.getWorldServer(this.player.dimension);
 
-        if (worldserver.isLoaded(packet130updatesign.x, packet130updatesign.y, packet130updatesign.z)) {
-            TileEntity tileentity = worldserver.getTileEntity(packet130updatesign.x, packet130updatesign.y, packet130updatesign.z);
+        if (var2.isLoaded(par1Packet130UpdateSign.x, par1Packet130UpdateSign.y, par1Packet130UpdateSign.z))
+        {
+            TileEntity var3 = var2.getTileEntity(par1Packet130UpdateSign.x, par1Packet130UpdateSign.y, par1Packet130UpdateSign.z);
 
-            if (tileentity instanceof TileEntitySign) {
-                TileEntitySign tileentitysign = (TileEntitySign) tileentity;
+            if (var3 instanceof TileEntitySign)
+            {
+                TileEntitySign var4 = (TileEntitySign)var3;
 
-                if (!tileentitysign.a()) {
+                if (!var4.a())
+                {
                     this.minecraftServer.warning("Player " + this.player.name + " just tried to change non-editable sign");
                     return;
                 }
             }
 
-            int i;
-            int j;
+            int var6;
+            int var8;
 
-            for (j = 0; j < 4; ++j) {
-                boolean flag = true;
+            for (var8 = 0; var8 < 4; ++var8)
+            {
+                boolean var5 = true;
 
-                if (packet130updatesign.lines[j].length() > 15) {
-                    flag = false;
-                } else {
-                    for (i = 0; i < packet130updatesign.lines[j].length(); ++i) {
-                        if (SharedConstants.allowedCharacters.indexOf(packet130updatesign.lines[j].charAt(i)) < 0) {
-                            flag = false;
+                if (par1Packet130UpdateSign.lines[var8].length() > 15)
+                {
+                    var5 = false;
+                }
+                else
+                {
+                    for (var6 = 0; var6 < par1Packet130UpdateSign.lines[var8].length(); ++var6)
+                    {
+                        if (SharedConstants.allowedCharacters.indexOf(par1Packet130UpdateSign.lines[var8].charAt(var6)) < 0)
+                        {
+                            var5 = false;
                         }
                     }
                 }
 
-                if (!flag) {
-                    packet130updatesign.lines[j] = "!?";
+                if (!var5)
+                {
+                    par1Packet130UpdateSign.lines[var8] = "!?";
                 }
             }
 
-            if (tileentity instanceof TileEntitySign) {
-                j = packet130updatesign.x;
-                int k = packet130updatesign.y;
-
-                i = packet130updatesign.z;
-                TileEntitySign tileentitysign1 = (TileEntitySign) tileentity;
-
-                System.arraycopy(packet130updatesign.lines, 0, tileentitysign1.lines, 0, 4);
-                tileentitysign1.update();
-                worldserver.notify(j, k, i);
+            if (var3 instanceof TileEntitySign)
+            {
+                var8 = par1Packet130UpdateSign.x;
+                int var9 = par1Packet130UpdateSign.y;
+                var6 = par1Packet130UpdateSign.z;
+                TileEntitySign var7 = (TileEntitySign)var3;
+                System.arraycopy(par1Packet130UpdateSign.lines, 0, var7.lines, 0, 4);
+                var7.update();
+                var2.notify(var8, var9, var6);
             }
         }
     }
 
-    public void a(Packet0KeepAlive packet0keepalive) {
-        if (packet0keepalive.a == this.i) {
-            int i = (int) (System.nanoTime() / 1000000L - this.j);
-
-            this.player.ping = (this.player.ping * 3 + i) / 4;
+    /**
+     * Handle a keep alive packet.
+     */
+    public void a(Packet0KeepAlive par1Packet0KeepAlive)
+    {
+        if (par1Packet0KeepAlive.a == this.i)
+        {
+            int var2 = (int)(System.nanoTime() / 1000000L - this.j);
+            this.player.ping = (this.player.ping * 3 + var2) / 4;
         }
     }
 
-    public boolean a() {
+    /**
+     * determine if it is a server handler
+     */
+    public boolean a()
+    {
         return true;
     }
 
-    public void a(Packet202Abilities packet202abilities) {
-        this.player.abilities.isFlying = packet202abilities.f() && this.player.abilities.canFly;
+    /**
+     * Handle a player abilities packet.
+     */
+    public void a(Packet202Abilities par1Packet202PlayerAbilities)
+    {
+        this.player.abilities.isFlying = par1Packet202PlayerAbilities.f() && this.player.abilities.canFly;
     }
 
-    public void a(Packet203TabComplete packet203tabcomplete) {
-        StringBuilder stringbuilder = new StringBuilder();
+    public void a(Packet203TabComplete par1Packet203AutoComplete)
+    {
+        StringBuilder var2 = new StringBuilder();
+        String var4;
 
-        String s;
+        for (Iterator var3 = this.minecraftServer.a(this.player, par1Packet203AutoComplete.d()).iterator(); var3.hasNext(); var2.append(var4))
+        {
+            var4 = (String)var3.next();
 
-        for (Iterator iterator = this.minecraftServer.a((ICommandListener) this.player, packet203tabcomplete.d()).iterator(); iterator.hasNext(); stringbuilder.append(s)) {
-            s = (String) iterator.next();
-            if (stringbuilder.length() > 0) {
-                stringbuilder.append(");
+            if (var2.length() > 0)
+            {
+                var2.append("\u0000");
             }
         }
 
-        this.player.netServerHandler.sendPacket(new Packet203TabComplete(stringbuilder.toString()));
+        this.player.netServerHandler.sendPacket(new Packet203TabComplete(var2.toString()));
     }
 
-    public void a(Packet204LocaleAndViewDistance packet204localeandviewdistance) {
-        this.player.a(packet204localeandviewdistance);
+    public void a(Packet204LocaleAndViewDistance par1Packet204ClientInfo)
+    {
+        this.player.a(par1Packet204ClientInfo);
     }
 
-    public void a(Packet250CustomPayload packet250custompayload) {
-        DataInputStream datainputstream;
-        ItemStack itemstack;
-        ItemStack itemstack1;
+    public void a(Packet250CustomPayload par1Packet250CustomPayload)
+    {
+        DataInputStream var2;
+        ItemStack var3;
+        ItemStack var4;
 
-        if ("MC|BEdit".equals(packet250custompayload.tag)) {
-            try {
-                datainputstream = new DataInputStream(new ByteArrayInputStream(packet250custompayload.data));
-                itemstack = Packet.c(datainputstream);
-                if (!ItemBookAndQuill.a(itemstack.getTag())) {
+        if ("MC|BEdit".equals(par1Packet250CustomPayload.tag))
+        {
+            try
+            {
+                var2 = new DataInputStream(new ByteArrayInputStream(par1Packet250CustomPayload.data));
+                var3 = Packet.c(var2);
+
+                if (!ItemBookAndQuill.a(var3.getTag()))
+                {
                     throw new IOException("Invalid book tag!");
                 }
 
-                itemstack1 = this.player.inventory.getItemInHand();
-                if (itemstack != null && itemstack.id == Item.BOOK_AND_QUILL.id && itemstack.id == itemstack1.id) {
-                    itemstack1.a("pages", (NBTBase) itemstack.getTag().getList("pages"));
+                var4 = this.player.inventory.getItemInHand();
+
+                if (var3 != null && var3.id == Item.BOOK_AND_QUILL.id && var3.id == var4.id)
+                {
+                    var4.a("pages", var3.getTag().getList("pages"));
                 }
-            } catch (Exception exception) {
-                exception.printStackTrace();
             }
-        } else if ("MC|BSign".equals(packet250custompayload.tag)) {
-            try {
-                datainputstream = new DataInputStream(new ByteArrayInputStream(packet250custompayload.data));
-                itemstack = Packet.c(datainputstream);
-                if (!ItemWrittenBook.a(itemstack.getTag())) {
+            catch (Exception var12)
+            {
+                var12.printStackTrace();
+            }
+        }
+        else if ("MC|BSign".equals(par1Packet250CustomPayload.tag))
+        {
+            try
+            {
+                var2 = new DataInputStream(new ByteArrayInputStream(par1Packet250CustomPayload.data));
+                var3 = Packet.c(var2);
+
+                if (!ItemWrittenBook.a(var3.getTag()))
+                {
                     throw new IOException("Invalid book tag!");
                 }
 
-                itemstack1 = this.player.inventory.getItemInHand();
-                if (itemstack != null && itemstack.id == Item.WRITTEN_BOOK.id && itemstack1.id == Item.BOOK_AND_QUILL.id) {
-                    itemstack1.a("author", (NBTBase) (new NBTTagString("author", this.player.name)));
-                    itemstack1.a("title", (NBTBase) (new NBTTagString("title", itemstack.getTag().getString("title"))));
-                    itemstack1.a("pages", (NBTBase) itemstack.getTag().getList("pages"));
-                    itemstack1.id = Item.WRITTEN_BOOK.id;
+                var4 = this.player.inventory.getItemInHand();
+
+                if (var3 != null && var3.id == Item.WRITTEN_BOOK.id && var4.id == Item.BOOK_AND_QUILL.id)
+                {
+                    var4.a("author", new NBTTagString("author", this.player.name));
+                    var4.a("title", new NBTTagString("title", var3.getTag().getString("title")));
+                    var4.a("pages", var3.getTag().getList("pages"));
+                    var4.id = Item.WRITTEN_BOOK.id;
                 }
-            } catch (Exception exception1) {
-                exception1.printStackTrace();
             }
-        } else {
-            int i;
+            catch (Exception var11)
+            {
+                var11.printStackTrace();
+            }
+        }
+        else
+        {
+            int var14;
 
-            if ("MC|TrSel".equals(packet250custompayload.tag)) {
-                try {
-                    datainputstream = new DataInputStream(new ByteArrayInputStream(packet250custompayload.data));
-                    i = datainputstream.readInt();
-                    Container container = this.player.activeContainer;
+            if ("MC|TrSel".equals(par1Packet250CustomPayload.tag))
+            {
+                try
+                {
+                    var2 = new DataInputStream(new ByteArrayInputStream(par1Packet250CustomPayload.data));
+                    var14 = var2.readInt();
+                    Container var16 = this.player.activeContainer;
 
-                    if (container instanceof ContainerMerchant) {
-                        ((ContainerMerchant) container).b(i);
+                    if (var16 instanceof ContainerMerchant)
+                    {
+                        ((ContainerMerchant)var16).b(var14);
                     }
-                } catch (Exception exception2) {
-                    exception2.printStackTrace();
                 }
-            } else {
-                int j;
+                catch (Exception var10)
+                {
+                    var10.printStackTrace();
+                }
+            }
+            else
+            {
+                int var18;
 
-                if ("MC|AdvCdm".equals(packet250custompayload.tag)) {
-                    if (!this.minecraftServer.getEnableCommandBlock()) {
+                if ("MC|AdvCdm".equals(par1Packet250CustomPayload.tag))
+                {
+                    if (!this.minecraftServer.getEnableCommandBlock())
+                    {
                         this.player.sendMessage(this.player.a("advMode.notEnabled", new Object[0]));
-                    } else if (this.player.a(2, "") && this.player.abilities.canInstantlyBuild) {
-                        try {
-                            datainputstream = new DataInputStream(new ByteArrayInputStream(packet250custompayload.data));
-                            i = datainputstream.readInt();
-                            j = datainputstream.readInt();
-                            int k = datainputstream.readInt();
-                            String s = Packet.a(datainputstream, 256);
-                            TileEntity tileentity = this.player.world.getTileEntity(i, j, k);
+                    }
+                    else if (this.player.a(2, "") && this.player.abilities.canInstantlyBuild)
+                    {
+                        try
+                        {
+                            var2 = new DataInputStream(new ByteArrayInputStream(par1Packet250CustomPayload.data));
+                            var14 = var2.readInt();
+                            var18 = var2.readInt();
+                            int var5 = var2.readInt();
+                            String var6 = Packet.a(var2, 256);
+                            TileEntity var7 = this.player.world.getTileEntity(var14, var18, var5);
 
-                            if (tileentity != null && tileentity instanceof TileEntityCommand) {
-                                ((TileEntityCommand) tileentity).b(s);
-                                this.player.world.notify(i, j, k);
-                                this.player.sendMessage("Command set: " + s);
+                            if (var7 != null && var7 instanceof TileEntityCommand)
+                            {
+                                ((TileEntityCommand)var7).b(var6);
+                                this.player.world.notify(var14, var18, var5);
+                                this.player.sendMessage("Command set: " + var6);
                             }
-                        } catch (Exception exception3) {
-                            exception3.printStackTrace();
                         }
-                    } else {
+                        catch (Exception var9)
+                        {
+                            var9.printStackTrace();
+                        }
+                    }
+                    else
+                    {
                         this.player.sendMessage(this.player.a("advMode.notAllowed", new Object[0]));
                     }
-                } else if ("MC|Beacon".equals(packet250custompayload.tag)) {
-                    if (this.player.activeContainer instanceof ContainerBeacon) {
-                        try {
-                            datainputstream = new DataInputStream(new ByteArrayInputStream(packet250custompayload.data));
-                            i = datainputstream.readInt();
-                            j = datainputstream.readInt();
-                            ContainerBeacon containerbeacon = (ContainerBeacon) this.player.activeContainer;
-                            Slot slot = containerbeacon.getSlot(0);
+                }
+                else if ("MC|Beacon".equals(par1Packet250CustomPayload.tag))
+                {
+                    if (this.player.activeContainer instanceof ContainerBeacon)
+                    {
+                        try
+                        {
+                            var2 = new DataInputStream(new ByteArrayInputStream(par1Packet250CustomPayload.data));
+                            var14 = var2.readInt();
+                            var18 = var2.readInt();
+                            ContainerBeacon var17 = (ContainerBeacon)this.player.activeContainer;
+                            Slot var19 = var17.getSlot(0);
 
-                            if (slot.d()) {
-                                slot.a(1);
-                                TileEntityBeacon tileentitybeacon = containerbeacon.d();
-
-                                tileentitybeacon.d(i);
-                                tileentitybeacon.e(j);
-                                tileentitybeacon.update();
+                            if (var19.d())
+                            {
+                                var19.a(1);
+                                TileEntityBeacon var20 = var17.d();
+                                var20.d(var14);
+                                var20.e(var18);
+                                var20.update();
                             }
-                        } catch (Exception exception4) {
-                            exception4.printStackTrace();
+                        }
+                        catch (Exception var8)
+                        {
+                            var8.printStackTrace();
                         }
                     }
-                } else if ("MC|ItemName".equals(packet250custompayload.tag) && this.player.activeContainer instanceof ContainerAnvil) {
-                    ContainerAnvil containeranvil = (ContainerAnvil) this.player.activeContainer;
+                }
+                else if ("MC|ItemName".equals(par1Packet250CustomPayload.tag) && this.player.activeContainer instanceof ContainerAnvil)
+                {
+                    ContainerAnvil var13 = (ContainerAnvil)this.player.activeContainer;
 
-                    if (packet250custompayload.data != null && packet250custompayload.data.length >= 1) {
-                        String s1 = SharedConstants.a(new String(packet250custompayload.data));
+                    if (par1Packet250CustomPayload.data != null && par1Packet250CustomPayload.data.length >= 1)
+                    {
+                        String var15 = SharedConstants.a(new String(par1Packet250CustomPayload.data));
 
-                        if (s1.length() <= 30) {
-                            containeranvil.a(s1);
+                        if (var15.length() <= 30)
+                        {
+                            var13.a(var15);
                         }
-                    } else {
-                        containeranvil.a("");
+                    }
+                    else
+                    {
+                        var13.a("");
                     }
                 }
             }

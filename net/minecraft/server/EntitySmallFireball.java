@@ -1,60 +1,74 @@
 package net.minecraft.server;
 
-public class EntitySmallFireball extends EntityFireball {
-
-    public EntitySmallFireball(World world) {
-        super(world);
+public class EntitySmallFireball extends EntityFireball
+{
+    public EntitySmallFireball(World par1World)
+    {
+        super(par1World);
         this.a(0.3125F, 0.3125F);
     }
 
-    public EntitySmallFireball(World world, EntityLiving entityliving, double d0, double d1, double d2) {
-        super(world, entityliving, d0, d1, d2);
+    public EntitySmallFireball(World par1World, EntityLiving par2EntityLiving, double par3, double par5, double par7)
+    {
+        super(par1World, par2EntityLiving, par3, par5, par7);
         this.a(0.3125F, 0.3125F);
     }
 
-    public EntitySmallFireball(World world, double d0, double d1, double d2, double d3, double d4, double d5) {
-        super(world, d0, d1, d2, d3, d4, d5);
+    public EntitySmallFireball(World par1World, double par2, double par4, double par6, double par8, double par10, double par12)
+    {
+        super(par1World, par2, par4, par6, par8, par10, par12);
         this.a(0.3125F, 0.3125F);
     }
 
-    protected void a(MovingObjectPosition movingobjectposition) {
-        if (!this.world.isStatic) {
-            if (movingobjectposition.entity != null) {
-                if (!movingobjectposition.entity.isFireproof() && movingobjectposition.entity.damageEntity(DamageSource.fireball(this, this.shooter), 5)) {
-                    movingobjectposition.entity.setOnFire(5);
+    /**
+     * Called when this EntityFireball hits a block or entity.
+     */
+    protected void a(MovingObjectPosition par1MovingObjectPosition)
+    {
+        if (!this.world.isStatic)
+        {
+            if (par1MovingObjectPosition.entity != null)
+            {
+                if (!par1MovingObjectPosition.entity.isFireproof() && par1MovingObjectPosition.entity.damageEntity(DamageSource.fireball(this, this.shooter), 5))
+                {
+                    par1MovingObjectPosition.entity.setOnFire(5);
                 }
-            } else {
-                int i = movingobjectposition.b;
-                int j = movingobjectposition.c;
-                int k = movingobjectposition.d;
+            }
+            else
+            {
+                int var2 = par1MovingObjectPosition.b;
+                int var3 = par1MovingObjectPosition.c;
+                int var4 = par1MovingObjectPosition.d;
 
-                switch (movingobjectposition.face) {
-                case 0:
-                    --j;
-                    break;
+                switch (par1MovingObjectPosition.face)
+                {
+                    case 0:
+                        --var3;
+                        break;
 
-                case 1:
-                    ++j;
-                    break;
+                    case 1:
+                        ++var3;
+                        break;
 
-                case 2:
-                    --k;
-                    break;
+                    case 2:
+                        --var4;
+                        break;
 
-                case 3:
-                    ++k;
-                    break;
+                    case 3:
+                        ++var4;
+                        break;
 
-                case 4:
-                    --i;
-                    break;
+                    case 4:
+                        --var2;
+                        break;
 
-                case 5:
-                    ++i;
+                    case 5:
+                        ++var2;
                 }
 
-                if (this.world.isEmpty(i, j, k)) {
-                    this.world.setTypeId(i, j, k, Block.FIRE.id);
+                if (this.world.isEmpty(var2, var3, var4))
+                {
+                    this.world.setTypeId(var2, var3, var4, Block.FIRE.id);
                 }
             }
 
@@ -62,11 +76,19 @@ public class EntitySmallFireball extends EntityFireball {
         }
     }
 
-    public boolean L() {
+    /**
+     * Returns true if other Entities should be prevented from moving through this Entity.
+     */
+    public boolean L()
+    {
         return false;
     }
 
-    public boolean damageEntity(DamageSource damagesource, int i) {
+    /**
+     * Called when the entity is attacked.
+     */
+    public boolean damageEntity(DamageSource par1DamageSource, int par2)
+    {
         return false;
     }
 }

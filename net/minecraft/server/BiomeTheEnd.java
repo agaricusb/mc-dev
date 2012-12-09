@@ -1,9 +1,10 @@
 package net.minecraft.server;
 
-public class BiomeTheEnd extends BiomeBase {
-
-    public BiomeTheEnd(int i) {
-        super(i);
+public class BiomeTheEnd extends BiomeBase
+{
+    public BiomeTheEnd(int par1)
+    {
+        super(par1);
         this.J.clear();
         this.K.clear();
         this.L.clear();

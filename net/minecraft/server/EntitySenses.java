@@ -3,38 +3,55 @@ package net.minecraft.server;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntitySenses {
-
+public class EntitySenses
+{
     EntityLiving entity;
     List seenEntities = new ArrayList();
     List unseenEntities = new ArrayList();
 
-    public EntitySenses(EntityLiving entityliving) {
-        this.entity = entityliving;
+    public EntitySenses(EntityLiving par1EntityLiving)
+    {
+        this.entity = par1EntityLiving;
     }
 
-    public void a() {
+    /**
+     * Clears canSeeCachePositive and canSeeCacheNegative.
+     */
+    public void a()
+    {
         this.seenEntities.clear();
         this.unseenEntities.clear();
     }
 
-    public boolean canSee(Entity entity) {
-        if (this.seenEntities.contains(entity)) {
+    /**
+     * Checks, whether 'our' entity can see the entity given as argument (true) or not (false), caching the result.
+     */
+    public boolean canSee(Entity par1Entity)
+    {
+        if (this.seenEntities.contains(par1Entity))
+        {
             return true;
-        } else if (this.unseenEntities.contains(entity)) {
+        }
+        else if (this.unseenEntities.contains(par1Entity))
+        {
             return false;
-        } else {
+        }
+        else
+        {
             this.entity.world.methodProfiler.a("canSee");
-            boolean flag = this.entity.n(entity);
-
+            boolean var2 = this.entity.n(par1Entity);
             this.entity.world.methodProfiler.b();
-            if (flag) {
-                this.seenEntities.add(entity);
-            } else {
-                this.unseenEntities.add(entity);
+
+            if (var2)
+            {
+                this.seenEntities.add(par1Entity);
+            }
+            else
+            {
+                this.unseenEntities.add(par1Entity);
             }
 
-            return flag;
+            return var2;
         }
     }
 }

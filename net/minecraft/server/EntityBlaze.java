@@ -1,157 +1,236 @@
 package net.minecraft.server;
 
-public class EntityBlaze extends EntityMonster {
-
+public class EntityBlaze extends EntityMonster
+{
+    /** Random offset used in floating behaviour */
     private float d = 0.5F;
+
+    /** ticks until heightOffset is randomized */
     private int e;
     private int f;
 
-    public EntityBlaze(World world) {
-        super(world);
+    public EntityBlaze(World par1World)
+    {
+        super(par1World);
         this.texture = "/mob/fire.png";
         this.fireProof = true;
         this.bc = 10;
     }
 
-    public int getMaxHealth() {
+    public int getMaxHealth()
+    {
         return 20;
     }
 
-    protected void a() {
+    protected void a()
+    {
         super.a();
         this.datawatcher.a(16, new Byte((byte) 0));
     }
 
-    protected String aY() {
+    /**
+     * Returns the sound this mob makes while it's alive.
+     */
+    protected String aY()
+    {
         return "mob.blaze.breathe";
     }
 
-    protected String aZ() {
+    /**
+     * Returns the sound this mob makes when it is hurt.
+     */
+    protected String aZ()
+    {
         return "mob.blaze.hit";
     }
 
-    protected String ba() {
+    /**
+     * Returns the sound this mob makes on death.
+     */
+    protected String ba()
+    {
         return "mob.blaze.death";
     }
 
-    public float c(float f) {
+    /**
+     * Gets how bright this entity is.
+     */
+    public float c(float par1)
+    {
         return 1.0F;
     }
 
-    public void c() {
-        if (!this.world.isStatic) {
-            if (this.G()) {
+    /**
+     * Called frequently so the entity can update its state every tick as required. For example, zombies and skeletons
+     * use this to react to sunlight and start to burn.
+     */
+    public void c()
+    {
+        if (!this.world.isStatic)
+        {
+            if (this.G())
+            {
                 this.damageEntity(DamageSource.DROWN, 1);
             }
 
             --this.e;
-            if (this.e <= 0) {
+
+            if (this.e <= 0)
+            {
                 this.e = 100;
-                this.d = 0.5F + (float) this.random.nextGaussian() * 3.0F;
+                this.d = 0.5F + (float)this.random.nextGaussian() * 3.0F;
             }
 
-            if (this.l() != null && this.l().locY + (double) this.l().getHeadHeight() > this.locY + (double) this.getHeadHeight() + (double) this.d) {
+            if (this.l() != null && this.l().locY + (double)this.l().getHeadHeight() > this.locY + (double)this.getHeadHeight() + (double)this.d)
+            {
                 this.motY += (0.30000001192092896D - this.motY) * 0.30000001192092896D;
             }
         }
 
-        if (this.random.nextInt(24) == 0) {
+        if (this.random.nextInt(24) == 0)
+        {
             this.world.makeSound(this.locX + 0.5D, this.locY + 0.5D, this.locZ + 0.5D, "fire.fire", 1.0F + this.random.nextFloat(), this.random.nextFloat() * 0.7F + 0.3F);
         }
 
-        if (!this.onGround && this.motY < 0.0D) {
+        if (!this.onGround && this.motY < 0.0D)
+        {
             this.motY *= 0.6D;
         }
 
-        for (int i = 0; i < 2; ++i) {
+        for (int var1 = 0; var1 < 2; ++var1)
+        {
             this.world.addParticle("largesmoke", this.locX + (this.random.nextDouble() - 0.5D) * (double) this.width, this.locY + this.random.nextDouble() * (double) this.length, this.locZ + (this.random.nextDouble() - 0.5D) * (double) this.width, 0.0D, 0.0D, 0.0D);
         }
 
         super.c();
     }
 
-    protected void a(Entity entity, float f) {
-        if (this.attackTicks <= 0 && f < 2.0F && entity.boundingBox.e > this.boundingBox.b && entity.boundingBox.b < this.boundingBox.e) {
+    /**
+     * Basic mob attack. Default to touch of death in EntityCreature. Overridden by each mob to define their attack.
+     */
+    protected void a(Entity par1Entity, float par2)
+    {
+        if (this.attackTicks <= 0 && par2 < 2.0F && par1Entity.boundingBox.e > this.boundingBox.b && par1Entity.boundingBox.b < this.boundingBox.e)
+        {
             this.attackTicks = 20;
-            this.m(entity);
-        } else if (f < 30.0F) {
-            double d0 = entity.locX - this.locX;
-            double d1 = entity.boundingBox.b + (double) (entity.length / 2.0F) - (this.locY + (double) (this.length / 2.0F));
-            double d2 = entity.locZ - this.locZ;
+            this.m(par1Entity);
+        }
+        else if (par2 < 30.0F)
+        {
+            double var3 = par1Entity.locX - this.locX;
+            double var5 = par1Entity.boundingBox.b + (double)(par1Entity.length / 2.0F) - (this.locY + (double)(this.length / 2.0F));
+            double var7 = par1Entity.locZ - this.locZ;
 
-            if (this.attackTicks == 0) {
+            if (this.attackTicks == 0)
+            {
                 ++this.f;
-                if (this.f == 1) {
+
+                if (this.f == 1)
+                {
                     this.attackTicks = 60;
                     this.f(true);
-                } else if (this.f <= 4) {
+                }
+                else if (this.f <= 4)
+                {
                     this.attackTicks = 6;
-                } else {
+                }
+                else
+                {
                     this.attackTicks = 100;
                     this.f = 0;
                     this.f(false);
                 }
 
-                if (this.f > 1) {
-                    float f1 = MathHelper.c(f) * 0.5F;
-
+                if (this.f > 1)
+                {
+                    float var9 = MathHelper.c(par2) * 0.5F;
                     this.world.a((EntityHuman) null, 1009, (int) this.locX, (int) this.locY, (int) this.locZ, 0);
 
-                    for (int i = 0; i < 1; ++i) {
-                        EntitySmallFireball entitysmallfireball = new EntitySmallFireball(this.world, this, d0 + this.random.nextGaussian() * (double) f1, d1, d2 + this.random.nextGaussian() * (double) f1);
-
-                        entitysmallfireball.locY = this.locY + (double) (this.length / 2.0F) + 0.5D;
-                        this.world.addEntity(entitysmallfireball);
+                    for (int var10 = 0; var10 < 1; ++var10)
+                    {
+                        EntitySmallFireball var11 = new EntitySmallFireball(this.world, this, var3 + this.random.nextGaussian() * (double)var9, var5, var7 + this.random.nextGaussian() * (double)var9);
+                        var11.locY = this.locY + (double)(this.length / 2.0F) + 0.5D;
+                        this.world.addEntity(var11);
                     }
                 }
             }
 
-            this.yaw = (float) (Math.atan2(d2, d0) * 180.0D / 3.1415927410125732D) - 90.0F;
+            this.yaw = (float)(Math.atan2(var7, var3) * 180.0D / Math.PI) - 90.0F;
             this.b = true;
         }
     }
 
-    protected void a(float f) {}
+    /**
+     * Called when the mob is falling. Calculates and applies fall damage.
+     */
+    protected void a(float par1) {}
 
-    protected int getLootId() {
+    /**
+     * Returns the item ID for the item the mob drops on death.
+     */
+    protected int getLootId()
+    {
         return Item.BLAZE_ROD.id;
     }
 
-    public boolean isBurning() {
+    /**
+     * Returns true if the entity is on fire. Used by render to add the fire effect on rendering.
+     */
+    public boolean isBurning()
+    {
         return this.m();
     }
 
-    protected void dropDeathLoot(boolean flag, int i) {
-        if (flag) {
-            int j = this.random.nextInt(2 + i);
+    /**
+     * Drop 0-2 items of this living's type
+     */
+    protected void dropDeathLoot(boolean par1, int par2)
+    {
+        if (par1)
+        {
+            int var3 = this.random.nextInt(2 + par2);
 
-            for (int k = 0; k < j; ++k) {
+            for (int var4 = 0; var4 < var3; ++var4)
+            {
                 this.b(Item.BLAZE_ROD.id, 1);
             }
         }
     }
 
-    public boolean m() {
+    public boolean m()
+    {
         return (this.datawatcher.getByte(16) & 1) != 0;
     }
 
-    public void f(boolean flag) {
-        byte b0 = this.datawatcher.getByte(16);
+    public void f(boolean par1)
+    {
+        byte var2 = this.datawatcher.getByte(16);
 
-        if (flag) {
-            b0 = (byte) (b0 | 1);
-        } else {
-            b0 &= -2;
+        if (par1)
+        {
+            var2 = (byte)(var2 | 1);
+        }
+        else
+        {
+            var2 &= -2;
         }
 
-        this.datawatcher.watch(16, Byte.valueOf(b0));
+        this.datawatcher.watch(16, Byte.valueOf(var2));
     }
 
-    protected boolean i_() {
+    /**
+     * Checks to make sure the light is not too bright where the mob is spawning
+     */
+    protected boolean i_()
+    {
         return true;
     }
 
-    public int c(Entity entity) {
+    /**
+     * Returns the amount of damage a mob should deal.
+     */
+    public int c(Entity par1Entity)
+    {
         return 6;
     }
 }

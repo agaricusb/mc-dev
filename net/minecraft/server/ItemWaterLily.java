@@ -1,39 +1,53 @@
 package net.minecraft.server;
 
-public class ItemWaterLily extends ItemWithAuxData {
-
-    public ItemWaterLily(int i) {
-        super(i, false);
+public class ItemWaterLily extends ItemWithAuxData
+{
+    public ItemWaterLily(int par1)
+    {
+        super(par1, false);
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        MovingObjectPosition movingobjectposition = this.a(world, entityhuman, true);
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        MovingObjectPosition var4 = this.a(par2World, par3EntityPlayer, true);
 
-        if (movingobjectposition == null) {
-            return itemstack;
-        } else {
-            if (movingobjectposition.type == EnumMovingObjectType.TILE) {
-                int i = movingobjectposition.b;
-                int j = movingobjectposition.c;
-                int k = movingobjectposition.d;
+        if (var4 == null)
+        {
+            return par1ItemStack;
+        }
+        else
+        {
+            if (var4.type == EnumMovingObjectType.TILE)
+            {
+                int var5 = var4.b;
+                int var6 = var4.c;
+                int var7 = var4.d;
 
-                if (!world.a(entityhuman, i, j, k)) {
-                    return itemstack;
+                if (!par2World.a(par3EntityPlayer, var5, var6, var7))
+                {
+                    return par1ItemStack;
                 }
 
-                if (!entityhuman.a(i, j, k, movingobjectposition.face, itemstack)) {
-                    return itemstack;
+                if (!par3EntityPlayer.a(var5, var6, var7, var4.face, par1ItemStack))
+                {
+                    return par1ItemStack;
                 }
 
-                if (world.getMaterial(i, j, k) == Material.WATER && world.getData(i, j, k) == 0 && world.isEmpty(i, j + 1, k)) {
-                    world.setTypeId(i, j + 1, k, Block.WATER_LILY.id);
-                    if (!entityhuman.abilities.canInstantlyBuild) {
-                        --itemstack.count;
+                if (par2World.getMaterial(var5, var6, var7) == Material.WATER && par2World.getData(var5, var6, var7) == 0 && par2World.isEmpty(var5, var6 + 1, var7))
+                {
+                    par2World.setTypeId(var5, var6 + 1, var7, Block.WATER_LILY.id);
+
+                    if (!par3EntityPlayer.abilities.canInstantlyBuild)
+                    {
+                        --par1ItemStack.count;
                     }
                 }
             }
 
-            return itemstack;
+            return par1ItemStack;
         }
     }
 }

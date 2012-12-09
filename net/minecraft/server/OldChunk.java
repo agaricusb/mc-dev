@@ -1,7 +1,7 @@
 package net.minecraft.server;
 
-public class OldChunk {
-
+public class OldChunk
+{
     public long a;
     public boolean b;
     public byte[] c;
@@ -15,8 +15,9 @@ public class OldChunk {
     public final int k;
     public final int l;
 
-    public OldChunk(int i, int j) {
-        this.k = i;
-        this.l = j;
+    public OldChunk(int par1, int par2)
+    {
+        this.k = par1;
+        this.l = par2;
     }
 }

@@ -7,19 +7,22 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Iterator;
 
-public class ServerConfigurationManager extends ServerConfigurationManagerAbstract {
-
+public class ServerConfigurationManager extends ServerConfigurationManagerAbstract
+{
     private File e;
     private File f;
 
-    public ServerConfigurationManager(DedicatedServer dedicatedserver) {
-        super(dedicatedserver);
-        this.e = dedicatedserver.e("ops.txt");
-        this.f = dedicatedserver.e("white-list.txt");
-        this.d = dedicatedserver.a("view-distance", 10);
-        this.maxPlayers = dedicatedserver.a("max-players", 20);
-        this.setHasWhitelist(dedicatedserver.a("white-list", false));
-        if (!dedicatedserver.I()) {
+    public ServerConfigurationManager(DedicatedServer par1DedicatedServer)
+    {
+        super(par1DedicatedServer);
+        this.e = par1DedicatedServer.e("ops.txt");
+        this.f = par1DedicatedServer.e("white-list.txt");
+        this.d = par1DedicatedServer.a("view-distance", 10);
+        this.maxPlayers = par1DedicatedServer.a("max-players", 20);
+        this.setHasWhitelist(par1DedicatedServer.a("white-list", false));
+
+        if (!par1DedicatedServer.I())
+        {
             this.getNameBans().setEnabled(true);
             this.getIPBans().setEnabled(true);
         }
@@ -34,112 +37,159 @@ public class ServerConfigurationManager extends ServerConfigurationManagerAbstra
         this.w();
     }
 
-    public void setHasWhitelist(boolean flag) {
-        super.setHasWhitelist(flag);
-        this.getServer().a("white-list", Boolean.valueOf(flag));
+    public void setHasWhitelist(boolean par1)
+    {
+        super.setHasWhitelist(par1);
+        this.getServer().a("white-list", Boolean.valueOf(par1));
         this.getServer().a();
     }
 
-    public void addOp(String s) {
-        super.addOp(s);
+    /**
+     * This adds a username to the ops list, then saves the op list
+     */
+    public void addOp(String par1Str)
+    {
+        super.addOp(par1Str);
         this.u();
     }
 
-    public void removeOp(String s) {
-        super.removeOp(s);
+    /**
+     * This removes a username from the ops list, then saves the op list
+     */
+    public void removeOp(String par1Str)
+    {
+        super.removeOp(par1Str);
         this.u();
     }
 
-    public void removeWhitelist(String s) {
-        super.removeWhitelist(s);
+    /**
+     * Remove the specified player from the whitelist.
+     */
+    public void removeWhitelist(String par1Str)
+    {
+        super.removeWhitelist(par1Str);
         this.w();
     }
 
-    public void addWhitelist(String s) {
-        super.addWhitelist(s);
+    /**
+     * Add the specified player to the white list.
+     */
+    public void addWhitelist(String par1Str)
+    {
+        super.addWhitelist(par1Str);
         this.w();
     }
 
-    public void reloadWhitelist() {
+    /**
+     * Either does nothing, or calls readWhiteList.
+     */
+    public void reloadWhitelist()
+    {
         this.v();
     }
 
-    private void t() {
-        try {
+    private void t()
+    {
+        try
+        {
             this.getOPs().clear();
-            BufferedReader bufferedreader = new BufferedReader(new FileReader(this.e));
-            String s = "";
+            BufferedReader var1 = new BufferedReader(new FileReader(this.e));
+            String var2 = "";
 
-            while ((s = bufferedreader.readLine()) != null) {
-                this.getOPs().add(s.trim().toLowerCase());
+            while ((var2 = var1.readLine()) != null)
+            {
+                this.getOPs().add(var2.trim().toLowerCase());
             }
 
-            bufferedreader.close();
-        } catch (Exception exception) {
-            a.warning("Failed to load operators list: " + exception);
+            var1.close();
+        }
+        catch (Exception var3)
+        {
+            a.warning("Failed to load operators list: " + var3);
         }
     }
 
-    private void u() {
-        try {
-            PrintWriter printwriter = new PrintWriter(new FileWriter(this.e, false));
-            Iterator iterator = this.getOPs().iterator();
+    private void u()
+    {
+        try
+        {
+            PrintWriter var1 = new PrintWriter(new FileWriter(this.e, false));
+            Iterator var2 = this.getOPs().iterator();
 
-            while (iterator.hasNext()) {
-                String s = (String) iterator.next();
-
-                printwriter.println(s);
+            while (var2.hasNext())
+            {
+                String var3 = (String)var2.next();
+                var1.println(var3);
             }
 
-            printwriter.close();
-        } catch (Exception exception) {
-            a.warning("Failed to save operators list: " + exception);
+            var1.close();
+        }
+        catch (Exception var4)
+        {
+            a.warning("Failed to save operators list: " + var4);
         }
     }
 
-    private void v() {
-        try {
+    private void v()
+    {
+        try
+        {
             this.getWhitelisted().clear();
-            BufferedReader bufferedreader = new BufferedReader(new FileReader(this.f));
-            String s = "";
+            BufferedReader var1 = new BufferedReader(new FileReader(this.f));
+            String var2 = "";
 
-            while ((s = bufferedreader.readLine()) != null) {
-                this.getWhitelisted().add(s.trim().toLowerCase());
+            while ((var2 = var1.readLine()) != null)
+            {
+                this.getWhitelisted().add(var2.trim().toLowerCase());
             }
 
-            bufferedreader.close();
-        } catch (Exception exception) {
-            a.warning("Failed to load white-list: " + exception);
+            var1.close();
+        }
+        catch (Exception var3)
+        {
+            a.warning("Failed to load white-list: " + var3);
         }
     }
 
-    private void w() {
-        try {
-            PrintWriter printwriter = new PrintWriter(new FileWriter(this.f, false));
-            Iterator iterator = this.getWhitelisted().iterator();
+    private void w()
+    {
+        try
+        {
+            PrintWriter var1 = new PrintWriter(new FileWriter(this.f, false));
+            Iterator var2 = this.getWhitelisted().iterator();
 
-            while (iterator.hasNext()) {
-                String s = (String) iterator.next();
-
-                printwriter.println(s);
+            while (var2.hasNext())
+            {
+                String var3 = (String)var2.next();
+                var1.println(var3);
             }
 
-            printwriter.close();
-        } catch (Exception exception) {
-            a.warning("Failed to save white-list: " + exception);
+            var1.close();
+        }
+        catch (Exception var4)
+        {
+            a.warning("Failed to save white-list: " + var4);
         }
     }
 
-    public boolean isWhitelisted(String s) {
-        s = s.trim().toLowerCase();
-        return !this.getHasWhitelist() || this.isOp(s) || this.getWhitelisted().contains(s);
+    /**
+     * Determine if the player is allowed to connect based on current server settings.
+     */
+    public boolean isWhitelisted(String par1Str)
+    {
+        par1Str = par1Str.trim().toLowerCase();
+        return !this.getHasWhitelist() || this.isOp(par1Str) || this.getWhitelisted().contains(par1Str);
     }
 
-    public DedicatedServer getServer() {
-        return (DedicatedServer) super.getServer();
+    public DedicatedServer getServer()
+    {
+        return (DedicatedServer)super.getServer();
     }
 
-    public MinecraftServer getServer() {
+    /* 
+    public MinecraftServer getServer()
+    {
         return this.getServer();
     }
+    */
 }

@@ -1,9 +1,10 @@
 package net.minecraft.server;
 
-public class BiomeMushrooms extends BiomeBase {
-
-    public BiomeMushrooms(int i) {
-        super(i);
+public class BiomeMushrooms extends BiomeBase
+{
+    public BiomeMushrooms(int par1)
+    {
+        super(par1);
         this.I.z = -100;
         this.I.A = -100;
         this.I.B = -100;

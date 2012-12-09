@@ -4,88 +4,110 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Random;
 
-public abstract class StructureStart {
-
+public abstract class StructureStart
+{
+    /** List of all StructureComponents that are part of this structure */
     protected LinkedList a = new LinkedList();
     protected StructureBoundingBox b;
 
-    protected StructureStart() {}
-
-    public StructureBoundingBox a() {
+    public StructureBoundingBox a()
+    {
         return this.b;
     }
 
-    public LinkedList b() {
+    public LinkedList b()
+    {
         return this.a;
     }
 
-    public void a(World world, Random random, StructureBoundingBox structureboundingbox) {
-        Iterator iterator = this.a.iterator();
+    /**
+     * Keeps iterating Structure Pieces and spawning them until the checks tell it to stop
+     */
+    public void a(World par1World, Random par2Random, StructureBoundingBox par3StructureBoundingBox)
+    {
+        Iterator var4 = this.a.iterator();
 
-        while (iterator.hasNext()) {
-            StructurePiece structurepiece = (StructurePiece) iterator.next();
+        while (var4.hasNext())
+        {
+            StructurePiece var5 = (StructurePiece)var4.next();
 
-            if (structurepiece.b().a(structureboundingbox) && !structurepiece.a(world, random, structureboundingbox)) {
-                iterator.remove();
+            if (var5.b().a(par3StructureBoundingBox) && !var5.a(par1World, par2Random, par3StructureBoundingBox))
+            {
+                var4.remove();
             }
         }
     }
 
-    protected void c() {
+    /**
+     * Calculates total bounding box based on components' bounding boxes and saves it to boundingBox
+     */
+    protected void c()
+    {
         this.b = StructureBoundingBox.a();
-        Iterator iterator = this.a.iterator();
+        Iterator var1 = this.a.iterator();
 
-        while (iterator.hasNext()) {
-            StructurePiece structurepiece = (StructurePiece) iterator.next();
-
-            this.b.b(structurepiece.b());
+        while (var1.hasNext())
+        {
+            StructurePiece var2 = (StructurePiece)var1.next();
+            this.b.b(var2.b());
         }
     }
 
-    protected void a(World world, Random random, int i) {
-        int j = 63 - i;
-        int k = this.b.c() + 1;
+    /**
+     * offsets the structure Bounding Boxes up to a certain height, typically 63 - 10
+     */
+    protected void a(World par1World, Random par2Random, int par3)
+    {
+        int var4 = 63 - par3;
+        int var5 = this.b.c() + 1;
 
-        if (k < j) {
-            k += random.nextInt(j - k);
+        if (var5 < var4)
+        {
+            var5 += par2Random.nextInt(var4 - var5);
         }
 
-        int l = k - this.b.e;
+        int var6 = var5 - this.b.e;
+        this.b.a(0, var6, 0);
+        Iterator var7 = this.a.iterator();
 
-        this.b.a(0, l, 0);
-        Iterator iterator = this.a.iterator();
-
-        while (iterator.hasNext()) {
-            StructurePiece structurepiece = (StructurePiece) iterator.next();
-
-            structurepiece.b().a(0, l, 0);
-        }
-    }
-
-    protected void a(World world, Random random, int i, int j) {
-        int k = j - i + 1 - this.b.c();
-        boolean flag = true;
-        int l;
-
-        if (k > 1) {
-            l = i + random.nextInt(k);
-        } else {
-            l = i;
-        }
-
-        int i1 = l - this.b.b;
-
-        this.b.a(0, i1, 0);
-        Iterator iterator = this.a.iterator();
-
-        while (iterator.hasNext()) {
-            StructurePiece structurepiece = (StructurePiece) iterator.next();
-
-            structurepiece.b().a(0, i1, 0);
+        while (var7.hasNext())
+        {
+            StructurePiece var8 = (StructurePiece)var7.next();
+            var8.b().a(0, var6, 0);
         }
     }
 
-    public boolean d() {
+    protected void a(World par1World, Random par2Random, int par3, int par4)
+    {
+        int var5 = par4 - par3 + 1 - this.b.c();
+        boolean var6 = true;
+        int var10;
+
+        if (var5 > 1)
+        {
+            var10 = par3 + par2Random.nextInt(var5);
+        }
+        else
+        {
+            var10 = par3;
+        }
+
+        int var7 = var10 - this.b.b;
+        this.b.a(0, var7, 0);
+        Iterator var8 = this.a.iterator();
+
+        while (var8.hasNext())
+        {
+            StructurePiece var9 = (StructurePiece)var8.next();
+            var9.b().a(0, var7, 0);
+        }
+    }
+
+    /**
+     * currently only defined for Villages, returns true if Village has more than 2 non-road components
+     */
+    public boolean d()
+    {
         return true;
     }
 }

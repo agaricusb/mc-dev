@@ -11,10 +11,14 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class DedicatedServerConnectionThread extends Thread {
-
+public class DedicatedServerConnectionThread extends Thread
+{
     private static Logger a = Logger.getLogger("Minecraft");
     private final List b = Collections.synchronizedList(new ArrayList());
+
+    /**
+     * This map stores a list of InetAddresses and the last time which they connected at
+     */
     private final HashMap c = new HashMap();
     private int d = 0;
     private final ServerSocket e;
@@ -22,97 +26,124 @@ public class DedicatedServerConnectionThread extends Thread {
     private final InetAddress g;
     private final int h;
 
-    public DedicatedServerConnectionThread(ServerConnection serverconnection, InetAddress inetaddress, int i) {
+    public DedicatedServerConnectionThread(ServerConnection par1NetworkListenThread, InetAddress par2InetAddress, int par3) throws IOException
+    {
         super("Listen thread");
-        this.f = serverconnection;
-        this.h = i;
-        this.e = new ServerSocket(i, 0, inetaddress);
-        this.g = inetaddress == null ? this.e.getInetAddress() : inetaddress;
+        this.f = par1NetworkListenThread;
+        this.h = par3;
+        this.e = new ServerSocket(par3, 0, par2InetAddress);
+        this.g = par2InetAddress == null ? this.e.getInetAddress() : par2InetAddress;
         this.e.setPerformancePreferences(0, 2, 1);
     }
 
-    public void a() {
-        List list = this.b;
+    public void a()
+    {
+        List var1 = this.b;
 
-        synchronized (this.b) {
-            for (int i = 0; i < this.b.size(); ++i) {
-                NetLoginHandler netloginhandler = (NetLoginHandler) this.b.get(i);
+        synchronized (this.b)
+        {
+            for (int var2 = 0; var2 < this.b.size(); ++var2)
+            {
+                NetLoginHandler var3 = (NetLoginHandler)this.b.get(var2);
 
-                try {
-                    netloginhandler.c();
-                } catch (Exception exception) {
-                    netloginhandler.disconnect("Internal server error");
-                    a.log(Level.WARNING, "Failed to handle packet for " + netloginhandler.getName() + ": " + exception, exception);
+                try
+                {
+                    var3.c();
+                }
+                catch (Exception var6)
+                {
+                    var3.disconnect("Internal server error");
+                    a.log(Level.WARNING, "Failed to handle packet for " + var3.getName() + ": " + var6, var6);
                 }
 
-                if (netloginhandler.c) {
-                    this.b.remove(i--);
+                if (var3.c)
+                {
+                    this.b.remove(var2--);
                 }
 
-                netloginhandler.networkManager.a();
+                var3.networkManager.a();
             }
         }
     }
 
-    public void run() {
-        while (this.f.b) {
-            try {
-                Socket socket = this.e.accept();
-                InetAddress inetaddress = socket.getInetAddress();
-                long i = System.currentTimeMillis();
-                HashMap hashmap = this.c;
+    public void run()
+    {
+        while (this.f.b)
+        {
+            try
+            {
+                Socket var1 = this.e.accept();
+                InetAddress var2 = var1.getInetAddress();
+                long var3 = System.currentTimeMillis();
+                HashMap var5 = this.c;
 
-                synchronized (this.c) {
-                    if (this.c.containsKey(inetaddress) && !b(inetaddress) && i - ((Long) this.c.get(inetaddress)).longValue() < 4000L) {
-                        this.c.put(inetaddress, Long.valueOf(i));
-                        socket.close();
+                synchronized (this.c)
+                {
+                    if (this.c.containsKey(var2) && !b(var2) && var3 - ((Long)this.c.get(var2)).longValue() < 4000L)
+                    {
+                        this.c.put(var2, Long.valueOf(var3));
+                        var1.close();
                         continue;
                     }
 
-                    this.c.put(inetaddress, Long.valueOf(i));
+                    this.c.put(var2, Long.valueOf(var3));
                 }
 
-                NetLoginHandler netloginhandler = new NetLoginHandler(this.f.d(), socket, "Connection #" + this.d++);
-
-                this.a(netloginhandler);
-            } catch (IOException ioexception) {
-                ioexception.printStackTrace();
+                NetLoginHandler var9 = new NetLoginHandler(this.f.d(), var1, "Connection #" + this.d++);
+                this.a(var9);
+            }
+            catch (IOException var8)
+            {
+                var8.printStackTrace();
             }
         }
 
         System.out.println("Closing listening thread");
     }
 
-    private void a(NetLoginHandler netloginhandler) {
-        if (netloginhandler == null) {
+    private void a(NetLoginHandler par1NetLoginHandler)
+    {
+        if (par1NetLoginHandler == null)
+        {
             throw new IllegalArgumentException("Got null pendingconnection!");
-        } else {
-            List list = this.b;
+        }
+        else
+        {
+            List var2 = this.b;
 
-            synchronized (this.b) {
-                this.b.add(netloginhandler);
+            synchronized (this.b)
+            {
+                this.b.add(par1NetLoginHandler);
             }
         }
     }
 
-    private static boolean b(InetAddress inetaddress) {
-        return "127.0.0.1".equals(inetaddress.getHostAddress());
+    private static boolean b(InetAddress par0InetAddress)
+    {
+        return "127.0.0.1".equals(par0InetAddress.getHostAddress());
     }
 
-    public void a(InetAddress inetaddress) {
-        if (inetaddress != null) {
-            HashMap hashmap = this.c;
+    public void a(InetAddress par1InetAddress)
+    {
+        if (par1InetAddress != null)
+        {
+            HashMap var2 = this.c;
 
-            synchronized (this.c) {
-                this.c.remove(inetaddress);
+            synchronized (this.c)
+            {
+                this.c.remove(par1InetAddress);
             }
         }
     }
 
-    public void b() {
-        try {
+    public void b()
+    {
+        try
+        {
             this.e.close();
-        } catch (Throwable throwable) {
+        }
+        catch (Throwable var2)
+        {
             ;
         }
     }

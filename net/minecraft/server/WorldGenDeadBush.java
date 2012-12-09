@@ -2,28 +2,34 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenDeadBush extends WorldGenerator {
-
+public class WorldGenDeadBush extends WorldGenerator
+{
+    /** stores the ID for WorldGenDeadBush */
     private int a;
 
-    public WorldGenDeadBush(int i) {
-        this.a = i;
+    public WorldGenDeadBush(int par1)
+    {
+        this.a = par1;
     }
 
-    public boolean a(World world, Random random, int i, int j, int k) {
-        int l;
+    public boolean a(World par1World, Random par2Random, int par3, int par4, int par5)
+    {
+        int var11;
 
-        for (boolean flag = false; ((l = world.getTypeId(i, j, k)) == 0 || l == Block.LEAVES.id) && j > 0; --j) {
+        for (boolean var6 = false; ((var11 = par1World.getTypeId(par3, par4, par5)) == 0 || var11 == Block.LEAVES.id) && par4 > 0; --par4)
+        {
             ;
         }
 
-        for (int i1 = 0; i1 < 4; ++i1) {
-            int j1 = i + random.nextInt(8) - random.nextInt(8);
-            int k1 = j + random.nextInt(4) - random.nextInt(4);
-            int l1 = k + random.nextInt(8) - random.nextInt(8);
+        for (int var7 = 0; var7 < 4; ++var7)
+        {
+            int var8 = par3 + par2Random.nextInt(8) - par2Random.nextInt(8);
+            int var9 = par4 + par2Random.nextInt(4) - par2Random.nextInt(4);
+            int var10 = par5 + par2Random.nextInt(8) - par2Random.nextInt(8);
 
-            if (world.isEmpty(j1, k1, l1) && Block.byId[this.a].d(world, j1, k1, l1)) {
-                world.setRawTypeId(j1, k1, l1, this.a);
+            if (par1World.isEmpty(var8, var9, var10) && Block.byId[this.a].d(par1World, var8, var9, var10))
+            {
+                par1World.setRawTypeId(var8, var9, var10, this.a);
             }
         }
 

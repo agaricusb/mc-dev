@@ -1,64 +1,97 @@
 package net.minecraft.server;
 
-public class PathPoint {
-
+public class PathPoint
+{
+    /** The x coordinate of this point */
     public final int a;
+
+    /** The y coordinate of this point */
     public final int b;
+
+    /** The z coordinate of this point */
     public final int c;
+
+    /** A hash of the coordinates used to identify this point */
     private final int j;
+
+    /** The index of this point in its assigned path */
     int d = -1;
+
+    /** The distance along the path to this point */
     float e;
+
+    /** The linear distance to the next point */
     float f;
+
+    /** The distance to the target */
     float g;
+
+    /** The point preceding this in its assigned path */
     PathPoint h;
+
+    /** Indicates this is the origin */
     public boolean i = false;
 
-    public PathPoint(int i, int j, int k) {
-        this.a = i;
-        this.b = j;
-        this.c = k;
-        this.j = a(i, j, k);
+    public PathPoint(int par1, int par2, int par3)
+    {
+        this.a = par1;
+        this.b = par2;
+        this.c = par3;
+        this.j = a(par1, par2, par3);
     }
 
-    public static int a(int i, int j, int k) {
-        return j & 255 | (i & 32767) << 8 | (k & 32767) << 24 | (i < 0 ? Integer.MIN_VALUE : 0) | (k < 0 ? '\u8000' : 0);
+    public static int a(int par0, int par1, int par2)
+    {
+        return par1 & 255 | (par0 & 32767) << 8 | (par2 & 32767) << 24 | (par0 < 0 ? Integer.MIN_VALUE : 0) | (par2 < 0 ? 32768 : 0);
     }
 
-    public float a(PathPoint pathpoint) {
-        float f = (float) (pathpoint.a - this.a);
-        float f1 = (float) (pathpoint.b - this.b);
-        float f2 = (float) (pathpoint.c - this.c);
-
-        return MathHelper.c(f * f + f1 * f1 + f2 * f2);
+    /**
+     * Returns the linear distance to another path point
+     */
+    public float a(PathPoint par1PathPoint)
+    {
+        float var2 = (float)(par1PathPoint.a - this.a);
+        float var3 = (float)(par1PathPoint.b - this.b);
+        float var4 = (float)(par1PathPoint.c - this.c);
+        return MathHelper.c(var2 * var2 + var3 * var3 + var4 * var4);
     }
 
-    public float b(PathPoint pathpoint) {
-        float f = (float) (pathpoint.a - this.a);
-        float f1 = (float) (pathpoint.b - this.b);
-        float f2 = (float) (pathpoint.c - this.c);
-
-        return f * f + f1 * f1 + f2 * f2;
+    public float b(PathPoint par1PathPoint)
+    {
+        float var2 = (float)(par1PathPoint.a - this.a);
+        float var3 = (float)(par1PathPoint.b - this.b);
+        float var4 = (float)(par1PathPoint.c - this.c);
+        return var2 * var2 + var3 * var3 + var4 * var4;
     }
 
-    public boolean equals(Object object) {
-        if (!(object instanceof PathPoint)) {
+    public boolean equals(Object par1Obj)
+    {
+        if (!(par1Obj instanceof PathPoint))
+        {
             return false;
-        } else {
-            PathPoint pathpoint = (PathPoint) object;
-
-            return this.j == pathpoint.j && this.a == pathpoint.a && this.b == pathpoint.b && this.c == pathpoint.c;
+        }
+        else
+        {
+            PathPoint var2 = (PathPoint)par1Obj;
+            return this.j == var2.j && this.a == var2.a && this.b == var2.b && this.c == var2.c;
         }
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         return this.j;
     }
 
-    public boolean a() {
+    /**
+     * Returns true if this point has already been assigned to a path
+     */
+    public boolean a()
+    {
         return this.d >= 0;
     }
 
-    public String toString() {
+    public String toString()
+    {
         return this.a + ", " + this.b + ", " + this.c;
     }
 }

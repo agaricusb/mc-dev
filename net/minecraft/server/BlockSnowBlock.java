@@ -2,26 +2,40 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockSnowBlock extends Block {
-
-    protected BlockSnowBlock(int i, int j) {
-        super(i, j, Material.SNOW_BLOCK);
+public class BlockSnowBlock extends Block
+{
+    protected BlockSnowBlock(int par1, int par2)
+    {
+        super(par1, par2, Material.SNOW_BLOCK);
         this.b(true);
         this.a(CreativeModeTab.b);
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return Item.SNOW_BALL.id;
     }
 
-    public int a(Random random) {
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    public int a(Random par1Random)
+    {
         return 4;
     }
 
-    public void b(World world, int i, int j, int k, Random random) {
-        if (world.b(EnumSkyBlock.BLOCK, i, j, k) > 11) {
-            this.c(world, i, j, k, world.getData(i, j, k), 0);
-            world.setTypeId(i, j, k, 0);
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        if (par1World.b(EnumSkyBlock.BLOCK, par2, par3, par4) > 11)
+        {
+            this.c(par1World, par2, par3, par4, par1World.getData(par2, par3, par4), 0);
+            par1World.setTypeId(par2, par3, par4, 0);
         }
     }
 }

@@ -1,7 +1,7 @@
 package net.minecraft.server;
 
-public interface ISourceBlock extends ILocationSource {
-
+public interface ISourceBlock extends ILocationSource
+{
     double getX();
 
     double getY();

@@ -1,7 +1,7 @@
 package net.minecraft.server;
 
-public interface IPosition {
-
+public interface IPosition
+{
     double getX();
 
     double getY();

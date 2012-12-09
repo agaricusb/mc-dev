@@ -2,9 +2,10 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet61WorldEvent extends Packet {
-
+public class Packet61WorldEvent extends Packet
+{
     public int a;
     public int b;
     public int c;
@@ -14,38 +15,55 @@ public class Packet61WorldEvent extends Packet {
 
     public Packet61WorldEvent() {}
 
-    public Packet61WorldEvent(int i, int j, int k, int l, int i1, boolean flag) {
-        this.a = i;
-        this.c = j;
-        this.d = k;
-        this.e = l;
-        this.b = i1;
-        this.f = flag;
+    public Packet61WorldEvent(int par1, int par2, int par3, int par4, int par5, boolean par6)
+    {
+        this.a = par1;
+        this.c = par2;
+        this.d = par3;
+        this.e = par4;
+        this.b = par5;
+        this.f = par6;
     }
 
-    public void a(DataInputStream datainputstream) {
-        this.a = datainputstream.readInt();
-        this.c = datainputstream.readInt();
-        this.d = datainputstream.readByte() & 255;
-        this.e = datainputstream.readInt();
-        this.b = datainputstream.readInt();
-        this.f = datainputstream.readBoolean();
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        this.a = par1DataInputStream.readInt();
+        this.c = par1DataInputStream.readInt();
+        this.d = par1DataInputStream.readByte() & 255;
+        this.e = par1DataInputStream.readInt();
+        this.b = par1DataInputStream.readInt();
+        this.f = par1DataInputStream.readBoolean();
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        dataoutputstream.writeInt(this.a);
-        dataoutputstream.writeInt(this.c);
-        dataoutputstream.writeByte(this.d & 255);
-        dataoutputstream.writeInt(this.e);
-        dataoutputstream.writeInt(this.b);
-        dataoutputstream.writeBoolean(this.f);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        par1DataOutputStream.writeInt(this.a);
+        par1DataOutputStream.writeInt(this.c);
+        par1DataOutputStream.writeByte(this.d & 255);
+        par1DataOutputStream.writeInt(this.e);
+        par1DataOutputStream.writeInt(this.b);
+        par1DataOutputStream.writeBoolean(this.f);
     }
 
-    public void handle(NetHandler nethandler) {
-        nethandler.a(this);
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
+    public void handle(NetHandler par1NetHandler)
+    {
+        par1NetHandler.a(this);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 21;
     }
 }

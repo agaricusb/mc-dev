@@ -2,19 +2,26 @@ package net.minecraft.server;
 
 import java.util.concurrent.Callable;
 
-class CrashReportVersion implements Callable {
-
+class CrashReportVersion implements Callable
+{
+    /** Reference to the CrashReport object. */
     final CrashReport a;
 
-    CrashReportVersion(CrashReport crashreport) {
-        this.a = crashreport;
+    CrashReportVersion(CrashReport par1CrashReport)
+    {
+        this.a = par1CrashReport;
     }
 
-    public String a() {
+    /**
+     * The current version of Minecraft
+     */
+    public String a()
+    {
         return "1.4.5";
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

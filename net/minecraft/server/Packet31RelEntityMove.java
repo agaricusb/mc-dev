@@ -2,33 +2,47 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet31RelEntityMove extends Packet30Entity {
-
+public class Packet31RelEntityMove extends Packet30Entity
+{
     public Packet31RelEntityMove() {}
 
-    public Packet31RelEntityMove(int i, byte b0, byte b1, byte b2) {
-        super(i);
-        this.b = b0;
-        this.c = b1;
-        this.d = b2;
+    public Packet31RelEntityMove(int par1, byte par2, byte par3, byte par4)
+    {
+        super(par1);
+        this.b = par2;
+        this.c = par3;
+        this.d = par4;
     }
 
-    public void a(DataInputStream datainputstream) {
-        super.a(datainputstream);
-        this.b = datainputstream.readByte();
-        this.c = datainputstream.readByte();
-        this.d = datainputstream.readByte();
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        super.a(par1DataInputStream);
+        this.b = par1DataInputStream.readByte();
+        this.c = par1DataInputStream.readByte();
+        this.d = par1DataInputStream.readByte();
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        super.a(dataoutputstream);
-        dataoutputstream.writeByte(this.b);
-        dataoutputstream.writeByte(this.c);
-        dataoutputstream.writeByte(this.d);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        super.a(par1DataOutputStream);
+        par1DataOutputStream.writeByte(this.b);
+        par1DataOutputStream.writeByte(this.c);
+        par1DataOutputStream.writeByte(this.d);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 7;
     }
 }

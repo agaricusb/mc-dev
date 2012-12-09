@@ -1,44 +1,59 @@
 package net.minecraft.server;
 
-public class ItemGlassBottle extends Item {
-
-    public ItemGlassBottle(int i) {
-        super(i);
+public class ItemGlassBottle extends Item
+{
+    public ItemGlassBottle(int par1)
+    {
+        super(par1);
         this.a(CreativeModeTab.k);
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        MovingObjectPosition movingobjectposition = this.a(world, entityhuman, true);
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        MovingObjectPosition var4 = this.a(par2World, par3EntityPlayer, true);
 
-        if (movingobjectposition == null) {
-            return itemstack;
-        } else {
-            if (movingobjectposition.type == EnumMovingObjectType.TILE) {
-                int i = movingobjectposition.b;
-                int j = movingobjectposition.c;
-                int k = movingobjectposition.d;
+        if (var4 == null)
+        {
+            return par1ItemStack;
+        }
+        else
+        {
+            if (var4.type == EnumMovingObjectType.TILE)
+            {
+                int var5 = var4.b;
+                int var6 = var4.c;
+                int var7 = var4.d;
 
-                if (!world.a(entityhuman, i, j, k)) {
-                    return itemstack;
+                if (!par2World.a(par3EntityPlayer, var5, var6, var7))
+                {
+                    return par1ItemStack;
                 }
 
-                if (!entityhuman.a(i, j, k, movingobjectposition.face, itemstack)) {
-                    return itemstack;
+                if (!par3EntityPlayer.a(var5, var6, var7, var4.face, par1ItemStack))
+                {
+                    return par1ItemStack;
                 }
 
-                if (world.getMaterial(i, j, k) == Material.WATER) {
-                    --itemstack.count;
-                    if (itemstack.count <= 0) {
+                if (par2World.getMaterial(var5, var6, var7) == Material.WATER)
+                {
+                    --par1ItemStack.count;
+
+                    if (par1ItemStack.count <= 0)
+                    {
                         return new ItemStack(Item.POTION);
                     }
 
-                    if (!entityhuman.inventory.pickup(new ItemStack(Item.POTION))) {
-                        entityhuman.drop(new ItemStack(Item.POTION.id, 1, 0));
+                    if (!par3EntityPlayer.inventory.pickup(new ItemStack(Item.POTION)))
+                    {
+                        par3EntityPlayer.drop(new ItemStack(Item.POTION.id, 1, 0));
                     }
                 }
             }
 
-            return itemstack;
+            return par1ItemStack;
         }
     }
 }

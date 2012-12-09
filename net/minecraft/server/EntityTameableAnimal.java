@@ -1,100 +1,134 @@
 package net.minecraft.server;
 
-public abstract class EntityTameableAnimal extends EntityAnimal {
-
+public abstract class EntityTameableAnimal extends EntityAnimal
+{
     protected PathfinderGoalSit d = new PathfinderGoalSit(this);
 
-    public EntityTameableAnimal(World world) {
-        super(world);
+    public EntityTameableAnimal(World par1World)
+    {
+        super(par1World);
     }
 
-    protected void a() {
+    protected void a()
+    {
         super.a();
         this.datawatcher.a(16, Byte.valueOf((byte) 0));
         this.datawatcher.a(17, "");
     }
 
-    public void b(NBTTagCompound nbttagcompound) {
-        super.b(nbttagcompound);
-        if (this.getOwnerName() == null) {
-            nbttagcompound.setString("Owner", "");
-        } else {
-            nbttagcompound.setString("Owner", this.getOwnerName());
+    /**
+     * (abstract) Protected helper method to write subclass entity data to NBT.
+     */
+    public void b(NBTTagCompound par1NBTTagCompound)
+    {
+        super.b(par1NBTTagCompound);
+
+        if (this.getOwnerName() == null)
+        {
+            par1NBTTagCompound.setString("Owner", "");
+        }
+        else
+        {
+            par1NBTTagCompound.setString("Owner", this.getOwnerName());
         }
 
-        nbttagcompound.setBoolean("Sitting", this.isSitting());
+        par1NBTTagCompound.setBoolean("Sitting", this.isSitting());
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
-        super.a(nbttagcompound);
-        String s = nbttagcompound.getString("Owner");
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        super.a(par1NBTTagCompound);
+        String var2 = par1NBTTagCompound.getString("Owner");
 
-        if (s.length() > 0) {
-            this.setOwnerName(s);
+        if (var2.length() > 0)
+        {
+            this.setOwnerName(var2);
             this.setTamed(true);
         }
 
-        this.d.a(nbttagcompound.getBoolean("Sitting"));
-        this.setSitting(nbttagcompound.getBoolean("Sitting"));
+        this.d.a(par1NBTTagCompound.getBoolean("Sitting"));
+        this.setSitting(par1NBTTagCompound.getBoolean("Sitting"));
     }
 
-    protected void f(boolean flag) {
-        String s = "heart";
+    /**
+     * Play the taming effect, will either be hearts or smoke depending on status
+     */
+    protected void f(boolean par1)
+    {
+        String var2 = "heart";
 
-        if (!flag) {
-            s = "smoke";
+        if (!par1)
+        {
+            var2 = "smoke";
         }
 
-        for (int i = 0; i < 7; ++i) {
-            double d0 = this.random.nextGaussian() * 0.02D;
-            double d1 = this.random.nextGaussian() * 0.02D;
-            double d2 = this.random.nextGaussian() * 0.02D;
-
-            this.world.addParticle(s, this.locX + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.locY + 0.5D + (double) (this.random.nextFloat() * this.length), this.locZ + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, d0, d1, d2);
+        for (int var3 = 0; var3 < 7; ++var3)
+        {
+            double var4 = this.random.nextGaussian() * 0.02D;
+            double var6 = this.random.nextGaussian() * 0.02D;
+            double var8 = this.random.nextGaussian() * 0.02D;
+            this.world.addParticle(var2, this.locX + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, this.locY + 0.5D + (double) (this.random.nextFloat() * this.length), this.locZ + (double) (this.random.nextFloat() * this.width * 2.0F) - (double) this.width, var4, var6, var8);
         }
     }
 
-    public boolean isTamed() {
+    public boolean isTamed()
+    {
         return (this.datawatcher.getByte(16) & 4) != 0;
     }
 
-    public void setTamed(boolean flag) {
-        byte b0 = this.datawatcher.getByte(16);
+    public void setTamed(boolean par1)
+    {
+        byte var2 = this.datawatcher.getByte(16);
 
-        if (flag) {
-            this.datawatcher.watch(16, Byte.valueOf((byte) (b0 | 4)));
-        } else {
-            this.datawatcher.watch(16, Byte.valueOf((byte) (b0 & -5)));
+        if (par1)
+        {
+            this.datawatcher.watch(16, Byte.valueOf((byte) (var2 | 4)));
+        }
+        else
+        {
+            this.datawatcher.watch(16, Byte.valueOf((byte) (var2 & -5)));
         }
     }
 
-    public boolean isSitting() {
+    public boolean isSitting()
+    {
         return (this.datawatcher.getByte(16) & 1) != 0;
     }
 
-    public void setSitting(boolean flag) {
-        byte b0 = this.datawatcher.getByte(16);
+    public void setSitting(boolean par1)
+    {
+        byte var2 = this.datawatcher.getByte(16);
 
-        if (flag) {
-            this.datawatcher.watch(16, Byte.valueOf((byte) (b0 | 1)));
-        } else {
-            this.datawatcher.watch(16, Byte.valueOf((byte) (b0 & -2)));
+        if (par1)
+        {
+            this.datawatcher.watch(16, Byte.valueOf((byte) (var2 | 1)));
+        }
+        else
+        {
+            this.datawatcher.watch(16, Byte.valueOf((byte) (var2 & -2)));
         }
     }
 
-    public String getOwnerName() {
+    public String getOwnerName()
+    {
         return this.datawatcher.getString(17);
     }
 
-    public void setOwnerName(String s) {
-        this.datawatcher.watch(17, s);
+    public void setOwnerName(String par1Str)
+    {
+        this.datawatcher.watch(17, par1Str);
     }
 
-    public EntityLiving getOwner() {
+    public EntityLiving getOwner()
+    {
         return this.world.a(this.getOwnerName());
     }
 
-    public PathfinderGoalSit q() {
+    public PathfinderGoalSit q()
+    {
         return this.d;
     }
 }

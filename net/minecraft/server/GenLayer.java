@@ -1,82 +1,106 @@
 package net.minecraft.server;
 
-public abstract class GenLayer {
-
+public abstract class GenLayer
+{
+    /** seed from World#getWorldSeed that is used in the LCG prng */
     private long b;
+
+    /** parent GenLayer that was provided via the constructor */
     protected GenLayer a;
+
+    /**
+     * final part of the LCG prng that uses the chunk X, Z coords along with the other two seeds to generate
+     * pseudorandom numbers
+     */
     private long c;
+
+    /** base seed to the LCG prng provided via the constructor */
     private long d;
 
-    public static GenLayer[] a(long i, WorldType worldtype) {
-        LayerIsland layerisland = new LayerIsland(1L);
-        GenLayerZoomFuzzy genlayerzoomfuzzy = new GenLayerZoomFuzzy(2000L, layerisland);
-        GenLayerIsland genlayerisland = new GenLayerIsland(1L, genlayerzoomfuzzy);
-        GenLayerZoom genlayerzoom = new GenLayerZoom(2001L, genlayerisland);
+    /**
+     * the first array item is a linked list of the bioms, the second is the zoom function, the third is the same as the
+     * first.
+     */
+    public static GenLayer[] a(long par0, WorldType par2WorldType)
+    {
+        LayerIsland var3 = new LayerIsland(1L);
+        GenLayerZoomFuzzy var9 = new GenLayerZoomFuzzy(2000L, var3);
+        GenLayerIsland var10 = new GenLayerIsland(1L, var9);
+        GenLayerZoom var11 = new GenLayerZoom(2001L, var10);
+        var10 = new GenLayerIsland(2L, var11);
+        GenLayerIcePlains var12 = new GenLayerIcePlains(2L, var10);
+        var11 = new GenLayerZoom(2002L, var12);
+        var10 = new GenLayerIsland(3L, var11);
+        var11 = new GenLayerZoom(2003L, var10);
+        var10 = new GenLayerIsland(4L, var11);
+        GenLayerMushroomIsland var16 = new GenLayerMushroomIsland(5L, var10);
+        byte var4 = 4;
 
-        genlayerisland = new GenLayerIsland(2L, genlayerzoom);
-        GenLayerIcePlains genlayericeplains = new GenLayerIcePlains(2L, genlayerisland);
-
-        genlayerzoom = new GenLayerZoom(2002L, genlayericeplains);
-        genlayerisland = new GenLayerIsland(3L, genlayerzoom);
-        genlayerzoom = new GenLayerZoom(2003L, genlayerisland);
-        genlayerisland = new GenLayerIsland(4L, genlayerzoom);
-        GenLayerMushroomIsland genlayermushroomisland = new GenLayerMushroomIsland(5L, genlayerisland);
-        byte b0 = 4;
-
-        if (worldtype == WorldType.LARGE_BIOMES) {
-            b0 = 6;
+        if (par2WorldType == WorldType.LARGE_BIOMES)
+        {
+            var4 = 6;
         }
 
-        GenLayer genlayer = GenLayerZoom.a(1000L, genlayermushroomisland, 0);
-        GenLayerRiverInit genlayerriverinit = new GenLayerRiverInit(100L, genlayer);
+        GenLayer var5 = GenLayerZoom.a(1000L, var16, 0);
+        GenLayerRiverInit var13 = new GenLayerRiverInit(100L, var5);
+        var5 = GenLayerZoom.a(1000L, var13, var4 + 2);
+        GenLayerRiver var14 = new GenLayerRiver(1L, var5);
+        GenLayerSmooth var15 = new GenLayerSmooth(1000L, var14);
+        GenLayer var6 = GenLayerZoom.a(1000L, var16, 0);
+        GenLayerBiome var17 = new GenLayerBiome(200L, var6, par2WorldType);
+        var6 = GenLayerZoom.a(1000L, var17, 2);
+        Object var18 = new GenLayerRegionHills(1000L, var6);
 
-        genlayer = GenLayerZoom.a(1000L, genlayerriverinit, b0 + 2);
-        GenLayerRiver genlayerriver = new GenLayerRiver(1L, genlayer);
-        GenLayerSmooth genlayersmooth = new GenLayerSmooth(1000L, genlayerriver);
-        GenLayer genlayer1 = GenLayerZoom.a(1000L, genlayermushroomisland, 0);
-        GenLayerBiome genlayerbiome = new GenLayerBiome(200L, genlayer1, worldtype);
+        for (int var7 = 0; var7 < var4; ++var7)
+        {
+            var18 = new GenLayerZoom((long)(1000 + var7), (GenLayer)var18);
 
-        genlayer1 = GenLayerZoom.a(1000L, genlayerbiome, 2);
-        Object object = new GenLayerRegionHills(1000L, genlayer1);
-
-        for (int j = 0; j < b0; ++j) {
-            object = new GenLayerZoom((long) (1000 + j), (GenLayer) object);
-            if (j == 0) {
-                object = new GenLayerIsland(3L, (GenLayer) object);
+            if (var7 == 0)
+            {
+                var18 = new GenLayerIsland(3L, (GenLayer)var18);
             }
 
-            if (j == 1) {
-                object = new GenLayerMushroomShore(1000L, (GenLayer) object);
+            if (var7 == 1)
+            {
+                var18 = new GenLayerMushroomShore(1000L, (GenLayer)var18);
             }
 
-            if (j == 1) {
-                object = new GenLayerSwampRivers(1000L, (GenLayer) object);
+            if (var7 == 1)
+            {
+                var18 = new GenLayerSwampRivers(1000L, (GenLayer)var18);
             }
         }
 
-        GenLayerSmooth genlayersmooth1 = new GenLayerSmooth(1000L, (GenLayer) object);
-        GenLayerRiverMix genlayerrivermix = new GenLayerRiverMix(100L, genlayersmooth1, genlayersmooth);
-        GenLayerZoomVoronoi genlayerzoomvoronoi = new GenLayerZoomVoronoi(10L, genlayerrivermix);
-
-        genlayerrivermix.a(i);
-        genlayerzoomvoronoi.a(i);
-        return new GenLayer[] { genlayerrivermix, genlayerzoomvoronoi, genlayerrivermix};
+        GenLayerSmooth var19 = new GenLayerSmooth(1000L, (GenLayer)var18);
+        GenLayerRiverMix var20 = new GenLayerRiverMix(100L, var19, var15);
+        GenLayerZoomVoronoi var8 = new GenLayerZoomVoronoi(10L, var20);
+        var20.a(par0);
+        var8.a(par0);
+        return new GenLayer[] {var20, var8, var20};
     }
 
-    public GenLayer(long i) {
-        this.d = i;
+    public GenLayer(long par1)
+    {
+        this.d = par1;
         this.d *= this.d * 6364136223846793005L + 1442695040888963407L;
-        this.d += i;
+        this.d += par1;
         this.d *= this.d * 6364136223846793005L + 1442695040888963407L;
-        this.d += i;
+        this.d += par1;
         this.d *= this.d * 6364136223846793005L + 1442695040888963407L;
-        this.d += i;
+        this.d += par1;
     }
 
-    public void a(long i) {
-        this.b = i;
-        if (this.a != null) {
-            this.a.a(i);
+    /**
+     * Initialize layer's local worldGenSeed based on its own baseSeed and the world's global seed (passed in as an
+     * argument).
+     */
+    public void a(long par1)
+    {
+        this.b = par1;
+
+        if (this.a != null)
+        {
+            this.a.a(par1);
         }
 
         this.b *= this.b * 6364136223846793005L + 1442695040888963407L;
@@ -87,29 +111,42 @@ public abstract class GenLayer {
         this.b += this.d;
     }
 
-    public void a(long i, long j) {
+    /**
+     * Initialize layer's current chunkSeed based on the local worldGenSeed and the (x,z) chunk coordinates.
+     */
+    public void a(long par1, long par3)
+    {
         this.c = this.b;
         this.c *= this.c * 6364136223846793005L + 1442695040888963407L;
-        this.c += i;
+        this.c += par1;
         this.c *= this.c * 6364136223846793005L + 1442695040888963407L;
-        this.c += j;
+        this.c += par3;
         this.c *= this.c * 6364136223846793005L + 1442695040888963407L;
-        this.c += i;
+        this.c += par1;
         this.c *= this.c * 6364136223846793005L + 1442695040888963407L;
-        this.c += j;
+        this.c += par3;
     }
 
-    protected int a(int i) {
-        int j = (int) ((this.c >> 24) % (long) i);
+    /**
+     * returns a LCG pseudo random number from [0, x). Args: int x
+     */
+    protected int a(int par1)
+    {
+        int var2 = (int)((this.c >> 24) % (long)par1);
 
-        if (j < 0) {
-            j += i;
+        if (var2 < 0)
+        {
+            var2 += par1;
         }
 
         this.c *= this.c * 6364136223846793005L + 1442695040888963407L;
         this.c += this.b;
-        return j;
+        return var2;
     }
 
-    public abstract int[] a(int i, int j, int k, int l);
+    /**
+     * Returns a list of integer values generated by this layer. These may be interpreted as temperatures, rainfall
+     * amounts, or biomeList[] indices based on the particular GenLayer subclass.
+     */
+    public abstract int[] a(int var1, int var2, int var3, int var4);
 }

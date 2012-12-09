@@ -8,60 +8,81 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public class RegionFileCache {
-
+public class RegionFileCache
+{
+    /** A map containing Files as keys and RegionFiles as values */
     private static final Map a = new HashMap();
 
-    public static synchronized RegionFile a(File file1, int i, int j) {
-        File file2 = new File(file1, "region");
-        File file3 = new File(file2, "r." + (i >> 5) + "." + (j >> 5) + ".mca");
-        RegionFile regionfile = (RegionFile) a.get(file3);
+    public static synchronized RegionFile a(File par0File, int par1, int par2)
+    {
+        File var3 = new File(par0File, "region");
+        File var4 = new File(var3, "r." + (par1 >> 5) + "." + (par2 >> 5) + ".mca");
+        RegionFile var5 = (RegionFile) a.get(var4);
 
-        if (regionfile != null) {
-            return regionfile;
-        } else {
-            if (!file2.exists()) {
-                file2.mkdirs();
+        if (var5 != null)
+        {
+            return var5;
+        }
+        else
+        {
+            if (!var3.exists())
+            {
+                var3.mkdirs();
             }
 
-            if (a.size() >= 256) {
+            if (a.size() >= 256)
+            {
                 a();
             }
 
-            RegionFile regionfile1 = new RegionFile(file3);
-
-            a.put(file3, regionfile1);
-            return regionfile1;
+            RegionFile var6 = new RegionFile(var4);
+            a.put(var4, var6);
+            return var6;
         }
     }
 
-    public static synchronized void a() {
-        Iterator iterator = a.values().iterator();
+    /**
+     * clears region file references
+     */
+    public static synchronized void a()
+    {
+        Iterator var0 = a.values().iterator();
 
-        while (iterator.hasNext()) {
-            RegionFile regionfile = (RegionFile) iterator.next();
+        while (var0.hasNext())
+        {
+            RegionFile var1 = (RegionFile)var0.next();
 
-            try {
-                if (regionfile != null) {
-                    regionfile.c();
+            try
+            {
+                if (var1 != null)
+                {
+                    var1.c();
                 }
-            } catch (IOException ioexception) {
-                ioexception.printStackTrace();
+            }
+            catch (IOException var3)
+            {
+                var3.printStackTrace();
             }
         }
 
         a.clear();
     }
 
-    public static DataInputStream c(File file1, int i, int j) {
-        RegionFile regionfile = a(file1, i, j);
-
-        return regionfile.a(i & 31, j & 31);
+    /**
+     * Returns an input stream for the specified chunk. Args: worldDir, chunkX, chunkZ
+     */
+    public static DataInputStream c(File par0File, int par1, int par2)
+    {
+        RegionFile var3 = a(par0File, par1, par2);
+        return var3.a(par1 & 31, par2 & 31);
     }
 
-    public static DataOutputStream d(File file1, int i, int j) {
-        RegionFile regionfile = a(file1, i, j);
-
-        return regionfile.b(i & 31, j & 31);
+    /**
+     * Returns an output stream for the specified chunk. Args: worldDir, chunkX, chunkZ
+     */
+    public static DataOutputStream d(File par0File, int par1, int par2)
+    {
+        RegionFile var3 = a(par0File, par1, par2);
+        return var3.b(par1 & 31, par2 & 31);
     }
 }

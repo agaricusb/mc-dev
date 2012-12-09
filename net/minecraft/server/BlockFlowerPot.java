@@ -2,165 +2,246 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockFlowerPot extends Block {
-
-    public BlockFlowerPot(int i) {
-        super(i, Material.ORIENTABLE);
+public class BlockFlowerPot extends Block
+{
+    public BlockFlowerPot(int par1)
+    {
+        super(par1, Material.ORIENTABLE);
         this.textureId = 186;
         this.f();
         this.r();
     }
 
-    public void f() {
-        float f = 0.375F;
-        float f1 = f / 2.0F;
-
-        this.a(0.5F - f1, 0.0F, 0.5F - f1, 0.5F + f1, f, 0.5F + f1);
+    /**
+     * Sets the block's bounds for rendering it as an item
+     */
+    public void f()
+    {
+        float var1 = 0.375F;
+        float var2 = var1 / 2.0F;
+        this.a(0.5F - var2, 0.0F, 0.5F - var2, 0.5F + var2, var1, 0.5F + var2);
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 33;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
-        ItemStack itemstack = entityhuman.inventory.getItemInHand();
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
+        ItemStack var10 = par5EntityPlayer.inventory.getItemInHand();
 
-        if (itemstack == null) {
+        if (var10 == null)
+        {
             return false;
-        } else if (world.getData(i, j, k) != 0) {
+        }
+        else if (par1World.getData(par2, par3, par4) != 0)
+        {
             return false;
-        } else {
-            int i1 = a(itemstack);
+        }
+        else
+        {
+            int var11 = a(var10);
 
-            if (i1 > 0) {
-                world.setData(i, j, k, i1);
-                if (!entityhuman.abilities.canInstantlyBuild && --itemstack.count <= 0) {
-                    entityhuman.inventory.setItem(entityhuman.inventory.itemInHandIndex, (ItemStack) null);
+            if (var11 > 0)
+            {
+                par1World.setData(par2, par3, par4, var11);
+
+                if (!par5EntityPlayer.abilities.canInstantlyBuild && --var10.count <= 0)
+                {
+                    par5EntityPlayer.inventory.setItem(par5EntityPlayer.inventory.itemInHandIndex, (ItemStack) null);
                 }
 
                 return true;
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
     }
 
-    public int getDropData(World world, int i, int j, int k) {
-        ItemStack itemstack = c(world.getData(i, j, k));
-
-        return itemstack == null ? Item.FLOWER_POT.id : itemstack.getData();
+    /**
+     * Get the block's damage value (for use with pick block).
+     */
+    public int getDropData(World par1World, int par2, int par3, int par4)
+    {
+        ItemStack var5 = c(par1World.getData(par2, par3, par4));
+        return var5 == null ? Item.FLOWER_POT.id : var5.getData();
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        return super.canPlace(world, i, j, k) && world.v(i, j - 1, k);
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        return super.canPlace(par1World, par2, par3, par4) && par1World.v(par2, par3 - 1, par4);
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        if (!world.v(i, j - 1, k)) {
-            this.c(world, i, j, k, world.getData(i, j, k), 0);
-            world.setTypeId(i, j, k, 0);
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        if (!par1World.v(par2, par3 - 1, par4))
+        {
+            this.c(par1World, par2, par3, par4, par1World.getData(par2, par3, par4), 0);
+            par1World.setTypeId(par2, par3, par4, 0);
         }
     }
 
-    public void dropNaturally(World world, int i, int j, int k, int l, float f, int i1) {
-        super.dropNaturally(world, i, j, k, l, f, i1);
-        if (l > 0) {
-            ItemStack itemstack = c(l);
+    /**
+     * Drops the block items with a specified chance of dropping the specified items
+     */
+    public void dropNaturally(World par1World, int par2, int par3, int par4, int par5, float par6, int par7)
+    {
+        super.dropNaturally(par1World, par2, par3, par4, par5, par6, par7);
 
-            if (itemstack != null) {
-                this.b(world, i, j, k, itemstack);
+        if (par5 > 0)
+        {
+            ItemStack var8 = c(par5);
+
+            if (var8 != null)
+            {
+                this.b(par1World, par2, par3, par4, var8);
             }
         }
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return Item.FLOWER_POT.id;
     }
 
-    public static ItemStack c(int i) {
-        switch (i) {
-        case 1:
-            return new ItemStack(Block.RED_ROSE);
+    /**
+     * Return the item associated with the specified flower pot metadata value.
+     */
+    public static ItemStack c(int par0)
+    {
+        switch (par0)
+        {
+            case 1:
+                return new ItemStack(Block.RED_ROSE);
 
-        case 2:
-            return new ItemStack(Block.YELLOW_FLOWER);
+            case 2:
+                return new ItemStack(Block.YELLOW_FLOWER);
 
-        case 3:
-            return new ItemStack(Block.SAPLING, 1, 0);
+            case 3:
+                return new ItemStack(Block.SAPLING, 1, 0);
 
-        case 4:
-            return new ItemStack(Block.SAPLING, 1, 1);
+            case 4:
+                return new ItemStack(Block.SAPLING, 1, 1);
 
-        case 5:
-            return new ItemStack(Block.SAPLING, 1, 2);
+            case 5:
+                return new ItemStack(Block.SAPLING, 1, 2);
 
-        case 6:
-            return new ItemStack(Block.SAPLING, 1, 3);
+            case 6:
+                return new ItemStack(Block.SAPLING, 1, 3);
 
-        case 7:
-            return new ItemStack(Block.RED_MUSHROOM);
+            case 7:
+                return new ItemStack(Block.RED_MUSHROOM);
 
-        case 8:
-            return new ItemStack(Block.BROWN_MUSHROOM);
+            case 8:
+                return new ItemStack(Block.BROWN_MUSHROOM);
 
-        case 9:
-            return new ItemStack(Block.CACTUS);
+            case 9:
+                return new ItemStack(Block.CACTUS);
 
-        case 10:
-            return new ItemStack(Block.DEAD_BUSH);
+            case 10:
+                return new ItemStack(Block.DEAD_BUSH);
 
-        case 11:
-            return new ItemStack(Block.LONG_GRASS, 1, 2);
+            case 11:
+                return new ItemStack(Block.LONG_GRASS, 1, 2);
 
-        default:
-            return null;
+            default:
+                return null;
         }
     }
 
-    public static int a(ItemStack itemstack) {
-        int i = itemstack.getItem().id;
+    /**
+     * Return the flower pot metadata value associated with the specified item.
+     */
+    public static int a(ItemStack par0ItemStack)
+    {
+        int var1 = par0ItemStack.getItem().id;
 
-        if (i == Block.RED_ROSE.id) {
+        if (var1 == Block.RED_ROSE.id)
+        {
             return 1;
-        } else if (i == Block.YELLOW_FLOWER.id) {
+        }
+        else if (var1 == Block.YELLOW_FLOWER.id)
+        {
             return 2;
-        } else if (i == Block.CACTUS.id) {
+        }
+        else if (var1 == Block.CACTUS.id)
+        {
             return 9;
-        } else if (i == Block.BROWN_MUSHROOM.id) {
+        }
+        else if (var1 == Block.BROWN_MUSHROOM.id)
+        {
             return 8;
-        } else if (i == Block.RED_MUSHROOM.id) {
+        }
+        else if (var1 == Block.RED_MUSHROOM.id)
+        {
             return 7;
-        } else if (i == Block.DEAD_BUSH.id) {
+        }
+        else if (var1 == Block.DEAD_BUSH.id)
+        {
             return 10;
-        } else {
-            if (i == Block.SAPLING.id) {
-                switch (itemstack.getData()) {
-                case 0:
-                    return 3;
+        }
+        else
+        {
+            if (var1 == Block.SAPLING.id)
+            {
+                switch (par0ItemStack.getData())
+                {
+                    case 0:
+                        return 3;
 
-                case 1:
-                    return 4;
+                    case 1:
+                        return 4;
 
-                case 2:
-                    return 5;
+                    case 2:
+                        return 5;
 
-                case 3:
-                    return 6;
+                    case 3:
+                        return 6;
                 }
             }
 
-            if (i == Block.LONG_GRASS.id) {
-                switch (itemstack.getData()) {
-                case 2:
-                    return 11;
+            if (var1 == Block.LONG_GRASS.id)
+            {
+                switch (par0ItemStack.getData())
+                {
+                    case 2:
+                        return 11;
                 }
             }
 

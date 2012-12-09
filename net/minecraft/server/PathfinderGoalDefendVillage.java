@@ -1,37 +1,60 @@
 package net.minecraft.server;
 
-public class PathfinderGoalDefendVillage extends PathfinderGoalTarget {
-
+public class PathfinderGoalDefendVillage extends PathfinderGoalTarget
+{
     EntityIronGolem a;
+
+    /**
+     * The aggressor of the iron golem's village which is now the golem's attack target.
+     */
     EntityLiving b;
 
-    public PathfinderGoalDefendVillage(EntityIronGolem entityirongolem) {
-        super(entityirongolem, 16.0F, false, true);
-        this.a = entityirongolem;
+    public PathfinderGoalDefendVillage(EntityIronGolem par1EntityIronGolem)
+    {
+        super(par1EntityIronGolem, 16.0F, false, true);
+        this.a = par1EntityIronGolem;
         this.a(1);
     }
 
-    public boolean a() {
-        Village village = this.a.m();
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
+        Village var1 = this.a.m();
 
-        if (village == null) {
+        if (var1 == null)
+        {
             return false;
-        } else {
-            this.b = village.b((EntityLiving) this.a);
-            if (!this.a(this.b, false)) {
-                if (this.d.aB().nextInt(20) == 0) {
-                    this.b = village.c(this.a);
+        }
+        else
+        {
+            this.b = var1.b(this.a);
+
+            if (!this.a(this.b, false))
+            {
+                if (this.d.aB().nextInt(20) == 0)
+                {
+                    this.b = var1.c(this.a);
                     return this.a(this.b, false);
-                } else {
+                }
+                else
+                {
                     return false;
                 }
-            } else {
+            }
+            else
+            {
                 return true;
             }
         }
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.a.b(this.b);
         super.c();
     }

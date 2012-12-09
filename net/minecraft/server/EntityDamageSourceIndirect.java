@@ -1,23 +1,30 @@
 package net.minecraft.server;
 
-public class EntityDamageSourceIndirect extends EntityDamageSource {
-
+public class EntityDamageSourceIndirect extends EntityDamageSource
+{
     private Entity owner;
 
-    public EntityDamageSourceIndirect(String s, Entity entity, Entity entity1) {
-        super(s, entity);
-        this.owner = entity1;
+    public EntityDamageSourceIndirect(String par1Str, Entity par2Entity, Entity par3Entity)
+    {
+        super(par1Str, par2Entity);
+        this.owner = par3Entity;
     }
 
-    public Entity f() {
+    public Entity f()
+    {
         return this.r;
     }
 
-    public Entity getEntity() {
+    public Entity getEntity()
+    {
         return this.owner;
     }
 
-    public String getLocalizedDeathMessage(EntityHuman entityhuman) {
-        return LocaleI18n.get("death." + this.translationIndex, new Object[] { entityhuman.name, this.owner == null ? this.r.getLocalizedName() : this.owner.getLocalizedName()});
+    /**
+     * Returns the message to be displayed on player death.
+     */
+    public String getLocalizedDeathMessage(EntityHuman par1EntityPlayer)
+    {
+        return LocaleI18n.get("death." + this.translationIndex, new Object[]{par1EntityPlayer.name, this.owner == null ? this.r.getLocalizedName() : this.owner.getLocalizedName()});
     }
 }

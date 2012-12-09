@@ -4,137 +4,180 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class VillageCollection extends WorldMapBase {
-
+public class VillageCollection extends WorldMapBase
+{
     private World world;
+
+    /**
+     * This is a black hole. You can add data to this list through a public interface, but you can't query that
+     * information in any way and it's not used internally either.
+     */
     private final List b = new ArrayList();
     private final List c = new ArrayList();
     private final List villages = new ArrayList();
     private int time = 0;
 
-    public VillageCollection(String s) {
-        super(s);
+    public VillageCollection(String par1Str)
+    {
+        super(par1Str);
     }
 
-    public VillageCollection(World world) {
+    public VillageCollection(World par1World)
+    {
         super("villages");
-        this.world = world;
+        this.world = par1World;
         this.c();
     }
 
-    public void a(World world) {
-        this.world = world;
-        Iterator iterator = this.villages.iterator();
+    public void a(World par1World)
+    {
+        this.world = par1World;
+        Iterator var2 = this.villages.iterator();
 
-        while (iterator.hasNext()) {
-            Village village = (Village) iterator.next();
-
-            village.a(world);
+        while (var2.hasNext())
+        {
+            Village var3 = (Village)var2.next();
+            var3.a(par1World);
         }
     }
 
-    public void a(int i, int j, int k) {
-        if (this.b.size() <= 64) {
-            if (!this.d(i, j, k)) {
-                this.b.add(new ChunkCoordinates(i, j, k));
+    /**
+     * This is a black hole. You can add data to this list through a public interface, but you can't query that
+     * information in any way and it's not used internally either.
+     */
+    public void a(int par1, int par2, int par3)
+    {
+        if (this.b.size() <= 64)
+        {
+            if (!this.d(par1, par2, par3))
+            {
+                this.b.add(new ChunkCoordinates(par1, par2, par3));
             }
         }
     }
 
-    public void tick() {
+    /**
+     * Runs a single tick for the village collection
+     */
+    public void tick()
+    {
         ++this.time;
-        Iterator iterator = this.villages.iterator();
+        Iterator var1 = this.villages.iterator();
 
-        while (iterator.hasNext()) {
-            Village village = (Village) iterator.next();
-
-            village.tick(this.time);
+        while (var1.hasNext())
+        {
+            Village var2 = (Village)var1.next();
+            var2.tick(this.time);
         }
 
         this.e();
         this.f();
         this.g();
-        if (this.time % 400 == 0) {
+
+        if (this.time % 400 == 0)
+        {
             this.c();
         }
     }
 
-    private void e() {
-        Iterator iterator = this.villages.iterator();
+    private void e()
+    {
+        Iterator var1 = this.villages.iterator();
 
-        while (iterator.hasNext()) {
-            Village village = (Village) iterator.next();
+        while (var1.hasNext())
+        {
+            Village var2 = (Village)var1.next();
 
-            if (village.isAbandoned()) {
-                iterator.remove();
+            if (var2.isAbandoned())
+            {
+                var1.remove();
                 this.c();
             }
         }
     }
 
-    public List getVillages() {
+    /**
+     * Get a list of villages.
+     */
+    public List getVillages()
+    {
         return this.villages;
     }
 
-    public Village getClosestVillage(int i, int j, int k, int l) {
-        Village village = null;
-        float f = Float.MAX_VALUE;
-        Iterator iterator = this.villages.iterator();
+    /**
+     * Finds the nearest village, but only the given coordinates are withing it's bounding box plus the given the
+     * distance.
+     */
+    public Village getClosestVillage(int par1, int par2, int par3, int par4)
+    {
+        Village var5 = null;
+        float var6 = Float.MAX_VALUE;
+        Iterator var7 = this.villages.iterator();
 
-        while (iterator.hasNext()) {
-            Village village1 = (Village) iterator.next();
-            float f1 = village1.getCenter().e(i, j, k);
+        while (var7.hasNext())
+        {
+            Village var8 = (Village)var7.next();
+            float var9 = var8.getCenter().e(par1, par2, par3);
 
-            if (f1 < f) {
-                int i1 = l + village1.getSize();
+            if (var9 < var6)
+            {
+                int var10 = par4 + var8.getSize();
 
-                if (f1 <= (float) (i1 * i1)) {
-                    village = village1;
-                    f = f1;
+                if (var9 <= (float)(var10 * var10))
+                {
+                    var5 = var8;
+                    var6 = var9;
                 }
             }
         }
 
-        return village;
+        return var5;
     }
 
-    private void f() {
-        if (!this.b.isEmpty()) {
+    private void f()
+    {
+        if (!this.b.isEmpty())
+        {
             this.a((ChunkCoordinates) this.b.remove(0));
         }
     }
 
-    private void g() {
-        int i = 0;
+    private void g()
+    {
+        int var1 = 0;
 
-        while (i < this.c.size()) {
-            VillageDoor villagedoor = (VillageDoor) this.c.get(i);
-            boolean flag = false;
-            Iterator iterator = this.villages.iterator();
+        while (var1 < this.c.size())
+        {
+            VillageDoor var2 = (VillageDoor)this.c.get(var1);
+            boolean var3 = false;
+            Iterator var4 = this.villages.iterator();
 
-            while (true) {
-                if (iterator.hasNext()) {
-                    Village village = (Village) iterator.next();
-                    int j = (int) village.getCenter().e(villagedoor.locX, villagedoor.locY, villagedoor.locZ);
-                    int k = 32 + village.getSize();
+            while (true)
+            {
+                if (var4.hasNext())
+                {
+                    Village var5 = (Village)var4.next();
+                    int var6 = (int)var5.getCenter().e(var2.locX, var2.locY, var2.locZ);
+                    int var7 = 32 + var5.getSize();
 
-                    if (j > k * k) {
+                    if (var6 > var7 * var7)
+                    {
                         continue;
                     }
 
-                    village.addDoor(villagedoor);
-                    flag = true;
+                    var5.addDoor(var2);
+                    var3 = true;
                 }
 
-                if (!flag) {
-                    Village village1 = new Village(this.world);
-
-                    village1.addDoor(villagedoor);
-                    this.villages.add(village1);
+                if (!var3)
+                {
+                    Village var8 = new Village(this.world);
+                    var8.addDoor(var2);
+                    this.villages.add(var8);
                     this.c();
                 }
 
-                ++i;
+                ++var1;
                 break;
             }
         }
@@ -142,21 +185,29 @@ public class VillageCollection extends WorldMapBase {
         this.c.clear();
     }
 
-    private void a(ChunkCoordinates chunkcoordinates) {
-        byte b0 = 16;
-        byte b1 = 4;
-        byte b2 = 16;
+    private void a(ChunkCoordinates par1ChunkCoordinates)
+    {
+        byte var2 = 16;
+        byte var3 = 4;
+        byte var4 = 16;
 
-        for (int i = chunkcoordinates.x - b0; i < chunkcoordinates.x + b0; ++i) {
-            for (int j = chunkcoordinates.y - b1; j < chunkcoordinates.y + b1; ++j) {
-                for (int k = chunkcoordinates.z - b2; k < chunkcoordinates.z + b2; ++k) {
-                    if (this.e(i, j, k)) {
-                        VillageDoor villagedoor = this.b(i, j, k);
+        for (int var5 = par1ChunkCoordinates.x - var2; var5 < par1ChunkCoordinates.x + var2; ++var5)
+        {
+            for (int var6 = par1ChunkCoordinates.y - var3; var6 < par1ChunkCoordinates.y + var3; ++var6)
+            {
+                for (int var7 = par1ChunkCoordinates.z - var4; var7 < par1ChunkCoordinates.z + var4; ++var7)
+                {
+                    if (this.e(var5, var6, var7))
+                    {
+                        VillageDoor var8 = this.b(var5, var6, var7);
 
-                        if (villagedoor == null) {
-                            this.c(i, j, k);
-                        } else {
-                            villagedoor.addedTime = this.time;
+                        if (var8 == null)
+                        {
+                            this.c(var5, var6, var7);
+                        }
+                        else
+                        {
+                            var8.addedTime = this.time;
                         }
                     }
                 }
@@ -164,128 +215,157 @@ public class VillageCollection extends WorldMapBase {
         }
     }
 
-    private VillageDoor b(int i, int j, int k) {
-        Iterator iterator = this.c.iterator();
+    private VillageDoor b(int par1, int par2, int par3)
+    {
+        Iterator var4 = this.c.iterator();
+        VillageDoor var5;
 
-        VillageDoor villagedoor;
+        do
+        {
+            if (!var4.hasNext())
+            {
+                var4 = this.villages.iterator();
+                VillageDoor var6;
 
-        do {
-            if (!iterator.hasNext()) {
-                iterator = this.villages.iterator();
-
-                VillageDoor villagedoor1;
-
-                do {
-                    if (!iterator.hasNext()) {
+                do
+                {
+                    if (!var4.hasNext())
+                    {
                         return null;
                     }
 
-                    Village village = (Village) iterator.next();
+                    Village var7 = (Village)var4.next();
+                    var6 = var7.e(par1, par2, par3);
+                }
+                while (var6 == null);
 
-                    villagedoor1 = village.e(i, j, k);
-                } while (villagedoor1 == null);
-
-                return villagedoor1;
+                return var6;
             }
 
-            villagedoor = (VillageDoor) iterator.next();
-        } while (villagedoor.locX != i || villagedoor.locZ != k || Math.abs(villagedoor.locY - j) > 1);
+            var5 = (VillageDoor)var4.next();
+        }
+        while (var5.locX != par1 || var5.locZ != par3 || Math.abs(var5.locY - par2) > 1);
 
-        return villagedoor;
+        return var5;
     }
 
-    private void c(int i, int j, int k) {
-        int l = ((BlockDoor) Block.WOODEN_DOOR).d(this.world, i, j, k);
-        int i1;
-        int j1;
+    private void c(int par1, int par2, int par3)
+    {
+        int var4 = ((BlockDoor) Block.WOODEN_DOOR).d((IBlockAccess)this.world, par1, par2, par3);
+        int var5;
+        int var6;
 
-        if (l != 0 && l != 2) {
-            i1 = 0;
+        if (var4 != 0 && var4 != 2)
+        {
+            var5 = 0;
 
-            for (j1 = -5; j1 < 0; ++j1) {
-                if (this.world.k(i, j, k + j1)) {
-                    --i1;
+            for (var6 = -5; var6 < 0; ++var6)
+            {
+                if (this.world.k(par1, par2, par3 + var6))
+                {
+                    --var5;
                 }
             }
 
-            for (j1 = 1; j1 <= 5; ++j1) {
-                if (this.world.k(i, j, k + j1)) {
-                    ++i1;
+            for (var6 = 1; var6 <= 5; ++var6)
+            {
+                if (this.world.k(par1, par2, par3 + var6))
+                {
+                    ++var5;
                 }
             }
 
-            if (i1 != 0) {
-                this.c.add(new VillageDoor(i, j, k, 0, i1 > 0 ? -2 : 2, this.time));
+            if (var5 != 0)
+            {
+                this.c.add(new VillageDoor(par1, par2, par3, 0, var5 > 0 ? -2 : 2, this.time));
             }
-        } else {
-            i1 = 0;
+        }
+        else
+        {
+            var5 = 0;
 
-            for (j1 = -5; j1 < 0; ++j1) {
-                if (this.world.k(i + j1, j, k)) {
-                    --i1;
+            for (var6 = -5; var6 < 0; ++var6)
+            {
+                if (this.world.k(par1 + var6, par2, par3))
+                {
+                    --var5;
                 }
             }
 
-            for (j1 = 1; j1 <= 5; ++j1) {
-                if (this.world.k(i + j1, j, k)) {
-                    ++i1;
+            for (var6 = 1; var6 <= 5; ++var6)
+            {
+                if (this.world.k(par1 + var6, par2, par3))
+                {
+                    ++var5;
                 }
             }
 
-            if (i1 != 0) {
-                this.c.add(new VillageDoor(i, j, k, i1 > 0 ? -2 : 2, 0, this.time));
+            if (var5 != 0)
+            {
+                this.c.add(new VillageDoor(par1, par2, par3, var5 > 0 ? -2 : 2, 0, this.time));
             }
         }
     }
 
-    private boolean d(int i, int j, int k) {
-        Iterator iterator = this.b.iterator();
+    private boolean d(int par1, int par2, int par3)
+    {
+        Iterator var4 = this.b.iterator();
+        ChunkCoordinates var5;
 
-        ChunkCoordinates chunkcoordinates;
-
-        do {
-            if (!iterator.hasNext()) {
+        do
+        {
+            if (!var4.hasNext())
+            {
                 return false;
             }
 
-            chunkcoordinates = (ChunkCoordinates) iterator.next();
-        } while (chunkcoordinates.x != i || chunkcoordinates.y != j || chunkcoordinates.z != k);
+            var5 = (ChunkCoordinates)var4.next();
+        }
+        while (var5.x != par1 || var5.y != par2 || var5.z != par3);
 
         return true;
     }
 
-    private boolean e(int i, int j, int k) {
-        int l = this.world.getTypeId(i, j, k);
-
-        return l == Block.WOODEN_DOOR.id;
+    private boolean e(int par1, int par2, int par3)
+    {
+        int var4 = this.world.getTypeId(par1, par2, par3);
+        return var4 == Block.WOODEN_DOOR.id;
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
-        this.time = nbttagcompound.getInt("Tick");
-        NBTTagList nbttaglist = nbttagcompound.getList("Villages");
+    /**
+     * reads in data from the NBTTagCompound into this MapDataBase
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        this.time = par1NBTTagCompound.getInt("Tick");
+        NBTTagList var2 = par1NBTTagCompound.getList("Villages");
 
-        for (int i = 0; i < nbttaglist.size(); ++i) {
-            NBTTagCompound nbttagcompound1 = (NBTTagCompound) nbttaglist.get(i);
-            Village village = new Village();
-
-            village.a(nbttagcompound1);
-            this.villages.add(village);
+        for (int var3 = 0; var3 < var2.size(); ++var3)
+        {
+            NBTTagCompound var4 = (NBTTagCompound)var2.get(var3);
+            Village var5 = new Village();
+            var5.a(var4);
+            this.villages.add(var5);
         }
     }
 
-    public void b(NBTTagCompound nbttagcompound) {
-        nbttagcompound.setInt("Tick", this.time);
-        NBTTagList nbttaglist = new NBTTagList("Villages");
-        Iterator iterator = this.villages.iterator();
+    /**
+     * write data to NBTTagCompound from this MapDataBase, similar to Entities and TileEntities
+     */
+    public void b(NBTTagCompound par1NBTTagCompound)
+    {
+        par1NBTTagCompound.setInt("Tick", this.time);
+        NBTTagList var2 = new NBTTagList("Villages");
+        Iterator var3 = this.villages.iterator();
 
-        while (iterator.hasNext()) {
-            Village village = (Village) iterator.next();
-            NBTTagCompound nbttagcompound1 = new NBTTagCompound("Village");
-
-            village.b(nbttagcompound1);
-            nbttaglist.add(nbttagcompound1);
+        while (var3.hasNext())
+        {
+            Village var4 = (Village)var3.next();
+            NBTTagCompound var5 = new NBTTagCompound("Village");
+            var4.b(var5);
+            var2.add(var5);
         }
 
-        nbttagcompound.set("Villages", nbttaglist);
+        par1NBTTagCompound.set("Villages", var2);
     }
 }

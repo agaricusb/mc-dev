@@ -1,43 +1,62 @@
 package net.minecraft.server;
 
-class EntitySizes {
-
+class EntitySizes
+{
     static final int[] a = new int[EnumEntitySize.values().length];
 
-    static {
-        try {
+    static
+    {
+        try
+        {
             a[EnumEntitySize.SIZE_1.ordinal()] = 1;
-        } catch (NoSuchFieldError nosuchfielderror) {
+        }
+        catch (NoSuchFieldError var6)
+        {
             ;
         }
 
-        try {
+        try
+        {
             a[EnumEntitySize.SIZE_2.ordinal()] = 2;
-        } catch (NoSuchFieldError nosuchfielderror1) {
+        }
+        catch (NoSuchFieldError var5)
+        {
             ;
         }
 
-        try {
+        try
+        {
             a[EnumEntitySize.SIZE_3.ordinal()] = 3;
-        } catch (NoSuchFieldError nosuchfielderror2) {
+        }
+        catch (NoSuchFieldError var4)
+        {
             ;
         }
 
-        try {
+        try
+        {
             a[EnumEntitySize.SIZE_4.ordinal()] = 4;
-        } catch (NoSuchFieldError nosuchfielderror3) {
+        }
+        catch (NoSuchFieldError var3)
+        {
             ;
         }
 
-        try {
+        try
+        {
             a[EnumEntitySize.SIZE_5.ordinal()] = 5;
-        } catch (NoSuchFieldError nosuchfielderror4) {
+        }
+        catch (NoSuchFieldError var2)
+        {
             ;
         }
 
-        try {
+        try
+        {
             a[EnumEntitySize.SIZE_6.ordinal()] = 6;
-        } catch (NoSuchFieldError nosuchfielderror5) {
+        }
+        catch (NoSuchFieldError var1)
+        {
             ;
         }
     }

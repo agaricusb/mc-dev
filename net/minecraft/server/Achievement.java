@@ -1,68 +1,123 @@
 package net.minecraft.server;
 
-public class Achievement extends Statistic {
-
+public class Achievement extends Statistic
+{
+    /**
+     * Is the column (related to center of achievement gui, in 24 pixels unit) that the achievement will be displayed.
+     */
     public final int a;
+
+    /**
+     * Is the row (related to center of achievement gui, in 24 pixels unit) that the achievement will be displayed.
+     */
     public final int b;
+
+    /**
+     * Holds the parent achievement, that must be taken before this achievement is avaiable.
+     */
     public final Achievement c;
+
+    /**
+     * Holds the description of the achievement, ready to be formatted and/or displayed.
+     */
     private final String k;
+
+    /**
+     * Holds the ItemStack that will be used to draw the achievement into the GUI.
+     */
     public final ItemStack d;
+
+    /**
+     * Special achievements have a 'spiked' (on normal texture pack) frame, special achievements are the hardest ones to
+     * achieve.
+     */
     private boolean m;
 
-    public Achievement(int i, String s, int j, int k, Item item, Achievement achievement) {
-        this(i, s, j, k, new ItemStack(item), achievement);
+    public Achievement(int par1, String par2Str, int par3, int par4, Item par5Item, Achievement par6Achievement)
+    {
+        this(par1, par2Str, par3, par4, new ItemStack(par5Item), par6Achievement);
     }
 
-    public Achievement(int i, String s, int j, int k, Block block, Achievement achievement) {
-        this(i, s, j, k, new ItemStack(block), achievement);
+    public Achievement(int par1, String par2Str, int par3, int par4, Block par5Block, Achievement par6Achievement)
+    {
+        this(par1, par2Str, par3, par4, new ItemStack(par5Block), par6Achievement);
     }
 
-    public Achievement(int i, String s, int j, int k, ItemStack itemstack, Achievement achievement) {
-        super(5242880 + i, "achievement." + s);
-        this.d = itemstack;
-        this.k = "achievement." + s + ".desc";
-        this.a = j;
-        this.b = k;
-        if (j < AchievementList.a) {
-            a = j;
+    public Achievement(int par1, String par2Str, int par3, int par4, ItemStack par5ItemStack, Achievement par6Achievement)
+    {
+        super(5242880 + par1, "achievement." + par2Str);
+        this.d = par5ItemStack;
+        this.k = "achievement." + par2Str + ".desc";
+        this.a = par3;
+        this.b = par4;
+
+        if (par3 < AchievementList.a)
+        {
+            AchievementList.a = par3;
         }
 
-        if (k < AchievementList.b) {
-            b = k;
+        if (par4 < AchievementList.b)
+        {
+            AchievementList.b = par4;
         }
 
-        if (j > AchievementList.c) {
-            AchievementList.c = j;
+        if (par3 > AchievementList.c)
+        {
+            AchievementList.c = par3;
         }
 
-        if (k > AchievementList.d) {
-            AchievementList.d = k;
+        if (par4 > AchievementList.d)
+        {
+            AchievementList.d = par4;
         }
 
-        this.c = achievement;
+        this.c = par6Achievement;
     }
 
-    public Achievement a() {
+    /**
+     * Indicates whether or not the given achievement or statistic is independent (i.e., lacks prerequisites for being
+     * update).
+     */
+    public Achievement a()
+    {
         this.f = true;
         return this;
     }
 
-    public Achievement b() {
+    /**
+     * Special achievements have a 'spiked' (on normal texture pack) frame, special achievements are the hardest ones to
+     * achieve.
+     */
+    public Achievement b()
+    {
         this.m = true;
         return this;
     }
 
-    public Achievement c() {
+    /**
+     * Adds the achievement on the internal list of registered achievements, also, it's check for duplicated id's.
+     */
+    public Achievement c()
+    {
         super.g();
         AchievementList.e.add(this);
         return this;
     }
 
-    public Statistic g() {
+    /**
+     * Register the stat into StatList.
+     */
+    public Statistic g()
+    {
         return this.c();
     }
 
-    public Statistic h() {
+    /**
+     * Initializes the current stat as independent (i.e., lacking prerequisites for being updated) and returns the
+     * current instance.
+     */
+    public Statistic h()
+    {
         return this.a();
     }
 }

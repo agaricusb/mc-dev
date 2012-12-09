@@ -4,166 +4,257 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class BlockPressurePlate extends Block {
-
+public class BlockPressurePlate extends Block
+{
+    /** The mob type that can trigger this pressure plate. */
     private EnumMobType a;
 
-    protected BlockPressurePlate(int i, int j, EnumMobType enummobtype, Material material) {
-        super(i, j, material);
-        this.a = enummobtype;
+    protected BlockPressurePlate(int par1, int par2, EnumMobType par3EnumMobType, Material par4Material)
+    {
+        super(par1, par2, par4Material);
+        this.a = par3EnumMobType;
         this.a(CreativeModeTab.d);
         this.b(true);
-        float f = 0.0625F;
-
-        this.a(f, 0.0F, f, 1.0F - f, 0.03125F, 1.0F - f);
+        float var5 = 0.0625F;
+        this.a(var5, 0.0F, var5, 1.0F - var5, 0.03125F, 1.0F - var5);
     }
 
-    public int r_() {
+    /**
+     * How many world ticks before ticking
+     */
+    public int r_()
+    {
         return 20;
     }
 
-    public AxisAlignedBB e(World world, int i, int j, int k) {
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
+    {
         return null;
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public boolean c(IBlockAccess iblockaccess, int i, int j, int k) {
+    public boolean c(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
         return true;
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        return world.v(i, j - 1, k) || BlockFence.c(world.getTypeId(i, j - 1, k));
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        return par1World.v(par2, par3 - 1, par4) || BlockFence.c(par1World.getTypeId(par2, par3 - 1, par4));
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        boolean flag = false;
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        boolean var6 = false;
 
-        if (!world.v(i, j - 1, k) && !BlockFence.c(world.getTypeId(i, j - 1, k))) {
-            flag = true;
+        if (!par1World.v(par2, par3 - 1, par4) && !BlockFence.c(par1World.getTypeId(par2, par3 - 1, par4)))
+        {
+            var6 = true;
         }
 
-        if (flag) {
-            this.c(world, i, j, k, world.getData(i, j, k), 0);
-            world.setTypeId(i, j, k, 0);
+        if (var6)
+        {
+            this.c(par1World, par2, par3, par4, par1World.getData(par2, par3, par4), 0);
+            par1World.setTypeId(par2, par3, par4, 0);
         }
     }
 
-    public void b(World world, int i, int j, int k, Random random) {
-        if (!world.isStatic) {
-            if (world.getData(i, j, k) != 0) {
-                this.l(world, i, j, k);
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        if (!par1World.isStatic)
+        {
+            if (par1World.getData(par2, par3, par4) != 0)
+            {
+                this.l(par1World, par2, par3, par4);
             }
         }
     }
 
-    public void a(World world, int i, int j, int k, Entity entity) {
-        if (!world.isStatic) {
-            if (world.getData(i, j, k) != 1) {
-                this.l(world, i, j, k);
+    /**
+     * Triggered whenever an entity collides with this block (enters into the block). Args: world, x, y, z, entity
+     */
+    public void a(World par1World, int par2, int par3, int par4, Entity par5Entity)
+    {
+        if (!par1World.isStatic)
+        {
+            if (par1World.getData(par2, par3, par4) != 1)
+            {
+                this.l(par1World, par2, par3, par4);
             }
         }
     }
 
-    private void l(World world, int i, int j, int k) {
-        boolean flag = world.getData(i, j, k) == 1;
-        boolean flag1 = false;
-        float f = 0.125F;
-        List list = null;
+    /**
+     * Checks if there are mobs on the plate. If a mob is on the plate and it is off, it turns it on, and vice versa.
+     */
+    private void l(World par1World, int par2, int par3, int par4)
+    {
+        boolean var5 = par1World.getData(par2, par3, par4) == 1;
+        boolean var6 = false;
+        float var7 = 0.125F;
+        List var8 = null;
 
-        if (this.a == EnumMobType.EVERYTHING) {
-            list = world.getEntities((Entity) null, AxisAlignedBB.a().a((double) ((float) i + f), (double) j, (double) ((float) k + f), (double) ((float) (i + 1) - f), (double) j + 0.25D, (double) ((float) (k + 1) - f)));
+        if (this.a == EnumMobType.EVERYTHING)
+        {
+            var8 = par1World.getEntities((Entity) null, AxisAlignedBB.a().a((double) ((float) par2 + var7), (double) par3, (double) ((float) par4 + var7), (double) ((float) (par2 + 1) - var7), (double) par3 + 0.25D, (double) ((float) (par4 + 1) - var7)));
         }
 
-        if (this.a == EnumMobType.MOBS) {
-            list = world.a(EntityLiving.class, AxisAlignedBB.a().a((double) ((float) i + f), (double) j, (double) ((float) k + f), (double) ((float) (i + 1) - f), (double) j + 0.25D, (double) ((float) (k + 1) - f)));
+        if (this.a == EnumMobType.MOBS)
+        {
+            var8 = par1World.a(EntityLiving.class, AxisAlignedBB.a().a((double) ((float) par2 + var7), (double) par3, (double) ((float) par4 + var7), (double) ((float) (par2 + 1) - var7), (double) par3 + 0.25D, (double) ((float) (par4 + 1) - var7)));
         }
 
-        if (this.a == EnumMobType.PLAYERS) {
-            list = world.a(EntityHuman.class, AxisAlignedBB.a().a((double) ((float) i + f), (double) j, (double) ((float) k + f), (double) ((float) (i + 1) - f), (double) j + 0.25D, (double) ((float) (k + 1) - f)));
+        if (this.a == EnumMobType.PLAYERS)
+        {
+            var8 = par1World.a(EntityHuman.class, AxisAlignedBB.a().a((double) ((float) par2 + var7), (double) par3, (double) ((float) par4 + var7), (double) ((float) (par2 + 1) - var7), (double) par3 + 0.25D, (double) ((float) (par4 + 1) - var7)));
         }
 
-        if (!list.isEmpty()) {
-            Iterator iterator = list.iterator();
+        if (!var8.isEmpty())
+        {
+            Iterator var9 = var8.iterator();
 
-            while (iterator.hasNext()) {
-                Entity entity = (Entity) iterator.next();
+            while (var9.hasNext())
+            {
+                Entity var10 = (Entity)var9.next();
 
-                if (!entity.au()) {
-                    flag1 = true;
+                if (!var10.au())
+                {
+                    var6 = true;
                     break;
                 }
             }
         }
 
-        if (flag1 && !flag) {
-            world.setData(i, j, k, 1);
-            world.applyPhysics(i, j, k, this.id);
-            world.applyPhysics(i, j - 1, k, this.id);
-            world.e(i, j, k, i, j, k);
-            world.makeSound((double) i + 0.5D, (double) j + 0.1D, (double) k + 0.5D, "random.click", 0.3F, 0.6F);
+        if (var6 && !var5)
+        {
+            par1World.setData(par2, par3, par4, 1);
+            par1World.applyPhysics(par2, par3, par4, this.id);
+            par1World.applyPhysics(par2, par3 - 1, par4, this.id);
+            par1World.e(par2, par3, par4, par2, par3, par4);
+            par1World.makeSound((double) par2 + 0.5D, (double) par3 + 0.1D, (double) par4 + 0.5D, "random.click", 0.3F, 0.6F);
         }
 
-        if (!flag1 && flag) {
-            world.setData(i, j, k, 0);
-            world.applyPhysics(i, j, k, this.id);
-            world.applyPhysics(i, j - 1, k, this.id);
-            world.e(i, j, k, i, j, k);
-            world.makeSound((double) i + 0.5D, (double) j + 0.1D, (double) k + 0.5D, "random.click", 0.3F, 0.5F);
+        if (!var6 && var5)
+        {
+            par1World.setData(par2, par3, par4, 0);
+            par1World.applyPhysics(par2, par3, par4, this.id);
+            par1World.applyPhysics(par2, par3 - 1, par4, this.id);
+            par1World.e(par2, par3, par4, par2, par3, par4);
+            par1World.makeSound((double) par2 + 0.5D, (double) par3 + 0.1D, (double) par4 + 0.5D, "random.click", 0.3F, 0.5F);
         }
 
-        if (flag1) {
-            world.a(i, j, k, this.id, this.r_());
-        }
-    }
-
-    public void remove(World world, int i, int j, int k, int l, int i1) {
-        if (i1 > 0) {
-            world.applyPhysics(i, j, k, this.id);
-            world.applyPhysics(i, j - 1, k, this.id);
-        }
-
-        super.remove(world, i, j, k, l, i1);
-    }
-
-    public void updateShape(IBlockAccess iblockaccess, int i, int j, int k) {
-        boolean flag = iblockaccess.getData(i, j, k) == 1;
-        float f = 0.0625F;
-
-        if (flag) {
-            this.a(f, 0.0F, f, 1.0F - f, 0.03125F, 1.0F - f);
-        } else {
-            this.a(f, 0.0F, f, 1.0F - f, 0.0625F, 1.0F - f);
+        if (var6)
+        {
+            par1World.a(par2, par3, par4, this.id, this.r_());
         }
     }
 
-    public boolean b(IBlockAccess iblockaccess, int i, int j, int k, int l) {
-        return iblockaccess.getData(i, j, k) > 0;
+    /**
+     * ejects contained items into the world, and notifies neighbours of an update, as appropriate
+     */
+    public void remove(World par1World, int par2, int par3, int par4, int par5, int par6)
+    {
+        if (par6 > 0)
+        {
+            par1World.applyPhysics(par2, par3, par4, this.id);
+            par1World.applyPhysics(par2, par3 - 1, par4, this.id);
+        }
+
+        super.remove(par1World, par2, par3, par4, par5, par6);
     }
 
-    public boolean c(IBlockAccess iblockaccess, int i, int j, int k, int l) {
-        return iblockaccess.getData(i, j, k) == 0 ? false : l == 1;
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void updateShape(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        boolean var5 = par1IBlockAccess.getData(par2, par3, par4) == 1;
+        float var6 = 0.0625F;
+
+        if (var5)
+        {
+            this.a(var6, 0.0F, var6, 1.0F - var6, 0.03125F, 1.0F - var6);
+        }
+        else
+        {
+            this.a(var6, 0.0F, var6, 1.0F - var6, 0.0625F, 1.0F - var6);
+        }
     }
 
-    public boolean isPowerSource() {
+    /**
+     * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
+     * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
+     * Y, Z, side
+     */
+    public boolean b(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    {
+        return par1IBlockAccess.getData(par2, par3, par4) > 0;
+    }
+
+    /**
+     * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
+     * side
+     */
+    public boolean c(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
+    {
+        return par1IBlockAccess.getData(par2, par3, par4) == 0 ? false : par5 == 1;
+    }
+
+    /**
+     * Can this block provide power. Only wire currently seems to have this change based on its state.
+     */
+    public boolean isPowerSource()
+    {
         return true;
     }
 
-    public void f() {
-        float f = 0.5F;
-        float f1 = 0.125F;
-        float f2 = 0.5F;
-
-        this.a(0.5F - f, 0.5F - f1, 0.5F - f2, 0.5F + f, 0.5F + f1, 0.5F + f2);
+    /**
+     * Sets the block's bounds for rendering it as an item
+     */
+    public void f()
+    {
+        float var1 = 0.5F;
+        float var2 = 0.125F;
+        float var3 = 0.5F;
+        this.a(0.5F - var1, 0.5F - var2, 0.5F - var3, 0.5F + var1, 0.5F + var2, 0.5F + var3);
     }
 
-    public int q_() {
+    /**
+     * Returns the mobility information of the block, 0 = free, 1 = can't push but can move over, 2 = total immobility
+     * and stop pistons
+     */
+    public int q_()
+    {
         return 1;
     }
 }

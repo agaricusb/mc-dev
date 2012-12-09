@@ -5,31 +5,41 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AchievementMap {
-
+public class AchievementMap
+{
+    /** Holds the singleton instance of AchievementMap. */
     public static AchievementMap a = new AchievementMap();
+
+    /** Maps a achievement id with it's unique GUID. */
     private Map b = new HashMap();
 
-    private AchievementMap() {
-        try {
-            BufferedReader bufferedreader = new BufferedReader(new InputStreamReader(AchievementMap.class.getResourceAsStream("/achievement/map.txt")));
+    private AchievementMap()
+    {
+        try
+        {
+            BufferedReader var1 = new BufferedReader(new InputStreamReader(AchievementMap.class.getResourceAsStream("/achievement/map.txt")));
+            String var2;
 
-            String s;
-
-            while ((s = bufferedreader.readLine()) != null) {
-                String[] astring = s.split(",");
-                int i = Integer.parseInt(astring[0]);
-
-                this.b.put(Integer.valueOf(i), astring[1]);
+            while ((var2 = var1.readLine()) != null)
+            {
+                String[] var3 = var2.split(",");
+                int var4 = Integer.parseInt(var3[0]);
+                this.b.put(Integer.valueOf(var4), var3[1]);
             }
 
-            bufferedreader.close();
-        } catch (Exception exception) {
-            exception.printStackTrace();
+            var1.close();
+        }
+        catch (Exception var5)
+        {
+            var5.printStackTrace();
         }
     }
 
-    public static String a(int i) {
-        return (String) a.b.get(Integer.valueOf(i));
+    /**
+     * Returns the unique GUID of a achievement id.
+     */
+    public static String a(int par0)
+    {
+        return (String) a.b.get(Integer.valueOf(par0));
     }
 }

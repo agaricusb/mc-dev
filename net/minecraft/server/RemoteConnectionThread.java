@@ -7,135 +7,220 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public abstract class RemoteConnectionThread implements Runnable {
-
+public abstract class RemoteConnectionThread implements Runnable
+{
+    /** True i */
     protected boolean running = false;
+
+    /** Reference to the IServer object. */
     protected IMinecraftServer server;
+
+    /** Thread for this runnable class */
     protected Thread thread;
     protected int d = 5;
+
+    /** A list of registered DatagramSockets */
     protected List e = new ArrayList();
+
+    /** A list of registered ServerSockets */
     protected List f = new ArrayList();
 
-    RemoteConnectionThread(IMinecraftServer iminecraftserver) {
-        this.server = iminecraftserver;
-        if (this.server.isDebugging()) {
+    RemoteConnectionThread(IMinecraftServer par1IServer)
+    {
+        this.server = par1IServer;
+
+        if (this.server.isDebugging())
+        {
             this.warning("Debugging is enabled, performance maybe reduced!");
         }
     }
 
-    public synchronized void a() {
+    /**
+     * Creates a new Thread object from this class and starts running
+     */
+    public synchronized void a()
+    {
         this.thread = new Thread(this);
         this.thread.start();
         this.running = true;
     }
 
-    public boolean c() {
+    /**
+     * Returns true if the Thread is running, false otherwise
+     */
+    public boolean c()
+    {
         return this.running;
     }
 
-    protected void debug(String s) {
-        this.server.j(s);
+    /**
+     * Log debug message
+     */
+    protected void debug(String par1Str)
+    {
+        this.server.j(par1Str);
     }
 
-    protected void info(String s) {
-        this.server.info(s);
+    /**
+     * Log information message
+     */
+    protected void info(String par1Str)
+    {
+        this.server.info(par1Str);
     }
 
-    protected void warning(String s) {
-        this.server.warning(s);
+    /**
+     * Log warning message
+     */
+    protected void warning(String par1Str)
+    {
+        this.server.warning(par1Str);
     }
 
-    protected void error(String s) {
-        this.server.i(s);
+    /**
+     * Log severe error message
+     */
+    protected void error(String par1Str)
+    {
+        this.server.i(par1Str);
     }
 
-    protected int d() {
+    /**
+     * Returns the number of players on the server
+     */
+    protected int d()
+    {
         return this.server.y();
     }
 
-    protected void a(DatagramSocket datagramsocket) {
-        this.debug("registerSocket: " + datagramsocket);
-        this.e.add(datagramsocket);
+    /**
+     * Registers a DatagramSocket with this thread
+     */
+    protected void a(DatagramSocket par1DatagramSocket)
+    {
+        this.debug("registerSocket: " + par1DatagramSocket);
+        this.e.add(par1DatagramSocket);
     }
 
-    protected boolean a(DatagramSocket datagramsocket, boolean flag) {
-        this.debug("closeSocket: " + datagramsocket);
-        if (null == datagramsocket) {
+    /**
+     * Closes the specified DatagramSocket
+     */
+    protected boolean a(DatagramSocket par1DatagramSocket, boolean par2)
+    {
+        this.debug("closeSocket: " + par1DatagramSocket);
+
+        if (null == par1DatagramSocket)
+        {
             return false;
-        } else {
-            boolean flag1 = false;
+        }
+        else
+        {
+            boolean var3 = false;
 
-            if (!datagramsocket.isClosed()) {
-                datagramsocket.close();
-                flag1 = true;
+            if (!par1DatagramSocket.isClosed())
+            {
+                par1DatagramSocket.close();
+                var3 = true;
             }
 
-            if (flag) {
-                this.e.remove(datagramsocket);
+            if (par2)
+            {
+                this.e.remove(par1DatagramSocket);
             }
 
-            return flag1;
+            return var3;
         }
     }
 
-    protected boolean b(ServerSocket serversocket) {
-        return this.a(serversocket, true);
+    /**
+     * Closes the specified ServerSocket
+     */
+    protected boolean b(ServerSocket par1ServerSocket)
+    {
+        return this.a(par1ServerSocket, true);
     }
 
-    protected boolean a(ServerSocket serversocket, boolean flag) {
-        this.debug("closeSocket: " + serversocket);
-        if (null == serversocket) {
-            return false;
-        } else {
-            boolean flag1 = false;
+    /**
+     * Closes the specified ServerSocket
+     */
+    protected boolean a(ServerSocket par1ServerSocket, boolean par2)
+    {
+        this.debug("closeSocket: " + par1ServerSocket);
 
-            try {
-                if (!serversocket.isClosed()) {
-                    serversocket.close();
-                    flag1 = true;
+        if (null == par1ServerSocket)
+        {
+            return false;
+        }
+        else
+        {
+            boolean var3 = false;
+
+            try
+            {
+                if (!par1ServerSocket.isClosed())
+                {
+                    par1ServerSocket.close();
+                    var3 = true;
                 }
-            } catch (IOException ioexception) {
-                this.warning("IO: " + ioexception.getMessage());
+            }
+            catch (IOException var5)
+            {
+                this.warning("IO: " + var5.getMessage());
             }
 
-            if (flag) {
-                this.f.remove(serversocket);
+            if (par2)
+            {
+                this.f.remove(par1ServerSocket);
             }
 
-            return flag1;
+            return var3;
         }
     }
 
-    protected void e() {
+    /**
+     * Closes all of the opened sockets
+     */
+    protected void e()
+    {
         this.a(false);
     }
 
-    protected void a(boolean flag) {
-        int i = 0;
-        Iterator iterator = this.e.iterator();
+    /**
+     * Closes all of the opened sockets
+     */
+    protected void a(boolean par1)
+    {
+        int var2 = 0;
+        Iterator var3 = this.e.iterator();
 
-        while (iterator.hasNext()) {
-            DatagramSocket datagramsocket = (DatagramSocket) iterator.next();
+        while (var3.hasNext())
+        {
+            DatagramSocket var4 = (DatagramSocket)var3.next();
 
-            if (this.a(datagramsocket, false)) {
-                ++i;
+            if (this.a(var4, false))
+            {
+                ++var2;
             }
         }
 
         this.e.clear();
-        iterator = this.f.iterator();
+        var3 = this.f.iterator();
 
-        while (iterator.hasNext()) {
-            ServerSocket serversocket = (ServerSocket) iterator.next();
+        while (var3.hasNext())
+        {
+            ServerSocket var5 = (ServerSocket)var3.next();
 
-            if (this.a(serversocket, false)) {
-                ++i;
+            if (this.a(var5, false))
+            {
+                ++var2;
             }
         }
 
         this.f.clear();
-        if (flag && 0 < i) {
-            this.warning("Force closed " + i + " sockets");
+
+        if (par1 && 0 < var2)
+        {
+            this.warning("Force closed " + var2 + " sockets");
         }
     }
 }

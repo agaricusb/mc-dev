@@ -1,27 +1,36 @@
 package net.minecraft.server;
 
-public class ItemCarrotStick extends Item {
-
-    public ItemCarrotStick(int i) {
-        super(i);
+public class ItemCarrotStick extends Item
+{
+    public ItemCarrotStick(int par1)
+    {
+        super(par1);
         this.a(CreativeModeTab.e);
         this.d(1);
         this.setMaxDurability(25);
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        if (entityhuman.ag() && entityhuman.vehicle instanceof EntityPig) {
-            EntityPig entitypig = (EntityPig) entityhuman.vehicle;
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        if (par3EntityPlayer.ag() && par3EntityPlayer.vehicle instanceof EntityPig)
+        {
+            EntityPig var4 = (EntityPig)par3EntityPlayer.vehicle;
 
-            if (entitypig.n().h() && itemstack.k() - itemstack.getData() >= 7) {
-                entitypig.n().g();
-                itemstack.damage(7, entityhuman);
-                if (itemstack.count == 0) {
+            if (var4.n().h() && par1ItemStack.k() - par1ItemStack.getData() >= 7)
+            {
+                var4.n().g();
+                par1ItemStack.damage(7, par3EntityPlayer);
+
+                if (par1ItemStack.count == 0)
+                {
                     return new ItemStack(Item.FISHING_ROD);
                 }
             }
         }
 
-        return itemstack;
+        return par1ItemStack;
     }
 }

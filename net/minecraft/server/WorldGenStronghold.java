@@ -8,81 +8,99 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
 
-public class WorldGenStronghold extends StructureGenerator {
-
+public class WorldGenStronghold extends StructureGenerator
+{
     private BiomeBase[] e;
+
+    /**
+     * is spawned false and set true once the defined BiomeGenBases were compared with the present ones
+     */
     private boolean f;
     private ChunkCoordIntPair[] g;
     private double h;
     private int i;
 
-    public WorldGenStronghold() {
-        this.e = new BiomeBase[] { BiomeBase.DESERT, BiomeBase.FOREST, BiomeBase.EXTREME_HILLS, BiomeBase.SWAMPLAND, BiomeBase.TAIGA, BiomeBase.ICE_PLAINS, BiomeBase.ICE_MOUNTAINS, BiomeBase.DESERT_HILLS, BiomeBase.FOREST_HILLS, BiomeBase.SMALL_MOUNTAINS, BiomeBase.JUNGLE, BiomeBase.JUNGLE_HILLS};
+    public WorldGenStronghold()
+    {
+        this.e = new BiomeBase[] {BiomeBase.DESERT, BiomeBase.FOREST, BiomeBase.EXTREME_HILLS, BiomeBase.SWAMPLAND, BiomeBase.TAIGA, BiomeBase.ICE_PLAINS, BiomeBase.ICE_MOUNTAINS, BiomeBase.DESERT_HILLS, BiomeBase.FOREST_HILLS, BiomeBase.SMALL_MOUNTAINS, BiomeBase.JUNGLE, BiomeBase.JUNGLE_HILLS};
         this.g = new ChunkCoordIntPair[3];
         this.h = 32.0D;
         this.i = 3;
     }
 
-    public WorldGenStronghold(Map map) {
-        this.e = new BiomeBase[] { BiomeBase.DESERT, BiomeBase.FOREST, BiomeBase.EXTREME_HILLS, BiomeBase.SWAMPLAND, BiomeBase.TAIGA, BiomeBase.ICE_PLAINS, BiomeBase.ICE_MOUNTAINS, BiomeBase.DESERT_HILLS, BiomeBase.FOREST_HILLS, BiomeBase.SMALL_MOUNTAINS, BiomeBase.JUNGLE, BiomeBase.JUNGLE_HILLS};
+    public WorldGenStronghold(Map par1Map)
+    {
+        this.e = new BiomeBase[] {BiomeBase.DESERT, BiomeBase.FOREST, BiomeBase.EXTREME_HILLS, BiomeBase.SWAMPLAND, BiomeBase.TAIGA, BiomeBase.ICE_PLAINS, BiomeBase.ICE_MOUNTAINS, BiomeBase.DESERT_HILLS, BiomeBase.FOREST_HILLS, BiomeBase.SMALL_MOUNTAINS, BiomeBase.JUNGLE, BiomeBase.JUNGLE_HILLS};
         this.g = new ChunkCoordIntPair[3];
         this.h = 32.0D;
         this.i = 3;
-        Iterator iterator = map.entrySet().iterator();
+        Iterator var2 = par1Map.entrySet().iterator();
 
-        while (iterator.hasNext()) {
-            Entry entry = (Entry) iterator.next();
+        while (var2.hasNext())
+        {
+            Entry var3 = (Entry)var2.next();
 
-            if (((String) entry.getKey()).equals("distance")) {
-                this.h = MathHelper.a((String) entry.getValue(), this.h, 1.0D);
-            } else if (((String) entry.getKey()).equals("count")) {
-                this.g = new ChunkCoordIntPair[MathHelper.a((String) entry.getValue(), this.g.length, 1)];
-            } else if (((String) entry.getKey()).equals("spread")) {
-                this.i = MathHelper.a((String) entry.getValue(), this.i, 1);
+            if (((String)var3.getKey()).equals("distance"))
+            {
+                this.h = MathHelper.a((String) var3.getValue(), this.h, 1.0D);
+            }
+            else if (((String)var3.getKey()).equals("count"))
+            {
+                this.g = new ChunkCoordIntPair[MathHelper.a((String) var3.getValue(), this.g.length, 1)];
+            }
+            else if (((String)var3.getKey()).equals("spread"))
+            {
+                this.i = MathHelper.a((String) var3.getValue(), this.i, 1);
             }
         }
     }
 
-    protected boolean a(int i, int j) {
-        if (!this.f) {
-            Random random = new Random();
+    protected boolean a(int par1, int par2)
+    {
+        if (!this.f)
+        {
+            Random var3 = new Random();
+            var3.setSeed(this.c.getSeed());
+            double var4 = var3.nextDouble() * Math.PI * 2.0D;
+            int var6 = 1;
 
-            random.setSeed(this.c.getSeed());
-            double d0 = random.nextDouble() * 3.141592653589793D * 2.0D;
-            int k = 1;
+            for (int var7 = 0; var7 < this.g.length; ++var7)
+            {
+                double var8 = (1.25D * (double)var6 + var3.nextDouble()) * this.h * (double)var6;
+                int var10 = (int)Math.round(Math.cos(var4) * var8);
+                int var11 = (int)Math.round(Math.sin(var4) * var8);
+                ArrayList var12 = new ArrayList();
+                Collections.addAll(var12, this.e);
+                ChunkPosition var13 = this.c.getWorldChunkManager().a((var10 << 4) + 8, (var11 << 4) + 8, 112, var12, var3);
 
-            for (int l = 0; l < this.g.length; ++l) {
-                double d1 = (1.25D * (double) k + random.nextDouble()) * this.h * (double) k;
-                int i1 = (int) Math.round(Math.cos(d0) * d1);
-                int j1 = (int) Math.round(Math.sin(d0) * d1);
-                ArrayList arraylist = new ArrayList();
-
-                Collections.addAll(arraylist, this.e);
-                ChunkPosition chunkposition = this.c.getWorldChunkManager().a((i1 << 4) + 8, (j1 << 4) + 8, 112, arraylist, random);
-
-                if (chunkposition != null) {
-                    i1 = chunkposition.x >> 4;
-                    j1 = chunkposition.z >> 4;
+                if (var13 != null)
+                {
+                    var10 = var13.x >> 4;
+                    var11 = var13.z >> 4;
                 }
 
-                this.g[l] = new ChunkCoordIntPair(i1, j1);
-                d0 += 6.283185307179586D * (double) k / (double) this.i;
-                if (l == this.i) {
-                    k += 2 + random.nextInt(5);
-                    this.i += 1 + random.nextInt(2);
+                this.g[var7] = new ChunkCoordIntPair(var10, var11);
+                var4 += (Math.PI * 2D) * (double)var6 / (double)this.i;
+
+                if (var7 == this.i)
+                {
+                    var6 += 2 + var3.nextInt(5);
+                    this.i += 1 + var3.nextInt(2);
                 }
             }
 
             this.f = true;
         }
 
-        ChunkCoordIntPair[] achunkcoordintpair = this.g;
-        int k1 = achunkcoordintpair.length;
+        ChunkCoordIntPair[] var14 = this.g;
+        int var15 = var14.length;
 
-        for (int l1 = 0; l1 < k1; ++l1) {
-            ChunkCoordIntPair chunkcoordintpair = achunkcoordintpair[l1];
+        for (int var5 = 0; var5 < var15; ++var5)
+        {
+            ChunkCoordIntPair var16 = var14[var5];
 
-            if (i == chunkcoordintpair.x && j == chunkcoordintpair.z) {
+            if (par1 == var16.x && par2 == var16.z)
+            {
                 return true;
             }
         }
@@ -90,29 +108,38 @@ public class WorldGenStronghold extends StructureGenerator {
         return false;
     }
 
-    protected List p_() {
-        ArrayList arraylist = new ArrayList();
-        ChunkCoordIntPair[] achunkcoordintpair = this.g;
-        int i = achunkcoordintpair.length;
+    /**
+     * Returns a list of other locations at which the structure generation has been run, or null if not relevant to this
+     * structure generator.
+     */
+    protected List p_()
+    {
+        ArrayList var1 = new ArrayList();
+        ChunkCoordIntPair[] var2 = this.g;
+        int var3 = var2.length;
 
-        for (int j = 0; j < i; ++j) {
-            ChunkCoordIntPair chunkcoordintpair = achunkcoordintpair[j];
+        for (int var4 = 0; var4 < var3; ++var4)
+        {
+            ChunkCoordIntPair var5 = var2[var4];
 
-            if (chunkcoordintpair != null) {
-                arraylist.add(chunkcoordintpair.a(64));
+            if (var5 != null)
+            {
+                var1.add(var5.a(64));
             }
         }
 
-        return arraylist;
+        return var1;
     }
 
-    protected StructureStart b(int i, int j) {
-        WorldGenStronghold2Start worldgenstronghold2start;
+    protected StructureStart b(int par1, int par2)
+    {
+        WorldGenStronghold2Start var3;
 
-        for (worldgenstronghold2start = new WorldGenStronghold2Start(this.c, this.b, i, j); worldgenstronghold2start.b().isEmpty() || ((WorldGenStrongholdStart) worldgenstronghold2start.b().get(0)).b == null; worldgenstronghold2start = new WorldGenStronghold2Start(this.c, this.b, i, j)) {
+        for (var3 = new WorldGenStronghold2Start(this.c, this.b, par1, par2); var3.b().isEmpty() || ((WorldGenStrongholdStart)var3.b().get(0)).b == null; var3 = new WorldGenStronghold2Start(this.c, this.b, par1, par2))
+        {
             ;
         }
 
-        return worldgenstronghold2start;
+        return var3;
     }
 }

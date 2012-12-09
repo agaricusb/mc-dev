@@ -2,109 +2,163 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockLadder extends Block {
-
-    protected BlockLadder(int i, int j) {
-        super(i, j, Material.ORIENTABLE);
+public class BlockLadder extends Block
+{
+    protected BlockLadder(int par1, int par2)
+    {
+        super(par1, par2, Material.ORIENTABLE);
         this.a(CreativeModeTab.c);
     }
 
-    public AxisAlignedBB e(World world, int i, int j, int k) {
-        this.updateShape(world, i, j, k);
-        return super.e(world, i, j, k);
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
+    {
+        this.updateShape(par1World, par2, par3, par4);
+        return super.e(par1World, par2, par3, par4);
     }
 
-    public void updateShape(IBlockAccess iblockaccess, int i, int j, int k) {
-        this.d(iblockaccess.getData(i, j, k));
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void updateShape(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        this.d(par1IBlockAccess.getData(par2, par3, par4));
     }
 
-    public void d(int i) {
-        float f = 0.125F;
+    /**
+     * Update the ladder block bounds based on the given metadata value.
+     */
+    public void d(int par1)
+    {
+        float var3 = 0.125F;
 
-        if (i == 2) {
-            this.a(0.0F, 0.0F, 1.0F - f, 1.0F, 1.0F, 1.0F);
+        if (par1 == 2)
+        {
+            this.a(0.0F, 0.0F, 1.0F - var3, 1.0F, 1.0F, 1.0F);
         }
 
-        if (i == 3) {
-            this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, f);
+        if (par1 == 3)
+        {
+            this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, var3);
         }
 
-        if (i == 4) {
-            this.a(1.0F - f, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
+        if (par1 == 4)
+        {
+            this.a(1.0F - var3, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
         }
 
-        if (i == 5) {
-            this.a(0.0F, 0.0F, 0.0F, f, 1.0F, 1.0F);
+        if (par1 == 5)
+        {
+            this.a(0.0F, 0.0F, 0.0F, var3, 1.0F, 1.0F);
         }
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 8;
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        return world.t(i - 1, j, k) ? true : (world.t(i + 1, j, k) ? true : (world.t(i, j, k - 1) ? true : world.t(i, j, k + 1)));
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        return par1World.t(par2 - 1, par3, par4) ? true : (par1World.t(par2 + 1, par3, par4) ? true : (par1World.t(par2, par3, par4 - 1) ? true : par1World.t(par2, par3, par4 + 1)));
     }
 
-    public int getPlacedData(World world, int i, int j, int k, int l, float f, float f1, float f2, int i1) {
-        int j1 = i1;
+    public int getPlacedData(World par1World, int par2, int par3, int par4, int par5, float par6, float par7, float par8, int par9)
+    {
+        int var10 = par9;
 
-        if ((i1 == 0 || l == 2) && world.t(i, j, k + 1)) {
-            j1 = 2;
+        if ((par9 == 0 || par5 == 2) && par1World.t(par2, par3, par4 + 1))
+        {
+            var10 = 2;
         }
 
-        if ((j1 == 0 || l == 3) && world.t(i, j, k - 1)) {
-            j1 = 3;
+        if ((var10 == 0 || par5 == 3) && par1World.t(par2, par3, par4 - 1))
+        {
+            var10 = 3;
         }
 
-        if ((j1 == 0 || l == 4) && world.t(i + 1, j, k)) {
-            j1 = 4;
+        if ((var10 == 0 || par5 == 4) && par1World.t(par2 + 1, par3, par4))
+        {
+            var10 = 4;
         }
 
-        if ((j1 == 0 || l == 5) && world.t(i - 1, j, k)) {
-            j1 = 5;
+        if ((var10 == 0 || par5 == 5) && par1World.t(par2 - 1, par3, par4))
+        {
+            var10 = 5;
         }
 
-        return j1;
+        return var10;
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        int i1 = world.getData(i, j, k);
-        boolean flag = false;
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        int var6 = par1World.getData(par2, par3, par4);
+        boolean var7 = false;
 
-        if (i1 == 2 && world.t(i, j, k + 1)) {
-            flag = true;
+        if (var6 == 2 && par1World.t(par2, par3, par4 + 1))
+        {
+            var7 = true;
         }
 
-        if (i1 == 3 && world.t(i, j, k - 1)) {
-            flag = true;
+        if (var6 == 3 && par1World.t(par2, par3, par4 - 1))
+        {
+            var7 = true;
         }
 
-        if (i1 == 4 && world.t(i + 1, j, k)) {
-            flag = true;
+        if (var6 == 4 && par1World.t(par2 + 1, par3, par4))
+        {
+            var7 = true;
         }
 
-        if (i1 == 5 && world.t(i - 1, j, k)) {
-            flag = true;
+        if (var6 == 5 && par1World.t(par2 - 1, par3, par4))
+        {
+            var7 = true;
         }
 
-        if (!flag) {
-            this.c(world, i, j, k, i1, 0);
-            world.setTypeId(i, j, k, 0);
+        if (!var7)
+        {
+            this.c(par1World, par2, par3, par4, var6, 0);
+            par1World.setTypeId(par2, par3, par4, 0);
         }
 
-        super.doPhysics(world, i, j, k, l);
+        super.doPhysics(par1World, par2, par3, par4, par5);
     }
 
-    public int a(Random random) {
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    public int a(Random par1Random)
+    {
         return 1;
     }
 }

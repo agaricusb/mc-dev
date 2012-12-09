@@ -1,31 +1,44 @@
 package net.minecraft.server;
 
-class WorldGenStrongholdPieceWeight3 {
-
+class WorldGenStrongholdPieceWeight3
+{
     static final int[] a = new int[WorldGenStrongholdDoorType.values().length];
 
-    static {
-        try {
+    static
+    {
+        try
+        {
             a[WorldGenStrongholdDoorType.a.ordinal()] = 1;
-        } catch (NoSuchFieldError nosuchfielderror) {
+        }
+        catch (NoSuchFieldError var4)
+        {
             ;
         }
 
-        try {
+        try
+        {
             a[WorldGenStrongholdDoorType.b.ordinal()] = 2;
-        } catch (NoSuchFieldError nosuchfielderror1) {
+        }
+        catch (NoSuchFieldError var3)
+        {
             ;
         }
 
-        try {
+        try
+        {
             a[WorldGenStrongholdDoorType.c.ordinal()] = 3;
-        } catch (NoSuchFieldError nosuchfielderror2) {
+        }
+        catch (NoSuchFieldError var2)
+        {
             ;
         }
 
-        try {
+        try
+        {
             a[WorldGenStrongholdDoorType.d.ordinal()] = 4;
-        } catch (NoSuchFieldError nosuchfielderror3) {
+        }
+        catch (NoSuchFieldError var1)
+        {
             ;
         }
     }

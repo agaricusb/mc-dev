@@ -1,46 +1,59 @@
 package net.minecraft.server;
 
-public class DispenseBehaviorBoat extends DispenseBehaviorItem {
-
+public class DispenseBehaviorBoat extends DispenseBehaviorItem
+{
+    /** Reference to the BehaviorDefaultDispenseItem object. */
     private final DispenseBehaviorItem c;
 
     final MinecraftServer b;
 
-    public DispenseBehaviorBoat(MinecraftServer minecraftserver) {
-        this.b = minecraftserver;
+    public DispenseBehaviorBoat(MinecraftServer par1MinecraftServer)
+    {
+        this.b = par1MinecraftServer;
         this.c = new DispenseBehaviorItem();
     }
 
-    public ItemStack b(ISourceBlock isourceblock, ItemStack itemstack) {
-        EnumFacing enumfacing = EnumFacing.a(isourceblock.h());
-        World world = isourceblock.k();
-        double d0 = isourceblock.getX() + (double) ((float) enumfacing.c() * 1.125F);
-        double d1 = isourceblock.getY();
-        double d2 = isourceblock.getZ() + (double) ((float) enumfacing.e() * 1.125F);
-        int i = isourceblock.getBlockX() + enumfacing.c();
-        int j = isourceblock.getBlockY();
-        int k = isourceblock.getBlockZ() + enumfacing.e();
-        Material material = world.getMaterial(i, j, k);
-        double d3;
+    /**
+     * Dispense the specified stack, play the dispense sound and spawn particles.
+     */
+    public ItemStack b(ISourceBlock par1IBlockSource, ItemStack par2ItemStack)
+    {
+        EnumFacing var3 = EnumFacing.a(par1IBlockSource.h());
+        World var4 = par1IBlockSource.k();
+        double var5 = par1IBlockSource.getX() + (double)((float)var3.c() * 1.125F);
+        double var7 = par1IBlockSource.getY();
+        double var9 = par1IBlockSource.getZ() + (double)((float)var3.e() * 1.125F);
+        int var11 = par1IBlockSource.getBlockX() + var3.c();
+        int var12 = par1IBlockSource.getBlockY();
+        int var13 = par1IBlockSource.getBlockZ() + var3.e();
+        Material var14 = var4.getMaterial(var11, var12, var13);
+        double var15;
 
-        if (Material.WATER.equals(material)) {
-            d3 = 1.0D;
-        } else {
-            if (!Material.AIR.equals(material) || !Material.WATER.equals(world.getMaterial(i, j - 1, k))) {
-                return this.c.a(isourceblock, itemstack);
+        if (Material.WATER.equals(var14))
+        {
+            var15 = 1.0D;
+        }
+        else
+        {
+            if (!Material.AIR.equals(var14) || !Material.WATER.equals(var4.getMaterial(var11, var12 - 1, var13)))
+            {
+                return this.c.a(par1IBlockSource, par2ItemStack);
             }
 
-            d3 = 0.0D;
+            var15 = 0.0D;
         }
 
-        EntityBoat entityboat = new EntityBoat(world, d0, d1 + d3, d2);
-
-        world.addEntity(entityboat);
-        itemstack.a(1);
-        return itemstack;
+        EntityBoat var17 = new EntityBoat(var4, var5, var7 + var15, var9);
+        var4.addEntity(var17);
+        par2ItemStack.a(1);
+        return par2ItemStack;
     }
 
-    protected void a(ISourceBlock isourceblock) {
-        isourceblock.k().triggerEffect(1000, isourceblock.getBlockX(), isourceblock.getBlockY(), isourceblock.getBlockZ(), 0);
+    /**
+     * Play the dispense sound from the specified block.
+     */
+    protected void a(ISourceBlock par1IBlockSource)
+    {
+        par1IBlockSource.k().triggerEffect(1000, par1IBlockSource.getBlockX(), par1IBlockSource.getBlockY(), par1IBlockSource.getBlockZ(), 0);
     }
 }

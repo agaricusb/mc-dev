@@ -2,97 +2,163 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockCake extends Block {
-
-    protected BlockCake(int i, int j) {
-        super(i, j, Material.CAKE);
+public class BlockCake extends Block
+{
+    protected BlockCake(int par1, int par2)
+    {
+        super(par1, par2, Material.CAKE);
         this.b(true);
     }
 
-    public void updateShape(IBlockAccess iblockaccess, int i, int j, int k) {
-        int l = iblockaccess.getData(i, j, k);
-        float f = 0.0625F;
-        float f1 = (float) (1 + l * 2) / 16.0F;
-        float f2 = 0.5F;
-
-        this.a(f1, 0.0F, f, 1.0F - f, f2, 1.0F - f);
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void updateShape(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        int var5 = par1IBlockAccess.getData(par2, par3, par4);
+        float var6 = 0.0625F;
+        float var7 = (float)(1 + var5 * 2) / 16.0F;
+        float var8 = 0.5F;
+        this.a(var7, 0.0F, var6, 1.0F - var6, var8, 1.0F - var6);
     }
 
-    public void f() {
-        float f = 0.0625F;
-        float f1 = 0.5F;
-
-        this.a(f, 0.0F, f, 1.0F - f, f1, 1.0F - f);
+    /**
+     * Sets the block's bounds for rendering it as an item
+     */
+    public void f()
+    {
+        float var1 = 0.0625F;
+        float var2 = 0.5F;
+        this.a(var1, 0.0F, var1, 1.0F - var1, var2, 1.0F - var1);
     }
 
-    public AxisAlignedBB e(World world, int i, int j, int k) {
-        int l = world.getData(i, j, k);
-        float f = 0.0625F;
-        float f1 = (float) (1 + l * 2) / 16.0F;
-        float f2 = 0.5F;
-
-        return AxisAlignedBB.a().a((double) ((float) i + f1), (double) j, (double) ((float) k + f), (double) ((float) (i + 1) - f), (double) ((float) j + f2 - f), (double) ((float) (k + 1) - f));
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
+    {
+        int var5 = par1World.getData(par2, par3, par4);
+        float var6 = 0.0625F;
+        float var7 = (float)(1 + var5 * 2) / 16.0F;
+        float var8 = 0.5F;
+        return AxisAlignedBB.a().a((double) ((float) par2 + var7), (double) par3, (double) ((float) par4 + var6), (double) ((float) (par2 + 1) - var6), (double) ((float) par3 + var8 - var6), (double) ((float) (par4 + 1) - var6));
     }
 
-    public int a(int i, int j) {
-        return i == 1 ? this.textureId : (i == 0 ? this.textureId + 3 : (j > 0 && i == 4 ? this.textureId + 2 : this.textureId + 1));
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
+        return par1 == 1 ? this.textureId : (par1 == 0 ? this.textureId + 3 : (par2 > 0 && par1 == 4 ? this.textureId + 2 : this.textureId + 1));
     }
 
-    public int a(int i) {
-        return i == 1 ? this.textureId : (i == 0 ? this.textureId + 3 : this.textureId + 1);
+    /**
+     * Returns the block texture based on the side being looked at.  Args: side
+     */
+    public int a(int par1)
+    {
+        return par1 == 1 ? this.textureId : (par1 == 0 ? this.textureId + 3 : this.textureId + 1);
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public boolean interact(World world, int i, int j, int k, EntityHuman entityhuman, int l, float f, float f1, float f2) {
-        this.b(world, i, j, k, entityhuman);
+    /**
+     * Called upon block activation (right click on the block.)
+     */
+    public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
+    {
+        this.b(par1World, par2, par3, par4, par5EntityPlayer);
         return true;
     }
 
-    public void attack(World world, int i, int j, int k, EntityHuman entityhuman) {
-        this.b(world, i, j, k, entityhuman);
+    /**
+     * Called when the block is clicked by a player. Args: x, y, z, entityPlayer
+     */
+    public void attack(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer)
+    {
+        this.b(par1World, par2, par3, par4, par5EntityPlayer);
     }
 
-    private void b(World world, int i, int j, int k, EntityHuman entityhuman) {
-        if (entityhuman.f(false)) {
-            entityhuman.getFoodData().eat(2, 0.1F);
-            int l = world.getData(i, j, k) + 1;
+    /**
+     * Heals the player and removes a slice from the cake.
+     */
+    private void b(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer)
+    {
+        if (par5EntityPlayer.f(false))
+        {
+            par5EntityPlayer.getFoodData().eat(2, 0.1F);
+            int var6 = par1World.getData(par2, par3, par4) + 1;
 
-            if (l >= 6) {
-                world.setTypeId(i, j, k, 0);
-            } else {
-                world.setData(i, j, k, l);
-                world.j(i, j, k);
+            if (var6 >= 6)
+            {
+                par1World.setTypeId(par2, par3, par4, 0);
+            }
+            else
+            {
+                par1World.setData(par2, par3, par4, var6);
+                par1World.j(par2, par3, par4);
             }
         }
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        return !super.canPlace(world, i, j, k) ? false : this.d(world, i, j, k);
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        return !super.canPlace(par1World, par2, par3, par4) ? false : this.d(par1World, par2, par3, par4);
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        if (!this.d(world, i, j, k)) {
-            this.c(world, i, j, k, world.getData(i, j, k), 0);
-            world.setTypeId(i, j, k, 0);
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        if (!this.d(par1World, par2, par3, par4))
+        {
+            this.c(par1World, par2, par3, par4, par1World.getData(par2, par3, par4), 0);
+            par1World.setTypeId(par2, par3, par4, 0);
         }
     }
 
-    public boolean d(World world, int i, int j, int k) {
-        return world.getMaterial(i, j - 1, k).isBuildable();
+    /**
+     * Can this block stay at this position.  Similar to canPlaceBlockAt except gets checked often with plants.
+     */
+    public boolean d(World par1World, int par2, int par3, int par4)
+    {
+        return par1World.getMaterial(par2, par3 - 1, par4).isBuildable();
     }
 
-    public int a(Random random) {
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    public int a(Random par1Random)
+    {
         return 0;
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return 0;
     }
 }

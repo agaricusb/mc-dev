@@ -2,115 +2,176 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet202Abilities extends Packet {
-
+public class Packet202Abilities extends Packet
+{
+    /** Disables player damage. */
     private boolean a = false;
+
+    /** Indicates whether the player is flying or not. */
     private boolean b = false;
+
+    /** Whether or not to allow the player to fly when they double jump. */
     private boolean c = false;
+
+    /**
+     * Used to determine if creative mode is enabled, and therefore if items should be depleted on usage
+     */
     private boolean d = false;
     private float e;
     private float f;
 
     public Packet202Abilities() {}
 
-    public Packet202Abilities(PlayerAbilities playerabilities) {
-        this.a(playerabilities.isInvulnerable);
-        this.b(playerabilities.isFlying);
-        this.c(playerabilities.canFly);
-        this.d(playerabilities.canInstantlyBuild);
-        this.a(playerabilities.a());
-        this.b(playerabilities.b());
+    public Packet202Abilities(PlayerAbilities par1PlayerCapabilities)
+    {
+        this.a(par1PlayerCapabilities.isInvulnerable);
+        this.b(par1PlayerCapabilities.isFlying);
+        this.c(par1PlayerCapabilities.canFly);
+        this.d(par1PlayerCapabilities.canInstantlyBuild);
+        this.a(par1PlayerCapabilities.a());
+        this.b(par1PlayerCapabilities.b());
     }
 
-    public void a(DataInputStream datainputstream) {
-        byte b0 = datainputstream.readByte();
-
-        this.a((b0 & 1) > 0);
-        this.b((b0 & 2) > 0);
-        this.c((b0 & 4) > 0);
-        this.d((b0 & 8) > 0);
-        this.a((float) datainputstream.readByte() / 255.0F);
-        this.b((float) datainputstream.readByte() / 255.0F);
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        byte var2 = par1DataInputStream.readByte();
+        this.a((var2 & 1) > 0);
+        this.b((var2 & 2) > 0);
+        this.c((var2 & 4) > 0);
+        this.d((var2 & 8) > 0);
+        this.a((float) par1DataInputStream.readByte() / 255.0F);
+        this.b((float) par1DataInputStream.readByte() / 255.0F);
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        byte b0 = 0;
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        byte var2 = 0;
 
-        if (this.d()) {
-            b0 = (byte) (b0 | 1);
+        if (this.d())
+        {
+            var2 = (byte)(var2 | 1);
         }
 
-        if (this.f()) {
-            b0 = (byte) (b0 | 2);
+        if (this.f())
+        {
+            var2 = (byte)(var2 | 2);
         }
 
-        if (this.g()) {
-            b0 = (byte) (b0 | 4);
+        if (this.g())
+        {
+            var2 = (byte)(var2 | 4);
         }
 
-        if (this.h()) {
-            b0 = (byte) (b0 | 8);
+        if (this.h())
+        {
+            var2 = (byte)(var2 | 8);
         }
 
-        dataoutputstream.writeByte(b0);
-        dataoutputstream.writeByte((int) (this.e * 255.0F));
-        dataoutputstream.writeByte((int) (this.f * 255.0F));
+        par1DataOutputStream.writeByte(var2);
+        par1DataOutputStream.writeByte((int)(this.e * 255.0F));
+        par1DataOutputStream.writeByte((int)(this.f * 255.0F));
     }
 
-    public void handle(NetHandler nethandler) {
-        nethandler.a(this);
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
+    public void handle(NetHandler par1NetHandler)
+    {
+        par1NetHandler.a(this);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 2;
     }
 
-    public boolean d() {
+    public boolean d()
+    {
         return this.a;
     }
 
-    public void a(boolean flag) {
-        this.a = flag;
+    /**
+     * Sets whether damage is disabled or not.
+     */
+    public void a(boolean par1)
+    {
+        this.a = par1;
     }
 
-    public boolean f() {
+    public boolean f()
+    {
         return this.b;
     }
 
-    public void b(boolean flag) {
-        this.b = flag;
+    /**
+     * Sets whether we're currently flying or not.
+     */
+    public void b(boolean par1)
+    {
+        this.b = par1;
     }
 
-    public boolean g() {
+    public boolean g()
+    {
         return this.c;
     }
 
-    public void c(boolean flag) {
-        this.c = flag;
+    public void c(boolean par1)
+    {
+        this.c = par1;
     }
 
-    public boolean h() {
+    public boolean h()
+    {
         return this.d;
     }
 
-    public void d(boolean flag) {
-        this.d = flag;
+    public void d(boolean par1)
+    {
+        this.d = par1;
     }
 
-    public void a(float f) {
-        this.e = f;
+    /**
+     * Sets the flying speed.
+     */
+    public void a(float par1)
+    {
+        this.e = par1;
     }
 
-    public void b(float f) {
-        this.f = f;
+    /**
+     * Sets the walking speed.
+     */
+    public void b(float par1)
+    {
+        this.f = par1;
     }
 
-    public boolean e() {
+    /**
+     * only false for the abstract Packet class, all real packets return true
+     */
+    public boolean e()
+    {
         return true;
     }
 
-    public boolean a(Packet packet) {
+    /**
+     * eg return packet30entity.entityId == entityId; WARNING : will throw if you compare a packet to a different packet
+     * class
+     */
+    public boolean a(Packet par1Packet)
+    {
         return true;
     }
 }

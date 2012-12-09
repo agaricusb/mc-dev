@@ -8,9 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class Explosion {
-
+public class Explosion
+{
+    /** whether or not the explosion sets fire to blocks around it */
     public boolean a = false;
+
+    /** whether or not this explosion spawns smoke particles */
     public boolean b = true;
     private int i = 16;
     private Random j = new Random();
@@ -20,196 +23,227 @@ public class Explosion {
     public double posZ;
     public Entity source;
     public float size;
+
+    /** A list of ChunkPositions of blocks affected by this explosion */
     public List blocks = new ArrayList();
     private Map l = new HashMap();
 
-    public Explosion(World world, Entity entity, double d0, double d1, double d2, float f) {
-        this.world = world;
-        this.source = entity;
-        this.size = f;
-        this.posX = d0;
-        this.posY = d1;
-        this.posZ = d2;
+    public Explosion(World par1World, Entity par2Entity, double par3, double par5, double par7, float par9)
+    {
+        this.world = par1World;
+        this.source = par2Entity;
+        this.size = par9;
+        this.posX = par3;
+        this.posY = par5;
+        this.posZ = par7;
     }
 
-    public void a() {
-        float f = this.size;
-        HashSet hashset = new HashSet();
+    /**
+     * Does the first part of the explosion (destroy blocks)
+     */
+    public void a()
+    {
+        float var1 = this.size;
+        HashSet var2 = new HashSet();
+        int var3;
+        int var4;
+        int var5;
+        double var15;
+        double var17;
+        double var19;
 
-        int i;
-        int j;
-        int k;
-        double d0;
-        double d1;
-        double d2;
+        for (var3 = 0; var3 < this.i; ++var3)
+        {
+            for (var4 = 0; var4 < this.i; ++var4)
+            {
+                for (var5 = 0; var5 < this.i; ++var5)
+                {
+                    if (var3 == 0 || var3 == this.i - 1 || var4 == 0 || var4 == this.i - 1 || var5 == 0 || var5 == this.i - 1)
+                    {
+                        double var6 = (double)((float)var3 / ((float)this.i - 1.0F) * 2.0F - 1.0F);
+                        double var8 = (double)((float)var4 / ((float)this.i - 1.0F) * 2.0F - 1.0F);
+                        double var10 = (double)((float)var5 / ((float)this.i - 1.0F) * 2.0F - 1.0F);
+                        double var12 = Math.sqrt(var6 * var6 + var8 * var8 + var10 * var10);
+                        var6 /= var12;
+                        var8 /= var12;
+                        var10 /= var12;
+                        float var14 = this.size * (0.7F + this.world.random.nextFloat() * 0.6F);
+                        var15 = this.posX;
+                        var17 = this.posY;
+                        var19 = this.posZ;
 
-        for (i = 0; i < this.i; ++i) {
-            for (j = 0; j < this.i; ++j) {
-                for (k = 0; k < this.i; ++k) {
-                    if (i == 0 || i == this.i - 1 || j == 0 || j == this.i - 1 || k == 0 || k == this.i - 1) {
-                        double d3 = (double) ((float) i / ((float) this.i - 1.0F) * 2.0F - 1.0F);
-                        double d4 = (double) ((float) j / ((float) this.i - 1.0F) * 2.0F - 1.0F);
-                        double d5 = (double) ((float) k / ((float) this.i - 1.0F) * 2.0F - 1.0F);
-                        double d6 = Math.sqrt(d3 * d3 + d4 * d4 + d5 * d5);
+                        for (float var21 = 0.3F; var14 > 0.0F; var14 -= var21 * 0.75F)
+                        {
+                            int var22 = MathHelper.floor(var15);
+                            int var23 = MathHelper.floor(var17);
+                            int var24 = MathHelper.floor(var19);
+                            int var25 = this.world.getTypeId(var22, var23, var24);
 
-                        d3 /= d6;
-                        d4 /= d6;
-                        d5 /= d6;
-                        float f1 = this.size * (0.7F + this.world.random.nextFloat() * 0.6F);
-
-                        d0 = this.posX;
-                        d1 = this.posY;
-                        d2 = this.posZ;
-
-                        for (float f2 = 0.3F; f1 > 0.0F; f1 -= f2 * 0.75F) {
-                            int l = MathHelper.floor(d0);
-                            int i1 = MathHelper.floor(d1);
-                            int j1 = MathHelper.floor(d2);
-                            int k1 = this.world.getTypeId(l, i1, j1);
-
-                            if (k1 > 0) {
-                                Block block = Block.byId[k1];
-                                float f3 = this.source != null ? this.source.a(this, block, l, i1, j1) : block.a(this.source);
-
-                                f1 -= (f3 + 0.3F) * f2;
+                            if (var25 > 0)
+                            {
+                                Block var26 = Block.byId[var25];
+                                float var27 = this.source != null ? this.source.a(this, var26, var22, var23, var24) : var26.a(this.source);
+                                var14 -= (var27 + 0.3F) * var21;
                             }
 
-                            if (f1 > 0.0F) {
-                                hashset.add(new ChunkPosition(l, i1, j1));
+                            if (var14 > 0.0F)
+                            {
+                                var2.add(new ChunkPosition(var22, var23, var24));
                             }
 
-                            d0 += d3 * (double) f2;
-                            d1 += d4 * (double) f2;
-                            d2 += d5 * (double) f2;
+                            var15 += var6 * (double)var21;
+                            var17 += var8 * (double)var21;
+                            var19 += var10 * (double)var21;
                         }
                     }
                 }
             }
         }
 
-        this.blocks.addAll(hashset);
+        this.blocks.addAll(var2);
         this.size *= 2.0F;
-        i = MathHelper.floor(this.posX - (double) this.size - 1.0D);
-        j = MathHelper.floor(this.posX + (double) this.size + 1.0D);
-        k = MathHelper.floor(this.posY - (double) this.size - 1.0D);
-        int l1 = MathHelper.floor(this.posY + (double) this.size + 1.0D);
-        int i2 = MathHelper.floor(this.posZ - (double) this.size - 1.0D);
-        int j2 = MathHelper.floor(this.posZ + (double) this.size + 1.0D);
-        List list = this.world.getEntities(this.source, AxisAlignedBB.a().a((double) i, (double) k, (double) i2, (double) j, (double) l1, (double) j2));
-        Vec3D vec3d = this.world.getVec3DPool().create(this.posX, this.posY, this.posZ);
+        var3 = MathHelper.floor(this.posX - (double) this.size - 1.0D);
+        var4 = MathHelper.floor(this.posX + (double) this.size + 1.0D);
+        var5 = MathHelper.floor(this.posY - (double) this.size - 1.0D);
+        int var28 = MathHelper.floor(this.posY + (double) this.size + 1.0D);
+        int var7 = MathHelper.floor(this.posZ - (double) this.size - 1.0D);
+        int var29 = MathHelper.floor(this.posZ + (double) this.size + 1.0D);
+        List var9 = this.world.getEntities(this.source, AxisAlignedBB.a().a((double) var3, (double) var5, (double) var7, (double) var4, (double) var28, (double) var29));
+        Vec3D var30 = this.world.getVec3DPool().create(this.posX, this.posY, this.posZ);
 
-        for (int k2 = 0; k2 < list.size(); ++k2) {
-            Entity entity = (Entity) list.get(k2);
-            double d7 = entity.f(this.posX, this.posY, this.posZ) / (double) this.size;
+        for (int var11 = 0; var11 < var9.size(); ++var11)
+        {
+            Entity var31 = (Entity)var9.get(var11);
+            double var13 = var31.f(this.posX, this.posY, this.posZ) / (double)this.size;
 
-            if (d7 <= 1.0D) {
-                d0 = entity.locX - this.posX;
-                d1 = entity.locY + (double) entity.getHeadHeight() - this.posY;
-                d2 = entity.locZ - this.posZ;
-                double d8 = (double) MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
+            if (var13 <= 1.0D)
+            {
+                var15 = var31.locX - this.posX;
+                var17 = var31.locY + (double)var31.getHeadHeight() - this.posY;
+                var19 = var31.locZ - this.posZ;
+                double var33 = (double) MathHelper.sqrt(var15 * var15 + var17 * var17 + var19 * var19);
 
-                if (d8 != 0.0D) {
-                    d0 /= d8;
-                    d1 /= d8;
-                    d2 /= d8;
-                    double d9 = (double) this.world.a(vec3d, entity.boundingBox);
-                    double d10 = (1.0D - d7) * d9;
+                if (var33 != 0.0D)
+                {
+                    var15 /= var33;
+                    var17 /= var33;
+                    var19 /= var33;
+                    double var32 = (double)this.world.a(var30, var31.boundingBox);
+                    double var34 = (1.0D - var13) * var32;
+                    var31.damageEntity(DamageSource.EXPLOSION, (int) ((var34 * var34 + var34) / 2.0D * 8.0D * (double) this.size + 1.0D));
+                    var31.motX += var15 * var34;
+                    var31.motY += var17 * var34;
+                    var31.motZ += var19 * var34;
 
-                    entity.damageEntity(DamageSource.EXPLOSION, (int) ((d10 * d10 + d10) / 2.0D * 8.0D * (double) this.size + 1.0D));
-                    entity.motX += d0 * d10;
-                    entity.motY += d1 * d10;
-                    entity.motZ += d2 * d10;
-                    if (entity instanceof EntityHuman) {
-                        this.l.put((EntityHuman) entity, this.world.getVec3DPool().create(d0 * d10, d1 * d10, d2 * d10));
+                    if (var31 instanceof EntityHuman)
+                    {
+                        this.l.put((EntityHuman)var31, this.world.getVec3DPool().create(var15 * var34, var17 * var34, var19 * var34));
                     }
                 }
             }
         }
 
-        this.size = f;
+        this.size = var1;
     }
 
-    public void a(boolean flag) {
+    /**
+     * Does the second part of the explosion (sound, particles, drop spawn)
+     */
+    public void a(boolean par1)
+    {
         this.world.makeSound(this.posX, this.posY, this.posZ, "random.explode", 4.0F, (1.0F + (this.world.random.nextFloat() - this.world.random.nextFloat()) * 0.2F) * 0.7F);
-        if (this.size >= 2.0F && this.b) {
+
+        if (this.size >= 2.0F && this.b)
+        {
             this.world.addParticle("hugeexplosion", this.posX, this.posY, this.posZ, 1.0D, 0.0D, 0.0D);
-        } else {
+        }
+        else
+        {
             this.world.addParticle("largeexplode", this.posX, this.posY, this.posZ, 1.0D, 0.0D, 0.0D);
         }
 
-        Iterator iterator;
-        ChunkPosition chunkposition;
-        int i;
-        int j;
-        int k;
-        int l;
+        Iterator var2;
+        ChunkPosition var3;
+        int var4;
+        int var5;
+        int var6;
+        int var7;
 
-        if (this.b) {
-            iterator = this.blocks.iterator();
+        if (this.b)
+        {
+            var2 = this.blocks.iterator();
 
-            while (iterator.hasNext()) {
-                chunkposition = (ChunkPosition) iterator.next();
-                i = chunkposition.x;
-                j = chunkposition.y;
-                k = chunkposition.z;
-                l = this.world.getTypeId(i, j, k);
-                if (flag) {
-                    double d0 = (double) ((float) i + this.world.random.nextFloat());
-                    double d1 = (double) ((float) j + this.world.random.nextFloat());
-                    double d2 = (double) ((float) k + this.world.random.nextFloat());
-                    double d3 = d0 - this.posX;
-                    double d4 = d1 - this.posY;
-                    double d5 = d2 - this.posZ;
-                    double d6 = (double) MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5);
+            while (var2.hasNext())
+            {
+                var3 = (ChunkPosition)var2.next();
+                var4 = var3.x;
+                var5 = var3.y;
+                var6 = var3.z;
+                var7 = this.world.getTypeId(var4, var5, var6);
 
-                    d3 /= d6;
-                    d4 /= d6;
-                    d5 /= d6;
-                    double d7 = 0.5D / (d6 / (double) this.size + 0.1D);
-
-                    d7 *= (double) (this.world.random.nextFloat() * this.world.random.nextFloat() + 0.3F);
-                    d3 *= d7;
-                    d4 *= d7;
-                    d5 *= d7;
-                    this.world.addParticle("explode", (d0 + this.posX * 1.0D) / 2.0D, (d1 + this.posY * 1.0D) / 2.0D, (d2 + this.posZ * 1.0D) / 2.0D, d3, d4, d5);
-                    this.world.addParticle("smoke", d0, d1, d2, d3, d4, d5);
+                if (par1)
+                {
+                    double var8 = (double)((float)var4 + this.world.random.nextFloat());
+                    double var10 = (double)((float)var5 + this.world.random.nextFloat());
+                    double var12 = (double)((float)var6 + this.world.random.nextFloat());
+                    double var14 = var8 - this.posX;
+                    double var16 = var10 - this.posY;
+                    double var18 = var12 - this.posZ;
+                    double var20 = (double) MathHelper.sqrt(var14 * var14 + var16 * var16 + var18 * var18);
+                    var14 /= var20;
+                    var16 /= var20;
+                    var18 /= var20;
+                    double var22 = 0.5D / (var20 / (double)this.size + 0.1D);
+                    var22 *= (double)(this.world.random.nextFloat() * this.world.random.nextFloat() + 0.3F);
+                    var14 *= var22;
+                    var16 *= var22;
+                    var18 *= var22;
+                    this.world.addParticle("explode", (var8 + this.posX * 1.0D) / 2.0D, (var10 + this.posY * 1.0D) / 2.0D, (var12 + this.posZ * 1.0D) / 2.0D, var14, var16, var18);
+                    this.world.addParticle("smoke", var8, var10, var12, var14, var16, var18);
                 }
 
-                if (l > 0) {
-                    Block block = Block.byId[l];
+                if (var7 > 0)
+                {
+                    Block var25 = Block.byId[var7];
 
-                    if (block.a(this)) {
-                        block.dropNaturally(this.world, i, j, k, this.world.getData(i, j, k), 0.3F, 0);
+                    if (var25.a(this))
+                    {
+                        var25.dropNaturally(this.world, var4, var5, var6, this.world.getData(var4, var5, var6), 0.3F, 0);
                     }
 
-                    if (this.world.setRawTypeIdAndData(i, j, k, 0, 0, this.world.isStatic)) {
-                        this.world.applyPhysics(i, j, k, 0);
+                    if (this.world.setRawTypeIdAndData(var4, var5, var6, 0, 0, this.world.isStatic))
+                    {
+                        this.world.applyPhysics(var4, var5, var6, 0);
                     }
 
-                    block.wasExploded(this.world, i, j, k);
+                    var25.wasExploded(this.world, var4, var5, var6);
                 }
             }
         }
 
-        if (this.a) {
-            iterator = this.blocks.iterator();
+        if (this.a)
+        {
+            var2 = this.blocks.iterator();
 
-            while (iterator.hasNext()) {
-                chunkposition = (ChunkPosition) iterator.next();
-                i = chunkposition.x;
-                j = chunkposition.y;
-                k = chunkposition.z;
-                l = this.world.getTypeId(i, j, k);
-                int i1 = this.world.getTypeId(i, j - 1, k);
+            while (var2.hasNext())
+            {
+                var3 = (ChunkPosition)var2.next();
+                var4 = var3.x;
+                var5 = var3.y;
+                var6 = var3.z;
+                var7 = this.world.getTypeId(var4, var5, var6);
+                int var24 = this.world.getTypeId(var4, var5 - 1, var6);
 
-                if (l == 0 && Block.q[i1] && this.j.nextInt(3) == 0) {
-                    this.world.setTypeId(i, j, k, Block.FIRE.id);
+                if (var7 == 0 && Block.q[var24] && this.j.nextInt(3) == 0)
+                {
+                    this.world.setTypeId(var4, var5, var6, Block.FIRE.id);
                 }
             }
         }
     }
 
-    public Map b() {
+    public Map b()
+    {
         return this.l;
     }
 }

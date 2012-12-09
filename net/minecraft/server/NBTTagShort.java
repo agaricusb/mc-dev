@@ -2,51 +2,76 @@ package net.minecraft.server;
 
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.IOException;
 
-public class NBTTagShort extends NBTBase {
-
+public class NBTTagShort extends NBTBase
+{
+    /** The short value for the tag. */
     public short data;
 
-    public NBTTagShort(String s) {
-        super(s);
+    public NBTTagShort(String par1Str)
+    {
+        super(par1Str);
     }
 
-    public NBTTagShort(String s, short short1) {
-        super(s);
-        this.data = short1;
+    public NBTTagShort(String par1Str, short par2)
+    {
+        super(par1Str);
+        this.data = par2;
     }
 
-    void write(DataOutput dataoutput) {
-        dataoutput.writeShort(this.data);
+    /**
+     * Write the actual data contents of the tag, implemented in NBT extension classes
+     */
+    void write(DataOutput par1DataOutput) throws IOException
+    {
+        par1DataOutput.writeShort(this.data);
     }
 
-    void load(DataInput datainput) {
-        this.data = datainput.readShort();
+    /**
+     * Read the actual data contents of the tag, implemented in NBT extension classes
+     */
+    void load(DataInput par1DataInput) throws IOException
+    {
+        this.data = par1DataInput.readShort();
     }
 
-    public byte getTypeId() {
-        return (byte) 2;
+    /**
+     * Gets the type byte for the tag.
+     */
+    public byte getTypeId()
+    {
+        return (byte)2;
     }
 
-    public String toString() {
+    public String toString()
+    {
         return "" + this.data;
     }
 
-    public NBTBase clone() {
+    /**
+     * Creates a clone of the tag.
+     */
+    public NBTBase clone()
+    {
         return new NBTTagShort(this.getName(), this.data);
     }
 
-    public boolean equals(Object object) {
-        if (super.equals(object)) {
-            NBTTagShort nbttagshort = (NBTTagShort) object;
-
-            return this.data == nbttagshort.data;
-        } else {
+    public boolean equals(Object par1Obj)
+    {
+        if (super.equals(par1Obj))
+        {
+            NBTTagShort var2 = (NBTTagShort)par1Obj;
+            return this.data == var2.data;
+        }
+        else
+        {
             return false;
         }
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         return super.hashCode() ^ this.data;
     }
 }

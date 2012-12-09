@@ -3,209 +3,286 @@ package net.minecraft.server;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerManager {
-
+public class PlayerManager
+{
     private final WorldServer world;
-    private final List managedPlayers = new ArrayList();
-    private final LongHashMap c = new LongHashMap();
-    private final List d = new ArrayList();
-    private final int e;
-    private final int[][] f = new int[][] { { 1, 0}, { 0, 1}, { -1, 0}, { 0, -1}};
 
-    public PlayerManager(WorldServer worldserver, int i) {
-        if (i > 15) {
+    /** players in the current instance */
+    private final List managedPlayers = new ArrayList();
+
+    /** the hash of all playerInstances created */
+    private final LongHashMap c = new LongHashMap();
+
+    /** the playerInstances(chunks) that need to be updated */
+    private final List d = new ArrayList();
+
+    /**
+     * Number of chunks the server sends to the client. Valid 3<=x<=15. In server.properties.
+     */
+    private final int e;
+
+    /** x, z direction vectors: east, south, west, north */
+    private final int[][] f = new int[][] {{1, 0}, {0, 1}, { -1, 0}, {0, -1}};
+
+    public PlayerManager(WorldServer par1WorldServer, int par2)
+    {
+        if (par2 > 15)
+        {
             throw new IllegalArgumentException("Too big view radius!");
-        } else if (i < 3) {
+        }
+        else if (par2 < 3)
+        {
             throw new IllegalArgumentException("Too small view radius!");
-        } else {
-            this.e = i;
-            this.world = worldserver;
+        }
+        else
+        {
+            this.e = par2;
+            this.world = par1WorldServer;
         }
     }
 
-    public WorldServer a() {
+    /**
+     * Returns the MinecraftServer associated with the PlayerManager.
+     */
+    public WorldServer a()
+    {
         return this.world;
     }
 
-    public void flush() {
-        for (int i = 0; i < this.d.size(); ++i) {
-            ((PlayerInstance) this.d.get(i)).a();
+    /**
+     * updates all the player instances that need to be updated
+     */
+    public void flush()
+    {
+        for (int var1 = 0; var1 < this.d.size(); ++var1)
+        {
+            ((PlayerInstance)this.d.get(var1)).a();
         }
 
         this.d.clear();
-        if (this.managedPlayers.isEmpty()) {
-            WorldProvider worldprovider = this.world.worldProvider;
 
-            if (!worldprovider.e()) {
+        if (this.managedPlayers.isEmpty())
+        {
+            WorldProvider var2 = this.world.worldProvider;
+
+            if (!var2.e())
+            {
                 this.world.chunkProviderServer.a();
             }
         }
     }
 
-    private PlayerInstance a(int i, int j, boolean flag) {
-        long k = (long) i + 2147483647L | (long) j + 2147483647L << 32;
-        PlayerInstance playerinstance = (PlayerInstance) this.c.getEntry(k);
+    /**
+     * passi n the chunk x and y and a flag as to whether or not the instance should be made if it doesnt exist
+     */
+    private PlayerInstance a(int par1, int par2, boolean par3)
+    {
+        long var4 = (long)par1 + 2147483647L | (long)par2 + 2147483647L << 32;
+        PlayerInstance var6 = (PlayerInstance)this.c.getEntry(var4);
 
-        if (playerinstance == null && flag) {
-            playerinstance = new PlayerInstance(this, i, j);
-            this.c.put(k, playerinstance);
+        if (var6 == null && par3)
+        {
+            var6 = new PlayerInstance(this, par1, par2);
+            this.c.put(var4, var6);
         }
 
-        return playerinstance;
+        return var6;
     }
 
-    public void flagDirty(int i, int j, int k) {
-        int l = i >> 4;
-        int i1 = k >> 4;
-        PlayerInstance playerinstance = this.a(l, i1, false);
+    public void flagDirty(int par1, int par2, int par3)
+    {
+        int var4 = par1 >> 4;
+        int var5 = par3 >> 4;
+        PlayerInstance var6 = this.a(var4, var5, false);
 
-        if (playerinstance != null) {
-            playerinstance.a(i & 15, j, k & 15);
+        if (var6 != null)
+        {
+            var6.a(par1 & 15, par2, par3 & 15);
         }
     }
 
-    public void addPlayer(EntityPlayer entityplayer) {
-        int i = (int) entityplayer.locX >> 4;
-        int j = (int) entityplayer.locZ >> 4;
+    /**
+     * Adds an EntityPlayerMP to the PlayerManager.
+     */
+    public void addPlayer(EntityPlayer par1EntityPlayerMP)
+    {
+        int var2 = (int)par1EntityPlayerMP.locX >> 4;
+        int var3 = (int)par1EntityPlayerMP.locZ >> 4;
+        par1EntityPlayerMP.d = par1EntityPlayerMP.locX;
+        par1EntityPlayerMP.e = par1EntityPlayerMP.locZ;
 
-        entityplayer.d = entityplayer.locX;
-        entityplayer.e = entityplayer.locZ;
-
-        for (int k = i - this.e; k <= i + this.e; ++k) {
-            for (int l = j - this.e; l <= j + this.e; ++l) {
-                this.a(k, l, true).a(entityplayer);
+        for (int var4 = var2 - this.e; var4 <= var2 + this.e; ++var4)
+        {
+            for (int var5 = var3 - this.e; var5 <= var3 + this.e; ++var5)
+            {
+                this.a(var4, var5, true).a(par1EntityPlayerMP);
             }
         }
 
-        this.managedPlayers.add(entityplayer);
-        this.b(entityplayer);
+        this.managedPlayers.add(par1EntityPlayerMP);
+        this.b(par1EntityPlayerMP);
     }
 
-    public void b(EntityPlayer entityplayer) {
-        ArrayList arraylist = new ArrayList(entityplayer.chunkCoordIntPairQueue);
-        int i = 0;
-        int j = this.e;
-        int k = (int) entityplayer.locX >> 4;
-        int l = (int) entityplayer.locZ >> 4;
-        int i1 = 0;
-        int j1 = 0;
-        ChunkCoordIntPair chunkcoordintpair = PlayerInstance.a(this.a(k, l, true));
+    /**
+     * Removes all chunks from the given player's chunk load queue that are not in viewing range of the player.
+     */
+    public void b(EntityPlayer par1EntityPlayerMP)
+    {
+        ArrayList var2 = new ArrayList(par1EntityPlayerMP.chunkCoordIntPairQueue);
+        int var3 = 0;
+        int var4 = this.e;
+        int var5 = (int)par1EntityPlayerMP.locX >> 4;
+        int var6 = (int)par1EntityPlayerMP.locZ >> 4;
+        int var7 = 0;
+        int var8 = 0;
+        ChunkCoordIntPair var9 = PlayerInstance.a(this.a(var5, var6, true));
+        par1EntityPlayerMP.chunkCoordIntPairQueue.clear();
 
-        entityplayer.chunkCoordIntPairQueue.clear();
-        if (arraylist.contains(chunkcoordintpair)) {
-            entityplayer.chunkCoordIntPairQueue.add(chunkcoordintpair);
+        if (var2.contains(var9))
+        {
+            par1EntityPlayerMP.chunkCoordIntPairQueue.add(var9);
         }
 
-        int k1;
+        int var10;
 
-        for (k1 = 1; k1 <= j * 2; ++k1) {
-            for (int l1 = 0; l1 < 2; ++l1) {
-                int[] aint = this.f[i++ % 4];
+        for (var10 = 1; var10 <= var4 * 2; ++var10)
+        {
+            for (int var11 = 0; var11 < 2; ++var11)
+            {
+                int[] var12 = this.f[var3++ % 4];
 
-                for (int i2 = 0; i2 < k1; ++i2) {
-                    i1 += aint[0];
-                    j1 += aint[1];
-                    chunkcoordintpair = PlayerInstance.a(this.a(k + i1, l + j1, true));
-                    if (arraylist.contains(chunkcoordintpair)) {
-                        entityplayer.chunkCoordIntPairQueue.add(chunkcoordintpair);
+                for (int var13 = 0; var13 < var10; ++var13)
+                {
+                    var7 += var12[0];
+                    var8 += var12[1];
+                    var9 = PlayerInstance.a(this.a(var5 + var7, var6 + var8, true));
+
+                    if (var2.contains(var9))
+                    {
+                        par1EntityPlayerMP.chunkCoordIntPairQueue.add(var9);
                     }
                 }
             }
         }
 
-        i %= 4;
+        var3 %= 4;
 
-        for (k1 = 0; k1 < j * 2; ++k1) {
-            i1 += this.f[i][0];
-            j1 += this.f[i][1];
-            chunkcoordintpair = PlayerInstance.a(this.a(k + i1, l + j1, true));
-            if (arraylist.contains(chunkcoordintpair)) {
-                entityplayer.chunkCoordIntPairQueue.add(chunkcoordintpair);
+        for (var10 = 0; var10 < var4 * 2; ++var10)
+        {
+            var7 += this.f[var3][0];
+            var8 += this.f[var3][1];
+            var9 = PlayerInstance.a(this.a(var5 + var7, var6 + var8, true));
+
+            if (var2.contains(var9))
+            {
+                par1EntityPlayerMP.chunkCoordIntPairQueue.add(var9);
             }
         }
     }
 
-    public void removePlayer(EntityPlayer entityplayer) {
-        int i = (int) entityplayer.d >> 4;
-        int j = (int) entityplayer.e >> 4;
+    /**
+     * Removes an EntityPlayerMP from the PlayerManager.
+     */
+    public void removePlayer(EntityPlayer par1EntityPlayerMP)
+    {
+        int var2 = (int)par1EntityPlayerMP.d >> 4;
+        int var3 = (int)par1EntityPlayerMP.e >> 4;
 
-        for (int k = i - this.e; k <= i + this.e; ++k) {
-            for (int l = j - this.e; l <= j + this.e; ++l) {
-                PlayerInstance playerinstance = this.a(k, l, false);
+        for (int var4 = var2 - this.e; var4 <= var2 + this.e; ++var4)
+        {
+            for (int var5 = var3 - this.e; var5 <= var3 + this.e; ++var5)
+            {
+                PlayerInstance var6 = this.a(var4, var5, false);
 
-                if (playerinstance != null) {
-                    playerinstance.b(entityplayer);
+                if (var6 != null)
+                {
+                    var6.b(par1EntityPlayerMP);
                 }
             }
         }
 
-        this.managedPlayers.remove(entityplayer);
+        this.managedPlayers.remove(par1EntityPlayerMP);
     }
 
-    private boolean a(int i, int j, int k, int l, int i1) {
-        int j1 = i - k;
-        int k1 = j - l;
-
-        return j1 >= -i1 && j1 <= i1 ? k1 >= -i1 && k1 <= i1 : false;
+    private boolean a(int par1, int par2, int par3, int par4, int par5)
+    {
+        int var6 = par1 - par3;
+        int var7 = par2 - par4;
+        return var6 >= -par5 && var6 <= par5 ? var7 >= -par5 && var7 <= par5 : false;
     }
 
-    public void movePlayer(EntityPlayer entityplayer) {
-        int i = (int) entityplayer.locX >> 4;
-        int j = (int) entityplayer.locZ >> 4;
-        double d0 = entityplayer.d - entityplayer.locX;
-        double d1 = entityplayer.e - entityplayer.locZ;
-        double d2 = d0 * d0 + d1 * d1;
+    /**
+     * update chunks around a player being moved by server logic (e.g. cart, boat)
+     */
+    public void movePlayer(EntityPlayer par1EntityPlayerMP)
+    {
+        int var2 = (int)par1EntityPlayerMP.locX >> 4;
+        int var3 = (int)par1EntityPlayerMP.locZ >> 4;
+        double var4 = par1EntityPlayerMP.d - par1EntityPlayerMP.locX;
+        double var6 = par1EntityPlayerMP.e - par1EntityPlayerMP.locZ;
+        double var8 = var4 * var4 + var6 * var6;
 
-        if (d2 >= 64.0D) {
-            int k = (int) entityplayer.d >> 4;
-            int l = (int) entityplayer.e >> 4;
-            int i1 = this.e;
-            int j1 = i - k;
-            int k1 = j - l;
+        if (var8 >= 64.0D)
+        {
+            int var10 = (int)par1EntityPlayerMP.d >> 4;
+            int var11 = (int)par1EntityPlayerMP.e >> 4;
+            int var12 = this.e;
+            int var13 = var2 - var10;
+            int var14 = var3 - var11;
 
-            if (j1 != 0 || k1 != 0) {
-                for (int l1 = i - i1; l1 <= i + i1; ++l1) {
-                    for (int i2 = j - i1; i2 <= j + i1; ++i2) {
-                        if (!this.a(l1, i2, k, l, i1)) {
-                            this.a(l1, i2, true).a(entityplayer);
+            if (var13 != 0 || var14 != 0)
+            {
+                for (int var15 = var2 - var12; var15 <= var2 + var12; ++var15)
+                {
+                    for (int var16 = var3 - var12; var16 <= var3 + var12; ++var16)
+                    {
+                        if (!this.a(var15, var16, var10, var11, var12))
+                        {
+                            this.a(var15, var16, true).a(par1EntityPlayerMP);
                         }
 
-                        if (!this.a(l1 - j1, i2 - k1, i, j, i1)) {
-                            PlayerInstance playerinstance = this.a(l1 - j1, i2 - k1, false);
+                        if (!this.a(var15 - var13, var16 - var14, var2, var3, var12))
+                        {
+                            PlayerInstance var17 = this.a(var15 - var13, var16 - var14, false);
 
-                            if (playerinstance != null) {
-                                playerinstance.b(entityplayer);
+                            if (var17 != null)
+                            {
+                                var17.b(par1EntityPlayerMP);
                             }
                         }
                     }
                 }
 
-                this.b(entityplayer);
-                entityplayer.d = entityplayer.locX;
-                entityplayer.e = entityplayer.locZ;
+                this.b(par1EntityPlayerMP);
+                par1EntityPlayerMP.d = par1EntityPlayerMP.locX;
+                par1EntityPlayerMP.e = par1EntityPlayerMP.locZ;
             }
         }
     }
 
-    public boolean a(EntityPlayer entityplayer, int i, int j) {
-        PlayerInstance playerinstance = this.a(i, j, false);
-
-        return playerinstance == null ? false : PlayerInstance.b(playerinstance).contains(entityplayer) && !entityplayer.chunkCoordIntPairQueue.contains(PlayerInstance.a(playerinstance));
+    public boolean a(EntityPlayer par1EntityPlayerMP, int par2, int par3)
+    {
+        PlayerInstance var4 = this.a(par2, par3, false);
+        return var4 == null ? false : PlayerInstance.b(var4).contains(par1EntityPlayerMP) && !par1EntityPlayerMP.chunkCoordIntPairQueue.contains(PlayerInstance.a(var4));
     }
 
-    public static int getFurthestViewableBlock(int i) {
-        return i * 16 - 16;
+    public static int getFurthestViewableBlock(int par0)
+    {
+        return par0 * 16 - 16;
     }
 
-    static WorldServer a(PlayerManager playermanager) {
-        return playermanager.world;
+    static WorldServer a(PlayerManager par0PlayerManager)
+    {
+        return par0PlayerManager.world;
     }
 
-    static LongHashMap b(PlayerManager playermanager) {
-        return playermanager.c;
+    static LongHashMap b(PlayerManager par0PlayerManager)
+    {
+        return par0PlayerManager.c;
     }
 
-    static List c(PlayerManager playermanager) {
-        return playermanager.d;
+    static List c(PlayerManager par0PlayerManager)
+    {
+        return par0PlayerManager.d;
     }
 }

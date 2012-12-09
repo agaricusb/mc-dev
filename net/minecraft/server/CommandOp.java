@@ -3,48 +3,65 @@ package net.minecraft.server;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CommandOp extends CommandAbstract {
-
-    public CommandOp() {}
-
-    public String c() {
+public class CommandOp extends CommandAbstract
+{
+    public String c()
+    {
         return "op";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 3;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.op.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.op.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length == 1 && astring[0].length() > 0) {
-            MinecraftServer.getServer().getServerConfigurationManager().addOp(astring[0]);
-            a(icommandlistener, "commands.op.success", new Object[] { astring[0]});
-        } else {
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length == 1 && par2ArrayOfStr[0].length() > 0)
+        {
+            MinecraftServer.getServer().getServerConfigurationManager().addOp(par2ArrayOfStr[0]);
+            a(par1ICommandSender, "commands.op.success", new Object[]{par2ArrayOfStr[0]});
+        }
+        else
+        {
             throw new ExceptionUsage("commands.op.usage", new Object[0]);
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length == 1) {
-            String s = astring[astring.length - 1];
-            ArrayList arraylist = new ArrayList();
-            String[] astring1 = MinecraftServer.getServer().getPlayers();
-            int i = astring1.length;
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length == 1)
+        {
+            String var3 = par2ArrayOfStr[par2ArrayOfStr.length - 1];
+            ArrayList var4 = new ArrayList();
+            String[] var5 = MinecraftServer.getServer().getPlayers();
+            int var6 = var5.length;
 
-            for (int j = 0; j < i; ++j) {
-                String s1 = astring1[j];
+            for (int var7 = 0; var7 < var6; ++var7)
+            {
+                String var8 = var5[var7];
 
-                if (!MinecraftServer.getServer().getServerConfigurationManager().isOp(s1) && a(s, s1)) {
-                    arraylist.add(s1);
+                if (!MinecraftServer.getServer().getServerConfigurationManager().isOp(var8) && a(var3, var8))
+                {
+                    var4.add(var8);
                 }
             }
 
-            return arraylist;
-        } else {
+            return var4;
+        }
+        else
+        {
             return null;
         }
     }

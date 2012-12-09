@@ -2,46 +2,72 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class StructurePieceTreasure extends WeightedRandomChoice {
-
+public class StructurePieceTreasure extends WeightedRandomChoice
+{
+    /** The Item/Block ID to generate in the Chest. */
     private int b;
+
+    /** The Item damage/metadata. */
     private int c;
+
+    /** The minimum chance of item generating. */
     private int d;
+
+    /** The maximum chance of item generating. */
     private int e;
 
-    public StructurePieceTreasure(int i, int j, int k, int l, int i1) {
-        super(i1);
-        this.b = i;
-        this.c = j;
-        this.d = k;
-        this.e = l;
+    public StructurePieceTreasure(int par1, int par2, int par3, int par4, int par5)
+    {
+        super(par5);
+        this.b = par1;
+        this.c = par2;
+        this.d = par3;
+        this.e = par4;
     }
 
-    public static void a(Random random, StructurePieceTreasure[] astructurepiecetreasure, TileEntityChest tileentitychest, int i) {
-        for (int j = 0; j < i; ++j) {
-            StructurePieceTreasure structurepiecetreasure = (StructurePieceTreasure) WeightedRandom.a(random, (WeightedRandomChoice[]) astructurepiecetreasure);
-            int k = structurepiecetreasure.d + random.nextInt(structurepiecetreasure.e - structurepiecetreasure.d + 1);
+    /**
+     * Generates the Chest contents.
+     */
+    public static void a(Random par0Random, StructurePieceTreasure[] par1ArrayOfWeightedRandomChestContent, TileEntityChest par2TileEntityChest, int par3)
+    {
+        for (int var4 = 0; var4 < par3; ++var4)
+        {
+            StructurePieceTreasure var5 = (StructurePieceTreasure) WeightedRandom.a(par0Random, par1ArrayOfWeightedRandomChestContent);
+            int var6 = var5.d + par0Random.nextInt(var5.e - var5.d + 1);
 
-            if (Item.byId[structurepiecetreasure.b].getMaxStackSize() >= k) {
-                tileentitychest.setItem(random.nextInt(tileentitychest.getSize()), new ItemStack(structurepiecetreasure.b, k, structurepiecetreasure.c));
-            } else {
-                for (int l = 0; l < k; ++l) {
-                    tileentitychest.setItem(random.nextInt(tileentitychest.getSize()), new ItemStack(structurepiecetreasure.b, 1, structurepiecetreasure.c));
+            if (Item.byId[var5.b].getMaxStackSize() >= var6)
+            {
+                par2TileEntityChest.setItem(par0Random.nextInt(par2TileEntityChest.getSize()), new ItemStack(var5.b, var6, var5.c));
+            }
+            else
+            {
+                for (int var7 = 0; var7 < var6; ++var7)
+                {
+                    par2TileEntityChest.setItem(par0Random.nextInt(par2TileEntityChest.getSize()), new ItemStack(var5.b, 1, var5.c));
                 }
             }
         }
     }
 
-    public static void a(Random random, StructurePieceTreasure[] astructurepiecetreasure, TileEntityDispenser tileentitydispenser, int i) {
-        for (int j = 0; j < i; ++j) {
-            StructurePieceTreasure structurepiecetreasure = (StructurePieceTreasure) WeightedRandom.a(random, (WeightedRandomChoice[]) astructurepiecetreasure);
-            int k = structurepiecetreasure.d + random.nextInt(structurepiecetreasure.e - structurepiecetreasure.d + 1);
+    /**
+     * Generates the Dispenser contents.
+     */
+    public static void a(Random par0Random, StructurePieceTreasure[] par1ArrayOfWeightedRandomChestContent, TileEntityDispenser par2TileEntityDispenser, int par3)
+    {
+        for (int var4 = 0; var4 < par3; ++var4)
+        {
+            StructurePieceTreasure var5 = (StructurePieceTreasure) WeightedRandom.a(par0Random, par1ArrayOfWeightedRandomChestContent);
+            int var6 = var5.d + par0Random.nextInt(var5.e - var5.d + 1);
 
-            if (Item.byId[structurepiecetreasure.b].getMaxStackSize() >= k) {
-                tileentitydispenser.setItem(random.nextInt(tileentitydispenser.getSize()), new ItemStack(structurepiecetreasure.b, k, structurepiecetreasure.c));
-            } else {
-                for (int l = 0; l < k; ++l) {
-                    tileentitydispenser.setItem(random.nextInt(tileentitydispenser.getSize()), new ItemStack(structurepiecetreasure.b, 1, structurepiecetreasure.c));
+            if (Item.byId[var5.b].getMaxStackSize() >= var6)
+            {
+                par2TileEntityDispenser.setItem(par0Random.nextInt(par2TileEntityDispenser.getSize()), new ItemStack(var5.b, var6, var5.c));
+            }
+            else
+            {
+                for (int var7 = 0; var7 < var6; ++var7)
+                {
+                    par2TileEntityDispenser.setItem(par0Random.nextInt(par2TileEntityDispenser.getSize()), new ItemStack(var5.b, 1, var5.c));
                 }
             }
         }

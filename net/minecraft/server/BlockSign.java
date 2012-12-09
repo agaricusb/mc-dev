@@ -2,115 +2,170 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockSign extends BlockContainer {
-
+public class BlockSign extends BlockContainer
+{
     private Class a;
+
+    /** Whether this is a freestanding sign or a wall-mounted sign */
     private boolean b;
 
-    protected BlockSign(int i, Class oclass, boolean flag) {
-        super(i, Material.WOOD);
-        this.b = flag;
+    protected BlockSign(int par1, Class par2Class, boolean par3)
+    {
+        super(par1, Material.WOOD);
+        this.b = par3;
         this.textureId = 4;
-        this.a = oclass;
-        float f = 0.25F;
-        float f1 = 1.0F;
-
-        this.a(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f1, 0.5F + f);
+        this.a = par2Class;
+        float var4 = 0.25F;
+        float var5 = 1.0F;
+        this.a(0.5F - var4, 0.0F, 0.5F - var4, 0.5F + var4, var5, 0.5F + var4);
     }
 
-    public AxisAlignedBB e(World world, int i, int j, int k) {
+    /**
+     * Returns a bounding box from the pool of bounding boxes (this means this box can change after the pool has been
+     * cleared to be reused)
+     */
+    public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
+    {
         return null;
     }
 
-    public void updateShape(IBlockAccess iblockaccess, int i, int j, int k) {
-        if (!this.b) {
-            int l = iblockaccess.getData(i, j, k);
-            float f = 0.28125F;
-            float f1 = 0.78125F;
-            float f2 = 0.0F;
-            float f3 = 1.0F;
-            float f4 = 0.125F;
-
+    /**
+     * Updates the blocks bounds based on its current state. Args: world, x, y, z
+     */
+    public void updateShape(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
+        if (!this.b)
+        {
+            int var5 = par1IBlockAccess.getData(par2, par3, par4);
+            float var6 = 0.28125F;
+            float var7 = 0.78125F;
+            float var8 = 0.0F;
+            float var9 = 1.0F;
+            float var10 = 0.125F;
             this.a(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 1.0F);
-            if (l == 2) {
-                this.a(f2, f, 1.0F - f4, f3, f1, 1.0F);
+
+            if (var5 == 2)
+            {
+                this.a(var8, var6, 1.0F - var10, var9, var7, 1.0F);
             }
 
-            if (l == 3) {
-                this.a(f2, f, 0.0F, f3, f1, f4);
+            if (var5 == 3)
+            {
+                this.a(var8, var6, 0.0F, var9, var7, var10);
             }
 
-            if (l == 4) {
-                this.a(1.0F - f4, f, f2, 1.0F, f1, f3);
+            if (var5 == 4)
+            {
+                this.a(1.0F - var10, var6, var8, 1.0F, var7, var9);
             }
 
-            if (l == 5) {
-                this.a(0.0F, f, f2, f4, f1, f3);
+            if (var5 == 5)
+            {
+                this.a(0.0F, var6, var8, var10, var7, var9);
             }
         }
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return -1;
     }
 
-    public boolean b() {
+    /**
+     * If this block doesn't render as an ordinary block it will return False (examples: signs, buttons, stairs, etc)
+     */
+    public boolean b()
+    {
         return false;
     }
 
-    public boolean c(IBlockAccess iblockaccess, int i, int j, int k) {
+    public boolean c(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
         return true;
     }
 
-    public boolean c() {
+    /**
+     * Is this block (a) opaque and (b) a full 1m cube?  This determines whether or not to render the shared face of two
+     * adjacent blocks and also whether the player can attach torches, redstone wire, etc to this block.
+     */
+    public boolean c()
+    {
         return false;
     }
 
-    public TileEntity a(World world) {
-        try {
-            return (TileEntity) this.a.newInstance();
-        } catch (Exception exception) {
-            throw new RuntimeException(exception);
+    /**
+     * Returns a new instance of a block's tile entity class. Called on placing the block.
+     */
+    public TileEntity a(World par1World)
+    {
+        try
+        {
+            return (TileEntity)this.a.newInstance();
+        }
+        catch (Exception var3)
+        {
+            throw new RuntimeException(var3);
         }
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return Item.SIGN.id;
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        boolean flag = false;
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        boolean var6 = false;
 
-        if (this.b) {
-            if (!world.getMaterial(i, j - 1, k).isBuildable()) {
-                flag = true;
+        if (this.b)
+        {
+            if (!par1World.getMaterial(par2, par3 - 1, par4).isBuildable())
+            {
+                var6 = true;
             }
-        } else {
-            int i1 = world.getData(i, j, k);
+        }
+        else
+        {
+            int var7 = par1World.getData(par2, par3, par4);
+            var6 = true;
 
-            flag = true;
-            if (i1 == 2 && world.getMaterial(i, j, k + 1).isBuildable()) {
-                flag = false;
+            if (var7 == 2 && par1World.getMaterial(par2, par3, par4 + 1).isBuildable())
+            {
+                var6 = false;
             }
 
-            if (i1 == 3 && world.getMaterial(i, j, k - 1).isBuildable()) {
-                flag = false;
+            if (var7 == 3 && par1World.getMaterial(par2, par3, par4 - 1).isBuildable())
+            {
+                var6 = false;
             }
 
-            if (i1 == 4 && world.getMaterial(i + 1, j, k).isBuildable()) {
-                flag = false;
+            if (var7 == 4 && par1World.getMaterial(par2 + 1, par3, par4).isBuildable())
+            {
+                var6 = false;
             }
 
-            if (i1 == 5 && world.getMaterial(i - 1, j, k).isBuildable()) {
-                flag = false;
+            if (var7 == 5 && par1World.getMaterial(par2 - 1, par3, par4).isBuildable())
+            {
+                var6 = false;
             }
         }
 
-        if (flag) {
-            this.c(world, i, j, k, world.getData(i, j, k), 0);
-            world.setTypeId(i, j, k, 0);
+        if (var6)
+        {
+            this.c(par1World, par2, par3, par4, par1World.getData(par2, par3, par4), 0);
+            par1World.setTypeId(par2, par3, par4, 0);
         }
 
-        super.doPhysics(world, i, j, k, l);
+        super.doPhysics(par1World, par2, par3, par4, par5);
     }
 }

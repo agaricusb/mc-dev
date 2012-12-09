@@ -2,34 +2,41 @@ package net.minecraft.server;
 
 import java.util.concurrent.Callable;
 
-class CrashReportLevelStorageVersion implements Callable {
-
+class CrashReportLevelStorageVersion implements Callable
+{
     final WorldData a;
 
-    CrashReportLevelStorageVersion(WorldData worlddata) {
-        this.a = worlddata;
+    CrashReportLevelStorageVersion(WorldData par1WorldInfo)
+    {
+        this.a = par1WorldInfo;
     }
 
-    public String a() {
-        String s = "Unknown?";
+    public String a()
+    {
+        String var1 = "Unknown?";
 
-        try {
-            switch (WorldData.j(this.a)) {
-            case 19132:
-                s = "McRegion";
-                break;
+        try
+        {
+            switch (WorldData.j(this.a))
+            {
+                case 19132:
+                    var1 = "McRegion";
+                    break;
 
-            case 19133:
-                s = "Anvil";
+                case 19133:
+                    var1 = "Anvil";
             }
-        } catch (Throwable throwable) {
+        }
+        catch (Throwable var3)
+        {
             ;
         }
 
-        return String.format("0x%05X - %s", new Object[] { Integer.valueOf(WorldData.j(this.a)), s});
+        return String.format("0x%05X - %s", new Object[] {Integer.valueOf(WorldData.j(this.a)), var1});
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

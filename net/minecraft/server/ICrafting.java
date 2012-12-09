@@ -2,11 +2,23 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public interface ICrafting {
+public interface ICrafting
+{
+    /**
+     * update the crafting window inventory with the items in the list
+     */
+    void a(Container var1, List var2);
 
-    void a(Container container, List list);
+    /**
+     * Sends the contents of an inventory slot to the client-side Container. This doesn't have to match the actual
+     * contents of that slot. Args: Container, slot number, slot contents
+     */
+    void a(Container var1, int var2, ItemStack var3);
 
-    void a(Container container, int i, ItemStack itemstack);
-
-    void setContainerData(Container container, int i, int j);
+    /**
+     * Sends two ints to the client-side Container. Used for furnace burning time, smelting progress, brewing progress,
+     * and enchanting level. Normally the first int identifies which variable to update, and the second contains the new
+     * value. Both are truncated to shorts in non-local SMP.
+     */
+    void setContainerData(Container var1, int var2, int var3);
 }

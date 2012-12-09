@@ -1,41 +1,55 @@
 package net.minecraft.server;
 
-public class EntityThrownExpBottle extends EntityProjectile {
-
-    public EntityThrownExpBottle(World world) {
-        super(world);
+public class EntityThrownExpBottle extends EntityProjectile
+{
+    public EntityThrownExpBottle(World par1World)
+    {
+        super(par1World);
     }
 
-    public EntityThrownExpBottle(World world, EntityLiving entityliving) {
-        super(world, entityliving);
+    public EntityThrownExpBottle(World par1World, EntityLiving par2EntityLiving)
+    {
+        super(par1World, par2EntityLiving);
     }
 
-    public EntityThrownExpBottle(World world, double d0, double d1, double d2) {
-        super(world, d0, d1, d2);
+    public EntityThrownExpBottle(World par1World, double par2, double par4, double par6)
+    {
+        super(par1World, par2, par4, par6);
     }
 
-    protected float g() {
+    /**
+     * Gets the amount of gravity to apply to the thrown entity with each tick.
+     */
+    protected float g()
+    {
         return 0.07F;
     }
 
-    protected float c() {
+    protected float c()
+    {
         return 0.7F;
     }
 
-    protected float d() {
+    protected float d()
+    {
         return -20.0F;
     }
 
-    protected void a(MovingObjectPosition movingobjectposition) {
-        if (!this.world.isStatic) {
+    /**
+     * Called when this EntityThrowable hits a block or entity.
+     */
+    protected void a(MovingObjectPosition par1MovingObjectPosition)
+    {
+        if (!this.world.isStatic)
+        {
             this.world.triggerEffect(2002, (int) Math.round(this.locX), (int) Math.round(this.locY), (int) Math.round(this.locZ), 0);
-            int i = 3 + this.world.random.nextInt(5) + this.world.random.nextInt(5);
+            int var2 = 3 + this.world.random.nextInt(5) + this.world.random.nextInt(5);
 
-            while (i > 0) {
-                int j = EntityExperienceOrb.getOrbValue(i);
-
-                i -= j;
-                this.world.addEntity(new EntityExperienceOrb(this.world, this.locX, this.locY, this.locZ, j));
+            while (var2 > 0)
+            {
+                int var3 = EntityExperienceOrb.getOrbValue(var2);
+                var2 -= var3;
+                this.world.addEntity(new EntityExperienceOrb(this.world, this.locX, this.locY, this.locZ, var3));
             }
 
             this.die();

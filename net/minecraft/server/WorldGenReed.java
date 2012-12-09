@@ -2,22 +2,25 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenReed extends WorldGenerator {
+public class WorldGenReed extends WorldGenerator
+{
+    public boolean a(World par1World, Random par2Random, int par3, int par4, int par5)
+    {
+        for (int var6 = 0; var6 < 20; ++var6)
+        {
+            int var7 = par3 + par2Random.nextInt(4) - par2Random.nextInt(4);
+            int var8 = par4;
+            int var9 = par5 + par2Random.nextInt(4) - par2Random.nextInt(4);
 
-    public WorldGenReed() {}
+            if (par1World.isEmpty(var7, par4, var9) && (par1World.getMaterial(var7 - 1, par4 - 1, var9) == Material.WATER || par1World.getMaterial(var7 + 1, par4 - 1, var9) == Material.WATER || par1World.getMaterial(var7, par4 - 1, var9 - 1) == Material.WATER || par1World.getMaterial(var7, par4 - 1, var9 + 1) == Material.WATER))
+            {
+                int var10 = 2 + par2Random.nextInt(par2Random.nextInt(3) + 1);
 
-    public boolean a(World world, Random random, int i, int j, int k) {
-        for (int l = 0; l < 20; ++l) {
-            int i1 = i + random.nextInt(4) - random.nextInt(4);
-            int j1 = j;
-            int k1 = k + random.nextInt(4) - random.nextInt(4);
-
-            if (world.isEmpty(i1, j, k1) && (world.getMaterial(i1 - 1, j - 1, k1) == Material.WATER || world.getMaterial(i1 + 1, j - 1, k1) == Material.WATER || world.getMaterial(i1, j - 1, k1 - 1) == Material.WATER || world.getMaterial(i1, j - 1, k1 + 1) == Material.WATER)) {
-                int l1 = 2 + random.nextInt(random.nextInt(3) + 1);
-
-                for (int i2 = 0; i2 < l1; ++i2) {
-                    if (Block.SUGAR_CANE_BLOCK.d(world, i1, j1 + i2, k1)) {
-                        world.setRawTypeId(i1, j1 + i2, k1, Block.SUGAR_CANE_BLOCK.id);
+                for (int var11 = 0; var11 < var10; ++var11)
+                {
+                    if (Block.SUGAR_CANE_BLOCK.d(par1World, var7, var8 + var11, var9))
+                    {
+                        par1World.setRawTypeId(var7, var8 + var11, var9, Block.SUGAR_CANE_BLOCK.id);
                     }
                 }
             }

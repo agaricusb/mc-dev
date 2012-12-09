@@ -1,54 +1,86 @@
 package net.minecraft.server;
 
-public class NoteBlockData {
-
+public class NoteBlockData
+{
     private int a;
     private int b;
     private int c;
     private int d;
+
+    /** Different for each blockID */
     private int e;
+
+    /** Different for each blockID, eventID */
     private int f;
 
-    public NoteBlockData(int i, int j, int k, int l, int i1, int j1) {
-        this.a = i;
-        this.b = j;
-        this.c = k;
-        this.e = i1;
-        this.f = j1;
-        this.d = l;
+    public NoteBlockData(int par1, int par2, int par3, int par4, int par5, int par6)
+    {
+        this.a = par1;
+        this.b = par2;
+        this.c = par3;
+        this.e = par5;
+        this.f = par6;
+        this.d = par4;
     }
 
-    public int a() {
+    /**
+     * Get the X coordinate.
+     */
+    public int a()
+    {
         return this.a;
     }
 
-    public int b() {
+    /**
+     * Get the Y coordinate.
+     */
+    public int b()
+    {
         return this.b;
     }
 
-    public int c() {
+    /**
+     * Get the Z coordinate.
+     */
+    public int c()
+    {
         return this.c;
     }
 
-    public int d() {
+    /**
+     * Get the Event ID (different for each BlockID)
+     */
+    public int d()
+    {
         return this.e;
     }
 
-    public int e() {
+    /**
+     * Get the Event Parameter (different for each BlockID,EventID)
+     */
+    public int e()
+    {
         return this.f;
     }
 
-    public int f() {
+    /**
+     * Gets the BlockID for this BlockEventData
+     */
+    public int f()
+    {
         return this.d;
     }
 
-    public boolean equals(Object object) {
-        if (!(object instanceof NoteBlockData)) {
+    public boolean equals(Object par1Obj)
+    {
+        if (!(par1Obj instanceof NoteBlockData))
+        {
             return false;
-        } else {
-            NoteBlockData noteblockdata = (NoteBlockData) object;
-
-            return this.a == noteblockdata.a && this.b == noteblockdata.b && this.c == noteblockdata.c && this.e == noteblockdata.e && this.f == noteblockdata.f && this.d == noteblockdata.d;
+        }
+        else
+        {
+            NoteBlockData var2 = (NoteBlockData)par1Obj;
+            return this.a == var2.a && this.b == var2.b && this.c == var2.c && this.e == var2.e && this.f == var2.f && this.d == var2.d;
         }
     }
 }

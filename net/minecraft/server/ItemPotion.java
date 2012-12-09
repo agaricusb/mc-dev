@@ -7,138 +7,197 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ItemPotion extends Item {
-
+public class ItemPotion extends Item
+{
+    /**
+     * Contains a map from integers to the list of potion effects that potions with that damage value confer (to prevent
+     * recalculating it).
+     */
     private HashMap a = new HashMap();
     private static final Map b = new LinkedHashMap();
 
-    public ItemPotion(int i) {
-        super(i);
+    public ItemPotion(int par1)
+    {
+        super(par1);
         this.d(1);
         this.a(true);
         this.setMaxDurability(0);
         this.a(CreativeModeTab.k);
     }
 
-    public List l(ItemStack itemstack) {
-        if (itemstack.hasTag() && itemstack.getTag().hasKey("CustomPotionEffects")) {
-            ArrayList arraylist = new ArrayList();
-            NBTTagList nbttaglist = itemstack.getTag().getList("CustomPotionEffects");
+    /**
+     * Returns a list of potion effects for the specified itemstack.
+     */
+    public List l(ItemStack par1ItemStack)
+    {
+        if (par1ItemStack.hasTag() && par1ItemStack.getTag().hasKey("CustomPotionEffects"))
+        {
+            ArrayList var6 = new ArrayList();
+            NBTTagList var3 = par1ItemStack.getTag().getList("CustomPotionEffects");
 
-            for (int i = 0; i < nbttaglist.size(); ++i) {
-                NBTTagCompound nbttagcompound = (NBTTagCompound) nbttaglist.get(i);
-
-                arraylist.add(MobEffect.b(nbttagcompound));
+            for (int var4 = 0; var4 < var3.size(); ++var4)
+            {
+                NBTTagCompound var5 = (NBTTagCompound)var3.get(var4);
+                var6.add(MobEffect.b(var5));
             }
 
-            return arraylist;
-        } else {
-            List list = (List) this.a.get(Integer.valueOf(itemstack.getData()));
+            return var6;
+        }
+        else
+        {
+            List var2 = (List)this.a.get(Integer.valueOf(par1ItemStack.getData()));
 
-            if (list == null) {
-                list = PotionBrewer.getEffects(itemstack.getData(), false);
-                this.a.put(Integer.valueOf(itemstack.getData()), list);
+            if (var2 == null)
+            {
+                var2 = PotionBrewer.getEffects(par1ItemStack.getData(), false);
+                this.a.put(Integer.valueOf(par1ItemStack.getData()), var2);
             }
 
-            return list;
+            return var2;
         }
     }
 
-    public List f(int i) {
-        List list = (List) this.a.get(Integer.valueOf(i));
+    /**
+     * Returns a list of effects for the specified potion damage value.
+     */
+    public List f(int par1)
+    {
+        List var2 = (List)this.a.get(Integer.valueOf(par1));
 
-        if (list == null) {
-            list = PotionBrewer.getEffects(i, false);
-            this.a.put(Integer.valueOf(i), list);
+        if (var2 == null)
+        {
+            var2 = PotionBrewer.getEffects(par1, false);
+            this.a.put(Integer.valueOf(par1), var2);
         }
 
-        return list;
+        return var2;
     }
 
-    public ItemStack b(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        if (!entityhuman.abilities.canInstantlyBuild) {
-            --itemstack.count;
+    public ItemStack b(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        if (!par3EntityPlayer.abilities.canInstantlyBuild)
+        {
+            --par1ItemStack.count;
         }
 
-        if (!world.isStatic) {
-            List list = this.l(itemstack);
+        if (!par2World.isStatic)
+        {
+            List var4 = this.l(par1ItemStack);
 
-            if (list != null) {
-                Iterator iterator = list.iterator();
+            if (var4 != null)
+            {
+                Iterator var5 = var4.iterator();
 
-                while (iterator.hasNext()) {
-                    MobEffect mobeffect = (MobEffect) iterator.next();
-
-                    entityhuman.addEffect(new MobEffect(mobeffect));
+                while (var5.hasNext())
+                {
+                    MobEffect var6 = (MobEffect)var5.next();
+                    par3EntityPlayer.addEffect(new MobEffect(var6));
                 }
             }
         }
 
-        if (!entityhuman.abilities.canInstantlyBuild) {
-            if (itemstack.count <= 0) {
+        if (!par3EntityPlayer.abilities.canInstantlyBuild)
+        {
+            if (par1ItemStack.count <= 0)
+            {
                 return new ItemStack(Item.GLASS_BOTTLE);
             }
 
-            entityhuman.inventory.pickup(new ItemStack(Item.GLASS_BOTTLE));
+            par3EntityPlayer.inventory.pickup(new ItemStack(Item.GLASS_BOTTLE));
         }
 
-        return itemstack;
+        return par1ItemStack;
     }
 
-    public int a(ItemStack itemstack) {
+    /**
+     * How long it takes to use or consume an item
+     */
+    public int a(ItemStack par1ItemStack)
+    {
         return 32;
     }
 
-    public EnumAnimation d_(ItemStack itemstack) {
+    /**
+     * returns the action that specifies what animation to play when the items is being used
+     */
+    public EnumAnimation d_(ItemStack par1ItemStack)
+    {
         return EnumAnimation.c;
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        if (g(itemstack.getData())) {
-            if (!entityhuman.abilities.canInstantlyBuild) {
-                --itemstack.count;
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        if (g(par1ItemStack.getData()))
+        {
+            if (!par3EntityPlayer.abilities.canInstantlyBuild)
+            {
+                --par1ItemStack.count;
             }
 
-            world.makeSound(entityhuman, "random.bow", 0.5F, 0.4F / (d.nextFloat() * 0.4F + 0.8F));
-            if (!world.isStatic) {
-                world.addEntity(new EntityPotion(world, entityhuman, itemstack));
+            par2World.makeSound(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (d.nextFloat() * 0.4F + 0.8F));
+
+            if (!par2World.isStatic)
+            {
+                par2World.addEntity(new EntityPotion(par2World, par3EntityPlayer, par1ItemStack));
             }
 
-            return itemstack;
-        } else {
-            entityhuman.a(itemstack, this.a(itemstack));
-            return itemstack;
+            return par1ItemStack;
+        }
+        else
+        {
+            par3EntityPlayer.a(par1ItemStack, this.a(par1ItemStack));
+            return par1ItemStack;
         }
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
         return false;
     }
 
-    public static boolean g(int i) {
-        return (i & 16384) != 0;
+    /**
+     * returns wether or not a potion is a throwable splash potion based on damage value
+     */
+    public static boolean g(int par0)
+    {
+        return (par0 & 16384) != 0;
     }
 
-    public String j(ItemStack itemstack) {
-        if (itemstack.getData() == 0) {
+    public String j(ItemStack par1ItemStack)
+    {
+        if (par1ItemStack.getData() == 0)
+        {
             return LocaleI18n.get("item.emptyPotion.name").trim();
-        } else {
-            String s = "";
+        }
+        else
+        {
+            String var2 = "";
 
-            if (g(itemstack.getData())) {
-                s = LocaleI18n.get("potion.prefix.grenade").trim() + " ";
+            if (g(par1ItemStack.getData()))
+            {
+                var2 = LocaleI18n.get("potion.prefix.grenade").trim() + " ";
             }
 
-            List list = Item.POTION.l(itemstack);
-            String s1;
+            List var3 = Item.POTION.l(par1ItemStack);
+            String var4;
 
-            if (list != null && !list.isEmpty()) {
-                s1 = ((MobEffect) list.get(0)).f();
-                s1 = s1 + ".postfix";
-                return s + LocaleI18n.get(s1).trim();
-            } else {
-                s1 = PotionBrewer.c(itemstack.getData());
-                return LocaleI18n.get(s1).trim() + " " + super.j(itemstack);
+            if (var3 != null && !var3.isEmpty())
+            {
+                var4 = ((MobEffect)var3.get(0)).f();
+                var4 = var4 + ".postfix";
+                return var2 + LocaleI18n.get(var4).trim();
+            }
+            else
+            {
+                var4 = PotionBrewer.c(par1ItemStack.getData());
+                return LocaleI18n.get(var4).trim() + " " + super.j(par1ItemStack);
             }
         }
     }

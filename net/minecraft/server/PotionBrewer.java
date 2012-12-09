@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-public class PotionBrewer {
-
+public class PotionBrewer
+{
     public static final String a = null;
     public static final String b;
     public static final String c = "+0-1-2-3&4-4+13";
@@ -23,388 +23,530 @@ public class PotionBrewer {
     private static final HashMap effectDurations = new HashMap();
     private static final HashMap effectAmplifiers = new HashMap();
     private static final HashMap o;
+
+    /** An array of possible potion prefix names, as translation IDs. */
     private static final String[] appearances;
 
-    public static boolean a(int i, int j) {
-        return (i & 1 << j) != 0;
+    /**
+     * Checks if the bit at 1 << j is on in i.
+     */
+    public static boolean a(int par0, int par1)
+    {
+        return (par0 & 1 << par1) != 0;
     }
 
-    private static int c(int i, int j) {
-        return a(i, j) ? 1 : 0;
+    /**
+     * Returns 1 if the flag is set, 0 if it is not set.
+     */
+    private static int c(int par0, int par1)
+    {
+        return a(par0, par1) ? 1 : 0;
     }
 
-    private static int d(int i, int j) {
-        return a(i, j) ? 0 : 1;
+    /**
+     * Returns 0 if the flag is set, 1 if it is not set.
+     */
+    private static int d(int par0, int par1)
+    {
+        return a(par0, par1) ? 0 : 1;
     }
 
-    public static int a(int i) {
-        return a(i, 5, 4, 3, 2, 1);
+    public static int a(int par0)
+    {
+        return a(par0, 5, 4, 3, 2, 1);
     }
 
-    public static int a(Collection collection) {
-        int i = 3694022;
+    /**
+     * Given a {@link Collection}<{@link MobEffect}> will return an Integer color.
+     */
+    public static int a(Collection par0Collection)
+    {
+        int var1 = 3694022;
 
-        if (collection != null && !collection.isEmpty()) {
-            float f = 0.0F;
-            float f1 = 0.0F;
-            float f2 = 0.0F;
-            float f3 = 0.0F;
-            Iterator iterator = collection.iterator();
+        if (par0Collection != null && !par0Collection.isEmpty())
+        {
+            float var2 = 0.0F;
+            float var3 = 0.0F;
+            float var4 = 0.0F;
+            float var5 = 0.0F;
+            Iterator var6 = par0Collection.iterator();
 
-            while (iterator.hasNext()) {
-                MobEffect mobeffect = (MobEffect) iterator.next();
-                int j = MobEffectList.byId[mobeffect.getEffectId()].j();
+            while (var6.hasNext())
+            {
+                MobEffect var7 = (MobEffect)var6.next();
+                int var8 = MobEffectList.byId[var7.getEffectId()].j();
 
-                for (int k = 0; k <= mobeffect.getAmplifier(); ++k) {
-                    f += (float) (j >> 16 & 255) / 255.0F;
-                    f1 += (float) (j >> 8 & 255) / 255.0F;
-                    f2 += (float) (j >> 0 & 255) / 255.0F;
-                    ++f3;
+                for (int var9 = 0; var9 <= var7.getAmplifier(); ++var9)
+                {
+                    var2 += (float)(var8 >> 16 & 255) / 255.0F;
+                    var3 += (float)(var8 >> 8 & 255) / 255.0F;
+                    var4 += (float)(var8 >> 0 & 255) / 255.0F;
+                    ++var5;
                 }
             }
 
-            f = f / f3 * 255.0F;
-            f1 = f1 / f3 * 255.0F;
-            f2 = f2 / f3 * 255.0F;
-            return (int) f << 16 | (int) f1 << 8 | (int) f2;
-        } else {
-            return i;
+            var2 = var2 / var5 * 255.0F;
+            var3 = var3 / var5 * 255.0F;
+            var4 = var4 / var5 * 255.0F;
+            return (int)var2 << 16 | (int)var3 << 8 | (int)var4;
+        }
+        else
+        {
+            return var1;
         }
     }
 
-    public static boolean b(Collection collection) {
-        Iterator iterator = collection.iterator();
+    public static boolean b(Collection par0Collection)
+    {
+        Iterator var1 = par0Collection.iterator();
+        MobEffect var2;
 
-        MobEffect mobeffect;
-
-        do {
-            if (!iterator.hasNext()) {
+        do
+        {
+            if (!var1.hasNext())
+            {
                 return true;
             }
 
-            mobeffect = (MobEffect) iterator.next();
-        } while (mobeffect.isAmbient());
+            var2 = (MobEffect)var1.next();
+        }
+        while (var2.isAmbient());
 
         return false;
     }
 
-    public static String c(int i) {
-        int j = a(i);
-
-        return appearances[j];
+    public static String c(int par0)
+    {
+        int var1 = a(par0);
+        return appearances[var1];
     }
 
-    private static int a(boolean flag, boolean flag1, boolean flag2, int i, int j, int k, int l) {
-        int i1 = 0;
+    private static int a(boolean par0, boolean par1, boolean par2, int par3, int par4, int par5, int par6)
+    {
+        int var7 = 0;
 
-        if (flag) {
-            i1 = d(l, j);
-        } else if (i != -1) {
-            if (i == 0 && h(l) == j) {
-                i1 = 1;
-            } else if (i == 1 && h(l) > j) {
-                i1 = 1;
-            } else if (i == 2 && h(l) < j) {
-                i1 = 1;
+        if (par0)
+        {
+            var7 = d(par6, par4);
+        }
+        else if (par3 != -1)
+        {
+            if (par3 == 0 && h(par6) == par4)
+            {
+                var7 = 1;
             }
-        } else {
-            i1 = c(l, j);
+            else if (par3 == 1 && h(par6) > par4)
+            {
+                var7 = 1;
+            }
+            else if (par3 == 2 && h(par6) < par4)
+            {
+                var7 = 1;
+            }
+        }
+        else
+        {
+            var7 = c(par6, par4);
         }
 
-        if (flag1) {
-            i1 *= k;
+        if (par1)
+        {
+            var7 *= par5;
         }
 
-        if (flag2) {
-            i1 *= -1;
+        if (par2)
+        {
+            var7 *= -1;
         }
 
-        return i1;
+        return var7;
     }
 
-    private static int h(int i) {
-        int j;
+    /**
+     * Returns the number of 1 bits in the given integer.
+     */
+    private static int h(int par0)
+    {
+        int var1;
 
-        for (j = 0; i > 0; ++j) {
-            i &= i - 1;
+        for (var1 = 0; par0 > 0; ++var1)
+        {
+            par0 &= par0 - 1;
         }
 
-        return j;
+        return var1;
     }
 
-    private static int a(String s, int i, int j, int k) {
-        if (i < s.length() && j >= 0 && i < j) {
-            int l = s.indexOf(124, i);
-            int i1;
-            int j1;
+    private static int a(String par0Str, int par1, int par2, int par3)
+    {
+        if (par1 < par0Str.length() && par2 >= 0 && par1 < par2)
+        {
+            int var4 = par0Str.indexOf(124, par1);
+            int var5;
+            int var17;
 
-            if (l >= 0 && l < j) {
-                i1 = a(s, i, l - 1, k);
-                if (i1 > 0) {
-                    return i1;
-                } else {
-                    j1 = a(s, l + 1, j, k);
-                    return j1 > 0 ? j1 : 0;
+            if (var4 >= 0 && var4 < par2)
+            {
+                var5 = a(par0Str, par1, var4 - 1, par3);
+
+                if (var5 > 0)
+                {
+                    return var5;
                 }
-            } else {
-                i1 = s.indexOf(38, i);
-                if (i1 >= 0 && i1 < j) {
-                    j1 = a(s, i, i1 - 1, k);
-                    if (j1 <= 0) {
+                else
+                {
+                    var17 = a(par0Str, var4 + 1, par2, par3);
+                    return var17 > 0 ? var17 : 0;
+                }
+            }
+            else
+            {
+                var5 = par0Str.indexOf(38, par1);
+
+                if (var5 >= 0 && var5 < par2)
+                {
+                    var17 = a(par0Str, par1, var5 - 1, par3);
+
+                    if (var17 <= 0)
+                    {
                         return 0;
-                    } else {
-                        int k1 = a(s, i1 + 1, j, k);
-
-                        return k1 <= 0 ? 0 : (j1 > k1 ? j1 : k1);
                     }
-                } else {
-                    boolean flag = false;
-                    boolean flag1 = false;
-                    boolean flag2 = false;
-                    boolean flag3 = false;
-                    boolean flag4 = false;
-                    byte b0 = -1;
-                    int l1 = 0;
-                    int i2 = 0;
-                    int j2 = 0;
+                    else
+                    {
+                        int var18 = a(par0Str, var5 + 1, par2, par3);
+                        return var18 <= 0 ? 0 : (var17 > var18 ? var17 : var18);
+                    }
+                }
+                else
+                {
+                    boolean var6 = false;
+                    boolean var7 = false;
+                    boolean var8 = false;
+                    boolean var9 = false;
+                    boolean var10 = false;
+                    byte var11 = -1;
+                    int var12 = 0;
+                    int var13 = 0;
+                    int var14 = 0;
 
-                    for (int k2 = i; k2 < j; ++k2) {
-                        char c0 = s.charAt(k2);
+                    for (int var15 = par1; var15 < par2; ++var15)
+                    {
+                        char var16 = par0Str.charAt(var15);
 
-                        if (c0 >= 48 && c0 <= 57) {
-                            if (flag) {
-                                i2 = c0 - 48;
-                                flag1 = true;
-                            } else {
-                                l1 *= 10;
-                                l1 += c0 - 48;
-                                flag2 = true;
+                        if (var16 >= 48 && var16 <= 57)
+                        {
+                            if (var6)
+                            {
+                                var13 = var16 - 48;
+                                var7 = true;
                             }
-                        } else if (c0 == 42) {
-                            flag = true;
-                        } else if (c0 == 33) {
-                            if (flag2) {
-                                j2 += a(flag3, flag1, flag4, b0, l1, i2, k);
-                                flag3 = false;
-                                flag4 = false;
-                                flag = false;
-                                flag1 = false;
-                                flag2 = false;
-                                i2 = 0;
-                                l1 = 0;
-                                b0 = -1;
+                            else
+                            {
+                                var12 *= 10;
+                                var12 += var16 - 48;
+                                var8 = true;
                             }
-
-                            flag3 = true;
-                        } else if (c0 == 45) {
-                            if (flag2) {
-                                j2 += a(flag3, flag1, flag4, b0, l1, i2, k);
-                                flag3 = false;
-                                flag4 = false;
-                                flag = false;
-                                flag1 = false;
-                                flag2 = false;
-                                i2 = 0;
-                                l1 = 0;
-                                b0 = -1;
-                            }
-
-                            flag4 = true;
-                        } else if (c0 != 61 && c0 != 60 && c0 != 62) {
-                            if (c0 == 43 && flag2) {
-                                j2 += a(flag3, flag1, flag4, b0, l1, i2, k);
-                                flag3 = false;
-                                flag4 = false;
-                                flag = false;
-                                flag1 = false;
-                                flag2 = false;
-                                i2 = 0;
-                                l1 = 0;
-                                b0 = -1;
-                            }
-                        } else {
-                            if (flag2) {
-                                j2 += a(flag3, flag1, flag4, b0, l1, i2, k);
-                                flag3 = false;
-                                flag4 = false;
-                                flag = false;
-                                flag1 = false;
-                                flag2 = false;
-                                i2 = 0;
-                                l1 = 0;
-                                b0 = -1;
+                        }
+                        else if (var16 == 42)
+                        {
+                            var6 = true;
+                        }
+                        else if (var16 == 33)
+                        {
+                            if (var8)
+                            {
+                                var14 += a(var9, var7, var10, var11, var12, var13, par3);
+                                var9 = false;
+                                var10 = false;
+                                var6 = false;
+                                var7 = false;
+                                var8 = false;
+                                var13 = 0;
+                                var12 = 0;
+                                var11 = -1;
                             }
 
-                            if (c0 == 61) {
-                                b0 = 0;
-                            } else if (c0 == 60) {
-                                b0 = 2;
-                            } else if (c0 == 62) {
-                                b0 = 1;
+                            var9 = true;
+                        }
+                        else if (var16 == 45)
+                        {
+                            if (var8)
+                            {
+                                var14 += a(var9, var7, var10, var11, var12, var13, par3);
+                                var9 = false;
+                                var10 = false;
+                                var6 = false;
+                                var7 = false;
+                                var8 = false;
+                                var13 = 0;
+                                var12 = 0;
+                                var11 = -1;
+                            }
+
+                            var10 = true;
+                        }
+                        else if (var16 != 61 && var16 != 60 && var16 != 62)
+                        {
+                            if (var16 == 43 && var8)
+                            {
+                                var14 += a(var9, var7, var10, var11, var12, var13, par3);
+                                var9 = false;
+                                var10 = false;
+                                var6 = false;
+                                var7 = false;
+                                var8 = false;
+                                var13 = 0;
+                                var12 = 0;
+                                var11 = -1;
+                            }
+                        }
+                        else
+                        {
+                            if (var8)
+                            {
+                                var14 += a(var9, var7, var10, var11, var12, var13, par3);
+                                var9 = false;
+                                var10 = false;
+                                var6 = false;
+                                var7 = false;
+                                var8 = false;
+                                var13 = 0;
+                                var12 = 0;
+                                var11 = -1;
+                            }
+
+                            if (var16 == 61)
+                            {
+                                var11 = 0;
+                            }
+                            else if (var16 == 60)
+                            {
+                                var11 = 2;
+                            }
+                            else if (var16 == 62)
+                            {
+                                var11 = 1;
                             }
                         }
                     }
 
-                    if (flag2) {
-                        j2 += a(flag3, flag1, flag4, b0, l1, i2, k);
+                    if (var8)
+                    {
+                        var14 += a(var9, var7, var10, var11, var12, var13, par3);
                     }
 
-                    return j2;
+                    return var14;
                 }
             }
-        } else {
+        }
+        else
+        {
             return 0;
         }
     }
 
-    public static List getEffects(int i, boolean flag) {
-        ArrayList arraylist = null;
-        MobEffectList[] amobeffectlist = MobEffectList.byId;
-        int j = amobeffectlist.length;
+    /**
+     * Returns a list of effects for the specified potion damage value.
+     */
+    public static List getEffects(int par0, boolean par1)
+    {
+        ArrayList var2 = null;
+        MobEffectList[] var3 = MobEffectList.byId;
+        int var4 = var3.length;
 
-        for (int k = 0; k < j; ++k) {
-            MobEffectList mobeffectlist = amobeffectlist[k];
+        for (int var5 = 0; var5 < var4; ++var5)
+        {
+            MobEffectList var6 = var3[var5];
 
-            if (mobeffectlist != null && (!mobeffectlist.i() || flag)) {
-                String s = (String) effectDurations.get(Integer.valueOf(mobeffectlist.getId()));
+            if (var6 != null && (!var6.i() || par1))
+            {
+                String var7 = (String) effectDurations.get(Integer.valueOf(var6.getId()));
 
-                if (s != null) {
-                    int l = a(s, 0, s.length(), i);
+                if (var7 != null)
+                {
+                    int var8 = a(var7, 0, var7.length(), par0);
 
-                    if (l > 0) {
-                        int i1 = 0;
-                        String s1 = (String) effectAmplifiers.get(Integer.valueOf(mobeffectlist.getId()));
+                    if (var8 > 0)
+                    {
+                        int var9 = 0;
+                        String var10 = (String) effectAmplifiers.get(Integer.valueOf(var6.getId()));
 
-                        if (s1 != null) {
-                            i1 = a(s1, 0, s1.length(), i);
-                            if (i1 < 0) {
-                                i1 = 0;
+                        if (var10 != null)
+                        {
+                            var9 = a(var10, 0, var10.length(), par0);
+
+                            if (var9 < 0)
+                            {
+                                var9 = 0;
                             }
                         }
 
-                        if (mobeffectlist.isInstant()) {
-                            l = 1;
-                        } else {
-                            l = 1200 * (l * 3 + (l - 1) * 2);
-                            l >>= i1;
-                            l = (int) Math.round((double) l * mobeffectlist.getDurationModifier());
-                            if ((i & 16384) != 0) {
-                                l = (int) Math.round((double) l * 0.75D + 0.5D);
+                        if (var6.isInstant())
+                        {
+                            var8 = 1;
+                        }
+                        else
+                        {
+                            var8 = 1200 * (var8 * 3 + (var8 - 1) * 2);
+                            var8 >>= var9;
+                            var8 = (int)Math.round((double)var8 * var6.getDurationModifier());
+
+                            if ((par0 & 16384) != 0)
+                            {
+                                var8 = (int)Math.round((double)var8 * 0.75D + 0.5D);
                             }
                         }
 
-                        if (arraylist == null) {
-                            arraylist = new ArrayList();
+                        if (var2 == null)
+                        {
+                            var2 = new ArrayList();
                         }
 
-                        MobEffect mobeffect = new MobEffect(mobeffectlist.getId(), l, i1);
+                        MobEffect var11 = new MobEffect(var6.getId(), var8, var9);
 
-                        if ((i & 16384) != 0) {
-                            mobeffect.setSplash(true);
+                        if ((par0 & 16384) != 0)
+                        {
+                            var11.setSplash(true);
                         }
 
-                        arraylist.add(mobeffect);
+                        var2.add(var11);
                     }
                 }
             }
         }
 
-        return arraylist;
+        return var2;
     }
 
-    private static int a(int i, int j, boolean flag, boolean flag1, boolean flag2) {
-        if (flag2) {
-            if (!a(i, j)) {
+    /**
+     * Manipulates the specified bit of the potion damage value according to the rules passed from applyIngredient.
+     */
+    private static int a(int par0, int par1, boolean par2, boolean par3, boolean par4)
+    {
+        if (par4)
+        {
+            if (!a(par0, par1))
+            {
                 return 0;
             }
-        } else if (flag) {
-            i &= ~(1 << j);
-        } else if (flag1) {
-            if ((i & 1 << j) == 0) {
-                i |= 1 << j;
-            } else {
-                i &= ~(1 << j);
-            }
-        } else {
-            i |= 1 << j;
         }
-
-        return i;
-    }
-
-    public static int a(int i, String s) {
-        byte b0 = 0;
-        int j = s.length();
-        boolean flag = false;
-        boolean flag1 = false;
-        boolean flag2 = false;
-        boolean flag3 = false;
-        int k = 0;
-
-        for (int l = b0; l < j; ++l) {
-            char c0 = s.charAt(l);
-
-            if (c0 >= 48 && c0 <= 57) {
-                k *= 10;
-                k += c0 - 48;
-                flag = true;
-            } else if (c0 == 33) {
-                if (flag) {
-                    i = a(i, k, flag2, flag1, flag3);
-                    flag3 = false;
-                    flag1 = false;
-                    flag2 = false;
-                    flag = false;
-                    k = 0;
-                }
-
-                flag1 = true;
-            } else if (c0 == 45) {
-                if (flag) {
-                    i = a(i, k, flag2, flag1, flag3);
-                    flag3 = false;
-                    flag1 = false;
-                    flag2 = false;
-                    flag = false;
-                    k = 0;
-                }
-
-                flag2 = true;
-            } else if (c0 == 43) {
-                if (flag) {
-                    i = a(i, k, flag2, flag1, flag3);
-                    flag3 = false;
-                    flag1 = false;
-                    flag2 = false;
-                    flag = false;
-                    k = 0;
-                }
-            } else if (c0 == 38) {
-                if (flag) {
-                    i = a(i, k, flag2, flag1, flag3);
-                    flag3 = false;
-                    flag1 = false;
-                    flag2 = false;
-                    flag = false;
-                    k = 0;
-                }
-
-                flag3 = true;
+        else if (par2)
+        {
+            par0 &= ~(1 << par1);
+        }
+        else if (par3)
+        {
+            if ((par0 & 1 << par1) == 0)
+            {
+                par0 |= 1 << par1;
+            }
+            else
+            {
+                par0 &= ~(1 << par1);
             }
         }
-
-        if (flag) {
-            i = a(i, k, flag2, flag1, flag3);
+        else
+        {
+            par0 |= 1 << par1;
         }
 
-        return i & 32767;
+        return par0;
     }
 
-    public static int a(int i, int j, int k, int l, int i1, int j1) {
-        return (a(i, j) ? 16 : 0) | (a(i, k) ? 8 : 0) | (a(i, l) ? 4 : 0) | (a(i, i1) ? 2 : 0) | (a(i, j1) ? 1 : 0);
+    /**
+     * Returns the new potion damage value after the specified ingredient info is applied to the specified potion.
+     */
+    public static int a(int par0, String par1Str)
+    {
+        byte var2 = 0;
+        int var3 = par1Str.length();
+        boolean var4 = false;
+        boolean var5 = false;
+        boolean var6 = false;
+        boolean var7 = false;
+        int var8 = 0;
+
+        for (int var9 = var2; var9 < var3; ++var9)
+        {
+            char var10 = par1Str.charAt(var9);
+
+            if (var10 >= 48 && var10 <= 57)
+            {
+                var8 *= 10;
+                var8 += var10 - 48;
+                var4 = true;
+            }
+            else if (var10 == 33)
+            {
+                if (var4)
+                {
+                    par0 = a(par0, var8, var6, var5, var7);
+                    var7 = false;
+                    var5 = false;
+                    var6 = false;
+                    var4 = false;
+                    var8 = 0;
+                }
+
+                var5 = true;
+            }
+            else if (var10 == 45)
+            {
+                if (var4)
+                {
+                    par0 = a(par0, var8, var6, var5, var7);
+                    var7 = false;
+                    var5 = false;
+                    var6 = false;
+                    var4 = false;
+                    var8 = 0;
+                }
+
+                var6 = true;
+            }
+            else if (var10 == 43)
+            {
+                if (var4)
+                {
+                    par0 = a(par0, var8, var6, var5, var7);
+                    var7 = false;
+                    var5 = false;
+                    var6 = false;
+                    var4 = false;
+                    var8 = 0;
+                }
+            }
+            else if (var10 == 38)
+            {
+                if (var4)
+                {
+                    par0 = a(par0, var8, var6, var5, var7);
+                    var7 = false;
+                    var5 = false;
+                    var6 = false;
+                    var4 = false;
+                    var8 = 0;
+                }
+
+                var7 = true;
+            }
+        }
+
+        if (var4)
+        {
+            par0 = a(par0, var8, var6, var5, var7);
+        }
+
+        return par0 & 32767;
     }
 
-    static {
+    public static int a(int par0, int par1, int par2, int par3, int par4, int par5)
+    {
+        return (a(par0, par1) ? 16 : 0) | (a(par0, par2) ? 8 : 0) | (a(par0, par3) ? 4 : 0) | (a(par0, par4) ? 2 : 0) | (a(par0, par5) ? 1 : 0);
+    }
+
+    static
+    {
         effectDurations.put(Integer.valueOf(MobEffectList.REGENERATION.getId()), "0 & !1 & !2 & !3 & 0+6");
         b = "-0+1-2-3&4-4+13";
         effectDurations.put(Integer.valueOf(MobEffectList.FASTER_MOVEMENT.getId()), "!0 & 1 & !2 & !3 & 1+6");
@@ -435,6 +577,6 @@ public class PotionBrewer {
         i = "-5+6-7";
         k = "+14&13-13";
         o = new HashMap();
-        appearances = new String[] { "potion.prefix.mundane", "potion.prefix.uninteresting", "potion.prefix.bland", "potion.prefix.clear", "potion.prefix.milky", "potion.prefix.diffuse", "potion.prefix.artless", "potion.prefix.thin", "potion.prefix.awkward", "potion.prefix.flat", "potion.prefix.bulky", "potion.prefix.bungling", "potion.prefix.buttered", "potion.prefix.smooth", "potion.prefix.suave", "potion.prefix.debonair", "potion.prefix.thick", "potion.prefix.elegant", "potion.prefix.fancy", "potion.prefix.charming", "potion.prefix.dashing", "potion.prefix.refined", "potion.prefix.cordial", "potion.prefix.sparkling", "potion.prefix.potent", "potion.prefix.foul", "potion.prefix.odorless", "potion.prefix.rank", "potion.prefix.harsh", "potion.prefix.acrid", "potion.prefix.gross", "potion.prefix.stinky"};
+        appearances = new String[] {"potion.prefix.mundane", "potion.prefix.uninteresting", "potion.prefix.bland", "potion.prefix.clear", "potion.prefix.milky", "potion.prefix.diffuse", "potion.prefix.artless", "potion.prefix.thin", "potion.prefix.awkward", "potion.prefix.flat", "potion.prefix.bulky", "potion.prefix.bungling", "potion.prefix.buttered", "potion.prefix.smooth", "potion.prefix.suave", "potion.prefix.debonair", "potion.prefix.thick", "potion.prefix.elegant", "potion.prefix.fancy", "potion.prefix.charming", "potion.prefix.dashing", "potion.prefix.refined", "potion.prefix.cordial", "potion.prefix.sparkling", "potion.prefix.potent", "potion.prefix.foul", "potion.prefix.odorless", "potion.prefix.rank", "potion.prefix.harsh", "potion.prefix.acrid", "potion.prefix.gross", "potion.prefix.stinky"};
     }
 }

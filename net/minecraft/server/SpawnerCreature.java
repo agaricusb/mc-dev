@@ -1,144 +1,183 @@
 package net.minecraft.server;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public final class SpawnerCreature {
-
+public final class SpawnerCreature
+{
+    /** The 17x17 area around the player where mobs can spawn */
     private static HashMap b = new HashMap();
-    protected static final Class[] a = new Class[] { EntitySpider.class, EntityZombie.class, EntitySkeleton.class};
 
-    protected static ChunkPosition getRandomPosition(World world, int i, int j) {
-        Chunk chunk = world.getChunkAt(i, j);
-        int k = i * 16 + world.random.nextInt(16);
-        int l = j * 16 + world.random.nextInt(16);
-        int i1 = world.random.nextInt(chunk == null ? world.P() : chunk.h() + 16 - 1);
+    /** An array of entity classes that spawn at night. */
+    protected static final Class[] a = new Class[] {EntitySpider.class, EntityZombie.class, EntitySkeleton.class};
 
-        return new ChunkPosition(k, i1, l);
+    /**
+     * Given a chunk, find a random position in it.
+     */
+    protected static ChunkPosition getRandomPosition(World par0World, int par1, int par2)
+    {
+        Chunk var3 = par0World.getChunkAt(par1, par2);
+        int var4 = par1 * 16 + par0World.random.nextInt(16);
+        int var5 = par2 * 16 + par0World.random.nextInt(16);
+        int var6 = par0World.random.nextInt(var3 == null ? par0World.P() : var3.h() + 16 - 1);
+        return new ChunkPosition(var4, var6, var5);
     }
 
-    public static final int spawnEntities(WorldServer worldserver, boolean flag, boolean flag1, boolean flag2) {
-        if (!flag && !flag1) {
+    /**
+     * adds all chunks within the spawn radius of the players to eligibleChunksForSpawning. pars: the world,
+     * hostileCreatures, passiveCreatures. returns number of eligible chunks.
+     */
+    public static final int spawnEntities(WorldServer par0WorldServer, boolean par1, boolean par2, boolean par3)
+    {
+        if (!par1 && !par2)
+        {
             return 0;
-        } else {
+        }
+        else
+        {
             b.clear();
+            int var4;
+            int var7;
 
-            int i;
-            int j;
+            for (var4 = 0; var4 < par0WorldServer.players.size(); ++var4)
+            {
+                EntityHuman var5 = (EntityHuman)par0WorldServer.players.get(var4);
+                int var6 = MathHelper.floor(var5.locX / 16.0D);
+                var7 = MathHelper.floor(var5.locZ / 16.0D);
+                byte var8 = 8;
 
-            for (i = 0; i < worldserver.players.size(); ++i) {
-                EntityHuman entityhuman = (EntityHuman) worldserver.players.get(i);
-                int k = MathHelper.floor(entityhuman.locX / 16.0D);
+                for (int var9 = -var8; var9 <= var8; ++var9)
+                {
+                    for (int var10 = -var8; var10 <= var8; ++var10)
+                    {
+                        boolean var11 = var9 == -var8 || var9 == var8 || var10 == -var8 || var10 == var8;
+                        ChunkCoordIntPair var12 = new ChunkCoordIntPair(var9 + var6, var10 + var7);
 
-                j = MathHelper.floor(entityhuman.locZ / 16.0D);
-                byte b0 = 8;
-
-                for (int l = -b0; l <= b0; ++l) {
-                    for (int i1 = -b0; i1 <= b0; ++i1) {
-                        boolean flag3 = l == -b0 || l == b0 || i1 == -b0 || i1 == b0;
-                        ChunkCoordIntPair chunkcoordintpair = new ChunkCoordIntPair(l + k, i1 + j);
-
-                        if (!flag3) {
-                            b.put(chunkcoordintpair, Boolean.valueOf(false));
-                        } else if (!b.containsKey(chunkcoordintpair)) {
-                            b.put(chunkcoordintpair, Boolean.valueOf(true));
+                        if (!var11)
+                        {
+                            b.put(var12, Boolean.valueOf(false));
+                        }
+                        else if (!b.containsKey(var12))
+                        {
+                            b.put(var12, Boolean.valueOf(true));
                         }
                     }
                 }
             }
 
-            i = 0;
-            ChunkCoordinates chunkcoordinates = worldserver.getSpawn();
-            EnumCreatureType[] aenumcreaturetype = EnumCreatureType.values();
+            var4 = 0;
+            ChunkCoordinates var32 = par0WorldServer.getSpawn();
+            EnumCreatureType[] var33 = EnumCreatureType.values();
+            var7 = var33.length;
 
-            j = aenumcreaturetype.length;
+            for (int var34 = 0; var34 < var7; ++var34)
+            {
+                EnumCreatureType var35 = var33[var34];
 
-            for (int j1 = 0; j1 < j; ++j1) {
-                EnumCreatureType enumcreaturetype = aenumcreaturetype[j1];
-
-                if ((!enumcreaturetype.d() || flag1) && (enumcreaturetype.d() || flag) && (!enumcreaturetype.e() || flag2) && worldserver.a(enumcreaturetype.a()) <= enumcreaturetype.b() * b.size() / 256) {
-                    Iterator iterator = b.keySet().iterator();
-
+                if ((!var35.d() || par2) && (var35.d() || par1) && (!var35.e() || par3) && par0WorldServer.a(var35.a()) <= var35.b() * b.size() / 256)
+                {
+                    Iterator var37 = b.keySet().iterator();
                     label110:
-                    while (iterator.hasNext()) {
-                        ChunkCoordIntPair chunkcoordintpair1 = (ChunkCoordIntPair) iterator.next();
 
-                        if (!((Boolean) b.get(chunkcoordintpair1)).booleanValue()) {
-                            ChunkPosition chunkposition = getRandomPosition(worldserver, chunkcoordintpair1.x, chunkcoordintpair1.z);
-                            int k1 = chunkposition.x;
-                            int l1 = chunkposition.y;
-                            int i2 = chunkposition.z;
+                    while (var37.hasNext())
+                    {
+                        ChunkCoordIntPair var36 = (ChunkCoordIntPair)var37.next();
 
-                            if (!worldserver.t(k1, l1, i2) && worldserver.getMaterial(k1, l1, i2) == enumcreaturetype.c()) {
-                                int j2 = 0;
-                                int k2 = 0;
+                        if (!((Boolean) b.get(var36)).booleanValue())
+                        {
+                            ChunkPosition var38 = getRandomPosition(par0WorldServer, var36.x, var36.z);
+                            int var13 = var38.x;
+                            int var14 = var38.y;
+                            int var15 = var38.z;
 
-                                while (k2 < 3) {
-                                    int l2 = k1;
-                                    int i3 = l1;
-                                    int j3 = i2;
-                                    byte b1 = 6;
-                                    BiomeMeta biomemeta = null;
-                                    int k3 = 0;
+                            if (!par0WorldServer.t(var13, var14, var15) && par0WorldServer.getMaterial(var13, var14, var15) == var35.c())
+                            {
+                                int var16 = 0;
+                                int var17 = 0;
 
-                                    while (true) {
-                                        if (k3 < 4) {
-                                            label103: {
-                                                l2 += worldserver.random.nextInt(b1) - worldserver.random.nextInt(b1);
-                                                i3 += worldserver.random.nextInt(1) - worldserver.random.nextInt(1);
-                                                j3 += worldserver.random.nextInt(b1) - worldserver.random.nextInt(b1);
-                                                if (a(enumcreaturetype, worldserver, l2, i3, j3)) {
-                                                    float f = (float) l2 + 0.5F;
-                                                    float f1 = (float) i3;
-                                                    float f2 = (float) j3 + 0.5F;
+                                while (var17 < 3)
+                                {
+                                    int var18 = var13;
+                                    int var19 = var14;
+                                    int var20 = var15;
+                                    byte var21 = 6;
+                                    BiomeMeta var22 = null;
+                                    int var23 = 0;
 
-                                                    if (worldserver.findNearbyPlayer((double) f, (double) f1, (double) f2, 24.0D) == null) {
-                                                        float f3 = f - (float) chunkcoordinates.x;
-                                                        float f4 = f1 - (float) chunkcoordinates.y;
-                                                        float f5 = f2 - (float) chunkcoordinates.z;
-                                                        float f6 = f3 * f3 + f4 * f4 + f5 * f5;
+                                    while (true)
+                                    {
+                                        if (var23 < 4)
+                                        {
+                                            label103:
+                                            {
+                                                var18 += par0WorldServer.random.nextInt(var21) - par0WorldServer.random.nextInt(var21);
+                                                var19 += par0WorldServer.random.nextInt(1) - par0WorldServer.random.nextInt(1);
+                                                var20 += par0WorldServer.random.nextInt(var21) - par0WorldServer.random.nextInt(var21);
 
-                                                        if (f6 >= 576.0F) {
-                                                            if (biomemeta == null) {
-                                                                biomemeta = worldserver.a(enumcreaturetype, l2, i3, j3);
-                                                                if (biomemeta == null) {
+                                                if (a(var35, par0WorldServer, var18, var19, var20))
+                                                {
+                                                    float var24 = (float)var18 + 0.5F;
+                                                    float var25 = (float)var19;
+                                                    float var26 = (float)var20 + 0.5F;
+
+                                                    if (par0WorldServer.findNearbyPlayer((double) var24, (double) var25, (double) var26, 24.0D) == null)
+                                                    {
+                                                        float var27 = var24 - (float)var32.x;
+                                                        float var28 = var25 - (float)var32.y;
+                                                        float var29 = var26 - (float)var32.z;
+                                                        float var30 = var27 * var27 + var28 * var28 + var29 * var29;
+
+                                                        if (var30 >= 576.0F)
+                                                        {
+                                                            if (var22 == null)
+                                                            {
+                                                                var22 = par0WorldServer.a(var35, var18, var19, var20);
+
+                                                                if (var22 == null)
+                                                                {
                                                                     break label103;
                                                                 }
                                                             }
 
-                                                            EntityLiving entityliving;
+                                                            EntityLiving var39;
 
-                                                            try {
-                                                                entityliving = (EntityLiving) biomemeta.b.getConstructor(new Class[] { World.class}).newInstance(new Object[] { worldserver});
-                                                            } catch (Exception exception) {
-                                                                exception.printStackTrace();
-                                                                return i;
+                                                            try
+                                                            {
+                                                                var39 = (EntityLiving)var22.b.getConstructor(new Class[] {World.class}).newInstance(new Object[] {par0WorldServer});
+                                                            }
+                                                            catch (Exception var31)
+                                                            {
+                                                                var31.printStackTrace();
+                                                                return var4;
                                                             }
 
-                                                            entityliving.setPositionRotation((double) f, (double) f1, (double) f2, worldserver.random.nextFloat() * 360.0F, 0.0F);
-                                                            if (entityliving.canSpawn()) {
-                                                                ++j2;
-                                                                worldserver.addEntity(entityliving);
-                                                                a(entityliving, worldserver, f, f1, f2);
-                                                                if (j2 >= entityliving.bv()) {
+                                                            var39.setPositionRotation((double) var24, (double) var25, (double) var26, par0WorldServer.random.nextFloat() * 360.0F, 0.0F);
+
+                                                            if (var39.canSpawn())
+                                                            {
+                                                                ++var16;
+                                                                par0WorldServer.addEntity(var39);
+                                                                a(var39, par0WorldServer, var24, var25, var26);
+
+                                                                if (var16 >= var39.bv())
+                                                                {
                                                                     continue label110;
                                                                 }
                                                             }
 
-                                                            i += j2;
+                                                            var4 += var16;
                                                         }
                                                     }
                                                 }
 
-                                                ++k3;
+                                                ++var23;
                                                 continue;
                                             }
                                         }
 
-                                        ++k2;
+                                        ++var17;
                                         break;
                                     }
                                 }
@@ -148,68 +187,92 @@ public final class SpawnerCreature {
                 }
             }
 
-            return i;
+            return var4;
         }
     }
 
-    public static boolean a(EnumCreatureType enumcreaturetype, World world, int i, int j, int k) {
-        if (enumcreaturetype.c() == Material.WATER) {
-            return world.getMaterial(i, j, k).isLiquid() && world.getMaterial(i, j - 1, k).isLiquid() && !world.t(i, j + 1, k);
-        } else if (!world.v(i, j - 1, k)) {
+    /**
+     * Returns whether or not the specified creature type can spawn at the specified location.
+     */
+    public static boolean a(EnumCreatureType par0EnumCreatureType, World par1World, int par2, int par3, int par4)
+    {
+        if (par0EnumCreatureType.c() == Material.WATER)
+        {
+            return par1World.getMaterial(par2, par3, par4).isLiquid() && par1World.getMaterial(par2, par3 - 1, par4).isLiquid() && !par1World.t(par2, par3 + 1, par4);
+        }
+        else if (!par1World.v(par2, par3 - 1, par4))
+        {
             return false;
-        } else {
-            int l = world.getTypeId(i, j - 1, k);
-
-            return l != Block.BEDROCK.id && !world.t(i, j, k) && !world.getMaterial(i, j, k).isLiquid() && !world.t(i, j + 1, k);
+        }
+        else
+        {
+            int var5 = par1World.getTypeId(par2, par3 - 1, par4);
+            return var5 != Block.BEDROCK.id && !par1World.t(par2, par3, par4) && !par1World.getMaterial(par2, par3, par4).isLiquid() && !par1World.t(par2, par3 + 1, par4);
         }
     }
 
-    private static void a(EntityLiving entityliving, World world, float f, float f1, float f2) {
-        entityliving.bG();
+    /**
+     * determines if a skeleton spawns on a spider, and if a sheep is a different color
+     */
+    private static void a(EntityLiving par0EntityLiving, World par1World, float par2, float par3, float par4)
+    {
+        par0EntityLiving.bG();
     }
 
-    public static void a(World world, BiomeBase biomebase, int i, int j, int k, int l, Random random) {
-        List list = biomebase.getMobs(EnumCreatureType.CREATURE);
+    /**
+     * Called during chunk generation to spawn initial creatures.
+     */
+    public static void a(World par0World, BiomeBase par1BiomeGenBase, int par2, int par3, int par4, int par5, Random par6Random)
+    {
+        List var7 = par1BiomeGenBase.getMobs(EnumCreatureType.CREATURE);
 
-        if (!list.isEmpty()) {
-            while (random.nextFloat() < biomebase.f()) {
-                BiomeMeta biomemeta = (BiomeMeta) WeightedRandom.a(world.random, (Collection) list);
-                int i1 = biomemeta.c + random.nextInt(1 + biomemeta.d - biomemeta.c);
-                int j1 = i + random.nextInt(k);
-                int k1 = j + random.nextInt(l);
-                int l1 = j1;
-                int i2 = k1;
+        if (!var7.isEmpty())
+        {
+            while (par6Random.nextFloat() < par1BiomeGenBase.f())
+            {
+                BiomeMeta var8 = (BiomeMeta) WeightedRandom.a(par0World.random, var7);
+                int var9 = var8.c + par6Random.nextInt(1 + var8.d - var8.c);
+                int var10 = par2 + par6Random.nextInt(par4);
+                int var11 = par3 + par6Random.nextInt(par5);
+                int var12 = var10;
+                int var13 = var11;
 
-                for (int j2 = 0; j2 < i1; ++j2) {
-                    boolean flag = false;
+                for (int var14 = 0; var14 < var9; ++var14)
+                {
+                    boolean var15 = false;
 
-                    for (int k2 = 0; !flag && k2 < 4; ++k2) {
-                        int l2 = world.i(j1, k1);
+                    for (int var16 = 0; !var15 && var16 < 4; ++var16)
+                    {
+                        int var17 = par0World.i(var10, var11);
 
-                        if (a(EnumCreatureType.CREATURE, world, j1, l2, k1)) {
-                            float f = (float) j1 + 0.5F;
-                            float f1 = (float) l2;
-                            float f2 = (float) k1 + 0.5F;
+                        if (a(EnumCreatureType.CREATURE, par0World, var10, var17, var11))
+                        {
+                            float var18 = (float)var10 + 0.5F;
+                            float var19 = (float)var17;
+                            float var20 = (float)var11 + 0.5F;
+                            EntityLiving var21;
 
-                            EntityLiving entityliving;
-
-                            try {
-                                entityliving = (EntityLiving) biomemeta.b.getConstructor(new Class[] { World.class}).newInstance(new Object[] { world});
-                            } catch (Exception exception) {
-                                exception.printStackTrace();
+                            try
+                            {
+                                var21 = (EntityLiving)var8.b.getConstructor(new Class[] {World.class}).newInstance(new Object[] {par0World});
+                            }
+                            catch (Exception var23)
+                            {
+                                var23.printStackTrace();
                                 continue;
                             }
 
-                            entityliving.setPositionRotation((double) f, (double) f1, (double) f2, random.nextFloat() * 360.0F, 0.0F);
-                            world.addEntity(entityliving);
-                            a(entityliving, world, f, f1, f2);
-                            flag = true;
+                            var21.setPositionRotation((double) var18, (double) var19, (double) var20, par6Random.nextFloat() * 360.0F, 0.0F);
+                            par0World.addEntity(var21);
+                            a(var21, par0World, var18, var19, var20);
+                            var15 = true;
                         }
 
-                        j1 += random.nextInt(5) - random.nextInt(5);
+                        var10 += par6Random.nextInt(5) - par6Random.nextInt(5);
 
-                        for (k1 += random.nextInt(5) - random.nextInt(5); j1 < i || j1 >= i + k || k1 < j || k1 >= j + k; k1 = i2 + random.nextInt(5) - random.nextInt(5)) {
-                            j1 = l1 + random.nextInt(5) - random.nextInt(5);
+                        for (var11 += par6Random.nextInt(5) - par6Random.nextInt(5); var10 < par2 || var10 >= par2 + par4 || var11 < par3 || var11 >= par3 + par4; var11 = var13 + par6Random.nextInt(5) - par6Random.nextInt(5))
+                        {
+                            var10 = var12 + par6Random.nextInt(5) - par6Random.nextInt(5);
                         }
                     }
                 }

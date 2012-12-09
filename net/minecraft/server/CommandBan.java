@@ -2,48 +2,67 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public class CommandBan extends CommandAbstract {
-
-    public CommandBan() {}
-
-    public String c() {
+public class CommandBan extends CommandAbstract
+{
+    public String c()
+    {
         return "ban";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 3;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.ban.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.ban.usage", new Object[0]);
     }
 
-    public boolean b(ICommandListener icommandlistener) {
-        return MinecraftServer.getServer().getServerConfigurationManager().getNameBans().isEnabled() && super.b(icommandlistener);
+    /**
+     * Returns true if the given command sender is allowed to use this command.
+     */
+    public boolean b(ICommandListener par1ICommandSender)
+    {
+        return MinecraftServer.getServer().getServerConfigurationManager().getNameBans().isEnabled() && super.b(par1ICommandSender);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length >= 1 && astring[0].length() > 0) {
-            EntityPlayer entityplayer = MinecraftServer.getServer().getServerConfigurationManager().f(astring[0]);
-            BanEntry banentry = new BanEntry(astring[0]);
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length >= 1 && par2ArrayOfStr[0].length() > 0)
+        {
+            EntityPlayer var3 = MinecraftServer.getServer().getServerConfigurationManager().f(par2ArrayOfStr[0]);
+            BanEntry var4 = new BanEntry(par2ArrayOfStr[0]);
+            var4.setSource(par1ICommandSender.getName());
 
-            banentry.setSource(icommandlistener.getName());
-            if (astring.length >= 2) {
-                banentry.setReason(a(icommandlistener, astring, 1));
+            if (par2ArrayOfStr.length >= 2)
+            {
+                var4.setReason(a(par1ICommandSender, par2ArrayOfStr, 1));
             }
 
-            MinecraftServer.getServer().getServerConfigurationManager().getNameBans().add(banentry);
-            if (entityplayer != null) {
-                entityplayer.netServerHandler.disconnect("You are banned from this server.");
+            MinecraftServer.getServer().getServerConfigurationManager().getNameBans().add(var4);
+
+            if (var3 != null)
+            {
+                var3.netServerHandler.disconnect("You are banned from this server.");
             }
 
-            a(icommandlistener, "commands.ban.success", new Object[] { astring[0]});
-        } else {
+            a(par1ICommandSender, "commands.ban.success", new Object[]{par2ArrayOfStr[0]});
+        }
+        else
+        {
             throw new ExceptionUsage("commands.ban.usage", new Object[0]);
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return astring.length >= 1 ? a(astring, MinecraftServer.getServer().getPlayers()) : null;
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return par2ArrayOfStr.length >= 1 ? a(par2ArrayOfStr, MinecraftServer.getServer().getPlayers()) : null;
     }
 }

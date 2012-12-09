@@ -3,25 +3,35 @@ package net.minecraft.server;
 import java.util.Vector;
 import javax.swing.JList;
 
-public class PlayerListBox extends JList implements IUpdatePlayerListBox {
-
+public class PlayerListBox extends JList implements IUpdatePlayerListBox
+{
+    /** Reference to the MinecraftServer object. */
     private MinecraftServer a;
+
+    /** Counts the number of updates. */
     private int b = 0;
 
-    public PlayerListBox(MinecraftServer minecraftserver) {
-        this.a = minecraftserver;
-        minecraftserver.a((IUpdatePlayerListBox) this);
+    public PlayerListBox(MinecraftServer par1MinecraftServer)
+    {
+        this.a = par1MinecraftServer;
+        par1MinecraftServer.a(this);
     }
 
-    public void a() {
-        if (this.b++ % 20 == 0) {
-            Vector vector = new Vector();
+    /**
+     * Updates the JList with a new model.
+     */
+    public void a()
+    {
+        if (this.b++ % 20 == 0)
+        {
+            Vector var1 = new Vector();
 
-            for (int i = 0; i < this.a.getServerConfigurationManager().players.size(); ++i) {
-                vector.add(((EntityPlayer) this.a.getServerConfigurationManager().players.get(i)).name);
+            for (int var2 = 0; var2 < this.a.getServerConfigurationManager().players.size(); ++var2)
+            {
+                var1.add(((EntityPlayer)this.a.getServerConfigurationManager().players.get(var2)).name);
             }
 
-            this.setListData(vector);
+            this.setListData(var1);
         }
     }
 }

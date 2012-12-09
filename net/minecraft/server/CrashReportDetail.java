@@ -1,28 +1,36 @@
 package net.minecraft.server;
 
-class CrashReportDetail {
-
+class CrashReportDetail
+{
     private final String a;
     private final String b;
 
-    public CrashReportDetail(String s, Object object) {
-        this.a = s;
-        if (object == null) {
-            this.b = "~~NULL~~";
-        } else if (object instanceof Throwable) {
-            Throwable throwable = (Throwable) object;
+    public CrashReportDetail(String par1Str, Object par2Obj)
+    {
+        this.a = par1Str;
 
-            this.b = "~~ERROR~~ " + throwable.getClass().getSimpleName() + ": " + throwable.getMessage();
-        } else {
-            this.b = object.toString();
+        if (par2Obj == null)
+        {
+            this.b = "~~NULL~~";
+        }
+        else if (par2Obj instanceof Throwable)
+        {
+            Throwable var3 = (Throwable)par2Obj;
+            this.b = "~~ERROR~~ " + var3.getClass().getSimpleName() + ": " + var3.getMessage();
+        }
+        else
+        {
+            this.b = par2Obj.toString();
         }
     }
 
-    public String a() {
+    public String a()
+    {
         return this.a;
     }
 
-    public String b() {
+    public String b()
+    {
         return this.b;
     }
 }

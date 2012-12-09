@@ -2,48 +2,79 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet250CustomPayload extends Packet {
-
+public class Packet250CustomPayload extends Packet
+{
+    /** Name of the 'channel' used to send data */
     public String tag;
+
+    /** Length of the data to be read */
     public int length;
+
+    /** Any data */
     public byte[] data;
 
     public Packet250CustomPayload() {}
 
-    public Packet250CustomPayload(String s, byte[] abyte) {
-        this.tag = s;
-        this.data = abyte;
-        if (abyte != null) {
-            this.length = abyte.length;
-            if (this.length > 32767) {
+    public Packet250CustomPayload(String par1Str, byte[] par2ArrayOfByte)
+    {
+        this.tag = par1Str;
+        this.data = par2ArrayOfByte;
+
+        if (par2ArrayOfByte != null)
+        {
+            this.length = par2ArrayOfByte.length;
+
+            if (this.length > 32767)
+            {
                 throw new IllegalArgumentException("Payload may not be larger than 32k");
             }
         }
     }
 
-    public void a(DataInputStream datainputstream) {
-        this.tag = a(datainputstream, 20);
-        this.length = datainputstream.readShort();
-        if (this.length > 0 && this.length < 32767) {
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        this.tag = a(par1DataInputStream, 20);
+        this.length = par1DataInputStream.readShort();
+
+        if (this.length > 0 && this.length < 32767)
+        {
             this.data = new byte[this.length];
-            datainputstream.readFully(this.data);
+            par1DataInputStream.readFully(this.data);
         }
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        a(this.tag, dataoutputstream);
-        dataoutputstream.writeShort((short) this.length);
-        if (this.data != null) {
-            dataoutputstream.write(this.data);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        a(this.tag, par1DataOutputStream);
+        par1DataOutputStream.writeShort((short)this.length);
+
+        if (this.data != null)
+        {
+            par1DataOutputStream.write(this.data);
         }
     }
 
-    public void handle(NetHandler nethandler) {
-        nethandler.a(this);
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
+    public void handle(NetHandler par1NetHandler)
+    {
+        par1NetHandler.a(this);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 2 + this.tag.length() * 2 + 2 + this.length;
     }
 }

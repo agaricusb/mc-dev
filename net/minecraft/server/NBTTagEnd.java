@@ -2,26 +2,43 @@ package net.minecraft.server;
 
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.IOException;
 
-public class NBTTagEnd extends NBTBase {
-
-    public NBTTagEnd() {
-        super((String) null);
+public class NBTTagEnd extends NBTBase
+{
+    public NBTTagEnd()
+    {
+        super((String)null);
     }
 
-    void load(DataInput datainput) {}
+    /**
+     * Read the actual data contents of the tag, implemented in NBT extension classes
+     */
+    void load(DataInput par1DataInput) throws IOException {}
 
-    void write(DataOutput dataoutput) {}
+    /**
+     * Write the actual data contents of the tag, implemented in NBT extension classes
+     */
+    void write(DataOutput par1DataOutput) throws IOException {}
 
-    public byte getTypeId() {
-        return (byte) 0;
+    /**
+     * Gets the type byte for the tag.
+     */
+    public byte getTypeId()
+    {
+        return (byte)0;
     }
 
-    public String toString() {
+    public String toString()
+    {
         return "END";
     }
 
-    public NBTBase clone() {
+    /**
+     * Creates a clone of the tag.
+     */
+    public NBTBase clone()
+    {
         return new NBTTagEnd();
     }
 }

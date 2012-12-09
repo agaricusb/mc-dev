@@ -2,33 +2,44 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public class CommandMe extends CommandAbstract {
-
-    public CommandMe() {}
-
-    public String c() {
+public class CommandMe extends CommandAbstract
+{
+    public String c()
+    {
         return "me";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 0;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.me.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.me.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length > 0) {
-            String s = a(icommandlistener, astring, 0);
-
-            MinecraftServer.getServer().getServerConfigurationManager().sendAll(new Packet3Chat("* " + icommandlistener.getName() + " " + s));
-        } else {
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length > 0)
+        {
+            String var3 = a(par1ICommandSender, par2ArrayOfStr, 0);
+            MinecraftServer.getServer().getServerConfigurationManager().sendAll(new Packet3Chat("* " + par1ICommandSender.getName() + " " + var3));
+        }
+        else
+        {
             throw new ExceptionUsage("commands.me.usage", new Object[0]);
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return a(astring, MinecraftServer.getServer().getPlayers());
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return a(par2ArrayOfStr, MinecraftServer.getServer().getPlayers());
     }
 }

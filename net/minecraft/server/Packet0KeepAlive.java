@@ -2,42 +2,73 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet0KeepAlive extends Packet {
-
+public class Packet0KeepAlive extends Packet
+{
     public int a;
 
     public Packet0KeepAlive() {}
 
-    public Packet0KeepAlive(int i) {
-        this.a = i;
+    public Packet0KeepAlive(int par1)
+    {
+        this.a = par1;
     }
 
-    public void handle(NetHandler nethandler) {
-        nethandler.a(this);
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
+    public void handle(NetHandler par1NetHandler)
+    {
+        par1NetHandler.a(this);
     }
 
-    public void a(DataInputStream datainputstream) {
-        this.a = datainputstream.readInt();
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        this.a = par1DataInputStream.readInt();
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        dataoutputstream.writeInt(this.a);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        par1DataOutputStream.writeInt(this.a);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 4;
     }
 
-    public boolean e() {
+    /**
+     * only false for the abstract Packet class, all real packets return true
+     */
+    public boolean e()
+    {
         return true;
     }
 
-    public boolean a(Packet packet) {
+    /**
+     * eg return packet30entity.entityId == entityId; WARNING : will throw if you compare a packet to a different packet
+     * class
+     */
+    public boolean a(Packet par1Packet)
+    {
         return true;
     }
 
-    public boolean a_() {
+    /**
+     * if this returns false, processPacket is deffered for processReadPackets to handle
+     */
+    public boolean a_()
+    {
         return true;
     }
 }

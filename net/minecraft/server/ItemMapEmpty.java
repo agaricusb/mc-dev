@@ -1,34 +1,42 @@
 package net.minecraft.server;
 
-public class ItemMapEmpty extends ItemWorldMapBase {
-
-    protected ItemMapEmpty(int i) {
-        super(i);
+public class ItemMapEmpty extends ItemWorldMapBase
+{
+    protected ItemMapEmpty(int par1)
+    {
+        super(par1);
         this.a(CreativeModeTab.f);
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        ItemStack itemstack1 = new ItemStack(Item.MAP, 1, world.b("map"));
-        String s = "map_" + itemstack1.getData();
-        WorldMap worldmap = new WorldMap(s);
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        ItemStack var4 = new ItemStack(Item.MAP, 1, par2World.b("map"));
+        String var5 = "map_" + var4.getData();
+        WorldMap var6 = new WorldMap(var5);
+        par2World.a(var5, var6);
+        var6.scale = 0;
+        int var7 = 128 * (1 << var6.scale);
+        var6.centerX = (int)(Math.round(par3EntityPlayer.locX / (double)var7) * (long)var7);
+        var6.centerZ = (int)(Math.round(par3EntityPlayer.locZ / (double)var7) * (long)var7);
+        var6.map = (byte)par2World.worldProvider.dimension;
+        var6.c();
+        --par1ItemStack.count;
 
-        world.a(s, (WorldMapBase) worldmap);
-        worldmap.scale = 0;
-        int i = 128 * (1 << worldmap.scale);
-
-        worldmap.centerX = (int) (Math.round(entityhuman.locX / (double) i) * (long) i);
-        worldmap.centerZ = (int) (Math.round(entityhuman.locZ / (double) i) * (long) i);
-        worldmap.map = (byte) world.worldProvider.dimension;
-        worldmap.c();
-        --itemstack.count;
-        if (itemstack.count <= 0) {
-            return itemstack1;
-        } else {
-            if (!entityhuman.inventory.pickup(itemstack1.cloneItemStack())) {
-                entityhuman.drop(itemstack1);
+        if (par1ItemStack.count <= 0)
+        {
+            return var4;
+        }
+        else
+        {
+            if (!par3EntityPlayer.inventory.pickup(var4.cloneItemStack()))
+            {
+                par3EntityPlayer.drop(var4);
             }
 
-            return itemstack;
+            return par1ItemStack;
         }
     }
 }

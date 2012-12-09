@@ -1,41 +1,60 @@
 package net.minecraft.server;
 
-public class TileEntitySign extends TileEntity {
+public class TileEntitySign extends TileEntity
+{
+    /** An array of four strings storing the lines of text on the sign. */
+    public String[] lines = new String[] {"", "", "", ""};
 
-    public String[] lines = new String[] { "", "", "", ""};
+    /**
+     * The index of the line currently being edited. Only used on client side, but defined on both. Note this is only
+     * really used when the > < are going to be visible.
+     */
     public int b = -1;
     private boolean isEditable = true;
 
-    public TileEntitySign() {}
-
-    public void b(NBTTagCompound nbttagcompound) {
-        super.b(nbttagcompound);
-        nbttagcompound.setString("Text1", this.lines[0]);
-        nbttagcompound.setString("Text2", this.lines[1]);
-        nbttagcompound.setString("Text3", this.lines[2]);
-        nbttagcompound.setString("Text4", this.lines[3]);
+    /**
+     * Writes a tile entity to NBT.
+     */
+    public void b(NBTTagCompound par1NBTTagCompound)
+    {
+        super.b(par1NBTTagCompound);
+        par1NBTTagCompound.setString("Text1", this.lines[0]);
+        par1NBTTagCompound.setString("Text2", this.lines[1]);
+        par1NBTTagCompound.setString("Text3", this.lines[2]);
+        par1NBTTagCompound.setString("Text4", this.lines[3]);
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
+    /**
+     * Reads a tile entity from NBT.
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
         this.isEditable = false;
-        super.a(nbttagcompound);
+        super.a(par1NBTTagCompound);
 
-        for (int i = 0; i < 4; ++i) {
-            this.lines[i] = nbttagcompound.getString("Text" + (i + 1));
-            if (this.lines[i].length() > 15) {
-                this.lines[i] = this.lines[i].substring(0, 15);
+        for (int var2 = 0; var2 < 4; ++var2)
+        {
+            this.lines[var2] = par1NBTTagCompound.getString("Text" + (var2 + 1));
+
+            if (this.lines[var2].length() > 15)
+            {
+                this.lines[var2] = this.lines[var2].substring(0, 15);
             }
         }
     }
 
-    public Packet getUpdatePacket() {
-        String[] astring = new String[4];
-
-        System.arraycopy(this.lines, 0, astring, 0, 4);
-        return new Packet130UpdateSign(this.x, this.y, this.z, astring);
+    /**
+     * Overriden in a sign to provide the text.
+     */
+    public Packet getUpdatePacket()
+    {
+        String[] var1 = new String[4];
+        System.arraycopy(this.lines, 0, var1, 0, 4);
+        return new Packet130UpdateSign(this.x, this.y, this.z, var1);
     }
 
-    public boolean a() {
+    public boolean a()
+    {
         return this.isEditable;
     }
 }

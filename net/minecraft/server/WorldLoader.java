@@ -2,50 +2,70 @@ package net.minecraft.server;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 
-public class WorldLoader implements Convertable {
-
+public class WorldLoader implements Convertable
+{
+    /**
+     * Reference to the File object representing the directory for the world saves
+     */
     protected final File a;
 
-    public WorldLoader(File file1) {
-        if (!file1.exists()) {
-            file1.mkdirs();
+    public WorldLoader(File par1File)
+    {
+        if (!par1File.exists())
+        {
+            par1File.mkdirs();
         }
 
-        this.a = file1;
+        this.a = par1File;
     }
 
     public void d() {}
 
-    public WorldData c(String s) {
-        File file1 = new File(this.a, s);
+    /**
+     * gets the world info
+     */
+    public WorldData c(String par1Str)
+    {
+        File var2 = new File(this.a, par1Str);
 
-        if (!file1.exists()) {
+        if (!var2.exists())
+        {
             return null;
-        } else {
-            File file2 = new File(file1, "level.dat");
-            NBTTagCompound nbttagcompound;
-            NBTTagCompound nbttagcompound1;
+        }
+        else
+        {
+            File var3 = new File(var2, "level.dat");
+            NBTTagCompound var4;
+            NBTTagCompound var5;
 
-            if (file2.exists()) {
-                try {
-                    nbttagcompound = NBTCompressedStreamTools.a((InputStream) (new FileInputStream(file2)));
-                    nbttagcompound1 = nbttagcompound.getCompound("Data");
-                    return new WorldData(nbttagcompound1);
-                } catch (Exception exception) {
-                    exception.printStackTrace();
+            if (var3.exists())
+            {
+                try
+                {
+                    var4 = NBTCompressedStreamTools.a(new FileInputStream(var3));
+                    var5 = var4.getCompound("Data");
+                    return new WorldData(var5);
+                }
+                catch (Exception var7)
+                {
+                    var7.printStackTrace();
                 }
             }
 
-            file2 = new File(file1, "level.dat_old");
-            if (file2.exists()) {
-                try {
-                    nbttagcompound = NBTCompressedStreamTools.a((InputStream) (new FileInputStream(file2)));
-                    nbttagcompound1 = nbttagcompound.getCompound("Data");
-                    return new WorldData(nbttagcompound1);
-                } catch (Exception exception1) {
-                    exception1.printStackTrace();
+            var3 = new File(var2, "level.dat_old");
+
+            if (var3.exists())
+            {
+                try
+                {
+                    var4 = NBTCompressedStreamTools.a(new FileInputStream(var3));
+                    var5 = var4.getCompound("Data");
+                    return new WorldData(var5);
+                }
+                catch (Exception var6)
+                {
+                    var6.printStackTrace();
                 }
             }
 
@@ -53,46 +73,70 @@ public class WorldLoader implements Convertable {
         }
     }
 
-    public boolean e(String s) {
-        File file1 = new File(this.a, s);
+    /**
+     * @args: Takes one argument - the name of the directory of the world to delete. @desc: Delete the world by deleting
+     * the associated directory recursively.
+     */
+    public boolean e(String par1Str)
+    {
+        File var2 = new File(this.a, par1Str);
 
-        if (!file1.exists()) {
+        if (!var2.exists())
+        {
             return true;
-        } else {
-            System.out.println("Deleting level " + s);
+        }
+        else
+        {
+            System.out.println("Deleting level " + par1Str);
 
-            for (int i = 1; i <= 5; ++i) {
-                System.out.println("Attempt " + i + "...");
-                if (a(file1.listFiles())) {
+            for (int var3 = 1; var3 <= 5; ++var3)
+            {
+                System.out.println("Attempt " + var3 + "...");
+
+                if (a(var2.listFiles()))
+                {
                     break;
                 }
 
                 System.out.println("Unsuccessful in deleting contents.");
-                if (i < 5) {
-                    try {
+
+                if (var3 < 5)
+                {
+                    try
+                    {
                         Thread.sleep(500L);
-                    } catch (InterruptedException interruptedexception) {
+                    }
+                    catch (InterruptedException var5)
+                    {
                         ;
                     }
                 }
             }
 
-            return file1.delete();
+            return var2.delete();
         }
     }
 
-    protected static boolean a(File[] afile) {
-        for (int i = 0; i < afile.length; ++i) {
-            File file1 = afile[i];
+    /**
+     * @args: Takes one argument - the list of files and directories to delete. @desc: Deletes the files and directory
+     * listed in the list recursively.
+     */
+    protected static boolean a(File[] par0ArrayOfFile)
+    {
+        for (int var1 = 0; var1 < par0ArrayOfFile.length; ++var1)
+        {
+            File var2 = par0ArrayOfFile[var1];
+            System.out.println("Deleting " + var2);
 
-            System.out.println("Deleting " + file1);
-            if (file1.isDirectory() && !a(file1.listFiles())) {
-                System.out.println("Couldn\'t delete directory " + file1);
+            if (var2.isDirectory() && !a(var2.listFiles()))
+            {
+                System.out.println("Couldn\'t delete directory " + var2);
                 return false;
             }
 
-            if (!file1.delete()) {
-                System.out.println("Couldn\'t delete file " + file1);
+            if (!var2.delete())
+            {
+                System.out.println("Couldn\'t delete file " + var2);
                 return false;
             }
         }
@@ -100,15 +144,27 @@ public class WorldLoader implements Convertable {
         return true;
     }
 
-    public IDataManager a(String s, boolean flag) {
-        return new WorldNBTStorage(this.a, s, flag);
+    /**
+     * Returns back a loader for the specified save directory
+     */
+    public IDataManager a(String par1Str, boolean par2)
+    {
+        return new WorldNBTStorage(this.a, par1Str, par2);
     }
 
-    public boolean isConvertable(String s) {
+    /**
+     * gets if the map is old chunk saving (true) or McRegion (false)
+     */
+    public boolean isConvertable(String par1Str)
+    {
         return false;
     }
 
-    public boolean convert(String s, IProgressUpdate iprogressupdate) {
+    /**
+     * converts the map to mcRegion
+     */
+    public boolean convert(String par1Str, IProgressUpdate par2IProgressUpdate)
+    {
         return false;
     }
 }

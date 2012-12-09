@@ -2,19 +2,22 @@ package net.minecraft.server;
 
 import java.util.concurrent.Callable;
 
-class CrashReportLevelSeed implements Callable {
-
+class CrashReportLevelSeed implements Callable
+{
     final WorldData a;
 
-    CrashReportLevelSeed(WorldData worlddata) {
-        this.a = worlddata;
+    CrashReportLevelSeed(WorldData par1WorldInfo)
+    {
+        this.a = par1WorldInfo;
     }
 
-    public String a() {
+    public String a()
+    {
         return String.valueOf(this.a.getSeed());
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

@@ -1,78 +1,112 @@
 package net.minecraft.server;
 
-public class SlotMerchantResult extends Slot {
-
+public class SlotMerchantResult extends Slot
+{
+    /** Merchant's inventory. */
     private final InventoryMerchant a;
+
+    /** The Player whos trying to buy/sell stuff. */
     private EntityHuman b;
     private int c;
+
+    /** "Instance" of the Merchant. */
     private final IMerchant d;
 
-    public SlotMerchantResult(EntityHuman entityhuman, IMerchant imerchant, InventoryMerchant inventorymerchant, int i, int j, int k) {
-        super(inventorymerchant, i, j, k);
-        this.b = entityhuman;
-        this.d = imerchant;
-        this.a = inventorymerchant;
+    public SlotMerchantResult(EntityHuman par1EntityPlayer, IMerchant par2IMerchant, InventoryMerchant par3InventoryMerchant, int par4, int par5, int par6)
+    {
+        super(par3InventoryMerchant, par4, par5, par6);
+        this.b = par1EntityPlayer;
+        this.d = par2IMerchant;
+        this.a = par3InventoryMerchant;
     }
 
-    public boolean isAllowed(ItemStack itemstack) {
+    /**
+     * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
+     */
+    public boolean isAllowed(ItemStack par1ItemStack)
+    {
         return false;
     }
 
-    public ItemStack a(int i) {
-        if (this.d()) {
-            this.c += Math.min(i, this.getItem().count);
+    /**
+     * Decrease the size of the stack in slot (first int arg) by the amount of the second int arg. Returns the new
+     * stack.
+     */
+    public ItemStack a(int par1)
+    {
+        if (this.d())
+        {
+            this.c += Math.min(par1, this.getItem().count);
         }
 
-        return super.a(i);
+        return super.a(par1);
     }
 
-    protected void a(ItemStack itemstack, int i) {
-        this.c += i;
-        this.b(itemstack);
+    /**
+     * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood. Typically increases an
+     * internal count then calls onCrafting(item).
+     */
+    protected void a(ItemStack par1ItemStack, int par2)
+    {
+        this.c += par2;
+        this.b(par1ItemStack);
     }
 
-    protected void b(ItemStack itemstack) {
-        itemstack.a(this.b.world, this.b, this.c);
+    /**
+     * the itemStack passed in is the output - ie, iron ingots, and pickaxes, not ore and wood.
+     */
+    protected void b(ItemStack par1ItemStack)
+    {
+        par1ItemStack.a(this.b.world, this.b, this.c);
         this.c = 0;
     }
 
-    public void a(EntityHuman entityhuman, ItemStack itemstack) {
-        this.b(itemstack);
-        MerchantRecipe merchantrecipe = this.a.getRecipe();
+    public void a(EntityHuman par1EntityPlayer, ItemStack par2ItemStack)
+    {
+        this.b(par2ItemStack);
+        MerchantRecipe var3 = this.a.getRecipe();
 
-        if (merchantrecipe != null) {
-            ItemStack itemstack1 = this.a.getItem(0);
-            ItemStack itemstack2 = this.a.getItem(1);
+        if (var3 != null)
+        {
+            ItemStack var4 = this.a.getItem(0);
+            ItemStack var5 = this.a.getItem(1);
 
-            if (this.a(merchantrecipe, itemstack1, itemstack2) || this.a(merchantrecipe, itemstack2, itemstack1)) {
-                if (itemstack1 != null && itemstack1.count <= 0) {
-                    itemstack1 = null;
+            if (this.a(var3, var4, var5) || this.a(var3, var5, var4))
+            {
+                if (var4 != null && var4.count <= 0)
+                {
+                    var4 = null;
                 }
 
-                if (itemstack2 != null && itemstack2.count <= 0) {
-                    itemstack2 = null;
+                if (var5 != null && var5.count <= 0)
+                {
+                    var5 = null;
                 }
 
-                this.a.setItem(0, itemstack1);
-                this.a.setItem(1, itemstack2);
-                this.d.a(merchantrecipe);
+                this.a.setItem(0, var4);
+                this.a.setItem(1, var5);
+                this.d.a(var3);
             }
         }
     }
 
-    private boolean a(MerchantRecipe merchantrecipe, ItemStack itemstack, ItemStack itemstack1) {
-        ItemStack itemstack2 = merchantrecipe.getBuyItem1();
-        ItemStack itemstack3 = merchantrecipe.getBuyItem2();
+    private boolean a(MerchantRecipe par1MerchantRecipe, ItemStack par2ItemStack, ItemStack par3ItemStack)
+    {
+        ItemStack var4 = par1MerchantRecipe.getBuyItem1();
+        ItemStack var5 = par1MerchantRecipe.getBuyItem2();
 
-        if (itemstack != null && itemstack.id == itemstack2.id) {
-            if (itemstack3 != null && itemstack1 != null && itemstack3.id == itemstack1.id) {
-                itemstack.count -= itemstack2.count;
-                itemstack1.count -= itemstack3.count;
+        if (par2ItemStack != null && par2ItemStack.id == var4.id)
+        {
+            if (var5 != null && par3ItemStack != null && var5.id == par3ItemStack.id)
+            {
+                par2ItemStack.count -= var4.count;
+                par3ItemStack.count -= var5.count;
                 return true;
             }
 
-            if (itemstack3 == null && itemstack1 == null) {
-                itemstack.count -= itemstack2.count;
+            if (var5 == null && par3ItemStack == null)
+            {
+                par2ItemStack.count -= var4.count;
                 return true;
             }
         }

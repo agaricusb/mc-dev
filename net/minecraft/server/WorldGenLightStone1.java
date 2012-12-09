@@ -2,60 +2,75 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenLightStone1 extends WorldGenerator {
-
-    public WorldGenLightStone1() {}
-
-    public boolean a(World world, Random random, int i, int j, int k) {
-        if (!world.isEmpty(i, j, k)) {
+public class WorldGenLightStone1 extends WorldGenerator
+{
+    public boolean a(World par1World, Random par2Random, int par3, int par4, int par5)
+    {
+        if (!par1World.isEmpty(par3, par4, par5))
+        {
             return false;
-        } else if (world.getTypeId(i, j + 1, k) != Block.NETHERRACK.id) {
+        }
+        else if (par1World.getTypeId(par3, par4 + 1, par5) != Block.NETHERRACK.id)
+        {
             return false;
-        } else {
-            world.setTypeId(i, j, k, Block.GLOWSTONE.id);
+        }
+        else
+        {
+            par1World.setTypeId(par3, par4, par5, Block.GLOWSTONE.id);
 
-            for (int l = 0; l < 1500; ++l) {
-                int i1 = i + random.nextInt(8) - random.nextInt(8);
-                int j1 = j - random.nextInt(12);
-                int k1 = k + random.nextInt(8) - random.nextInt(8);
+            for (int var6 = 0; var6 < 1500; ++var6)
+            {
+                int var7 = par3 + par2Random.nextInt(8) - par2Random.nextInt(8);
+                int var8 = par4 - par2Random.nextInt(12);
+                int var9 = par5 + par2Random.nextInt(8) - par2Random.nextInt(8);
 
-                if (world.getTypeId(i1, j1, k1) == 0) {
-                    int l1 = 0;
+                if (par1World.getTypeId(var7, var8, var9) == 0)
+                {
+                    int var10 = 0;
 
-                    for (int i2 = 0; i2 < 6; ++i2) {
-                        int j2 = 0;
+                    for (int var11 = 0; var11 < 6; ++var11)
+                    {
+                        int var12 = 0;
 
-                        if (i2 == 0) {
-                            j2 = world.getTypeId(i1 - 1, j1, k1);
+                        if (var11 == 0)
+                        {
+                            var12 = par1World.getTypeId(var7 - 1, var8, var9);
                         }
 
-                        if (i2 == 1) {
-                            j2 = world.getTypeId(i1 + 1, j1, k1);
+                        if (var11 == 1)
+                        {
+                            var12 = par1World.getTypeId(var7 + 1, var8, var9);
                         }
 
-                        if (i2 == 2) {
-                            j2 = world.getTypeId(i1, j1 - 1, k1);
+                        if (var11 == 2)
+                        {
+                            var12 = par1World.getTypeId(var7, var8 - 1, var9);
                         }
 
-                        if (i2 == 3) {
-                            j2 = world.getTypeId(i1, j1 + 1, k1);
+                        if (var11 == 3)
+                        {
+                            var12 = par1World.getTypeId(var7, var8 + 1, var9);
                         }
 
-                        if (i2 == 4) {
-                            j2 = world.getTypeId(i1, j1, k1 - 1);
+                        if (var11 == 4)
+                        {
+                            var12 = par1World.getTypeId(var7, var8, var9 - 1);
                         }
 
-                        if (i2 == 5) {
-                            j2 = world.getTypeId(i1, j1, k1 + 1);
+                        if (var11 == 5)
+                        {
+                            var12 = par1World.getTypeId(var7, var8, var9 + 1);
                         }
 
-                        if (j2 == Block.GLOWSTONE.id) {
-                            ++l1;
+                        if (var12 == Block.GLOWSTONE.id)
+                        {
+                            ++var10;
                         }
                     }
 
-                    if (l1 == 1) {
-                        world.setTypeId(i1, j1, k1, Block.GLOWSTONE.id);
+                    if (var10 == 1)
+                    {
+                        par1World.setTypeId(var7, var8, var9, Block.GLOWSTONE.id);
                     }
                 }
             }

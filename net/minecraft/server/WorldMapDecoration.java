@@ -1,7 +1,7 @@
 package net.minecraft.server;
 
-public class WorldMapDecoration {
-
+public class WorldMapDecoration
+{
     public byte type;
     public byte locX;
     public byte locY;
@@ -9,11 +9,12 @@ public class WorldMapDecoration {
 
     final WorldMap e;
 
-    public WorldMapDecoration(WorldMap worldmap, byte b0, byte b1, byte b2, byte b3) {
-        this.e = worldmap;
-        this.type = b0;
-        this.locX = b1;
-        this.locY = b2;
-        this.rotation = b3;
+    public WorldMapDecoration(WorldMap par1MapData, byte par2, byte par3, byte par4, byte par5)
+    {
+        this.e = par1MapData;
+        this.type = par2;
+        this.locX = par3;
+        this.locY = par4;
+        this.rotation = par5;
     }
 }

@@ -1,91 +1,128 @@
 package net.minecraft.server;
 
-public class ItemStep extends ItemBlock {
-
+public class ItemStep extends ItemBlock
+{
     private final boolean a;
+
+    /** Instance of BlockHalfSlab. */
     private final BlockStepAbstract b;
+
+    /** Instance of BlockHalfSlab. */
     private final BlockStepAbstract c;
 
-    public ItemStep(int i, BlockStepAbstract blockstepabstract, BlockStepAbstract blockstepabstract1, boolean flag) {
-        super(i);
-        this.b = blockstepabstract;
-        this.c = blockstepabstract1;
-        this.a = flag;
+    public ItemStep(int par1, BlockStepAbstract par2BlockHalfSlab, BlockStepAbstract par3BlockHalfSlab, boolean par4)
+    {
+        super(par1);
+        this.b = par2BlockHalfSlab;
+        this.c = par3BlockHalfSlab;
+        this.a = par4;
         this.setMaxDurability(0);
         this.a(true);
     }
 
-    public int filterData(int i) {
-        return i;
+    /**
+     * Returns the metadata of the block which this Item (ItemBlock) can place
+     */
+    public int filterData(int par1)
+    {
+        return par1;
     }
 
-    public String c_(ItemStack itemstack) {
-        return this.b.d(itemstack.getData());
+    public String c_(ItemStack par1ItemStack)
+    {
+        return this.b.d(par1ItemStack.getData());
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
-        if (this.a) {
-            return super.interactWith(itemstack, entityhuman, world, i, j, k, l, f, f1, f2);
-        } else if (itemstack.count == 0) {
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        if (this.a)
+        {
+            return super.interactWith(par1ItemStack, par2EntityPlayer, par3World, par4, par5, par6, par7, par8, par9, par10);
+        }
+        else if (par1ItemStack.count == 0)
+        {
             return false;
-        } else if (!entityhuman.a(i, j, k, l, itemstack)) {
+        }
+        else if (!par2EntityPlayer.a(par4, par5, par6, par7, par1ItemStack))
+        {
             return false;
-        } else {
-            int i1 = world.getTypeId(i, j, k);
-            int j1 = world.getData(i, j, k);
-            int k1 = j1 & 7;
-            boolean flag = (j1 & 8) != 0;
+        }
+        else
+        {
+            int var11 = par3World.getTypeId(par4, par5, par6);
+            int var12 = par3World.getData(par4, par5, par6);
+            int var13 = var12 & 7;
+            boolean var14 = (var12 & 8) != 0;
 
-            if ((l == 1 && !flag || l == 0 && flag) && i1 == this.b.id && k1 == itemstack.getData()) {
-                if (world.b(this.c.e(world, i, j, k)) && world.setTypeIdAndData(i, j, k, this.c.id, k1)) {
-                    world.makeSound((double) ((float) i + 0.5F), (double) ((float) j + 0.5F), (double) ((float) k + 0.5F), this.c.stepSound.getPlaceSound(), (this.c.stepSound.getVolume1() + 1.0F) / 2.0F, this.c.stepSound.getVolume2() * 0.8F);
-                    --itemstack.count;
+            if ((par7 == 1 && !var14 || par7 == 0 && var14) && var11 == this.b.id && var13 == par1ItemStack.getData())
+            {
+                if (par3World.b(this.c.e(par3World, par4, par5, par6)) && par3World.setTypeIdAndData(par4, par5, par6, this.c.id, var13))
+                {
+                    par3World.makeSound((double) ((float) par4 + 0.5F), (double) ((float) par5 + 0.5F), (double) ((float) par6 + 0.5F), this.c.stepSound.getPlaceSound(), (this.c.stepSound.getVolume1() + 1.0F) / 2.0F, this.c.stepSound.getVolume2() * 0.8F);
+                    --par1ItemStack.count;
                 }
 
                 return true;
-            } else {
-                return this.a(itemstack, entityhuman, world, i, j, k, l) ? true : super.interactWith(itemstack, entityhuman, world, i, j, k, l, f, f1, f2);
+            }
+            else
+            {
+                return this.a(par1ItemStack, par2EntityPlayer, par3World, par4, par5, par6, par7) ? true : super.interactWith(par1ItemStack, par2EntityPlayer, par3World, par4, par5, par6, par7, par8, par9, par10);
             }
         }
     }
 
-    private boolean a(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l) {
-        if (l == 0) {
-            --j;
+    private boolean a(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7)
+    {
+        if (par7 == 0)
+        {
+            --par5;
         }
 
-        if (l == 1) {
-            ++j;
+        if (par7 == 1)
+        {
+            ++par5;
         }
 
-        if (l == 2) {
-            --k;
+        if (par7 == 2)
+        {
+            --par6;
         }
 
-        if (l == 3) {
-            ++k;
+        if (par7 == 3)
+        {
+            ++par6;
         }
 
-        if (l == 4) {
-            --i;
+        if (par7 == 4)
+        {
+            --par4;
         }
 
-        if (l == 5) {
-            ++i;
+        if (par7 == 5)
+        {
+            ++par4;
         }
 
-        int i1 = world.getTypeId(i, j, k);
-        int j1 = world.getData(i, j, k);
-        int k1 = j1 & 7;
+        int var8 = par3World.getTypeId(par4, par5, par6);
+        int var9 = par3World.getData(par4, par5, par6);
+        int var10 = var9 & 7;
 
-        if (i1 == this.b.id && k1 == itemstack.getData()) {
-            if (world.b(this.c.e(world, i, j, k)) && world.setTypeIdAndData(i, j, k, this.c.id, k1)) {
-                world.makeSound((double) ((float) i + 0.5F), (double) ((float) j + 0.5F), (double) ((float) k + 0.5F), this.c.stepSound.getPlaceSound(), (this.c.stepSound.getVolume1() + 1.0F) / 2.0F, this.c.stepSound.getVolume2() * 0.8F);
-                --itemstack.count;
+        if (var8 == this.b.id && var10 == par1ItemStack.getData())
+        {
+            if (par3World.b(this.c.e(par3World, par4, par5, par6)) && par3World.setTypeIdAndData(par4, par5, par6, this.c.id, var10))
+            {
+                par3World.makeSound((double) ((float) par4 + 0.5F), (double) ((float) par5 + 0.5F), (double) ((float) par6 + 0.5F), this.c.stepSound.getPlaceSound(), (this.c.stepSound.getVolume1() + 1.0F) / 2.0F, this.c.stepSound.getVolume2() * 0.8F);
+                --par1ItemStack.count;
             }
 
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }

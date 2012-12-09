@@ -1,64 +1,87 @@
 package net.minecraft.server;
 
-public class ItemMonsterEgg extends Item {
-
-    public ItemMonsterEgg(int i) {
-        super(i);
+public class ItemMonsterEgg extends Item
+{
+    public ItemMonsterEgg(int par1)
+    {
+        super(par1);
         this.a(true);
         this.a(CreativeModeTab.f);
     }
 
-    public String j(ItemStack itemstack) {
-        String s = ("" + LocaleI18n.get(this.getName() + ".name")).trim();
-        String s1 = EntityTypes.b(itemstack.getData());
+    public String j(ItemStack par1ItemStack)
+    {
+        String var2 = ("" + LocaleI18n.get(this.getName() + ".name")).trim();
+        String var3 = EntityTypes.b(par1ItemStack.getData());
 
-        if (s1 != null) {
-            s = s + " " + LocaleI18n.get("entity." + s1 + ".name");
+        if (var3 != null)
+        {
+            var2 = var2 + " " + LocaleI18n.get("entity." + var3 + ".name");
         }
 
-        return s;
+        return var2;
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
-        if (world.isStatic) {
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        if (par3World.isStatic)
+        {
             return true;
-        } else {
-            int i1 = world.getTypeId(i, j, k);
+        }
+        else
+        {
+            int var11 = par3World.getTypeId(par4, par5, par6);
+            par4 += Facing.b[par7];
+            par5 += Facing.c[par7];
+            par6 += Facing.d[par7];
+            double var12 = 0.0D;
 
-            i += Facing.b[l];
-            j += Facing.c[l];
-            k += Facing.d[l];
-            double d0 = 0.0D;
-
-            if (l == 1 && Block.byId[i1] != null && Block.byId[i1].d() == 11) {
-                d0 = 0.5D;
+            if (par7 == 1 && Block.byId[var11] != null && Block.byId[var11].d() == 11)
+            {
+                var12 = 0.5D;
             }
 
-            if (a(world, itemstack.getData(), (double) i + 0.5D, (double) j + d0, (double) k + 0.5D) != null && !entityhuman.abilities.canInstantlyBuild) {
-                --itemstack.count;
+            if (a(par3World, par1ItemStack.getData(), (double) par4 + 0.5D, (double) par5 + var12, (double) par6 + 0.5D) != null && !par2EntityPlayer.abilities.canInstantlyBuild)
+            {
+                --par1ItemStack.count;
             }
 
             return true;
         }
     }
 
-    public static Entity a(World world, int i, double d0, double d1, double d2) {
-        if (!EntityTypes.a.containsKey(Integer.valueOf(i))) {
+    /**
+     * Spawns the creature specified by the egg's type in the location specified by the last three parameters.
+     * Parameters: world, entityID, x, y, z.
+     */
+    public static Entity a(World par0World, int par1, double par2, double par4, double par6)
+    {
+        if (!EntityTypes.a.containsKey(Integer.valueOf(par1)))
+        {
             return null;
-        } else {
-            Entity entity = null;
+        }
+        else
+        {
+            Entity var8 = null;
 
-            for (int j = 0; j < 1; ++j) {
-                entity = EntityTypes.a(i, world);
-                if (entity != null) {
-                    entity.setPositionRotation(d0, d1, d2, world.random.nextFloat() * 360.0F, 0.0F);
-                    ((EntityLiving) entity).bG();
-                    world.addEntity(entity);
-                    ((EntityLiving) entity).aO();
+            for (int var9 = 0; var9 < 1; ++var9)
+            {
+                var8 = EntityTypes.a(par1, par0World);
+
+                if (var8 != null)
+                {
+                    var8.setPositionRotation(par2, par4, par6, par0World.random.nextFloat() * 360.0F, 0.0F);
+                    ((EntityLiving)var8).bG();
+                    par0World.addEntity(var8);
+                    ((EntityLiving)var8).aO();
                 }
             }
 
-            return entity;
+            return var8;
         }
     }
 }

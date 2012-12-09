@@ -3,29 +3,38 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Random;
 
-public class WorldGenStrongholdCorridor extends WorldGenStrongholdPiece {
-
+public class WorldGenStrongholdCorridor extends WorldGenStrongholdPiece
+{
     private final int a;
 
-    public WorldGenStrongholdCorridor(int i, Random random, StructureBoundingBox structureboundingbox, int j) {
-        super(i);
-        this.f = j;
-        this.e = structureboundingbox;
-        this.a = j != 2 && j != 0 ? structureboundingbox.b() : structureboundingbox.d();
+    public WorldGenStrongholdCorridor(int par1, Random par2Random, StructureBoundingBox par3StructureBoundingBox, int par4)
+    {
+        super(par1);
+        this.f = par4;
+        this.e = par3StructureBoundingBox;
+        this.a = par4 != 2 && par4 != 0 ? par3StructureBoundingBox.b() : par3StructureBoundingBox.d();
     }
 
-    public static StructureBoundingBox a(List list, Random random, int i, int j, int k, int l) {
-        StructureBoundingBox structureboundingbox = StructureBoundingBox.a(i, j, k, -1, -1, 0, 5, 5, 4, l);
-        StructurePiece structurepiece = StructurePiece.a(list, structureboundingbox);
+    public static StructureBoundingBox a(List par0List, Random par1Random, int par2, int par3, int par4, int par5)
+    {
+        StructureBoundingBox var7 = StructureBoundingBox.a(par2, par3, par4, -1, -1, 0, 5, 5, 4, par5);
+        StructurePiece var8 = StructurePiece.a(par0List, var7);
 
-        if (structurepiece == null) {
+        if (var8 == null)
+        {
             return null;
-        } else {
-            if (structurepiece.b().b == structureboundingbox.b) {
-                for (int i1 = 3; i1 >= 1; --i1) {
-                    structureboundingbox = StructureBoundingBox.a(i, j, k, -1, -1, 0, 5, 5, i1 - 1, l);
-                    if (!structurepiece.b().a(structureboundingbox)) {
-                        return StructureBoundingBox.a(i, j, k, -1, -1, 0, 5, 5, i1, l);
+        }
+        else
+        {
+            if (var8.b().b == var7.b)
+            {
+                for (int var9 = 3; var9 >= 1; --var9)
+                {
+                    var7 = StructureBoundingBox.a(par2, par3, par4, -1, -1, 0, 5, 5, var9 - 1, par5);
+
+                    if (!var8.b().a(var7))
+                    {
+                        return StructureBoundingBox.a(par2, par3, par4, -1, -1, 0, 5, 5, var9, par5);
                     }
                 }
             }
@@ -34,30 +43,40 @@ public class WorldGenStrongholdCorridor extends WorldGenStrongholdPiece {
         }
     }
 
-    public boolean a(World world, Random random, StructureBoundingBox structureboundingbox) {
-        if (this.a(world, structureboundingbox)) {
+    /**
+     * second Part of Structure generating, this for example places Spiderwebs, Mob Spawners, it closes Mineshafts at
+     * the end, it adds Fences...
+     */
+    public boolean a(World par1World, Random par2Random, StructureBoundingBox par3StructureBoundingBox)
+    {
+        if (this.a(par1World, par3StructureBoundingBox))
+        {
             return false;
-        } else {
-            for (int i = 0; i < this.a; ++i) {
-                this.a(world, Block.SMOOTH_BRICK.id, 0, 0, 0, i, structureboundingbox);
-                this.a(world, Block.SMOOTH_BRICK.id, 0, 1, 0, i, structureboundingbox);
-                this.a(world, Block.SMOOTH_BRICK.id, 0, 2, 0, i, structureboundingbox);
-                this.a(world, Block.SMOOTH_BRICK.id, 0, 3, 0, i, structureboundingbox);
-                this.a(world, Block.SMOOTH_BRICK.id, 0, 4, 0, i, structureboundingbox);
+        }
+        else
+        {
+            for (int var4 = 0; var4 < this.a; ++var4)
+            {
+                this.a(par1World, Block.SMOOTH_BRICK.id, 0, 0, 0, var4, par3StructureBoundingBox);
+                this.a(par1World, Block.SMOOTH_BRICK.id, 0, 1, 0, var4, par3StructureBoundingBox);
+                this.a(par1World, Block.SMOOTH_BRICK.id, 0, 2, 0, var4, par3StructureBoundingBox);
+                this.a(par1World, Block.SMOOTH_BRICK.id, 0, 3, 0, var4, par3StructureBoundingBox);
+                this.a(par1World, Block.SMOOTH_BRICK.id, 0, 4, 0, var4, par3StructureBoundingBox);
 
-                for (int j = 1; j <= 3; ++j) {
-                    this.a(world, Block.SMOOTH_BRICK.id, 0, 0, j, i, structureboundingbox);
-                    this.a(world, 0, 0, 1, j, i, structureboundingbox);
-                    this.a(world, 0, 0, 2, j, i, structureboundingbox);
-                    this.a(world, 0, 0, 3, j, i, structureboundingbox);
-                    this.a(world, Block.SMOOTH_BRICK.id, 0, 4, j, i, structureboundingbox);
+                for (int var5 = 1; var5 <= 3; ++var5)
+                {
+                    this.a(par1World, Block.SMOOTH_BRICK.id, 0, 0, var5, var4, par3StructureBoundingBox);
+                    this.a(par1World, 0, 0, 1, var5, var4, par3StructureBoundingBox);
+                    this.a(par1World, 0, 0, 2, var5, var4, par3StructureBoundingBox);
+                    this.a(par1World, 0, 0, 3, var5, var4, par3StructureBoundingBox);
+                    this.a(par1World, Block.SMOOTH_BRICK.id, 0, 4, var5, var4, par3StructureBoundingBox);
                 }
 
-                this.a(world, Block.SMOOTH_BRICK.id, 0, 0, 4, i, structureboundingbox);
-                this.a(world, Block.SMOOTH_BRICK.id, 0, 1, 4, i, structureboundingbox);
-                this.a(world, Block.SMOOTH_BRICK.id, 0, 2, 4, i, structureboundingbox);
-                this.a(world, Block.SMOOTH_BRICK.id, 0, 3, 4, i, structureboundingbox);
-                this.a(world, Block.SMOOTH_BRICK.id, 0, 4, 4, i, structureboundingbox);
+                this.a(par1World, Block.SMOOTH_BRICK.id, 0, 0, 4, var4, par3StructureBoundingBox);
+                this.a(par1World, Block.SMOOTH_BRICK.id, 0, 1, 4, var4, par3StructureBoundingBox);
+                this.a(par1World, Block.SMOOTH_BRICK.id, 0, 2, 4, var4, par3StructureBoundingBox);
+                this.a(par1World, Block.SMOOTH_BRICK.id, 0, 3, 4, var4, par3StructureBoundingBox);
+                this.a(par1World, Block.SMOOTH_BRICK.id, 0, 4, 4, var4, par3StructureBoundingBox);
             }
 
             return true;

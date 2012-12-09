@@ -3,44 +3,67 @@ package net.minecraft.server;
 import java.util.ArrayList;
 import java.util.List;
 
-class PlayerInstance {
-
+class PlayerInstance
+{
+    /** the list of all players in this instance (chunk) */
     private final List b;
+
+    /** the chunk the player currently resides in */
     private final ChunkCoordIntPair location;
+
+    /** array of blocks to update this tick */
     private short[] dirtyBlocks;
+
+    /** the number of blocks that need to be updated next tick */
     private int dirtyCount;
     private int f;
 
     final PlayerManager playerManager;
 
-    public PlayerInstance(PlayerManager playermanager, int i, int j) {
-        this.playerManager = playermanager;
+    public PlayerInstance(PlayerManager par1PlayerManager, int par2, int par3)
+    {
+        this.playerManager = par1PlayerManager;
         this.b = new ArrayList();
         this.dirtyBlocks = new short[64];
         this.dirtyCount = 0;
-        this.location = new ChunkCoordIntPair(i, j);
-        playermanager.a().chunkProviderServer.getChunkAt(i, j);
+        this.location = new ChunkCoordIntPair(par2, par3);
+        par1PlayerManager.a().chunkProviderServer.getChunkAt(par2, par3);
     }
 
-    public void a(EntityPlayer entityplayer) {
-        if (this.b.contains(entityplayer)) {
-            throw new IllegalStateException("Failed to add player. " + entityplayer + " already is in chunk " + this.location.x + ", " + this.location.z);
-        } else {
-            this.b.add(entityplayer);
-            entityplayer.chunkCoordIntPairQueue.add(this.location);
+    /**
+     * adds this player to the playerInstance
+     */
+    public void a(EntityPlayer par1EntityPlayerMP)
+    {
+        if (this.b.contains(par1EntityPlayerMP))
+        {
+            throw new IllegalStateException("Failed to add player. " + par1EntityPlayerMP + " already is in chunk " + this.location.x + ", " + this.location.z);
+        }
+        else
+        {
+            this.b.add(par1EntityPlayerMP);
+            par1EntityPlayerMP.chunkCoordIntPairQueue.add(this.location);
         }
     }
 
-    public void b(EntityPlayer entityplayer) {
-        if (this.b.contains(entityplayer)) {
-            entityplayer.netServerHandler.sendPacket(new Packet51MapChunk(PlayerManager.a(this.playerManager).getChunkAt(this.location.x, this.location.z), true, 0));
-            this.b.remove(entityplayer);
-            entityplayer.chunkCoordIntPairQueue.remove(this.location);
-            if (this.b.isEmpty()) {
-                long i = (long) this.location.x + 2147483647L | (long) this.location.z + 2147483647L << 32;
+    /**
+     * remove player from this instance
+     */
+    public void b(EntityPlayer par1EntityPlayerMP)
+    {
+        if (this.b.contains(par1EntityPlayerMP))
+        {
+            par1EntityPlayerMP.netServerHandler.sendPacket(new Packet51MapChunk(PlayerManager.a(this.playerManager).getChunkAt(this.location.x, this.location.z), true, 0));
+            this.b.remove(par1EntityPlayerMP);
+            par1EntityPlayerMP.chunkCoordIntPairQueue.remove(this.location);
 
-                PlayerManager.b(this.playerManager).remove(i);
-                if (this.dirtyCount > 0) {
+            if (this.b.isEmpty())
+            {
+                long var2 = (long)this.location.x + 2147483647L | (long)this.location.z + 2147483647L << 32;
+                PlayerManager.b(this.playerManager).remove(var2);
+
+                if (this.dirtyCount > 0)
+                {
                     PlayerManager.c(this.playerManager).remove(this);
                 }
 
@@ -49,76 +72,107 @@ class PlayerInstance {
         }
     }
 
-    public void a(int i, int j, int k) {
-        if (this.dirtyCount == 0) {
+    /**
+     * mark the block as changed so that it will update clients who need to know about it
+     */
+    public void a(int par1, int par2, int par3)
+    {
+        if (this.dirtyCount == 0)
+        {
             PlayerManager.c(this.playerManager).add(this);
         }
 
-        this.f |= 1 << (j >> 4);
-        if (this.dirtyCount < 64) {
-            short short1 = (short) (i << 12 | k << 8 | j);
+        this.f |= 1 << (par2 >> 4);
 
-            for (int l = 0; l < this.dirtyCount; ++l) {
-                if (this.dirtyBlocks[l] == short1) {
+        if (this.dirtyCount < 64)
+        {
+            short var4 = (short)(par1 << 12 | par3 << 8 | par2);
+
+            for (int var5 = 0; var5 < this.dirtyCount; ++var5)
+            {
+                if (this.dirtyBlocks[var5] == var4)
+                {
                     return;
                 }
             }
 
-            this.dirtyBlocks[this.dirtyCount++] = short1;
+            this.dirtyBlocks[this.dirtyCount++] = var4;
         }
     }
 
-    public void sendAll(Packet packet) {
-        for (int i = 0; i < this.b.size(); ++i) {
-            EntityPlayer entityplayer = (EntityPlayer) this.b.get(i);
+    /**
+     * sends the packet to all players in the current instance
+     */
+    public void sendAll(Packet par1Packet)
+    {
+        for (int var2 = 0; var2 < this.b.size(); ++var2)
+        {
+            EntityPlayer var3 = (EntityPlayer)this.b.get(var2);
 
-            if (!entityplayer.chunkCoordIntPairQueue.contains(this.location)) {
-                entityplayer.netServerHandler.sendPacket(packet);
+            if (!var3.chunkCoordIntPairQueue.contains(this.location))
+            {
+                var3.netServerHandler.sendPacket(par1Packet);
             }
         }
     }
 
-    public void a() {
-        if (this.dirtyCount != 0) {
-            int i;
-            int j;
-            int k;
+    public void a()
+    {
+        if (this.dirtyCount != 0)
+        {
+            int var1;
+            int var2;
+            int var3;
 
-            if (this.dirtyCount == 1) {
-                i = this.location.x * 16 + (this.dirtyBlocks[0] >> 12 & 15);
-                j = this.dirtyBlocks[0] & 255;
-                k = this.location.z * 16 + (this.dirtyBlocks[0] >> 8 & 15);
-                this.sendAll(new Packet53BlockChange(i, j, k, PlayerManager.a(this.playerManager)));
-                if (PlayerManager.a(this.playerManager).isTileEntity(i, j, k)) {
-                    this.sendTileEntity(PlayerManager.a(this.playerManager).getTileEntity(i, j, k));
+            if (this.dirtyCount == 1)
+            {
+                var1 = this.location.x * 16 + (this.dirtyBlocks[0] >> 12 & 15);
+                var2 = this.dirtyBlocks[0] & 255;
+                var3 = this.location.z * 16 + (this.dirtyBlocks[0] >> 8 & 15);
+                this.sendAll(new Packet53BlockChange(var1, var2, var3, PlayerManager.a(this.playerManager)));
+
+                if (PlayerManager.a(this.playerManager).isTileEntity(var1, var2, var3))
+                {
+                    this.sendTileEntity(PlayerManager.a(this.playerManager).getTileEntity(var1, var2, var3));
                 }
-            } else {
-                int l;
+            }
+            else
+            {
+                int var4;
 
-                if (this.dirtyCount == 64) {
-                    i = this.location.x * 16;
-                    j = this.location.z * 16;
+                if (this.dirtyCount == 64)
+                {
+                    var1 = this.location.x * 16;
+                    var2 = this.location.z * 16;
                     this.sendAll(new Packet51MapChunk(PlayerManager.a(this.playerManager).getChunkAt(this.location.x, this.location.z), false, this.f));
 
-                    for (k = 0; k < 16; ++k) {
-                        if ((this.f & 1 << k) != 0) {
-                            l = k << 4;
-                            List list = PlayerManager.a(this.playerManager).getTileEntities(i, l, j, i + 16, l + 16, j + 16);
+                    for (var3 = 0; var3 < 16; ++var3)
+                    {
+                        if ((this.f & 1 << var3) != 0)
+                        {
+                            var4 = var3 << 4;
+                            List var5 = PlayerManager.a(this.playerManager).getTileEntities(var1, var4, var2, var1 + 16, var4 + 16, var2 + 16);
 
-                            for (int i1 = 0; i1 < list.size(); ++i1) {
-                                this.sendTileEntity((TileEntity) list.get(i1));
+                            for (int var6 = 0; var6 < var5.size(); ++var6)
+                            {
+                                this.sendTileEntity((TileEntity) var5.get(var6));
                             }
                         }
                     }
-                } else {
+                }
+                else
+                {
                     this.sendAll(new Packet52MultiBlockChange(this.location.x, this.location.z, this.dirtyBlocks, this.dirtyCount, PlayerManager.a(this.playerManager)));
 
-                    for (i = 0; i < this.dirtyCount; ++i) {
-                        j = this.location.x * 16 + (this.dirtyBlocks[i] >> 12 & 15);
-                        k = this.dirtyBlocks[i] & 255;
-                        l = this.location.z * 16 + (this.dirtyBlocks[i] >> 8 & 15);
-                        if (PlayerManager.a(this.playerManager).isTileEntity(j, k, l)) {
-                            this.sendTileEntity(PlayerManager.a(this.playerManager).getTileEntity(j, k, l));
+                    for (var1 = 0; var1 < this.dirtyCount; ++var1)
+                    {
+                        var2 = this.location.x * 16 + (this.dirtyBlocks[var1] >> 12 & 15);
+                        var3 = this.dirtyBlocks[var1] & 255;
+                        var4 = this.location.z * 16 + (this.dirtyBlocks[var1] >> 8 & 15);
+
+                        if (PlayerManager.a(this.playerManager).isTileEntity(var2, var3, var4))
+                        {
+                            this.sendTileEntity(PlayerManager.a(this.playerManager).getTileEntity(var2, var3, var4));
                         }
                     }
                 }
@@ -129,21 +183,29 @@ class PlayerInstance {
         }
     }
 
-    private void sendTileEntity(TileEntity tileentity) {
-        if (tileentity != null) {
-            Packet packet = tileentity.getUpdatePacket();
+    /**
+     * sends players update packet about the given entity
+     */
+    private void sendTileEntity(TileEntity par1TileEntity)
+    {
+        if (par1TileEntity != null)
+        {
+            Packet var2 = par1TileEntity.getUpdatePacket();
 
-            if (packet != null) {
-                this.sendAll(packet);
+            if (var2 != null)
+            {
+                this.sendAll(var2);
             }
         }
     }
 
-    static ChunkCoordIntPair a(PlayerInstance playerinstance) {
-        return playerinstance.location;
+    static ChunkCoordIntPair a(PlayerInstance par0PlayerInstance)
+    {
+        return par0PlayerInstance.location;
     }
 
-    static List b(PlayerInstance playerinstance) {
-        return playerinstance.b;
+    static List b(PlayerInstance par0PlayerInstance)
+    {
+        return par0PlayerInstance.b;
     }
 }

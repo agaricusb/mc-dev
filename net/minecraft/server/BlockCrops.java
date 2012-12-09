@@ -2,15 +2,15 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockCrops extends BlockFlower {
-
-    protected BlockCrops(int i, int j) {
-        super(i, j);
-        this.textureId = j;
+public class BlockCrops extends BlockFlower
+{
+    protected BlockCrops(int par1, int par2)
+    {
+        super(par1, par2);
+        this.textureId = par2;
         this.b(true);
-        float f = 0.5F;
-
-        this.a(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 0.25F, 0.5F + f);
+        float var3 = 0.5F;
+        this.a(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, 0.25F, 0.5F + var3);
         this.a((CreativeModeTab) null);
         this.c(0.0F);
         this.a(g);
@@ -18,111 +18,175 @@ public class BlockCrops extends BlockFlower {
         this.r();
     }
 
-    protected boolean d_(int i) {
-        return i == Block.SOIL.id;
+    /**
+     * Gets passed in the blockID of the block below and supposed to return true if its allowed to grow on the type of
+     * blockID passed in. Args: blockID
+     */
+    protected boolean d_(int par1)
+    {
+        return par1 == Block.SOIL.id;
     }
 
-    public void b(World world, int i, int j, int k, Random random) {
-        super.b(world, i, j, k, random);
-        if (world.getLightLevel(i, j + 1, k) >= 9) {
-            int l = world.getData(i, j, k);
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        super.b(par1World, par2, par3, par4, par5Random);
 
-            if (l < 7) {
-                float f = this.l(world, i, j, k);
+        if (par1World.getLightLevel(par2, par3 + 1, par4) >= 9)
+        {
+            int var6 = par1World.getData(par2, par3, par4);
 
-                if (random.nextInt((int) (25.0F / f) + 1) == 0) {
-                    ++l;
-                    world.setData(i, j, k, l);
+            if (var6 < 7)
+            {
+                float var7 = this.l(par1World, par2, par3, par4);
+
+                if (par5Random.nextInt((int)(25.0F / var7) + 1) == 0)
+                {
+                    ++var6;
+                    par1World.setData(par2, par3, par4, var6);
                 }
             }
         }
     }
 
-    public void c_(World world, int i, int j, int k) {
-        world.setData(i, j, k, 7);
+    /**
+     * Apply bonemeal to the crops.
+     */
+    public void c_(World par1World, int par2, int par3, int par4)
+    {
+        par1World.setData(par2, par3, par4, 7);
     }
 
-    private float l(World world, int i, int j, int k) {
-        float f = 1.0F;
-        int l = world.getTypeId(i, j, k - 1);
-        int i1 = world.getTypeId(i, j, k + 1);
-        int j1 = world.getTypeId(i - 1, j, k);
-        int k1 = world.getTypeId(i + 1, j, k);
-        int l1 = world.getTypeId(i - 1, j, k - 1);
-        int i2 = world.getTypeId(i + 1, j, k - 1);
-        int j2 = world.getTypeId(i + 1, j, k + 1);
-        int k2 = world.getTypeId(i - 1, j, k + 1);
-        boolean flag = j1 == this.id || k1 == this.id;
-        boolean flag1 = l == this.id || i1 == this.id;
-        boolean flag2 = l1 == this.id || i2 == this.id || j2 == this.id || k2 == this.id;
+    /**
+     * Gets the growth rate for the crop. Setup to encourage rows by halving growth rate if there is diagonals, crops on
+     * different sides that aren't opposing, and by adding growth for every crop next to this one (and for crop below
+     * this one). Args: x, y, z
+     */
+    private float l(World par1World, int par2, int par3, int par4)
+    {
+        float var5 = 1.0F;
+        int var6 = par1World.getTypeId(par2, par3, par4 - 1);
+        int var7 = par1World.getTypeId(par2, par3, par4 + 1);
+        int var8 = par1World.getTypeId(par2 - 1, par3, par4);
+        int var9 = par1World.getTypeId(par2 + 1, par3, par4);
+        int var10 = par1World.getTypeId(par2 - 1, par3, par4 - 1);
+        int var11 = par1World.getTypeId(par2 + 1, par3, par4 - 1);
+        int var12 = par1World.getTypeId(par2 + 1, par3, par4 + 1);
+        int var13 = par1World.getTypeId(par2 - 1, par3, par4 + 1);
+        boolean var14 = var8 == this.id || var9 == this.id;
+        boolean var15 = var6 == this.id || var7 == this.id;
+        boolean var16 = var10 == this.id || var11 == this.id || var12 == this.id || var13 == this.id;
 
-        for (int l2 = i - 1; l2 <= i + 1; ++l2) {
-            for (int i3 = k - 1; i3 <= k + 1; ++i3) {
-                int j3 = world.getTypeId(l2, j - 1, i3);
-                float f1 = 0.0F;
+        for (int var17 = par2 - 1; var17 <= par2 + 1; ++var17)
+        {
+            for (int var18 = par4 - 1; var18 <= par4 + 1; ++var18)
+            {
+                int var19 = par1World.getTypeId(var17, par3 - 1, var18);
+                float var20 = 0.0F;
 
-                if (j3 == Block.SOIL.id) {
-                    f1 = 1.0F;
-                    if (world.getData(l2, j - 1, i3) > 0) {
-                        f1 = 3.0F;
+                if (var19 == Block.SOIL.id)
+                {
+                    var20 = 1.0F;
+
+                    if (par1World.getData(var17, par3 - 1, var18) > 0)
+                    {
+                        var20 = 3.0F;
                     }
                 }
 
-                if (l2 != i || i3 != k) {
-                    f1 /= 4.0F;
+                if (var17 != par2 || var18 != par4)
+                {
+                    var20 /= 4.0F;
                 }
 
-                f += f1;
+                var5 += var20;
             }
         }
 
-        if (flag2 || flag && flag1) {
-            f /= 2.0F;
+        if (var16 || var14 && var15)
+        {
+            var5 /= 2.0F;
         }
 
-        return f;
+        return var5;
     }
 
-    public int a(int i, int j) {
-        if (j < 0) {
-            j = 7;
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
+        if (par2 < 0)
+        {
+            par2 = 7;
         }
 
-        return this.textureId + j;
+        return this.textureId + par2;
     }
 
-    public int d() {
+    /**
+     * The type of render function that is called for this block
+     */
+    public int d()
+    {
         return 6;
     }
 
-    protected int h() {
+    /**
+     * Generate a seed ItemStack for this crop.
+     */
+    protected int h()
+    {
         return Item.SEEDS.id;
     }
 
-    protected int j() {
+    /**
+     * Generate a crop produce ItemStack for this crop.
+     */
+    protected int j()
+    {
         return Item.WHEAT.id;
     }
 
-    public void dropNaturally(World world, int i, int j, int k, int l, float f, int i1) {
-        super.dropNaturally(world, i, j, k, l, f, 0);
-        if (!world.isStatic) {
-            if (l >= 7) {
-                int j1 = 3 + i1;
+    /**
+     * Drops the block items with a specified chance of dropping the specified items
+     */
+    public void dropNaturally(World par1World, int par2, int par3, int par4, int par5, float par6, int par7)
+    {
+        super.dropNaturally(par1World, par2, par3, par4, par5, par6, 0);
 
-                for (int k1 = 0; k1 < j1; ++k1) {
-                    if (world.random.nextInt(15) <= l) {
-                        this.b(world, i, j, k, new ItemStack(this.h(), 1, 0));
+        if (!par1World.isStatic)
+        {
+            if (par5 >= 7)
+            {
+                int var8 = 3 + par7;
+
+                for (int var9 = 0; var9 < var8; ++var9)
+                {
+                    if (par1World.random.nextInt(15) <= par5)
+                    {
+                        this.b(par1World, par2, par3, par4, new ItemStack(this.h(), 1, 0));
                     }
                 }
             }
         }
     }
 
-    public int getDropType(int i, Random random, int j) {
-        return i == 7 ? this.j() : this.h();
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
+        return par1 == 7 ? this.j() : this.h();
     }
 
-    public int a(Random random) {
+    /**
+     * Returns the quantity of items to drop on block destruction.
+     */
+    public int a(Random par1Random)
+    {
         return 1;
     }
 }

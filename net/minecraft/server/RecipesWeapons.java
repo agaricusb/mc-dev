@@ -1,26 +1,32 @@
 package net.minecraft.server;
 
-public class RecipesWeapons {
-
-    private String[][] a = new String[][] { { "X", "X", "#"}};
+public class RecipesWeapons
+{
+    private String[][] a = new String[][] {{"X", "X", "#"}};
     private Object[][] b;
 
-    public RecipesWeapons() {
-        this.b = new Object[][] { { Block.WOOD, Block.COBBLESTONE, Item.IRON_INGOT, Item.DIAMOND, Item.GOLD_INGOT}, { Item.WOOD_SWORD, Item.STONE_SWORD, Item.IRON_SWORD, Item.DIAMOND_SWORD, Item.GOLD_SWORD}};
+    public RecipesWeapons()
+    {
+        this.b = new Object[][] {{Block.WOOD, Block.COBBLESTONE, Item.IRON_INGOT, Item.DIAMOND, Item.GOLD_INGOT}, {Item.WOOD_SWORD, Item.STONE_SWORD, Item.IRON_SWORD, Item.DIAMOND_SWORD, Item.GOLD_SWORD}};
     }
 
-    public void a(CraftingManager craftingmanager) {
-        for (int i = 0; i < this.b[0].length; ++i) {
-            Object object = this.b[0][i];
+    /**
+     * Adds the weapon recipes to the CraftingManager.
+     */
+    public void a(CraftingManager par1CraftingManager)
+    {
+        for (int var2 = 0; var2 < this.b[0].length; ++var2)
+        {
+            Object var3 = this.b[0][var2];
 
-            for (int j = 0; j < this.b.length - 1; ++j) {
-                Item item = (Item) this.b[j + 1][i];
-
-                craftingmanager.registerShapedRecipe(new ItemStack(item), new Object[] { this.a[j], Character.valueOf('#'), Item.STICK, Character.valueOf('X'), object});
+            for (int var4 = 0; var4 < this.b.length - 1; ++var4)
+            {
+                Item var5 = (Item)this.b[var4 + 1][var2];
+                par1CraftingManager.registerShapedRecipe(new ItemStack(var5), new Object[]{this.a[var4], '#', Item.STICK, 'X', var3});
             }
         }
 
-        craftingmanager.registerShapedRecipe(new ItemStack(Item.BOW, 1), new Object[] { " #X", "# X", " #X", Character.valueOf('X'), Item.STRING, Character.valueOf('#'), Item.STICK});
-        craftingmanager.registerShapedRecipe(new ItemStack(Item.ARROW, 4), new Object[] { "X", "#", "Y", Character.valueOf('Y'), Item.FEATHER, Character.valueOf('X'), Item.FLINT, Character.valueOf('#'), Item.STICK});
+        par1CraftingManager.registerShapedRecipe(new ItemStack(Item.BOW, 1), new Object[]{" #X", "# X", " #X", 'X', Item.STRING, '#', Item.STICK});
+        par1CraftingManager.registerShapedRecipe(new ItemStack(Item.ARROW, 4), new Object[]{"X", "#", "Y", 'Y', Item.FEATHER, 'X', Item.FLINT, '#', Item.STICK});
     }
 }

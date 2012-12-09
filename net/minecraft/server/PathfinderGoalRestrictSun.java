@@ -1,22 +1,35 @@
 package net.minecraft.server;
 
-public class PathfinderGoalRestrictSun extends PathfinderGoal {
-
+public class PathfinderGoalRestrictSun extends PathfinderGoal
+{
     private EntityCreature a;
 
-    public PathfinderGoalRestrictSun(EntityCreature entitycreature) {
-        this.a = entitycreature;
+    public PathfinderGoalRestrictSun(EntityCreature par1EntityCreature)
+    {
+        this.a = par1EntityCreature;
     }
 
-    public boolean a() {
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
         return this.a.world.u();
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.a.getNavigation().d(true);
     }
 
-    public void d() {
+    /**
+     * Resets the task
+     */
+    public void d()
+    {
         this.a.getNavigation().d(false);
     }
 }

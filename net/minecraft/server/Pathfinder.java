@@ -1,247 +1,348 @@
 package net.minecraft.server;
 
-public class Pathfinder {
-
+public class Pathfinder
+{
+    /** Used to find obstacles */
     private IBlockAccess a;
+
+    /** The path being generated */
     private Path b = new Path();
+
+    /** The points in the path */
     private IntHashMap c = new IntHashMap();
+
+    /** Selection of path points to add to the path */
     private PathPoint[] d = new PathPoint[32];
+
+    /** should the PathFinder go through wodden door blocks */
     private boolean e;
+
+    /**
+     * should the PathFinder disregard BlockMovement type materials in its path
+     */
     private boolean f;
     private boolean g;
+
+    /** tells the FathFinder to not stop pathing underwater */
     private boolean h;
 
-    public Pathfinder(IBlockAccess iblockaccess, boolean flag, boolean flag1, boolean flag2, boolean flag3) {
-        this.a = iblockaccess;
-        this.e = flag;
-        this.f = flag1;
-        this.g = flag2;
-        this.h = flag3;
+    public Pathfinder(IBlockAccess par1IBlockAccess, boolean par2, boolean par3, boolean par4, boolean par5)
+    {
+        this.a = par1IBlockAccess;
+        this.e = par2;
+        this.f = par3;
+        this.g = par4;
+        this.h = par5;
     }
 
-    public PathEntity a(Entity entity, Entity entity1, float f) {
-        return this.a(entity, entity1.locX, entity1.boundingBox.b, entity1.locZ, f);
+    /**
+     * Creates a path from one entity to another within a minimum distance
+     */
+    public PathEntity a(Entity par1Entity, Entity par2Entity, float par3)
+    {
+        return this.a(par1Entity, par2Entity.locX, par2Entity.boundingBox.b, par2Entity.locZ, par3);
     }
 
-    public PathEntity a(Entity entity, int i, int j, int k, float f) {
-        return this.a(entity, (double) ((float) i + 0.5F), (double) ((float) j + 0.5F), (double) ((float) k + 0.5F), f);
+    /**
+     * Creates a path from an entity to a specified location within a minimum distance
+     */
+    public PathEntity a(Entity par1Entity, int par2, int par3, int par4, float par5)
+    {
+        return this.a(par1Entity, (double) ((float) par2 + 0.5F), (double) ((float) par3 + 0.5F), (double) ((float) par4 + 0.5F), par5);
     }
 
-    private PathEntity a(Entity entity, double d0, double d1, double d2, float f) {
+    /**
+     * Internal implementation of creating a path from an entity to a point
+     */
+    private PathEntity a(Entity par1Entity, double par2, double par4, double par6, float par8)
+    {
         this.b.a();
         this.c.c();
-        boolean flag = this.g;
-        int i = MathHelper.floor(entity.boundingBox.b + 0.5D);
+        boolean var9 = this.g;
+        int var10 = MathHelper.floor(par1Entity.boundingBox.b + 0.5D);
 
-        if (this.h && entity.H()) {
-            i = (int) entity.boundingBox.b;
+        if (this.h && par1Entity.H())
+        {
+            var10 = (int)par1Entity.boundingBox.b;
 
-            for (int j = this.a.getTypeId(MathHelper.floor(entity.locX), i, MathHelper.floor(entity.locZ)); j == Block.WATER.id || j == Block.STATIONARY_WATER.id; j = this.a.getTypeId(MathHelper.floor(entity.locX), i, MathHelper.floor(entity.locZ))) {
-                ++i;
+            for (int var11 = this.a.getTypeId(MathHelper.floor(par1Entity.locX), var10, MathHelper.floor(par1Entity.locZ)); var11 == Block.WATER.id || var11 == Block.STATIONARY_WATER.id; var11 = this.a.getTypeId(MathHelper.floor(par1Entity.locX), var10, MathHelper.floor(par1Entity.locZ)))
+            {
+                ++var10;
             }
 
-            flag = this.g;
+            var9 = this.g;
             this.g = false;
-        } else {
-            i = MathHelper.floor(entity.boundingBox.b + 0.5D);
+        }
+        else
+        {
+            var10 = MathHelper.floor(par1Entity.boundingBox.b + 0.5D);
         }
 
-        PathPoint pathpoint = this.a(MathHelper.floor(entity.boundingBox.a), i, MathHelper.floor(entity.boundingBox.c));
-        PathPoint pathpoint1 = this.a(MathHelper.floor(d0 - (double) (entity.width / 2.0F)), MathHelper.floor(d1), MathHelper.floor(d2 - (double) (entity.width / 2.0F)));
-        PathPoint pathpoint2 = new PathPoint(MathHelper.d(entity.width + 1.0F), MathHelper.d(entity.length + 1.0F), MathHelper.d(entity.width + 1.0F));
-        PathEntity pathentity = this.a(entity, pathpoint, pathpoint1, pathpoint2, f);
-
-        this.g = flag;
-        return pathentity;
+        PathPoint var15 = this.a(MathHelper.floor(par1Entity.boundingBox.a), var10, MathHelper.floor(par1Entity.boundingBox.c));
+        PathPoint var12 = this.a(MathHelper.floor(par2 - (double) (par1Entity.width / 2.0F)), MathHelper.floor(par4), MathHelper.floor(par6 - (double) (par1Entity.width / 2.0F)));
+        PathPoint var13 = new PathPoint(MathHelper.d(par1Entity.width + 1.0F), MathHelper.d(par1Entity.length + 1.0F), MathHelper.d(par1Entity.width + 1.0F));
+        PathEntity var14 = this.a(par1Entity, var15, var12, var13, par8);
+        this.g = var9;
+        return var14;
     }
 
-    private PathEntity a(Entity entity, PathPoint pathpoint, PathPoint pathpoint1, PathPoint pathpoint2, float f) {
-        pathpoint.e = 0.0F;
-        pathpoint.f = pathpoint.b(pathpoint1);
-        pathpoint.g = pathpoint.f;
+    /**
+     * Adds a path from start to end and returns the whole path (args: unused, start, end, unused, maxDistance)
+     */
+    private PathEntity a(Entity par1Entity, PathPoint par2PathPoint, PathPoint par3PathPoint, PathPoint par4PathPoint, float par5)
+    {
+        par2PathPoint.e = 0.0F;
+        par2PathPoint.f = par2PathPoint.b(par3PathPoint);
+        par2PathPoint.g = par2PathPoint.f;
         this.b.a();
-        this.b.a(pathpoint);
-        PathPoint pathpoint3 = pathpoint;
+        this.b.a(par2PathPoint);
+        PathPoint var6 = par2PathPoint;
 
-        while (!this.b.e()) {
-            PathPoint pathpoint4 = this.b.c();
+        while (!this.b.e())
+        {
+            PathPoint var7 = this.b.c();
 
-            if (pathpoint4.equals(pathpoint1)) {
-                return this.a(pathpoint, pathpoint1);
+            if (var7.equals(par3PathPoint))
+            {
+                return this.a(par2PathPoint, par3PathPoint);
             }
 
-            if (pathpoint4.b(pathpoint1) < pathpoint3.b(pathpoint1)) {
-                pathpoint3 = pathpoint4;
+            if (var7.b(par3PathPoint) < var6.b(par3PathPoint))
+            {
+                var6 = var7;
             }
 
-            pathpoint4.i = true;
-            int i = this.b(entity, pathpoint4, pathpoint2, pathpoint1, f);
+            var7.i = true;
+            int var8 = this.b(par1Entity, var7, par4PathPoint, par3PathPoint, par5);
 
-            for (int j = 0; j < i; ++j) {
-                PathPoint pathpoint5 = this.d[j];
-                float f1 = pathpoint4.e + pathpoint4.b(pathpoint5);
+            for (int var9 = 0; var9 < var8; ++var9)
+            {
+                PathPoint var10 = this.d[var9];
+                float var11 = var7.e + var7.b(var10);
 
-                if (!pathpoint5.a() || f1 < pathpoint5.e) {
-                    pathpoint5.h = pathpoint4;
-                    pathpoint5.e = f1;
-                    pathpoint5.f = pathpoint5.b(pathpoint1);
-                    if (pathpoint5.a()) {
-                        this.b.a(pathpoint5, pathpoint5.e + pathpoint5.f);
-                    } else {
-                        pathpoint5.g = pathpoint5.e + pathpoint5.f;
-                        this.b.a(pathpoint5);
+                if (!var10.a() || var11 < var10.e)
+                {
+                    var10.h = var7;
+                    var10.e = var11;
+                    var10.f = var10.b(par3PathPoint);
+
+                    if (var10.a())
+                    {
+                        this.b.a(var10, var10.e + var10.f);
+                    }
+                    else
+                    {
+                        var10.g = var10.e + var10.f;
+                        this.b.a(var10);
                     }
                 }
             }
         }
 
-        if (pathpoint3 == pathpoint) {
+        if (var6 == par2PathPoint)
+        {
             return null;
-        } else {
-            return this.a(pathpoint, pathpoint3);
+        }
+        else
+        {
+            return this.a(par2PathPoint, var6);
         }
     }
 
-    private int b(Entity entity, PathPoint pathpoint, PathPoint pathpoint1, PathPoint pathpoint2, float f) {
-        int i = 0;
-        byte b0 = 0;
+    /**
+     * populates pathOptions with available points and returns the number of options found (args: unused1, currentPoint,
+     * unused2, targetPoint, maxDistance)
+     */
+    private int b(Entity par1Entity, PathPoint par2PathPoint, PathPoint par3PathPoint, PathPoint par4PathPoint, float par5)
+    {
+        int var6 = 0;
+        byte var7 = 0;
 
-        if (this.a(entity, pathpoint.a, pathpoint.b + 1, pathpoint.c, pathpoint1) == 1) {
-            b0 = 1;
+        if (this.a(par1Entity, par2PathPoint.a, par2PathPoint.b + 1, par2PathPoint.c, par3PathPoint) == 1)
+        {
+            var7 = 1;
         }
 
-        PathPoint pathpoint3 = this.a(entity, pathpoint.a, pathpoint.b, pathpoint.c + 1, pathpoint1, b0);
-        PathPoint pathpoint4 = this.a(entity, pathpoint.a - 1, pathpoint.b, pathpoint.c, pathpoint1, b0);
-        PathPoint pathpoint5 = this.a(entity, pathpoint.a + 1, pathpoint.b, pathpoint.c, pathpoint1, b0);
-        PathPoint pathpoint6 = this.a(entity, pathpoint.a, pathpoint.b, pathpoint.c - 1, pathpoint1, b0);
+        PathPoint var8 = this.a(par1Entity, par2PathPoint.a, par2PathPoint.b, par2PathPoint.c + 1, par3PathPoint, var7);
+        PathPoint var9 = this.a(par1Entity, par2PathPoint.a - 1, par2PathPoint.b, par2PathPoint.c, par3PathPoint, var7);
+        PathPoint var10 = this.a(par1Entity, par2PathPoint.a + 1, par2PathPoint.b, par2PathPoint.c, par3PathPoint, var7);
+        PathPoint var11 = this.a(par1Entity, par2PathPoint.a, par2PathPoint.b, par2PathPoint.c - 1, par3PathPoint, var7);
 
-        if (pathpoint3 != null && !pathpoint3.i && pathpoint3.a(pathpoint2) < f) {
-            this.d[i++] = pathpoint3;
+        if (var8 != null && !var8.i && var8.a(par4PathPoint) < par5)
+        {
+            this.d[var6++] = var8;
         }
 
-        if (pathpoint4 != null && !pathpoint4.i && pathpoint4.a(pathpoint2) < f) {
-            this.d[i++] = pathpoint4;
+        if (var9 != null && !var9.i && var9.a(par4PathPoint) < par5)
+        {
+            this.d[var6++] = var9;
         }
 
-        if (pathpoint5 != null && !pathpoint5.i && pathpoint5.a(pathpoint2) < f) {
-            this.d[i++] = pathpoint5;
+        if (var10 != null && !var10.i && var10.a(par4PathPoint) < par5)
+        {
+            this.d[var6++] = var10;
         }
 
-        if (pathpoint6 != null && !pathpoint6.i && pathpoint6.a(pathpoint2) < f) {
-            this.d[i++] = pathpoint6;
+        if (var11 != null && !var11.i && var11.a(par4PathPoint) < par5)
+        {
+            this.d[var6++] = var11;
         }
 
-        return i;
+        return var6;
     }
 
-    private PathPoint a(Entity entity, int i, int j, int k, PathPoint pathpoint, int l) {
-        PathPoint pathpoint1 = null;
-        int i1 = this.a(entity, i, j, k, pathpoint);
+    /**
+     * Returns a point that the entity can safely move to
+     */
+    private PathPoint a(Entity par1Entity, int par2, int par3, int par4, PathPoint par5PathPoint, int par6)
+    {
+        PathPoint var7 = null;
+        int var8 = this.a(par1Entity, par2, par3, par4, par5PathPoint);
 
-        if (i1 == 2) {
-            return this.a(i, j, k);
-        } else {
-            if (i1 == 1) {
-                pathpoint1 = this.a(i, j, k);
+        if (var8 == 2)
+        {
+            return this.a(par2, par3, par4);
+        }
+        else
+        {
+            if (var8 == 1)
+            {
+                var7 = this.a(par2, par3, par4);
             }
 
-            if (pathpoint1 == null && l > 0 && i1 != -3 && i1 != -4 && this.a(entity, i, j + l, k, pathpoint) == 1) {
-                pathpoint1 = this.a(i, j + l, k);
-                j += l;
+            if (var7 == null && par6 > 0 && var8 != -3 && var8 != -4 && this.a(par1Entity, par2, par3 + par6, par4, par5PathPoint) == 1)
+            {
+                var7 = this.a(par2, par3 + par6, par4);
+                par3 += par6;
             }
 
-            if (pathpoint1 != null) {
-                int j1 = 0;
-                int k1 = 0;
+            if (var7 != null)
+            {
+                int var9 = 0;
+                int var10 = 0;
 
-                while (j > 0) {
-                    k1 = this.a(entity, i, j - 1, k, pathpoint);
-                    if (this.g && k1 == -1) {
+                while (par3 > 0)
+                {
+                    var10 = this.a(par1Entity, par2, par3 - 1, par4, par5PathPoint);
+
+                    if (this.g && var10 == -1)
+                    {
                         return null;
                     }
 
-                    if (k1 != 1) {
+                    if (var10 != 1)
+                    {
                         break;
                     }
 
-                    if (j1++ >= entity.as()) {
+                    if (var9++ >= par1Entity.as())
+                    {
                         return null;
                     }
 
-                    --j;
-                    if (j > 0) {
-                        pathpoint1 = this.a(i, j, k);
+                    --par3;
+
+                    if (par3 > 0)
+                    {
+                        var7 = this.a(par2, par3, par4);
                     }
                 }
 
-                if (k1 == -2) {
+                if (var10 == -2)
+                {
                     return null;
                 }
             }
 
-            return pathpoint1;
+            return var7;
         }
     }
 
-    private final PathPoint a(int i, int j, int k) {
-        int l = PathPoint.a(i, j, k);
-        PathPoint pathpoint = (PathPoint) this.c.get(l);
+    /**
+     * Returns a mapped point or creates and adds one
+     */
+    private final PathPoint a(int par1, int par2, int par3)
+    {
+        int var4 = PathPoint.a(par1, par2, par3);
+        PathPoint var5 = (PathPoint)this.c.get(var4);
 
-        if (pathpoint == null) {
-            pathpoint = new PathPoint(i, j, k);
-            this.c.a(l, pathpoint);
+        if (var5 == null)
+        {
+            var5 = new PathPoint(par1, par2, par3);
+            this.c.a(var4, var5);
         }
 
-        return pathpoint;
+        return var5;
     }
 
-    public int a(Entity entity, int i, int j, int k, PathPoint pathpoint) {
-        return a(entity, i, j, k, pathpoint, this.g, this.f, this.e);
+    /**
+     * Given an x y z, returns a vertical offset needed to search to find a block to stand on
+     */
+    public int a(Entity par1Entity, int par2, int par3, int par4, PathPoint par5PathPoint)
+    {
+        return a(par1Entity, par2, par3, par4, par5PathPoint, this.g, this.f, this.e);
     }
 
-    public static int a(Entity entity, int i, int j, int k, PathPoint pathpoint, boolean flag, boolean flag1, boolean flag2) {
-        boolean flag3 = false;
+    public static int a(Entity par0Entity, int par1, int par2, int par3, PathPoint par4PathPoint, boolean par5, boolean par6, boolean par7)
+    {
+        boolean var8 = false;
 
-        for (int l = i; l < i + pathpoint.a; ++l) {
-            for (int i1 = j; i1 < j + pathpoint.b; ++i1) {
-                for (int j1 = k; j1 < k + pathpoint.c; ++j1) {
-                    int k1 = entity.world.getTypeId(l, i1, j1);
+        for (int var9 = par1; var9 < par1 + par4PathPoint.a; ++var9)
+        {
+            for (int var10 = par2; var10 < par2 + par4PathPoint.b; ++var10)
+            {
+                for (int var11 = par3; var11 < par3 + par4PathPoint.c; ++var11)
+                {
+                    int var12 = par0Entity.world.getTypeId(var9, var10, var11);
 
-                    if (k1 > 0) {
-                        if (k1 == Block.TRAP_DOOR.id) {
-                            flag3 = true;
-                        } else if (k1 != Block.WATER.id && k1 != Block.STATIONARY_WATER.id) {
-                            if (!flag2 && k1 == Block.WOODEN_DOOR.id) {
+                    if (var12 > 0)
+                    {
+                        if (var12 == Block.TRAP_DOOR.id)
+                        {
+                            var8 = true;
+                        }
+                        else if (var12 != Block.WATER.id && var12 != Block.STATIONARY_WATER.id)
+                        {
+                            if (!par7 && var12 == Block.WOODEN_DOOR.id)
+                            {
                                 return 0;
                             }
-                        } else {
-                            if (flag) {
+                        }
+                        else
+                        {
+                            if (par5)
+                            {
                                 return -1;
                             }
 
-                            flag3 = true;
+                            var8 = true;
                         }
 
-                        Block block = Block.byId[k1];
+                        Block var13 = Block.byId[var12];
 
-                        if (!block.c(entity.world, l, i1, j1) && (!flag1 || k1 != Block.WOODEN_DOOR.id)) {
-                            int l1 = block.d();
+                        if (!var13.c(par0Entity.world, var9, var10, var11) && (!par6 || var12 != Block.WOODEN_DOOR.id))
+                        {
+                            int var14 = var13.d();
 
-                            if (l1 == 11 || k1 == Block.FENCE_GATE.id || l1 == 32) {
+                            if (var14 == 11 || var12 == Block.FENCE_GATE.id || var14 == 32)
+                            {
                                 return -3;
                             }
 
-                            if (k1 == Block.TRAP_DOOR.id) {
+                            if (var12 == Block.TRAP_DOOR.id)
+                            {
                                 return -4;
                             }
 
-                            Material material = block.material;
+                            Material var15 = var13.material;
 
-                            if (material != Material.LAVA) {
+                            if (var15 != Material.LAVA)
+                            {
                                 return 0;
                             }
 
-                            if (!entity.J()) {
+                            if (!par0Entity.J())
+                            {
                                 return -2;
                             }
                         }
@@ -250,28 +351,32 @@ public class Pathfinder {
             }
         }
 
-        return flag3 ? 2 : 1;
+        return var8 ? 2 : 1;
     }
 
-    private PathEntity a(PathPoint pathpoint, PathPoint pathpoint1) {
-        int i = 1;
+    /**
+     * Returns a new PathEntity for a given start and end point
+     */
+    private PathEntity a(PathPoint par1PathPoint, PathPoint par2PathPoint)
+    {
+        int var3 = 1;
+        PathPoint var4;
 
-        PathPoint pathpoint2;
-
-        for (pathpoint2 = pathpoint1; pathpoint2.h != null; pathpoint2 = pathpoint2.h) {
-            ++i;
+        for (var4 = par2PathPoint; var4.h != null; var4 = var4.h)
+        {
+            ++var3;
         }
 
-        PathPoint[] apathpoint = new PathPoint[i];
+        PathPoint[] var5 = new PathPoint[var3];
+        var4 = par2PathPoint;
+        --var3;
 
-        pathpoint2 = pathpoint1;
-        --i;
-
-        for (apathpoint[i] = pathpoint1; pathpoint2.h != null; apathpoint[i] = pathpoint2) {
-            pathpoint2 = pathpoint2.h;
-            --i;
+        for (var5[var3] = par2PathPoint; var4.h != null; var5[var3] = var4)
+        {
+            var4 = var4.h;
+            --var3;
         }
 
-        return new PathEntity(apathpoint);
+        return new PathEntity(var5);
     }
 }

@@ -2,25 +2,27 @@ package net.minecraft.server;
 
 import java.util.Comparator;
 
-public class DistanceComparator implements Comparator {
-
+public class DistanceComparator implements Comparator
+{
     private Entity b;
 
     final PathfinderGoalNearestAttackableTarget a;
 
-    public DistanceComparator(PathfinderGoalNearestAttackableTarget pathfindergoalnearestattackabletarget, Entity entity) {
-        this.a = pathfindergoalnearestattackabletarget;
-        this.b = entity;
+    public DistanceComparator(PathfinderGoalNearestAttackableTarget par1EntityAINearestAttackableTarget, Entity par2Entity)
+    {
+        this.a = par1EntityAINearestAttackableTarget;
+        this.b = par2Entity;
     }
 
-    public int a(Entity entity, Entity entity1) {
-        double d0 = this.b.e(entity);
-        double d1 = this.b.e(entity1);
-
-        return d0 < d1 ? -1 : (d0 > d1 ? 1 : 0);
+    public int a(Entity par1Entity, Entity par2Entity)
+    {
+        double var3 = this.b.e(par1Entity);
+        double var5 = this.b.e(par2Entity);
+        return var3 < var5 ? -1 : (var3 > var5 ? 1 : 0);
     }
 
-    public int compare(Object object, Object object1) {
-        return this.a((Entity) object, (Entity) object1);
+    public int compare(Object par1Obj, Object par2Obj)
+    {
+        return this.a((Entity) par1Obj, (Entity) par2Obj);
     }
 }

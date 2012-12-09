@@ -1,17 +1,25 @@
 package net.minecraft.server;
 
-final class EnchantmentModifierDamage implements EnchantmentModifier {
-
+final class EnchantmentModifierDamage implements EnchantmentModifier
+{
+    /**
+     * Used to calculate the (magic) extra damage based on enchantments of current equipped player item.
+     */
     public int a;
     public EntityLiving b;
 
     private EnchantmentModifierDamage() {}
 
-    public void a(Enchantment enchantment, int i) {
-        this.a += enchantment.a(i, this.b);
+    /**
+     * Generic method use to calculate modifiers of offensive or defensive enchantment values.
+     */
+    public void a(Enchantment par1Enchantment, int par2)
+    {
+        this.a += par1Enchantment.a(par2, this.b);
     }
 
-    EnchantmentModifierDamage(EmptyClass emptyclass) {
+    EnchantmentModifierDamage(EmptyClass2 par1Empty3)
+    {
         this();
     }
 }

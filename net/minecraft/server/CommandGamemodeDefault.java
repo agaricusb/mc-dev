@@ -1,31 +1,34 @@
 package net.minecraft.server;
 
-public class CommandGamemodeDefault extends CommandGamemode {
-
-    public CommandGamemodeDefault() {}
-
-    public String c() {
+public class CommandGamemodeDefault extends CommandGamemode
+{
+    public String c()
+    {
         return "defaultgamemode";
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.defaultgamemode.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.defaultgamemode.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length > 0) {
-            EnumGamemode enumgamemode = this.d(icommandlistener, astring[0]);
-
-            this.a(enumgamemode);
-            String s = LocaleI18n.get("gameMode." + enumgamemode.b());
-
-            a(icommandlistener, "commands.defaultgamemode.success", new Object[] { s});
-        } else {
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length > 0)
+        {
+            EnumGamemode var3 = this.d(par1ICommandSender, par2ArrayOfStr[0]);
+            this.a(var3);
+            String var4 = LocaleI18n.get("gameMode." + var3.b());
+            a(par1ICommandSender, "commands.defaultgamemode.success", new Object[]{var4});
+        }
+        else
+        {
             throw new ExceptionUsage("commands.defaultgamemode.usage", new Object[0]);
         }
     }
 
-    protected void a(EnumGamemode enumgamemode) {
-        MinecraftServer.getServer().a(enumgamemode);
+    protected void a(EnumGamemode par1EnumGameType)
+    {
+        MinecraftServer.getServer().a(par1EnumGameType);
     }
 }

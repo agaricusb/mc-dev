@@ -1,309 +1,383 @@
 package net.minecraft.server;
 
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class ChunkRegionLoader implements IAsyncChunkSaver, IChunkLoader {
-
+public class ChunkRegionLoader implements IAsyncChunkSaver, IChunkLoader
+{
     private List a = new ArrayList();
     private Set b = new HashSet();
     private Object c = new Object();
+
+    /** Save directory for chunks using the Anvil format */
     private final File d;
 
-    public ChunkRegionLoader(File file1) {
-        this.d = file1;
+    public ChunkRegionLoader(File par1File)
+    {
+        this.d = par1File;
     }
 
-    public Chunk a(World world, int i, int j) {
-        NBTTagCompound nbttagcompound = null;
-        ChunkCoordIntPair chunkcoordintpair = new ChunkCoordIntPair(i, j);
-        Object object = this.c;
+    /**
+     * Loads the specified(XZ) chunk into the specified world.
+     */
+    public Chunk a(World par1World, int par2, int par3) throws IOException
+    {
+        NBTTagCompound var4 = null;
+        ChunkCoordIntPair var5 = new ChunkCoordIntPair(par2, par3);
+        Object var6 = this.c;
 
-        synchronized (this.c) {
-            if (this.b.contains(chunkcoordintpair)) {
-                for (int k = 0; k < this.a.size(); ++k) {
-                    if (((PendingChunkToSave) this.a.get(k)).a.equals(chunkcoordintpair)) {
-                        nbttagcompound = ((PendingChunkToSave) this.a.get(k)).b;
+        synchronized (this.c)
+        {
+            if (this.b.contains(var5))
+            {
+                for (int var7 = 0; var7 < this.a.size(); ++var7)
+                {
+                    if (((PendingChunkToSave)this.a.get(var7)).a.equals(var5))
+                    {
+                        var4 = ((PendingChunkToSave)this.a.get(var7)).b;
                         break;
                     }
                 }
             }
         }
 
-        if (nbttagcompound == null) {
-            DataInputStream datainputstream = RegionFileCache.c(this.d, i, j);
+        if (var4 == null)
+        {
+            DataInputStream var10 = RegionFileCache.c(this.d, par2, par3);
 
-            if (datainputstream == null) {
+            if (var10 == null)
+            {
                 return null;
             }
 
-            nbttagcompound = NBTCompressedStreamTools.a((DataInput) datainputstream);
+            var4 = NBTCompressedStreamTools.a((DataInput) var10); // read
         }
 
-        return this.a(world, i, j, nbttagcompound);
+        return this.a(par1World, par2, par3, var4);
     }
 
-    protected Chunk a(World world, int i, int j, NBTTagCompound nbttagcompound) {
-        if (!nbttagcompound.hasKey("Level")) {
-            System.out.println("Chunk file at " + i + "," + j + " is missing level data, skipping");
+    /**
+     * Wraps readChunkFromNBT. Checks the coordinates and several NBT tags.
+     */
+    protected Chunk a(World par1World, int par2, int par3, NBTTagCompound par4NBTTagCompound)
+    {
+        if (!par4NBTTagCompound.hasKey("Level"))
+        {
+            System.out.println("Chunk file at " + par2 + "," + par3 + " is missing level data, skipping");
             return null;
-        } else if (!nbttagcompound.getCompound("Level").hasKey("Sections")) {
-            System.out.println("Chunk file at " + i + "," + j + " is missing block data, skipping");
+        }
+        else if (!par4NBTTagCompound.getCompound("Level").hasKey("Sections"))
+        {
+            System.out.println("Chunk file at " + par2 + "," + par3 + " is missing block data, skipping");
             return null;
-        } else {
-            Chunk chunk = this.a(world, nbttagcompound.getCompound("Level"));
+        }
+        else
+        {
+            Chunk var5 = this.a(par1World, par4NBTTagCompound.getCompound("Level"));
 
-            if (!chunk.a(i, j)) {
-                System.out.println("Chunk file at " + i + "," + j + " is in the wrong location; relocating. (Expected " + i + ", " + j + ", got " + chunk.x + ", " + chunk.z + ")");
-                nbttagcompound.setInt("xPos", i);
-                nbttagcompound.setInt("zPos", j);
-                chunk = this.a(world, nbttagcompound.getCompound("Level"));
+            if (!var5.a(par2, par3))
+            {
+                System.out.println("Chunk file at " + par2 + "," + par3 + " is in the wrong location; relocating. (Expected " + par2 + ", " + par3 + ", got " + var5.x + ", " + var5.z + ")");
+                par4NBTTagCompound.setInt("xPos", par2);
+                par4NBTTagCompound.setInt("zPos", par3);
+                var5 = this.a(par1World, par4NBTTagCompound.getCompound("Level"));
             }
 
-            return chunk;
+            return var5;
         }
     }
 
-    public void a(World world, Chunk chunk) {
-        world.D();
+    public void a(World par1World, Chunk par2Chunk) throws ExceptionWorldConflict, IOException
+    {
+        par1World.D();
 
-        try {
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-            NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-
-            nbttagcompound.set("Level", nbttagcompound1);
-            this.a(chunk, world, nbttagcompound1);
-            this.a(chunk.l(), nbttagcompound);
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        try
+        {
+            NBTTagCompound var3 = new NBTTagCompound();
+            NBTTagCompound var4 = new NBTTagCompound();
+            var3.set("Level", var4);
+            this.a(par2Chunk, par1World, var4);
+            this.a(par2Chunk.l(), var3);
+        }
+        catch (Exception var5)
+        {
+            var5.printStackTrace();
         }
     }
 
-    protected void a(ChunkCoordIntPair chunkcoordintpair, NBTTagCompound nbttagcompound) {
-        Object object = this.c;
+    protected void a(ChunkCoordIntPair par1ChunkCoordIntPair, NBTTagCompound par2NBTTagCompound)
+    {
+        Object var3 = this.c;
 
-        synchronized (this.c) {
-            if (this.b.contains(chunkcoordintpair)) {
-                for (int i = 0; i < this.a.size(); ++i) {
-                    if (((PendingChunkToSave) this.a.get(i)).a.equals(chunkcoordintpair)) {
-                        this.a.set(i, new PendingChunkToSave(chunkcoordintpair, nbttagcompound));
+        synchronized (this.c)
+        {
+            if (this.b.contains(par1ChunkCoordIntPair))
+            {
+                for (int var4 = 0; var4 < this.a.size(); ++var4)
+                {
+                    if (((PendingChunkToSave)this.a.get(var4)).a.equals(par1ChunkCoordIntPair))
+                    {
+                        this.a.set(var4, new PendingChunkToSave(par1ChunkCoordIntPair, par2NBTTagCompound));
                         return;
                     }
                 }
             }
 
-            this.a.add(new PendingChunkToSave(chunkcoordintpair, nbttagcompound));
-            this.b.add(chunkcoordintpair);
+            this.a.add(new PendingChunkToSave(par1ChunkCoordIntPair, par2NBTTagCompound));
+            this.b.add(par1ChunkCoordIntPair);
             FileIOThread.a.a(this);
         }
     }
 
-    public boolean c() {
-        PendingChunkToSave pendingchunktosave = null;
-        Object object = this.c;
+    /**
+     * Returns a boolean stating if the write was unsuccessful.
+     */
+    public boolean c()
+    {
+        PendingChunkToSave var1 = null;
+        Object var2 = this.c;
 
-        synchronized (this.c) {
-            if (this.a.isEmpty()) {
+        synchronized (this.c)
+        {
+            if (this.a.isEmpty())
+            {
                 return false;
             }
 
-            pendingchunktosave = (PendingChunkToSave) this.a.remove(0);
-            this.b.remove(pendingchunktosave.a);
+            var1 = (PendingChunkToSave)this.a.remove(0);
+            this.b.remove(var1.a);
         }
 
-        if (pendingchunktosave != null) {
-            try {
-                this.a(pendingchunktosave);
-            } catch (Exception exception) {
-                exception.printStackTrace();
+        if (var1 != null)
+        {
+            try
+            {
+                this.a(var1);
+            }
+            catch (Exception var4)
+            {
+                var4.printStackTrace();
             }
         }
 
         return true;
     }
 
-    private void a(PendingChunkToSave pendingchunktosave) {
-        DataOutputStream dataoutputstream = RegionFileCache.d(this.d, pendingchunktosave.a.x, pendingchunktosave.a.z);
-
-        NBTCompressedStreamTools.a(pendingchunktosave.b, (DataOutput) dataoutputstream);
-        dataoutputstream.close();
+    private void a(PendingChunkToSave par1AnvilChunkLoaderPending) throws IOException
+    {
+        DataOutputStream var2 = RegionFileCache.d(this.d, par1AnvilChunkLoaderPending.a.x, par1AnvilChunkLoaderPending.a.z);
+        NBTCompressedStreamTools.a(par1AnvilChunkLoaderPending.b, (DataOutput) var2); // write
+        var2.close();
     }
 
-    public void b(World world, Chunk chunk) {}
+    /**
+     * Save extra data associated with this Chunk not normally saved during autosave, only during chunk unload.
+     * Currently unused.
+     */
+    public void b(World par1World, Chunk par2Chunk) {}
 
+    /**
+     * Called every World.tick()
+     */
     public void a() {}
 
+    /**
+     * Save extra data not associated with any Chunk.  Not saved during autosave, only during world unload.  Currently
+     * unused.
+     */
     public void b() {}
 
-    private void a(Chunk chunk, World world, NBTTagCompound nbttagcompound) {
-        nbttagcompound.setInt("xPos", chunk.x);
-        nbttagcompound.setInt("zPos", chunk.z);
-        nbttagcompound.setLong("LastUpdate", world.getTime());
-        nbttagcompound.setIntArray("HeightMap", chunk.heightMap);
-        nbttagcompound.setBoolean("TerrainPopulated", chunk.done);
-        ChunkSection[] achunksection = chunk.i();
-        NBTTagList nbttaglist = new NBTTagList("Sections");
-        ChunkSection[] achunksection1 = achunksection;
-        int i = achunksection.length;
+    /**
+     * Writes the Chunk passed as an argument to the NBTTagCompound also passed, using the World argument to retrieve
+     * the Chunk's last update time.
+     */
+    private void a(Chunk par1Chunk, World par2World, NBTTagCompound par3NBTTagCompound)
+    {
+        par3NBTTagCompound.setInt("xPos", par1Chunk.x);
+        par3NBTTagCompound.setInt("zPos", par1Chunk.z);
+        par3NBTTagCompound.setLong("LastUpdate", par2World.getTime());
+        par3NBTTagCompound.setIntArray("HeightMap", par1Chunk.heightMap);
+        par3NBTTagCompound.setBoolean("TerrainPopulated", par1Chunk.done);
+        ChunkSection[] var4 = par1Chunk.i();
+        NBTTagList var5 = new NBTTagList("Sections");
+        ChunkSection[] var6 = var4;
+        int var7 = var4.length;
+        NBTTagCompound var10;
 
-        NBTTagCompound nbttagcompound1;
+        for (int var8 = 0; var8 < var7; ++var8)
+        {
+            ChunkSection var9 = var6[var8];
 
-        for (int j = 0; j < i; ++j) {
-            ChunkSection chunksection = achunksection1[j];
+            if (var9 != null)
+            {
+                var10 = new NBTTagCompound();
+                var10.setByte("Y", (byte)(var9.d() >> 4 & 255));
+                var10.setByteArray("Blocks", var9.g());
 
-            if (chunksection != null) {
-                nbttagcompound1 = new NBTTagCompound();
-                nbttagcompound1.setByte("Y", (byte) (chunksection.d() >> 4 & 255));
-                nbttagcompound1.setByteArray("Blocks", chunksection.g());
-                if (chunksection.i() != null) {
-                    nbttagcompound1.setByteArray("Add", chunksection.i().a);
+                if (var9.i() != null)
+                {
+                    var10.setByteArray("Add", var9.i().a);
                 }
 
-                nbttagcompound1.setByteArray("Data", chunksection.j().a);
-                nbttagcompound1.setByteArray("SkyLight", chunksection.l().a);
-                nbttagcompound1.setByteArray("BlockLight", chunksection.k().a);
-                nbttaglist.add(nbttagcompound1);
+                var10.setByteArray("Data", var9.j().a);
+                var10.setByteArray("SkyLight", var9.l().a);
+                var10.setByteArray("BlockLight", var9.k().a);
+                var5.add(var10);
             }
         }
 
-        nbttagcompound.set("Sections", nbttaglist);
-        nbttagcompound.setByteArray("Biomes", chunk.m());
-        chunk.m = false;
-        NBTTagList nbttaglist1 = new NBTTagList();
+        par3NBTTagCompound.set("Sections", var5);
+        par3NBTTagCompound.setByteArray("Biomes", par1Chunk.m());
+        par1Chunk.m = false;
+        NBTTagList var15 = new NBTTagList();
+        Iterator var17;
 
-        Iterator iterator;
+        for (var7 = 0; var7 < par1Chunk.entitySlices.length; ++var7)
+        {
+            var17 = par1Chunk.entitySlices[var7].iterator();
 
-        for (i = 0; i < chunk.entitySlices.length; ++i) {
-            iterator = chunk.entitySlices[i].iterator();
+            while (var17.hasNext())
+            {
+                Entity var19 = (Entity)var17.next();
+                par1Chunk.m = true;
+                var10 = new NBTTagCompound();
 
-            while (iterator.hasNext()) {
-                Entity entity = (Entity) iterator.next();
-
-                chunk.m = true;
-                nbttagcompound1 = new NBTTagCompound();
-                if (entity.c(nbttagcompound1)) {
-                    nbttaglist1.add(nbttagcompound1);
+                if (var19.c(var10))
+                {
+                    var15.add(var10);
                 }
             }
         }
 
-        nbttagcompound.set("Entities", nbttaglist1);
-        NBTTagList nbttaglist2 = new NBTTagList();
+        par3NBTTagCompound.set("Entities", var15);
+        NBTTagList var16 = new NBTTagList();
+        var17 = par1Chunk.tileEntities.values().iterator();
 
-        iterator = chunk.tileEntities.values().iterator();
-
-        while (iterator.hasNext()) {
-            TileEntity tileentity = (TileEntity) iterator.next();
-
-            nbttagcompound1 = new NBTTagCompound();
-            tileentity.b(nbttagcompound1);
-            nbttaglist2.add(nbttagcompound1);
+        while (var17.hasNext())
+        {
+            TileEntity var21 = (TileEntity)var17.next();
+            var10 = new NBTTagCompound();
+            var21.b(var10);
+            var16.add(var10);
         }
 
-        nbttagcompound.set("TileEntities", nbttaglist2);
-        List list = world.a(chunk, false);
+        par3NBTTagCompound.set("TileEntities", var16);
+        List var18 = par2World.a(par1Chunk, false);
 
-        if (list != null) {
-            long k = world.getTime();
-            NBTTagList nbttaglist3 = new NBTTagList();
-            Iterator iterator1 = list.iterator();
+        if (var18 != null)
+        {
+            long var20 = par2World.getTime();
+            NBTTagList var11 = new NBTTagList();
+            Iterator var12 = var18.iterator();
 
-            while (iterator1.hasNext()) {
-                NextTickListEntry nextticklistentry = (NextTickListEntry) iterator1.next();
-                NBTTagCompound nbttagcompound2 = new NBTTagCompound();
-
-                nbttagcompound2.setInt("i", nextticklistentry.d);
-                nbttagcompound2.setInt("x", nextticklistentry.a);
-                nbttagcompound2.setInt("y", nextticklistentry.b);
-                nbttagcompound2.setInt("z", nextticklistentry.c);
-                nbttagcompound2.setInt("t", (int) (nextticklistentry.e - k));
-                nbttaglist3.add(nbttagcompound2);
+            while (var12.hasNext())
+            {
+                NextTickListEntry var13 = (NextTickListEntry)var12.next();
+                NBTTagCompound var14 = new NBTTagCompound();
+                var14.setInt("i", var13.d);
+                var14.setInt("x", var13.a);
+                var14.setInt("y", var13.b);
+                var14.setInt("z", var13.c);
+                var14.setInt("t", (int) (var13.e - var20));
+                var11.add(var14);
             }
 
-            nbttagcompound.set("TileTicks", nbttaglist3);
+            par3NBTTagCompound.set("TileTicks", var11);
         }
     }
 
-    private Chunk a(World world, NBTTagCompound nbttagcompound) {
-        int i = nbttagcompound.getInt("xPos");
-        int j = nbttagcompound.getInt("zPos");
-        Chunk chunk = new Chunk(world, i, j);
+    /**
+     * Reads the data stored in the passed NBTTagCompound and creates a Chunk with that data in the passed World.
+     * Returns the created Chunk.
+     */
+    private Chunk a(World par1World, NBTTagCompound par2NBTTagCompound)
+    {
+        int var3 = par2NBTTagCompound.getInt("xPos");
+        int var4 = par2NBTTagCompound.getInt("zPos");
+        Chunk var5 = new Chunk(par1World, var3, var4);
+        var5.heightMap = par2NBTTagCompound.getIntArray("HeightMap");
+        var5.done = par2NBTTagCompound.getBoolean("TerrainPopulated");
+        NBTTagList var6 = par2NBTTagCompound.getList("Sections");
+        byte var7 = 16;
+        ChunkSection[] var8 = new ChunkSection[var7];
 
-        chunk.heightMap = nbttagcompound.getIntArray("HeightMap");
-        chunk.done = nbttagcompound.getBoolean("TerrainPopulated");
-        NBTTagList nbttaglist = nbttagcompound.getList("Sections");
-        byte b0 = 16;
-        ChunkSection[] achunksection = new ChunkSection[b0];
+        for (int var9 = 0; var9 < var6.size(); ++var9)
+        {
+            NBTTagCompound var10 = (NBTTagCompound)var6.get(var9);
+            byte var11 = var10.getByte("Y");
+            ChunkSection var12 = new ChunkSection(var11 << 4);
+            var12.a(var10.getByteArray("Blocks"));
 
-        for (int k = 0; k < nbttaglist.size(); ++k) {
-            NBTTagCompound nbttagcompound1 = (NBTTagCompound) nbttaglist.get(k);
-            byte b1 = nbttagcompound1.getByte("Y");
-            ChunkSection chunksection = new ChunkSection(b1 << 4);
-
-            chunksection.a(nbttagcompound1.getByteArray("Blocks"));
-            if (nbttagcompound1.hasKey("Add")) {
-                chunksection.a(new NibbleArray(nbttagcompound1.getByteArray("Add"), 4));
+            if (var10.hasKey("Add"))
+            {
+                var12.a(new NibbleArray(var10.getByteArray("Add"), 4));
             }
 
-            chunksection.b(new NibbleArray(nbttagcompound1.getByteArray("Data"), 4));
-            chunksection.d(new NibbleArray(nbttagcompound1.getByteArray("SkyLight"), 4));
-            chunksection.c(new NibbleArray(nbttagcompound1.getByteArray("BlockLight"), 4));
-            chunksection.recalcBlockCounts();
-            achunksection[b1] = chunksection;
+            var12.b(new NibbleArray(var10.getByteArray("Data"), 4));
+            var12.d(new NibbleArray(var10.getByteArray("SkyLight"), 4));
+            var12.c(new NibbleArray(var10.getByteArray("BlockLight"), 4));
+            var12.recalcBlockCounts();
+            var8[var11] = var12;
         }
 
-        chunk.a(achunksection);
-        if (nbttagcompound.hasKey("Biomes")) {
-            chunk.a(nbttagcompound.getByteArray("Biomes"));
+        var5.a(var8);
+
+        if (par2NBTTagCompound.hasKey("Biomes"))
+        {
+            var5.a(par2NBTTagCompound.getByteArray("Biomes"));
         }
 
-        NBTTagList nbttaglist1 = nbttagcompound.getList("Entities");
+        NBTTagList var14 = par2NBTTagCompound.getList("Entities");
 
-        if (nbttaglist1 != null) {
-            for (int l = 0; l < nbttaglist1.size(); ++l) {
-                NBTTagCompound nbttagcompound2 = (NBTTagCompound) nbttaglist1.get(l);
-                Entity entity = EntityTypes.a(nbttagcompound2, world);
+        if (var14 != null)
+        {
+            for (int var17 = 0; var17 < var14.size(); ++var17)
+            {
+                NBTTagCompound var16 = (NBTTagCompound)var14.get(var17);
+                Entity var18 = EntityTypes.a(var16, par1World);
+                var5.m = true;
 
-                chunk.m = true;
-                if (entity != null) {
-                    chunk.a(entity);
+                if (var18 != null)
+                {
+                    var5.a(var18);
                 }
             }
         }
 
-        NBTTagList nbttaglist2 = nbttagcompound.getList("TileEntities");
+        NBTTagList var15 = par2NBTTagCompound.getList("TileEntities");
 
-        if (nbttaglist2 != null) {
-            for (int i1 = 0; i1 < nbttaglist2.size(); ++i1) {
-                NBTTagCompound nbttagcompound3 = (NBTTagCompound) nbttaglist2.get(i1);
-                TileEntity tileentity = TileEntity.c(nbttagcompound3);
+        if (var15 != null)
+        {
+            for (int var21 = 0; var21 < var15.size(); ++var21)
+            {
+                NBTTagCompound var20 = (NBTTagCompound)var15.get(var21);
+                TileEntity var13 = TileEntity.c(var20);
 
-                if (tileentity != null) {
-                    chunk.a(tileentity);
+                if (var13 != null)
+                {
+                    var5.a(var13);
                 }
             }
         }
 
-        if (nbttagcompound.hasKey("TileTicks")) {
-            NBTTagList nbttaglist3 = nbttagcompound.getList("TileTicks");
+        if (par2NBTTagCompound.hasKey("TileTicks"))
+        {
+            NBTTagList var19 = par2NBTTagCompound.getList("TileTicks");
 
-            if (nbttaglist3 != null) {
-                for (int j1 = 0; j1 < nbttaglist3.size(); ++j1) {
-                    NBTTagCompound nbttagcompound4 = (NBTTagCompound) nbttaglist3.get(j1);
-
-                    world.b(nbttagcompound4.getInt("x"), nbttagcompound4.getInt("y"), nbttagcompound4.getInt("z"), nbttagcompound4.getInt("i"), nbttagcompound4.getInt("t"));
+            if (var19 != null)
+            {
+                for (int var22 = 0; var22 < var19.size(); ++var22)
+                {
+                    NBTTagCompound var23 = (NBTTagCompound)var19.get(var22);
+                    par1World.b(var23.getInt("x"), var23.getInt("y"), var23.getInt("z"), var23.getInt("i"), var23.getInt("t"));
                 }
             }
         }
 
-        return chunk;
+        return var5;
     }
 }

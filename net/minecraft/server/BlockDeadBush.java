@@ -2,33 +2,54 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockDeadBush extends BlockFlower {
-
-    protected BlockDeadBush(int i, int j) {
-        super(i, j, Material.REPLACEABLE_PLANT);
-        float f = 0.4F;
-
-        this.a(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, 0.8F, 0.5F + f);
+public class BlockDeadBush extends BlockFlower
+{
+    protected BlockDeadBush(int par1, int par2)
+    {
+        super(par1, par2, Material.REPLACEABLE_PLANT);
+        float var3 = 0.4F;
+        this.a(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, 0.8F, 0.5F + var3);
     }
 
-    protected boolean d_(int i) {
-        return i == Block.SAND.id;
+    /**
+     * Gets passed in the blockID of the block below and supposed to return true if its allowed to grow on the type of
+     * blockID passed in. Args: blockID
+     */
+    protected boolean d_(int par1)
+    {
+        return par1 == Block.SAND.id;
     }
 
-    public int a(int i, int j) {
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
         return this.textureId;
     }
 
-    public int getDropType(int i, Random random, int j) {
+    /**
+     * Returns the ID of the items to drop on destruction.
+     */
+    public int getDropType(int par1, Random par2Random, int par3)
+    {
         return -1;
     }
 
-    public void a(World world, EntityHuman entityhuman, int i, int j, int k, int l) {
-        if (!world.isStatic && entityhuman.bT() != null && entityhuman.bT().id == Item.SHEARS.id) {
-            entityhuman.a(StatisticList.C[this.id], 1);
-            this.b(world, i, j, k, new ItemStack(Block.DEAD_BUSH, 1, l));
-        } else {
-            super.a(world, entityhuman, i, j, k, l);
+    /**
+     * Called when the player destroys a block with an item that can harvest it. (i, j, k) are the coordinates of the
+     * block and l is the block's subtype/damage.
+     */
+    public void a(World par1World, EntityHuman par2EntityPlayer, int par3, int par4, int par5, int par6)
+    {
+        if (!par1World.isStatic && par2EntityPlayer.bT() != null && par2EntityPlayer.bT().id == Item.SHEARS.id)
+        {
+            par2EntityPlayer.a(StatisticList.C[this.id], 1);
+            this.b(par1World, par3, par4, par5, new ItemStack(Block.DEAD_BUSH, 1, par6));
+        }
+        else
+        {
+            super.a(par1World, par2EntityPlayer, par3, par4, par5, par6);
         }
     }
 }

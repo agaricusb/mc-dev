@@ -1,35 +1,46 @@
 package net.minecraft.server;
 
-public class EntitySnowball extends EntityProjectile {
-
-    public EntitySnowball(World world) {
-        super(world);
+public class EntitySnowball extends EntityProjectile
+{
+    public EntitySnowball(World par1World)
+    {
+        super(par1World);
     }
 
-    public EntitySnowball(World world, EntityLiving entityliving) {
-        super(world, entityliving);
+    public EntitySnowball(World par1World, EntityLiving par2EntityLiving)
+    {
+        super(par1World, par2EntityLiving);
     }
 
-    public EntitySnowball(World world, double d0, double d1, double d2) {
-        super(world, d0, d1, d2);
+    public EntitySnowball(World par1World, double par2, double par4, double par6)
+    {
+        super(par1World, par2, par4, par6);
     }
 
-    protected void a(MovingObjectPosition movingobjectposition) {
-        if (movingobjectposition.entity != null) {
-            byte b0 = 0;
+    /**
+     * Called when this EntityThrowable hits a block or entity.
+     */
+    protected void a(MovingObjectPosition par1MovingObjectPosition)
+    {
+        if (par1MovingObjectPosition.entity != null)
+        {
+            byte var2 = 0;
 
-            if (movingobjectposition.entity instanceof EntityBlaze) {
-                b0 = 3;
+            if (par1MovingObjectPosition.entity instanceof EntityBlaze)
+            {
+                var2 = 3;
             }
 
-            movingobjectposition.entity.damageEntity(DamageSource.projectile(this, this.getShooter()), b0);
+            par1MovingObjectPosition.entity.damageEntity(DamageSource.projectile(this, this.getShooter()), var2);
         }
 
-        for (int i = 0; i < 8; ++i) {
+        for (int var3 = 0; var3 < 8; ++var3)
+        {
             this.world.addParticle("snowballpoof", this.locX, this.locY, this.locZ, 0.0D, 0.0D, 0.0D);
         }
 
-        if (!this.world.isStatic) {
+        if (!this.world.isStatic)
+        {
             this.die();
         }
     }

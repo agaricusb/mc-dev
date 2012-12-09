@@ -3,17 +3,21 @@ package net.minecraft.server;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RegistrySimple implements IRegistry {
-
+public class RegistrySimple implements IRegistry
+{
+    /** Objects registered on this registry. */
     protected final Map a = new HashMap();
 
-    public RegistrySimple() {}
-
-    public Object a(Object object) {
-        return this.a.get(object);
+    public Object a(Object par1Obj)
+    {
+        return this.a.get(par1Obj);
     }
 
-    public void a(Object object, Object object1) {
-        this.a.put(object, object1);
+    /**
+     * Register an object on this registry.
+     */
+    public void a(Object par1Obj, Object par2Obj)
+    {
+        this.a.put(par1Obj, par2Obj);
     }
 }

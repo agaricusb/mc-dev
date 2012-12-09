@@ -2,19 +2,22 @@ package net.minecraft.server;
 
 import java.util.concurrent.Callable;
 
-class CrashReportIntCacheSize implements Callable {
-
+class CrashReportIntCacheSize implements Callable
+{
     final CrashReport a;
 
-    CrashReportIntCacheSize(CrashReport crashreport) {
-        this.a = crashreport;
+    CrashReportIntCacheSize(CrashReport par1CrashReport)
+    {
+        this.a = par1CrashReport;
     }
 
-    public String a() {
+    public String a()
+    {
         return IntCache.b();
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

@@ -1,16 +1,25 @@
 package net.minecraft.server;
 
-final class StepSoundStone extends StepSound {
-
-    StepSoundStone(String s, float f, float f1) {
-        super(s, f, f1);
+final class StepSoundStone extends StepSound
+{
+    StepSoundStone(String par1Str, float par2, float par3)
+    {
+        super(par1Str, par2, par3);
     }
 
-    public String getBreakSound() {
+    /**
+     * Used when a block breaks, EXA: Player break, Shep eating grass, etc..
+     */
+    public String getBreakSound()
+    {
         return "random.glass";
     }
 
-    public String getPlaceSound() {
+    /**
+     * Used when a player places a block.
+     */
+    public String getPlaceSound()
+    {
         return "step.stone";
     }
 }

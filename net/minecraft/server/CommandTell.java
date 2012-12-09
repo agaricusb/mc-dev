@@ -3,46 +3,66 @@ package net.minecraft.server;
 import java.util.Arrays;
 import java.util.List;
 
-public class CommandTell extends CommandAbstract {
-
-    public CommandTell() {}
-
-    public List b() {
-        return Arrays.asList(new String[] { "w", "msg"});
+public class CommandTell extends CommandAbstract
+{
+    public List b()
+    {
+        return Arrays.asList(new String[] {"w", "msg"});
     }
 
-    public String c() {
+    public String c()
+    {
         return "tell";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 0;
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length < 2) {
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length < 2)
+        {
             throw new ExceptionUsage("commands.message.usage", new Object[0]);
-        } else {
-            EntityPlayer entityplayer = c(icommandlistener, astring[0]);
+        }
+        else
+        {
+            EntityPlayer var3 = c(par1ICommandSender, par2ArrayOfStr[0]);
 
-            if (entityplayer == null) {
+            if (var3 == null)
+            {
                 throw new ExceptionPlayerNotFound();
-            } else if (entityplayer == icommandlistener) {
+            }
+            else if (var3 == par1ICommandSender)
+            {
                 throw new ExceptionPlayerNotFound("commands.message.sameTarget", new Object[0]);
-            } else {
-                String s = a(icommandlistener, astring, 1, !(icommandlistener instanceof EntityHuman));
-
-                entityplayer.sendMessage("\u00A77\u00A7o" + entityplayer.a("commands.message.display.incoming", new Object[] { icommandlistener.getName(), s}));
-                icommandlistener.sendMessage("\u00A77\u00A7o" + icommandlistener.a("commands.message.display.outgoing", new Object[] { entityplayer.getName(), s}));
+            }
+            else
+            {
+                String var4 = a(par1ICommandSender, par2ArrayOfStr, 1, !(par1ICommandSender instanceof EntityHuman));
+                var3.sendMessage("\u00a77\u00a7o" + var3.a("commands.message.display.incoming", new Object[]{par1ICommandSender.getName(), var4}));
+                par1ICommandSender.sendMessage("\u00a77\u00a7o" + par1ICommandSender.a("commands.message.display.outgoing", new Object[]{var3.getName(), var4}));
             }
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return a(astring, MinecraftServer.getServer().getPlayers());
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return a(par2ArrayOfStr, MinecraftServer.getServer().getPlayers());
     }
 
-    public boolean a(int i) {
-        return i == 0;
+    /**
+     * Return whether the specified command parameter index is a username parameter.
+     */
+    public boolean a(int par1)
+    {
+        return par1 == 0;
     }
 }

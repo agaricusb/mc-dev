@@ -1,40 +1,62 @@
 package net.minecraft.server;
 
-class IntHashMapEntry {
-
+class IntHashMapEntry
+{
+    /** The hash code of this entry */
     final int a;
+
+    /** The object stored in this entry */
     Object b;
+
+    /** The next entry in this slot */
     IntHashMapEntry c;
+
+    /** The id of the hash slot computed from the hash */
     final int d;
 
-    IntHashMapEntry(int i, int j, Object object, IntHashMapEntry inthashmapentry) {
-        this.b = object;
-        this.c = inthashmapentry;
-        this.a = j;
-        this.d = i;
+    IntHashMapEntry(int par1, int par2, Object par3Obj, IntHashMapEntry par4IntHashMapEntry)
+    {
+        this.b = par3Obj;
+        this.c = par4IntHashMapEntry;
+        this.a = par2;
+        this.d = par1;
     }
 
-    public final int a() {
+    /**
+     * Returns the hash code for this entry
+     */
+    public final int a()
+    {
         return this.a;
     }
 
-    public final Object b() {
+    /**
+     * Returns the object stored in this entry
+     */
+    public final Object b()
+    {
         return this.b;
     }
 
-    public final boolean equals(Object object) {
-        if (!(object instanceof IntHashMapEntry)) {
+    public final boolean equals(Object par1Obj)
+    {
+        if (!(par1Obj instanceof IntHashMapEntry))
+        {
             return false;
-        } else {
-            IntHashMapEntry inthashmapentry = (IntHashMapEntry) object;
-            Integer integer = Integer.valueOf(this.a());
-            Integer integer1 = Integer.valueOf(inthashmapentry.a());
+        }
+        else
+        {
+            IntHashMapEntry var2 = (IntHashMapEntry)par1Obj;
+            Integer var3 = Integer.valueOf(this.a());
+            Integer var4 = Integer.valueOf(var2.a());
 
-            if (integer == integer1 || integer != null && integer.equals(integer1)) {
-                Object object1 = this.b();
-                Object object2 = inthashmapentry.b();
+            if (var3 == var4 || var3 != null && var3.equals(var4))
+            {
+                Object var5 = this.b();
+                Object var6 = var2.b();
 
-                if (object1 == object2 || object1 != null && object1.equals(object2)) {
+                if (var5 == var6 || var5 != null && var5.equals(var6))
+                {
                     return true;
                 }
             }
@@ -43,11 +65,13 @@ class IntHashMapEntry {
         }
     }
 
-    public final int hashCode() {
+    public final int hashCode()
+    {
         return IntHashMap.f(this.a);
     }
 
-    public final String toString() {
+    public final String toString()
+    {
         return this.a() + "=" + this.b();
     }
 }

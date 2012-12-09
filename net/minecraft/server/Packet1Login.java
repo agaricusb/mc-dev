@@ -2,79 +2,107 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet1Login extends Packet {
-
+public class Packet1Login extends Packet
+{
+    /** The player's entity ID */
     public int a = 0;
     public WorldType b;
     public boolean c;
     public EnumGamemode d;
+
+    /** -1: The Nether, 0: The Overworld, 1: The End */
     public int e;
+
+    /** The difficulty setting byte. */
     public byte f;
+
+    /** Defaults to 128 */
     public byte g;
+
+    /** The maximum players. */
     public byte h;
 
     public Packet1Login() {}
 
-    public Packet1Login(int i, WorldType worldtype, EnumGamemode enumgamemode, boolean flag, int j, int k, int l, int i1) {
-        this.a = i;
-        this.b = worldtype;
-        this.e = j;
-        this.f = (byte) k;
-        this.d = enumgamemode;
-        this.g = (byte) l;
-        this.h = (byte) i1;
-        this.c = flag;
+    public Packet1Login(int par1, WorldType par2WorldType, EnumGamemode par3EnumGameType, boolean par4, int par5, int par6, int par7, int par8)
+    {
+        this.a = par1;
+        this.b = par2WorldType;
+        this.e = par5;
+        this.f = (byte)par6;
+        this.d = par3EnumGameType;
+        this.g = (byte)par7;
+        this.h = (byte)par8;
+        this.c = par4;
     }
 
-    public void a(DataInputStream datainputstream) {
-        this.a = datainputstream.readInt();
-        String s = a(datainputstream, 16);
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        this.a = par1DataInputStream.readInt();
+        String var2 = a(par1DataInputStream, 16);
+        this.b = WorldType.getType(var2);
 
-        this.b = WorldType.getType(s);
-        if (this.b == null) {
+        if (this.b == null)
+        {
             this.b = WorldType.NORMAL;
         }
 
-        byte b0 = datainputstream.readByte();
-
-        this.c = (b0 & 8) == 8;
-        int i = b0 & -9;
-
-        this.d = EnumGamemode.a(i);
-        this.e = datainputstream.readByte();
-        this.f = datainputstream.readByte();
-        this.g = datainputstream.readByte();
-        this.h = datainputstream.readByte();
+        byte var3 = par1DataInputStream.readByte();
+        this.c = (var3 & 8) == 8;
+        int var4 = var3 & -9;
+        this.d = EnumGamemode.a(var4);
+        this.e = par1DataInputStream.readByte();
+        this.f = par1DataInputStream.readByte();
+        this.g = par1DataInputStream.readByte();
+        this.h = par1DataInputStream.readByte();
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        dataoutputstream.writeInt(this.a);
-        a(this.b == null ? "" : this.b.name(), dataoutputstream);
-        int i = this.d.a();
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        par1DataOutputStream.writeInt(this.a);
+        a(this.b == null ? "" : this.b.name(), par1DataOutputStream);
+        int var2 = this.d.a();
 
-        if (this.c) {
-            i |= 8;
+        if (this.c)
+        {
+            var2 |= 8;
         }
 
-        dataoutputstream.writeByte(i);
-        dataoutputstream.writeByte(this.e);
-        dataoutputstream.writeByte(this.f);
-        dataoutputstream.writeByte(this.g);
-        dataoutputstream.writeByte(this.h);
+        par1DataOutputStream.writeByte(var2);
+        par1DataOutputStream.writeByte(this.e);
+        par1DataOutputStream.writeByte(this.f);
+        par1DataOutputStream.writeByte(this.g);
+        par1DataOutputStream.writeByte(this.h);
     }
 
-    public void handle(NetHandler nethandler) {
-        nethandler.a(this);
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
+    public void handle(NetHandler par1NetHandler)
+    {
+        par1NetHandler.a(this);
     }
 
-    public int a() {
-        int i = 0;
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
+        int var1 = 0;
 
-        if (this.b != null) {
-            i = this.b.name().length();
+        if (this.b != null)
+        {
+            var1 = this.b.name().length();
         }
 
-        return 6 + 2 * i + 4 + 4 + 1 + 1 + 1;
+        return 6 + 2 * var1 + 4 + 4 + 1 + 1 + 1;
     }
 }

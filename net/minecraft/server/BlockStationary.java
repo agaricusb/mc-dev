@@ -2,75 +2,107 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockStationary extends BlockFluids {
-
-    protected BlockStationary(int i, Material material) {
-        super(i, material);
+public class BlockStationary extends BlockFluids
+{
+    protected BlockStationary(int par1, Material par2Material)
+    {
+        super(par1, par2Material);
         this.b(false);
-        if (material == Material.LAVA) {
+
+        if (par2Material == Material.LAVA)
+        {
             this.b(true);
         }
     }
 
-    public boolean c(IBlockAccess iblockaccess, int i, int j, int k) {
+    public boolean c(IBlockAccess par1IBlockAccess, int par2, int par3, int par4)
+    {
         return this.material != Material.LAVA;
     }
 
-    public void doPhysics(World world, int i, int j, int k, int l) {
-        super.doPhysics(world, i, j, k, l);
-        if (world.getTypeId(i, j, k) == this.id) {
-            this.l(world, i, j, k);
+    /**
+     * Lets the block know when one of its neighbor changes. Doesn't know which neighbor changed (coordinates passed are
+     * their own) Args: x, y, z, neighbor blockID
+     */
+    public void doPhysics(World par1World, int par2, int par3, int par4, int par5)
+    {
+        super.doPhysics(par1World, par2, par3, par4, par5);
+
+        if (par1World.getTypeId(par2, par3, par4) == this.id)
+        {
+            this.l(par1World, par2, par3, par4);
         }
     }
 
-    private void l(World world, int i, int j, int k) {
-        int l = world.getData(i, j, k);
-
-        world.suppressPhysics = true;
-        world.setRawTypeIdAndData(i, j, k, this.id - 1, l);
-        world.e(i, j, k, i, j, k);
-        world.a(i, j, k, this.id - 1, this.r_());
-        world.suppressPhysics = false;
+    /**
+     * Changes the block ID to that of an updating fluid.
+     */
+    private void l(World par1World, int par2, int par3, int par4)
+    {
+        int var5 = par1World.getData(par2, par3, par4);
+        par1World.suppressPhysics = true;
+        par1World.setRawTypeIdAndData(par2, par3, par4, this.id - 1, var5);
+        par1World.e(par2, par3, par4, par2, par3, par4);
+        par1World.a(par2, par3, par4, this.id - 1, this.r_());
+        par1World.suppressPhysics = false;
     }
 
-    public void b(World world, int i, int j, int k, Random random) {
-        if (this.material == Material.LAVA) {
-            int l = random.nextInt(3);
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        if (this.material == Material.LAVA)
+        {
+            int var6 = par5Random.nextInt(3);
+            int var7;
+            int var8;
 
-            int i1;
-            int j1;
+            for (var7 = 0; var7 < var6; ++var7)
+            {
+                par2 += par5Random.nextInt(3) - 1;
+                ++par3;
+                par4 += par5Random.nextInt(3) - 1;
+                var8 = par1World.getTypeId(par2, par3, par4);
 
-            for (i1 = 0; i1 < l; ++i1) {
-                i += random.nextInt(3) - 1;
-                ++j;
-                k += random.nextInt(3) - 1;
-                j1 = world.getTypeId(i, j, k);
-                if (j1 == 0) {
-                    if (this.n(world, i - 1, j, k) || this.n(world, i + 1, j, k) || this.n(world, i, j, k - 1) || this.n(world, i, j, k + 1) || this.n(world, i, j - 1, k) || this.n(world, i, j + 1, k)) {
-                        world.setTypeId(i, j, k, Block.FIRE.id);
+                if (var8 == 0)
+                {
+                    if (this.n(par1World, par2 - 1, par3, par4) || this.n(par1World, par2 + 1, par3, par4) || this.n(par1World, par2, par3, par4 - 1) || this.n(par1World, par2, par3, par4 + 1) || this.n(par1World, par2, par3 - 1, par4) || this.n(par1World, par2, par3 + 1, par4))
+                    {
+                        par1World.setTypeId(par2, par3, par4, Block.FIRE.id);
                         return;
                     }
-                } else if (Block.byId[j1].material.isSolid()) {
+                }
+                else if (Block.byId[var8].material.isSolid())
+                {
                     return;
                 }
             }
 
-            if (l == 0) {
-                i1 = i;
-                j1 = k;
+            if (var6 == 0)
+            {
+                var7 = par2;
+                var8 = par4;
 
-                for (int k1 = 0; k1 < 3; ++k1) {
-                    i = i1 + random.nextInt(3) - 1;
-                    k = j1 + random.nextInt(3) - 1;
-                    if (world.isEmpty(i, j + 1, k) && this.n(world, i, j, k)) {
-                        world.setTypeId(i, j + 1, k, Block.FIRE.id);
+                for (int var9 = 0; var9 < 3; ++var9)
+                {
+                    par2 = var7 + par5Random.nextInt(3) - 1;
+                    par4 = var8 + par5Random.nextInt(3) - 1;
+
+                    if (par1World.isEmpty(par2, par3 + 1, par4) && this.n(par1World, par2, par3, par4))
+                    {
+                        par1World.setTypeId(par2, par3 + 1, par4, Block.FIRE.id);
                     }
                 }
             }
         }
     }
 
-    private boolean n(World world, int i, int j, int k) {
-        return world.getMaterial(i, j, k).isBurnable();
+    /**
+     * Checks to see if the block is flammable.
+     */
+    private boolean n(World par1World, int par2, int par3, int par4)
+    {
+        return par1World.getMaterial(par2, par3, par4).isBurnable();
     }
 }

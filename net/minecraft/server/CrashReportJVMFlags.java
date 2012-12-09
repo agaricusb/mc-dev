@@ -6,37 +6,47 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-class CrashReportJVMFlags implements Callable {
-
+class CrashReportJVMFlags implements Callable
+{
+    /** Reference to the CrashReport object. */
     final CrashReport a;
 
-    CrashReportJVMFlags(CrashReport crashreport) {
-        this.a = crashreport;
+    CrashReportJVMFlags(CrashReport par1CrashReport)
+    {
+        this.a = par1CrashReport;
     }
 
-    public String a() {
-        RuntimeMXBean runtimemxbean = ManagementFactory.getRuntimeMXBean();
-        List list = runtimemxbean.getInputArguments();
-        int i = 0;
-        StringBuilder stringbuilder = new StringBuilder();
-        Iterator iterator = list.iterator();
+    /**
+     * Returns the number of JVM Flags along with the passed JVM Flags.
+     */
+    public String a()
+    {
+        RuntimeMXBean var1 = ManagementFactory.getRuntimeMXBean();
+        List var2 = var1.getInputArguments();
+        int var3 = 0;
+        StringBuilder var4 = new StringBuilder();
+        Iterator var5 = var2.iterator();
 
-        while (iterator.hasNext()) {
-            String s = (String) iterator.next();
+        while (var5.hasNext())
+        {
+            String var6 = (String)var5.next();
 
-            if (s.startsWith("-X")) {
-                if (i++ > 0) {
-                    stringbuilder.append(" ");
+            if (var6.startsWith("-X"))
+            {
+                if (var3++ > 0)
+                {
+                    var4.append(" ");
                 }
 
-                stringbuilder.append(s);
+                var4.append(var6);
             }
         }
 
-        return String.format("%d total; %s", new Object[] { Integer.valueOf(i), stringbuilder.toString()});
+        return String.format("%d total; %s", new Object[] {Integer.valueOf(var3), var4.toString()});
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

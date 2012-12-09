@@ -1,186 +1,247 @@
 package net.minecraft.server;
 
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class WorldMapCollection {
-
+public class WorldMapCollection
+{
     private IDataManager a;
+
+    /** Map of item data String id to loaded MapDataBases */
     private Map b = new HashMap();
+
+    /** List of loaded MapDataBases. */
     private List c = new ArrayList();
+
+    /**
+     * Map of MapDataBase id String prefixes ('map' etc) to max known unique Short id (the 0 part etc) for that prefix
+     */
     private Map d = new HashMap();
 
-    public WorldMapCollection(IDataManager idatamanager) {
-        this.a = idatamanager;
+    public WorldMapCollection(IDataManager par1ISaveHandler)
+    {
+        this.a = par1ISaveHandler;
         this.b();
     }
 
-    public WorldMapBase get(Class oclass, String s) {
-        WorldMapBase worldmapbase = (WorldMapBase) this.b.get(s);
+    /**
+     * Loads an existing MapDataBase corresponding to the given String id from disk, instantiating the given Class, or
+     * returns null if none such file exists. args: Class to instantiate, String dataid
+     */
+    public WorldMapBase get(Class par1Class, String par2Str)
+    {
+        WorldMapBase var3 = (WorldMapBase)this.b.get(par2Str);
 
-        if (worldmapbase != null) {
-            return worldmapbase;
-        } else {
-            if (this.a != null) {
-                try {
-                    File file1 = this.a.getDataFile(s);
+        if (var3 != null)
+        {
+            return var3;
+        }
+        else
+        {
+            if (this.a != null)
+            {
+                try
+                {
+                    File var4 = this.a.getDataFile(par2Str);
 
-                    if (file1 != null && file1.exists()) {
-                        try {
-                            worldmapbase = (WorldMapBase) oclass.getConstructor(new Class[] { String.class}).newInstance(new Object[] { s});
-                        } catch (Exception exception) {
-                            throw new RuntimeException("Failed to instantiate " + oclass.toString(), exception);
+                    if (var4 != null && var4.exists())
+                    {
+                        try
+                        {
+                            var3 = (WorldMapBase)par1Class.getConstructor(new Class[] {String.class}).newInstance(new Object[] {par2Str});
+                        }
+                        catch (Exception var7)
+                        {
+                            throw new RuntimeException("Failed to instantiate " + par1Class.toString(), var7);
                         }
 
-                        FileInputStream fileinputstream = new FileInputStream(file1);
-                        NBTTagCompound nbttagcompound = NBTCompressedStreamTools.a((InputStream) fileinputstream);
-
-                        fileinputstream.close();
-                        worldmapbase.a(nbttagcompound.getCompound("data"));
+                        FileInputStream var5 = new FileInputStream(var4);
+                        NBTTagCompound var6 = NBTCompressedStreamTools.a(var5);
+                        var5.close();
+                        var3.a(var6.getCompound("data"));
                     }
-                } catch (Exception exception1) {
-                    exception1.printStackTrace();
+                }
+                catch (Exception var8)
+                {
+                    var8.printStackTrace();
                 }
             }
 
-            if (worldmapbase != null) {
-                this.b.put(s, worldmapbase);
-                this.c.add(worldmapbase);
+            if (var3 != null)
+            {
+                this.b.put(par2Str, var3);
+                this.c.add(var3);
             }
 
-            return worldmapbase;
+            return var3;
         }
     }
 
-    public void a(String s, WorldMapBase worldmapbase) {
-        if (worldmapbase == null) {
+    /**
+     * Assigns the given String id to the given MapDataBase, removing any existing ones of the same id.
+     */
+    public void a(String par1Str, WorldMapBase par2WorldSavedData)
+    {
+        if (par2WorldSavedData == null)
+        {
             throw new RuntimeException("Can\'t set null data");
-        } else {
-            if (this.b.containsKey(s)) {
-                this.c.remove(this.b.remove(s));
+        }
+        else
+        {
+            if (this.b.containsKey(par1Str))
+            {
+                this.c.remove(this.b.remove(par1Str));
             }
 
-            this.b.put(s, worldmapbase);
-            this.c.add(worldmapbase);
+            this.b.put(par1Str, par2WorldSavedData);
+            this.c.add(par2WorldSavedData);
         }
     }
 
-    public void a() {
-        for (int i = 0; i < this.c.size(); ++i) {
-            WorldMapBase worldmapbase = (WorldMapBase) this.c.get(i);
+    /**
+     * Saves all dirty loaded MapDataBases to disk.
+     */
+    public void a()
+    {
+        for (int var1 = 0; var1 < this.c.size(); ++var1)
+        {
+            WorldMapBase var2 = (WorldMapBase)this.c.get(var1);
 
-            if (worldmapbase.d()) {
-                this.a(worldmapbase);
-                worldmapbase.a(false);
+            if (var2.d())
+            {
+                this.a(var2);
+                var2.a(false);
             }
         }
     }
 
-    private void a(WorldMapBase worldmapbase) {
-        if (this.a != null) {
-            try {
-                File file1 = this.a.getDataFile(worldmapbase.id);
+    /**
+     * Saves the given MapDataBase to disk.
+     */
+    private void a(WorldMapBase par1WorldSavedData)
+    {
+        if (this.a != null)
+        {
+            try
+            {
+                File var2 = this.a.getDataFile(par1WorldSavedData.id);
 
-                if (file1 != null) {
-                    NBTTagCompound nbttagcompound = new NBTTagCompound();
-
-                    worldmapbase.b(nbttagcompound);
-                    NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-
-                    nbttagcompound1.setCompound("data", nbttagcompound);
-                    FileOutputStream fileoutputstream = new FileOutputStream(file1);
-
-                    NBTCompressedStreamTools.a(nbttagcompound1, (OutputStream) fileoutputstream);
-                    fileoutputstream.close();
+                if (var2 != null)
+                {
+                    NBTTagCompound var3 = new NBTTagCompound();
+                    par1WorldSavedData.b(var3);
+                    NBTTagCompound var4 = new NBTTagCompound();
+                    var4.setCompound("data", var3);
+                    FileOutputStream var5 = new FileOutputStream(var2);
+                    NBTCompressedStreamTools.a(var4, var5);
+                    var5.close();
                 }
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            }
+            catch (Exception var6)
+            {
+                var6.printStackTrace();
             }
         }
     }
 
-    private void b() {
-        try {
+    /**
+     * Loads the idCounts Map from the 'idcounts' file.
+     */
+    private void b()
+    {
+        try
+        {
             this.d.clear();
-            if (this.a == null) {
+
+            if (this.a == null)
+            {
                 return;
             }
 
-            File file1 = this.a.getDataFile("idcounts");
+            File var1 = this.a.getDataFile("idcounts");
 
-            if (file1 != null && file1.exists()) {
-                DataInputStream datainputstream = new DataInputStream(new FileInputStream(file1));
-                NBTTagCompound nbttagcompound = NBTCompressedStreamTools.a((DataInput) datainputstream);
+            if (var1 != null && var1.exists())
+            {
+                DataInputStream var2 = new DataInputStream(new FileInputStream(var1));
+                NBTTagCompound var3 = NBTCompressedStreamTools.a((DataInput) var2); // read
+                var2.close();
+                Iterator var4 = var3.c().iterator();
 
-                datainputstream.close();
-                Iterator iterator = nbttagcompound.c().iterator();
+                while (var4.hasNext())
+                {
+                    NBTBase var5 = (NBTBase)var4.next();
 
-                while (iterator.hasNext()) {
-                    NBTBase nbtbase = (NBTBase) iterator.next();
-
-                    if (nbtbase instanceof NBTTagShort) {
-                        NBTTagShort nbttagshort = (NBTTagShort) nbtbase;
-                        String s = nbttagshort.getName();
-                        short short1 = nbttagshort.data;
-
-                        this.d.put(s, Short.valueOf(short1));
+                    if (var5 instanceof NBTTagShort)
+                    {
+                        NBTTagShort var6 = (NBTTagShort)var5;
+                        String var7 = var6.getName();
+                        short var8 = var6.data;
+                        this.d.put(var7, Short.valueOf(var8));
                     }
                 }
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        }
+        catch (Exception var9)
+        {
+            var9.printStackTrace();
         }
     }
 
-    public int a(String s) {
-        Short oshort = (Short) this.d.get(s);
+    /**
+     * Returns an unique new data id for the given prefix and saves the idCounts map to the 'idcounts' file.
+     */
+    public int a(String par1Str)
+    {
+        Short var2 = (Short)this.d.get(par1Str);
 
-        if (oshort == null) {
-            oshort = Short.valueOf((short) 0);
-        } else {
-            oshort = Short.valueOf((short) (oshort.shortValue() + 1));
+        if (var2 == null)
+        {
+            var2 = Short.valueOf((short)0);
+        }
+        else
+        {
+            var2 = Short.valueOf((short)(var2.shortValue() + 1));
         }
 
-        this.d.put(s, oshort);
-        if (this.a == null) {
-            return oshort.shortValue();
-        } else {
-            try {
-                File file1 = this.a.getDataFile("idcounts");
+        this.d.put(par1Str, var2);
 
-                if (file1 != null) {
-                    NBTTagCompound nbttagcompound = new NBTTagCompound();
-                    Iterator iterator = this.d.keySet().iterator();
+        if (this.a == null)
+        {
+            return var2.shortValue();
+        }
+        else
+        {
+            try
+            {
+                File var3 = this.a.getDataFile("idcounts");
 
-                    while (iterator.hasNext()) {
-                        String s1 = (String) iterator.next();
-                        short short1 = ((Short) this.d.get(s1)).shortValue();
+                if (var3 != null)
+                {
+                    NBTTagCompound var4 = new NBTTagCompound();
+                    Iterator var5 = this.d.keySet().iterator();
 
-                        nbttagcompound.setShort(s1, short1);
+                    while (var5.hasNext())
+                    {
+                        String var6 = (String)var5.next();
+                        short var7 = ((Short)this.d.get(var6)).shortValue();
+                        var4.setShort(var6, var7);
                     }
 
-                    DataOutputStream dataoutputstream = new DataOutputStream(new FileOutputStream(file1));
-
-                    NBTCompressedStreamTools.a(nbttagcompound, (DataOutput) dataoutputstream);
-                    dataoutputstream.close();
+                    DataOutputStream var9 = new DataOutputStream(new FileOutputStream(var3));
+                    NBTCompressedStreamTools.a(var4, (DataOutput) var9); // write
+                    var9.close();
                 }
-            } catch (Exception exception) {
-                exception.printStackTrace();
+            }
+            catch (Exception var8)
+            {
+                var8.printStackTrace();
             }
 
-            return oshort.shortValue();
+            return var2.shortValue();
         }
     }
 }

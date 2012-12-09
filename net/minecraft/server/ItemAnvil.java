@@ -1,12 +1,17 @@
 package net.minecraft.server;
 
-public class ItemAnvil extends ItemMultiTexture {
-
-    public ItemAnvil(Block block) {
-        super(block.id - 256, block, BlockAnvil.a);
+public class ItemAnvil extends ItemMultiTexture
+{
+    public ItemAnvil(Block par1Block)
+    {
+        super(par1Block.id - 256, par1Block, BlockAnvil.a);
     }
 
-    public int filterData(int i) {
-        return i << 2;
+    /**
+     * Returns the metadata of the block which this Item (ItemBlock) can place
+     */
+    public int filterData(int par1)
+    {
+        return par1 << 2;
     }
 }

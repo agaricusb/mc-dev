@@ -6,45 +6,61 @@ import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
-class GuiLogFormatter extends Formatter {
-
+class GuiLogFormatter extends Formatter
+{
+    /** Reference to the GuiLogOutputHandler. */
     final GuiLogOutputHandler a;
 
-    GuiLogFormatter(GuiLogOutputHandler guilogoutputhandler) {
-        this.a = guilogoutputhandler;
+    GuiLogFormatter(GuiLogOutputHandler par1GuiLogOutputHandler)
+    {
+        this.a = par1GuiLogOutputHandler;
     }
 
-    public String format(LogRecord logrecord) {
-        StringBuilder stringbuilder = new StringBuilder();
-        Level level = logrecord.getLevel();
+    public String format(LogRecord par1LogRecord)
+    {
+        StringBuilder var2 = new StringBuilder();
+        Level var3 = par1LogRecord.getLevel();
 
-        if (level == Level.FINEST) {
-            stringbuilder.append("[FINEST] ");
-        } else if (level == Level.FINER) {
-            stringbuilder.append("[FINER] ");
-        } else if (level == Level.FINE) {
-            stringbuilder.append("[FINE] ");
-        } else if (level == Level.INFO) {
-            stringbuilder.append("[INFO] ");
-        } else if (level == Level.WARNING) {
-            stringbuilder.append("[WARNING] ");
-        } else if (level == Level.SEVERE) {
-            stringbuilder.append("[SEVERE] ");
-        } else if (level == Level.SEVERE) {
-            stringbuilder.append("[").append(level.getLocalizedName()).append("] ");
+        if (var3 == Level.FINEST)
+        {
+            var2.append("[FINEST] ");
+        }
+        else if (var3 == Level.FINER)
+        {
+            var2.append("[FINER] ");
+        }
+        else if (var3 == Level.FINE)
+        {
+            var2.append("[FINE] ");
+        }
+        else if (var3 == Level.INFO)
+        {
+            var2.append("[INFO] ");
+        }
+        else if (var3 == Level.WARNING)
+        {
+            var2.append("[WARNING] ");
+        }
+        else if (var3 == Level.SEVERE)
+        {
+            var2.append("[SEVERE] ");
+        }
+        else if (var3 == Level.SEVERE)
+        {
+            var2.append("[").append(var3.getLocalizedName()).append("] ");
         }
 
-        stringbuilder.append(logrecord.getMessage());
-        stringbuilder.append('\n');
-        Throwable throwable = logrecord.getThrown();
+        var2.append(par1LogRecord.getMessage());
+        var2.append('\n');
+        Throwable var4 = par1LogRecord.getThrown();
 
-        if (throwable != null) {
-            StringWriter stringwriter = new StringWriter();
-
-            throwable.printStackTrace(new PrintWriter(stringwriter));
-            stringbuilder.append(stringwriter.toString());
+        if (var4 != null)
+        {
+            StringWriter var5 = new StringWriter();
+            var4.printStackTrace(new PrintWriter(var5));
+            var2.append(var5.toString());
         }
 
-        return stringbuilder.toString();
+        return var2.toString();
     }
 }

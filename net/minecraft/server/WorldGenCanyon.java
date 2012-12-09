@@ -2,164 +2,195 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenCanyon extends WorldGenBase {
-
+public class WorldGenCanyon extends WorldGenBase
+{
     private float[] d = new float[1024];
 
-    public WorldGenCanyon() {}
+    protected void a(long par1, int par3, int par4, byte[] par5ArrayOfByte, double par6, double par8, double par10, float par12, float par13, float par14, int par15, int par16, double par17)
+    {
+        Random var19 = new Random(par1);
+        double var20 = (double)(par3 * 16 + 8);
+        double var22 = (double)(par4 * 16 + 8);
+        float var24 = 0.0F;
+        float var25 = 0.0F;
 
-    protected void a(long i, int j, int k, byte[] abyte, double d0, double d1, double d2, float f, float f1, float f2, int l, int i1, double d3) {
-        Random random = new Random(i);
-        double d4 = (double) (j * 16 + 8);
-        double d5 = (double) (k * 16 + 8);
-        float f3 = 0.0F;
-        float f4 = 0.0F;
-
-        if (i1 <= 0) {
-            int j1 = this.a * 16 - 16;
-
-            i1 = j1 - random.nextInt(j1 / 4);
+        if (par16 <= 0)
+        {
+            int var26 = this.a * 16 - 16;
+            par16 = var26 - var19.nextInt(var26 / 4);
         }
 
-        boolean flag = false;
+        boolean var54 = false;
 
-        if (l == -1) {
-            l = i1 / 2;
-            flag = true;
+        if (par15 == -1)
+        {
+            par15 = par16 / 2;
+            var54 = true;
         }
 
-        float f5 = 1.0F;
+        float var27 = 1.0F;
 
-        for (int k1 = 0; k1 < 128; ++k1) {
-            if (k1 == 0 || random.nextInt(3) == 0) {
-                f5 = 1.0F + random.nextFloat() * random.nextFloat() * 1.0F;
+        for (int var28 = 0; var28 < 128; ++var28)
+        {
+            if (var28 == 0 || var19.nextInt(3) == 0)
+            {
+                var27 = 1.0F + var19.nextFloat() * var19.nextFloat() * 1.0F;
             }
 
-            this.d[k1] = f5 * f5;
+            this.d[var28] = var27 * var27;
         }
 
-        for (; l < i1; ++l) {
-            double d6 = 1.5D + (double) (MathHelper.sin((float) l * 3.1415927F / (float) i1) * f * 1.0F);
-            double d7 = d6 * d3;
+        for (; par15 < par16; ++par15)
+        {
+            double var53 = 1.5D + (double)(MathHelper.sin((float) par15 * (float) Math.PI / (float) par16) * par12 * 1.0F);
+            double var30 = var53 * par17;
+            var53 *= (double)var19.nextFloat() * 0.25D + 0.75D;
+            var30 *= (double)var19.nextFloat() * 0.25D + 0.75D;
+            float var32 = MathHelper.cos(par14);
+            float var33 = MathHelper.sin(par14);
+            par6 += (double)(MathHelper.cos(par13) * var32);
+            par8 += (double)var33;
+            par10 += (double)(MathHelper.sin(par13) * var32);
+            par14 *= 0.7F;
+            par14 += var25 * 0.05F;
+            par13 += var24 * 0.05F;
+            var25 *= 0.8F;
+            var24 *= 0.5F;
+            var25 += (var19.nextFloat() - var19.nextFloat()) * var19.nextFloat() * 2.0F;
+            var24 += (var19.nextFloat() - var19.nextFloat()) * var19.nextFloat() * 4.0F;
 
-            d6 *= (double) random.nextFloat() * 0.25D + 0.75D;
-            d7 *= (double) random.nextFloat() * 0.25D + 0.75D;
-            float f6 = MathHelper.cos(f2);
-            float f7 = MathHelper.sin(f2);
+            if (var54 || var19.nextInt(4) != 0)
+            {
+                double var34 = par6 - var20;
+                double var36 = par10 - var22;
+                double var38 = (double)(par16 - par15);
+                double var40 = (double)(par12 + 2.0F + 16.0F);
 
-            d0 += (double) (MathHelper.cos(f1) * f6);
-            d1 += (double) f7;
-            d2 += (double) (MathHelper.sin(f1) * f6);
-            f2 *= 0.7F;
-            f2 += f4 * 0.05F;
-            f1 += f3 * 0.05F;
-            f4 *= 0.8F;
-            f3 *= 0.5F;
-            f4 += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 2.0F;
-            f3 += (random.nextFloat() - random.nextFloat()) * random.nextFloat() * 4.0F;
-            if (flag || random.nextInt(4) != 0) {
-                double d8 = d0 - d4;
-                double d9 = d2 - d5;
-                double d10 = (double) (i1 - l);
-                double d11 = (double) (f + 2.0F + 16.0F);
-
-                if (d8 * d8 + d9 * d9 - d10 * d10 > d11 * d11) {
+                if (var34 * var34 + var36 * var36 - var38 * var38 > var40 * var40)
+                {
                     return;
                 }
 
-                if (d0 >= d4 - 16.0D - d6 * 2.0D && d2 >= d5 - 16.0D - d6 * 2.0D && d0 <= d4 + 16.0D + d6 * 2.0D && d2 <= d5 + 16.0D + d6 * 2.0D) {
-                    int l1 = MathHelper.floor(d0 - d6) - j * 16 - 1;
-                    int i2 = MathHelper.floor(d0 + d6) - j * 16 + 1;
-                    int j2 = MathHelper.floor(d1 - d7) - 1;
-                    int k2 = MathHelper.floor(d1 + d7) + 1;
-                    int l2 = MathHelper.floor(d2 - d6) - k * 16 - 1;
-                    int i3 = MathHelper.floor(d2 + d6) - k * 16 + 1;
+                if (par6 >= var20 - 16.0D - var53 * 2.0D && par10 >= var22 - 16.0D - var53 * 2.0D && par6 <= var20 + 16.0D + var53 * 2.0D && par10 <= var22 + 16.0D + var53 * 2.0D)
+                {
+                    int var56 = MathHelper.floor(par6 - var53) - par3 * 16 - 1;
+                    int var35 = MathHelper.floor(par6 + var53) - par3 * 16 + 1;
+                    int var55 = MathHelper.floor(par8 - var30) - 1;
+                    int var37 = MathHelper.floor(par8 + var30) + 1;
+                    int var57 = MathHelper.floor(par10 - var53) - par4 * 16 - 1;
+                    int var39 = MathHelper.floor(par10 + var53) - par4 * 16 + 1;
 
-                    if (l1 < 0) {
-                        l1 = 0;
+                    if (var56 < 0)
+                    {
+                        var56 = 0;
                     }
 
-                    if (i2 > 16) {
-                        i2 = 16;
+                    if (var35 > 16)
+                    {
+                        var35 = 16;
                     }
 
-                    if (j2 < 1) {
-                        j2 = 1;
+                    if (var55 < 1)
+                    {
+                        var55 = 1;
                     }
 
-                    if (k2 > 120) {
-                        k2 = 120;
+                    if (var37 > 120)
+                    {
+                        var37 = 120;
                     }
 
-                    if (l2 < 0) {
-                        l2 = 0;
+                    if (var57 < 0)
+                    {
+                        var57 = 0;
                     }
 
-                    if (i3 > 16) {
-                        i3 = 16;
+                    if (var39 > 16)
+                    {
+                        var39 = 16;
                     }
 
-                    boolean flag1 = false;
+                    boolean var58 = false;
+                    int var41;
+                    int var44;
 
-                    int j3;
-                    int k3;
+                    for (var41 = var56; !var58 && var41 < var35; ++var41)
+                    {
+                        for (int var42 = var57; !var58 && var42 < var39; ++var42)
+                        {
+                            for (int var43 = var37 + 1; !var58 && var43 >= var55 - 1; --var43)
+                            {
+                                var44 = (var41 * 16 + var42) * 128 + var43;
 
-                    for (j3 = l1; !flag1 && j3 < i2; ++j3) {
-                        for (int l3 = l2; !flag1 && l3 < i3; ++l3) {
-                            for (int i4 = k2 + 1; !flag1 && i4 >= j2 - 1; --i4) {
-                                k3 = (j3 * 16 + l3) * 128 + i4;
-                                if (i4 >= 0 && i4 < 128) {
-                                    if (abyte[k3] == Block.WATER.id || abyte[k3] == Block.STATIONARY_WATER.id) {
-                                        flag1 = true;
+                                if (var43 >= 0 && var43 < 128)
+                                {
+                                    if (par5ArrayOfByte[var44] == Block.WATER.id || par5ArrayOfByte[var44] == Block.STATIONARY_WATER.id)
+                                    {
+                                        var58 = true;
                                     }
 
-                                    if (i4 != j2 - 1 && j3 != l1 && j3 != i2 - 1 && l3 != l2 && l3 != i3 - 1) {
-                                        i4 = j2;
+                                    if (var43 != var55 - 1 && var41 != var56 && var41 != var35 - 1 && var42 != var57 && var42 != var39 - 1)
+                                    {
+                                        var43 = var55;
                                     }
                                 }
                             }
                         }
                     }
 
-                    if (!flag1) {
-                        for (j3 = l1; j3 < i2; ++j3) {
-                            double d12 = ((double) (j3 + j * 16) + 0.5D - d0) / d6;
+                    if (!var58)
+                    {
+                        for (var41 = var56; var41 < var35; ++var41)
+                        {
+                            double var59 = ((double)(var41 + par3 * 16) + 0.5D - par6) / var53;
 
-                            for (k3 = l2; k3 < i3; ++k3) {
-                                double d13 = ((double) (k3 + k * 16) + 0.5D - d2) / d6;
-                                int j4 = (j3 * 16 + k3) * 128 + k2;
-                                boolean flag2 = false;
+                            for (var44 = var57; var44 < var39; ++var44)
+                            {
+                                double var45 = ((double)(var44 + par4 * 16) + 0.5D - par10) / var53;
+                                int var47 = (var41 * 16 + var44) * 128 + var37;
+                                boolean var48 = false;
 
-                                if (d12 * d12 + d13 * d13 < 1.0D) {
-                                    for (int k4 = k2 - 1; k4 >= j2; --k4) {
-                                        double d14 = ((double) k4 + 0.5D - d1) / d7;
+                                if (var59 * var59 + var45 * var45 < 1.0D)
+                                {
+                                    for (int var49 = var37 - 1; var49 >= var55; --var49)
+                                    {
+                                        double var50 = ((double)var49 + 0.5D - par8) / var30;
 
-                                        if ((d12 * d12 + d13 * d13) * (double) this.d[k4] + d14 * d14 / 6.0D < 1.0D) {
-                                            byte b0 = abyte[j4];
+                                        if ((var59 * var59 + var45 * var45) * (double)this.d[var49] + var50 * var50 / 6.0D < 1.0D)
+                                        {
+                                            byte var52 = par5ArrayOfByte[var47];
 
-                                            if (b0 == Block.GRASS.id) {
-                                                flag2 = true;
+                                            if (var52 == Block.GRASS.id)
+                                            {
+                                                var48 = true;
                                             }
 
-                                            if (b0 == Block.STONE.id || b0 == Block.DIRT.id || b0 == Block.GRASS.id) {
-                                                if (k4 < 10) {
-                                                    abyte[j4] = (byte) Block.LAVA.id;
-                                                } else {
-                                                    abyte[j4] = 0;
-                                                    if (flag2 && abyte[j4 - 1] == Block.DIRT.id) {
-                                                        abyte[j4 - 1] = this.c.getBiome(j3 + j * 16, k3 + k * 16).A;
+                                            if (var52 == Block.STONE.id || var52 == Block.DIRT.id || var52 == Block.GRASS.id)
+                                            {
+                                                if (var49 < 10)
+                                                {
+                                                    par5ArrayOfByte[var47] = (byte) Block.LAVA.id;
+                                                }
+                                                else
+                                                {
+                                                    par5ArrayOfByte[var47] = 0;
+
+                                                    if (var48 && par5ArrayOfByte[var47 - 1] == Block.DIRT.id)
+                                                    {
+                                                        par5ArrayOfByte[var47 - 1] = this.c.getBiome(var41 + par3 * 16, var44 + par4 * 16).A;
                                                     }
                                                 }
                                             }
                                         }
 
-                                        --j4;
+                                        --var47;
                                     }
                                 }
                             }
                         }
 
-                        if (flag) {
+                        if (var54)
+                        {
                             break;
                         }
                     }
@@ -168,19 +199,24 @@ public class WorldGenCanyon extends WorldGenBase {
         }
     }
 
-    protected void a(World world, int i, int j, int k, int l, byte[] abyte) {
-        if (this.b.nextInt(50) == 0) {
-            double d0 = (double) (i * 16 + this.b.nextInt(16));
-            double d1 = (double) (this.b.nextInt(this.b.nextInt(40) + 8) + 20);
-            double d2 = (double) (j * 16 + this.b.nextInt(16));
-            byte b0 = 1;
+    /**
+     * Recursively called by generate() (func_867_a) and optionally by itself.
+     */
+    protected void a(World par1World, int par2, int par3, int par4, int par5, byte[] par6ArrayOfByte)
+    {
+        if (this.b.nextInt(50) == 0)
+        {
+            double var7 = (double)(par2 * 16 + this.b.nextInt(16));
+            double var9 = (double)(this.b.nextInt(this.b.nextInt(40) + 8) + 20);
+            double var11 = (double)(par3 * 16 + this.b.nextInt(16));
+            byte var13 = 1;
 
-            for (int i1 = 0; i1 < b0; ++i1) {
-                float f = this.b.nextFloat() * 3.1415927F * 2.0F;
-                float f1 = (this.b.nextFloat() - 0.5F) * 2.0F / 8.0F;
-                float f2 = (this.b.nextFloat() * 2.0F + this.b.nextFloat()) * 2.0F;
-
-                this.a(this.b.nextLong(), k, l, abyte, d0, d1, d2, f2, f, f1, 0, 0, 3.0D);
+            for (int var14 = 0; var14 < var13; ++var14)
+            {
+                float var15 = this.b.nextFloat() * (float)Math.PI * 2.0F;
+                float var16 = (this.b.nextFloat() - 0.5F) * 2.0F / 8.0F;
+                float var17 = (this.b.nextFloat() * 2.0F + this.b.nextFloat()) * 2.0F;
+                this.a(this.b.nextLong(), par4, par5, par6ArrayOfByte, var7, var9, var11, var17, var15, var16, 0, 0, 3.0D);
             }
         }
     }

@@ -1,113 +1,159 @@
 package net.minecraft.server;
 
-public class ContainerMerchant extends Container {
-
+public class ContainerMerchant extends Container
+{
+    /** Instance of Merchant. */
     private IMerchant merchant;
     private InventoryMerchant f;
+
+    /** Instance of World. */
     private final World g;
 
-    public ContainerMerchant(PlayerInventory playerinventory, IMerchant imerchant, World world) {
-        this.merchant = imerchant;
-        this.g = world;
-        this.f = new InventoryMerchant(playerinventory.player, imerchant);
+    public ContainerMerchant(PlayerInventory par1InventoryPlayer, IMerchant par2IMerchant, World par3World)
+    {
+        this.merchant = par2IMerchant;
+        this.g = par3World;
+        this.f = new InventoryMerchant(par1InventoryPlayer.player, par2IMerchant);
         this.a(new Slot(this.f, 0, 36, 53));
         this.a(new Slot(this.f, 1, 62, 53));
-        this.a((Slot) (new SlotMerchantResult(playerinventory.player, imerchant, this.f, 2, 120, 53)));
+        this.a(new SlotMerchantResult(par1InventoryPlayer.player, par2IMerchant, this.f, 2, 120, 53));
+        int var4;
 
-        int i;
-
-        for (i = 0; i < 3; ++i) {
-            for (int j = 0; j < 9; ++j) {
-                this.a(new Slot(playerinventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+        for (var4 = 0; var4 < 3; ++var4)
+        {
+            for (int var5 = 0; var5 < 9; ++var5)
+            {
+                this.a(new Slot(par1InventoryPlayer, var5 + var4 * 9 + 9, 8 + var5 * 18, 84 + var4 * 18));
             }
         }
 
-        for (i = 0; i < 9; ++i) {
-            this.a(new Slot(playerinventory, i, 8 + i * 18, 142));
+        for (var4 = 0; var4 < 9; ++var4)
+        {
+            this.a(new Slot(par1InventoryPlayer, var4, 8 + var4 * 18, 142));
         }
     }
 
-    public InventoryMerchant getMerchantInventory() {
+    public InventoryMerchant getMerchantInventory()
+    {
         return this.f;
     }
 
-    public void addSlotListener(ICrafting icrafting) {
-        super.addSlotListener(icrafting);
+    public void addSlotListener(ICrafting par1ICrafting)
+    {
+        super.addSlotListener(par1ICrafting);
     }
 
-    public void b() {
+    /**
+     * Updates crafting matrix; called from onCraftMatrixChanged. Args: none
+     */
+    public void b()
+    {
         super.b();
     }
 
-    public void a(IInventory iinventory) {
+    /**
+     * Callback for when the crafting matrix is changed.
+     */
+    public void a(IInventory par1IInventory)
+    {
         this.f.g();
-        super.a(iinventory);
+        super.a(par1IInventory);
     }
 
-    public void b(int i) {
-        this.f.c(i);
+    public void b(int par1)
+    {
+        this.f.c(par1);
     }
 
-    public boolean a(EntityHuman entityhuman) {
-        return this.merchant.m_() == entityhuman;
+    public boolean a(EntityHuman par1EntityPlayer)
+    {
+        return this.merchant.m_() == par1EntityPlayer;
     }
 
-    public ItemStack b(EntityHuman entityhuman, int i) {
-        ItemStack itemstack = null;
-        Slot slot = (Slot) this.c.get(i);
+    /**
+     * Take a stack from the specified inventory slot.
+     */
+    public ItemStack b(EntityHuman par1EntityPlayer, int par2)
+    {
+        ItemStack var3 = null;
+        Slot var4 = (Slot)this.c.get(par2);
 
-        if (slot != null && slot.d()) {
-            ItemStack itemstack1 = slot.getItem();
+        if (var4 != null && var4.d())
+        {
+            ItemStack var5 = var4.getItem();
+            var3 = var5.cloneItemStack();
 
-            itemstack = itemstack1.cloneItemStack();
-            if (i == 2) {
-                if (!this.a(itemstack1, 3, 39, true)) {
+            if (par2 == 2)
+            {
+                if (!this.a(var5, 3, 39, true))
+                {
                     return null;
                 }
 
-                slot.a(itemstack1, itemstack);
-            } else if (i != 0 && i != 1) {
-                if (i >= 3 && i < 30) {
-                    if (!this.a(itemstack1, 30, 39, false)) {
+                var4.a(var5, var3);
+            }
+            else if (par2 != 0 && par2 != 1)
+            {
+                if (par2 >= 3 && par2 < 30)
+                {
+                    if (!this.a(var5, 30, 39, false))
+                    {
                         return null;
                     }
-                } else if (i >= 30 && i < 39 && !this.a(itemstack1, 3, 30, false)) {
+                }
+                else if (par2 >= 30 && par2 < 39 && !this.a(var5, 3, 30, false))
+                {
                     return null;
                 }
-            } else if (!this.a(itemstack1, 3, 39, false)) {
+            }
+            else if (!this.a(var5, 3, 39, false))
+            {
                 return null;
             }
 
-            if (itemstack1.count == 0) {
-                slot.set((ItemStack) null);
-            } else {
-                slot.e();
+            if (var5.count == 0)
+            {
+                var4.set((ItemStack) null);
+            }
+            else
+            {
+                var4.e();
             }
 
-            if (itemstack1.count == itemstack.count) {
+            if (var5.count == var3.count)
+            {
                 return null;
             }
 
-            slot.a(entityhuman, itemstack1);
+            var4.a(par1EntityPlayer, var5);
         }
 
-        return itemstack;
+        return var3;
     }
 
-    public void b(EntityHuman entityhuman) {
-        super.b(entityhuman);
+    /**
+     * Callback for when the crafting gui is closed.
+     */
+    public void b(EntityHuman par1EntityPlayer)
+    {
+        super.b(par1EntityPlayer);
         this.merchant.b_((EntityHuman) null);
-        super.b(entityhuman);
-        if (!this.g.isStatic) {
-            ItemStack itemstack = this.f.splitWithoutUpdate(0);
+        super.b(par1EntityPlayer);
 
-            if (itemstack != null) {
-                entityhuman.drop(itemstack);
+        if (!this.g.isStatic)
+        {
+            ItemStack var2 = this.f.splitWithoutUpdate(0);
+
+            if (var2 != null)
+            {
+                par1EntityPlayer.drop(var2);
             }
 
-            itemstack = this.f.splitWithoutUpdate(1);
-            if (itemstack != null) {
-                entityhuman.drop(itemstack);
+            var2 = this.f.splitWithoutUpdate(1);
+
+            if (var2 != null)
+            {
+                par1EntityPlayer.drop(var2);
             }
         }
     }

@@ -14,115 +14,156 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class BanList {
-
+public class BanList
+{
     private final InsensitiveStringMap a = new InsensitiveStringMap();
     private final File b;
+
+    /** set to true if not singlePlayer */
     private boolean c = true;
 
-    public BanList(File file1) {
-        this.b = file1;
+    public BanList(File par1File)
+    {
+        this.b = par1File;
     }
 
-    public boolean isEnabled() {
+    public boolean isEnabled()
+    {
         return this.c;
     }
 
-    public void setEnabled(boolean flag) {
-        this.c = flag;
+    public void setEnabled(boolean par1)
+    {
+        this.c = par1;
     }
 
-    public Map getEntries() {
+    /**
+     * removes expired Bans before returning
+     */
+    public Map getEntries()
+    {
         this.removeExpired();
         return this.a;
     }
 
-    public boolean isBanned(String s) {
-        if (!this.isEnabled()) {
+    public boolean isBanned(String par1Str)
+    {
+        if (!this.isEnabled())
+        {
             return false;
-        } else {
+        }
+        else
+        {
             this.removeExpired();
-            return this.a.containsKey(s);
+            return this.a.containsKey(par1Str);
         }
     }
 
-    public void add(BanEntry banentry) {
-        this.a.put(banentry.getName(), banentry);
+    public void add(BanEntry par1BanEntry)
+    {
+        this.a.put(par1BanEntry.getName(), par1BanEntry);
         this.save();
     }
 
-    public void remove(String s) {
-        this.a.remove(s);
+    public void remove(String par1Str)
+    {
+        this.a.remove(par1Str);
         this.save();
     }
 
-    public void removeExpired() {
-        Iterator iterator = this.a.values().iterator();
+    public void removeExpired()
+    {
+        Iterator var1 = this.a.values().iterator();
 
-        while (iterator.hasNext()) {
-            BanEntry banentry = (BanEntry) iterator.next();
+        while (var1.hasNext())
+        {
+            BanEntry var2 = (BanEntry)var1.next();
 
-            if (banentry.hasExpired()) {
-                iterator.remove();
+            if (var2.hasExpired())
+            {
+                var1.remove();
             }
         }
     }
 
-    public void load() {
-        if (this.b.isFile()) {
-            BufferedReader bufferedreader;
+    /**
+     * Loads the ban list from the file (adds every entry, does not clear the current list).
+     */
+    public void load()
+    {
+        if (this.b.isFile())
+        {
+            BufferedReader var1;
 
-            try {
-                bufferedreader = new BufferedReader(new FileReader(this.b));
-            } catch (FileNotFoundException filenotfoundexception) {
+            try
+            {
+                var1 = new BufferedReader(new FileReader(this.b));
+            }
+            catch (FileNotFoundException var4)
+            {
                 throw new Error();
             }
 
-            String s;
+            String var2;
 
-            try {
-                while ((s = bufferedreader.readLine()) != null) {
-                    if (!s.startsWith("#")) {
-                        BanEntry banentry = BanEntry.c(s);
+            try
+            {
+                while ((var2 = var1.readLine()) != null)
+                {
+                    if (!var2.startsWith("#"))
+                    {
+                        BanEntry var3 = BanEntry.c(var2);
 
-                        if (banentry != null) {
-                            this.a.put(banentry.getName(), banentry);
+                        if (var3 != null)
+                        {
+                            this.a.put(var3.getName(), var3);
                         }
                     }
                 }
-            } catch (IOException ioexception) {
-                Logger.getLogger("Minecraft").log(Level.SEVERE, "Could not load ban list", ioexception);
+            }
+            catch (IOException var5)
+            {
+                Logger.getLogger("Minecraft").log(Level.SEVERE, "Could not load ban list", var5);
             }
         }
     }
 
-    public void save() {
+    public void save()
+    {
         this.save(true);
     }
 
-    public void save(boolean flag) {
+    /**
+     * par1: include header
+     */
+    public void save(boolean par1)
+    {
         this.removeExpired();
 
-        try {
-            PrintWriter printwriter = new PrintWriter(new FileWriter(this.b, false));
+        try
+        {
+            PrintWriter var2 = new PrintWriter(new FileWriter(this.b, false));
 
-            if (flag) {
-                printwriter.println("# Updated " + (new SimpleDateFormat()).format(new Date()) + " by Minecraft " + "1.4.5");
-                printwriter.println("# victim name | ban date | banned by | banned until | reason");
-                printwriter.println();
+            if (par1)
+            {
+                var2.println("# Updated " + (new SimpleDateFormat()).format(new Date()) + " by Minecraft " + "1.4.5");
+                var2.println("# victim name | ban date | banned by | banned until | reason");
+                var2.println();
             }
 
-            Iterator iterator = this.a.values().iterator();
+            Iterator var3 = this.a.values().iterator();
 
-            while (iterator.hasNext()) {
-                BanEntry banentry = (BanEntry) iterator.next();
-
-                printwriter.println(banentry.g());
+            while (var3.hasNext())
+            {
+                BanEntry var4 = (BanEntry)var3.next();
+                var2.println(var4.g());
             }
 
-            printwriter.close();
-        } catch (IOException ioexception) {
-            Logger.getLogger("Minecraft").log(Level.SEVERE, "Could not save ban list", ioexception);
+            var2.close();
+        }
+        catch (IOException var5)
+        {
+            Logger.getLogger("Minecraft").log(Level.SEVERE, "Could not save ban list", var5);
         }
     }
 }

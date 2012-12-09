@@ -3,17 +3,24 @@ package net.minecraft.server;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RecipesFurnace {
-
+public class RecipesFurnace
+{
     private static final RecipesFurnace a = new RecipesFurnace();
+
+    /** The list of smelting results. */
     private Map recipes = new HashMap();
     private Map c = new HashMap();
 
-    public static final RecipesFurnace getInstance() {
+    /**
+     * Used to call methods addSmelting and getSmeltingResult.
+     */
+    public static final RecipesFurnace getInstance()
+    {
         return a;
     }
 
-    private RecipesFurnace() {
+    private RecipesFurnace()
+    {
         this.registerRecipe(Block.IRON_ORE.id, new ItemStack(Item.IRON_INGOT), 0.7F);
         this.registerRecipe(Block.GOLD_ORE.id, new ItemStack(Item.GOLD_INGOT), 1.0F);
         this.registerRecipe(Block.DIAMOND_ORE.id, new ItemStack(Item.DIAMOND), 1.0F);
@@ -33,20 +40,30 @@ public class RecipesFurnace {
         this.registerRecipe(Block.LAPIS_ORE.id, new ItemStack(Item.INK_SACK, 1, 4), 0.2F);
     }
 
-    public void registerRecipe(int i, ItemStack itemstack, float f) {
-        this.recipes.put(Integer.valueOf(i), itemstack);
-        this.c.put(Integer.valueOf(itemstack.id), Float.valueOf(f));
+    /**
+     * Adds a smelting recipe.
+     */
+    public void registerRecipe(int par1, ItemStack par2ItemStack, float par3)
+    {
+        this.recipes.put(Integer.valueOf(par1), par2ItemStack);
+        this.c.put(Integer.valueOf(par2ItemStack.id), Float.valueOf(par3));
     }
 
-    public ItemStack getResult(int i) {
-        return (ItemStack) this.recipes.get(Integer.valueOf(i));
+    /**
+     * Returns the smelting result of an item.
+     */
+    public ItemStack getResult(int par1)
+    {
+        return (ItemStack)this.recipes.get(Integer.valueOf(par1));
     }
 
-    public Map getRecipes() {
+    public Map getRecipes()
+    {
         return this.recipes;
     }
 
-    public float c(int i) {
-        return this.c.containsKey(Integer.valueOf(i)) ? ((Float) this.c.get(Integer.valueOf(i))).floatValue() : 0.0F;
+    public float c(int par1)
+    {
+        return this.c.containsKey(Integer.valueOf(par1)) ? ((Float)this.c.get(Integer.valueOf(par1))).floatValue() : 0.0F;
     }
 }

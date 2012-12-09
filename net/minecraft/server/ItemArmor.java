@@ -1,92 +1,150 @@
 package net.minecraft.server;
 
-public class ItemArmor extends Item {
+public class ItemArmor extends Item
+{
+    /** Holds the 'base' maxDamage that each armorType have. */
+    private static final int[] cl = new int[] {11, 16, 15, 13};
 
-    private static final int[] cl = new int[] { 11, 16, 15, 13};
+    /**
+     * Stores the armor type: 0 is helmet, 1 is plate, 2 is legs and 3 is boots
+     */
     public final int a;
+
+    /** Holds the amount of damage that the armor reduces at full durability. */
     public final int b;
+
+    /**
+     * Used on RenderPlayer to select the correspondent armor to be rendered on the player: 0 is cloth, 1 is chain, 2 is
+     * iron, 3 is diamond and 4 is gold.
+     */
     public final int c;
+
+    /** The EnumArmorMaterial used for this ItemArmor */
     private final EnumArmorMaterial cm;
 
-    public ItemArmor(int i, EnumArmorMaterial enumarmormaterial, int j, int k) {
-        super(i);
-        this.cm = enumarmormaterial;
-        this.a = k;
-        this.c = j;
-        this.b = enumarmormaterial.b(k);
-        this.setMaxDurability(enumarmormaterial.a(k));
+    public ItemArmor(int par1, EnumArmorMaterial par2EnumArmorMaterial, int par3, int par4)
+    {
+        super(par1);
+        this.cm = par2EnumArmorMaterial;
+        this.a = par4;
+        this.c = par3;
+        this.b = par2EnumArmorMaterial.b(par4);
+        this.setMaxDurability(par2EnumArmorMaterial.a(par4));
         this.maxStackSize = 1;
         this.a(CreativeModeTab.j);
     }
 
-    public int c() {
+    /**
+     * Return the enchantability factor of the item, most of the time is based on material.
+     */
+    public int c()
+    {
         return this.cm.a();
     }
 
-    public EnumArmorMaterial d() {
+    /**
+     * Return the armor material for this armor item.
+     */
+    public EnumArmorMaterial d()
+    {
         return this.cm;
     }
 
-    public boolean b_(ItemStack itemstack) {
-        return this.cm != EnumArmorMaterial.CLOTH ? false : (!itemstack.hasTag() ? false : (!itemstack.getTag().hasKey("display") ? false : itemstack.getTag().getCompound("display").hasKey("color")));
+    /**
+     * Return whether the specified armor ItemStack has a color.
+     */
+    public boolean b_(ItemStack par1ItemStack)
+    {
+        return this.cm != EnumArmorMaterial.CLOTH ? false : (!par1ItemStack.hasTag() ? false : (!par1ItemStack.getTag().hasKey("display") ? false : par1ItemStack.getTag().getCompound("display").hasKey("color")));
     }
 
-    public int b(ItemStack itemstack) {
-        if (this.cm != EnumArmorMaterial.CLOTH) {
+    /**
+     * Return the color for the specified armor ItemStack.
+     */
+    public int b(ItemStack par1ItemStack)
+    {
+        if (this.cm != EnumArmorMaterial.CLOTH)
+        {
             return -1;
-        } else {
-            NBTTagCompound nbttagcompound = itemstack.getTag();
+        }
+        else
+        {
+            NBTTagCompound var2 = par1ItemStack.getTag();
 
-            if (nbttagcompound == null) {
+            if (var2 == null)
+            {
                 return 10511680;
-            } else {
-                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompound("display");
-
-                return nbttagcompound1 == null ? 10511680 : (nbttagcompound1.hasKey("color") ? nbttagcompound1.getInt("color") : 10511680);
+            }
+            else
+            {
+                NBTTagCompound var3 = var2.getCompound("display");
+                return var3 == null ? 10511680 : (var3.hasKey("color") ? var3.getInt("color") : 10511680);
             }
         }
     }
 
-    public void c(ItemStack itemstack) {
-        if (this.cm == EnumArmorMaterial.CLOTH) {
-            NBTTagCompound nbttagcompound = itemstack.getTag();
+    /**
+     * Remove the color from the specified armor ItemStack.
+     */
+    public void c(ItemStack par1ItemStack)
+    {
+        if (this.cm == EnumArmorMaterial.CLOTH)
+        {
+            NBTTagCompound var2 = par1ItemStack.getTag();
 
-            if (nbttagcompound != null) {
-                NBTTagCompound nbttagcompound1 = nbttagcompound.getCompound("display");
+            if (var2 != null)
+            {
+                NBTTagCompound var3 = var2.getCompound("display");
 
-                if (nbttagcompound1.hasKey("color")) {
-                    nbttagcompound1.o("color");
+                if (var3.hasKey("color"))
+                {
+                    var3.o("color");
                 }
             }
         }
     }
 
-    public void b(ItemStack itemstack, int i) {
-        if (this.cm != EnumArmorMaterial.CLOTH) {
+    public void b(ItemStack par1ItemStack, int par2)
+    {
+        if (this.cm != EnumArmorMaterial.CLOTH)
+        {
             throw new UnsupportedOperationException("Can\'t dye non-leather!");
-        } else {
-            NBTTagCompound nbttagcompound = itemstack.getTag();
+        }
+        else
+        {
+            NBTTagCompound var3 = par1ItemStack.getTag();
 
-            if (nbttagcompound == null) {
-                nbttagcompound = new NBTTagCompound();
-                itemstack.setTag(nbttagcompound);
+            if (var3 == null)
+            {
+                var3 = new NBTTagCompound();
+                par1ItemStack.setTag(var3);
             }
 
-            NBTTagCompound nbttagcompound1 = nbttagcompound.getCompound("display");
+            NBTTagCompound var4 = var3.getCompound("display");
 
-            if (!nbttagcompound.hasKey("display")) {
-                nbttagcompound.setCompound("display", nbttagcompound1);
+            if (!var3.hasKey("display"))
+            {
+                var3.setCompound("display", var4);
             }
 
-            nbttagcompound1.setInt("color", i);
+            var4.setInt("color", par2);
         }
     }
 
-    public boolean a(ItemStack itemstack, ItemStack itemstack1) {
-        return this.cm.b() == itemstack1.id ? true : super.a(itemstack, itemstack1);
+    /**
+     * Return whether this item is repairable in an anvil.
+     */
+    public boolean a(ItemStack par1ItemStack, ItemStack par2ItemStack)
+    {
+        return this.cm.b() == par2ItemStack.id ? true : super.a(par1ItemStack, par2ItemStack);
     }
 
-    static int[] e() {
+    /**
+     * Returns the 'max damage' factor array for the armor, each piece of armor have a durability factor (that gets
+     * multiplied by armor material factor)
+     */
+    static int[] e()
+    {
         return cl;
     }
 }

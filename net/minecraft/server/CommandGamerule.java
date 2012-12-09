@@ -2,61 +2,85 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public class CommandGamerule extends CommandAbstract {
-
-    public CommandGamerule() {}
-
-    public String c() {
+public class CommandGamerule extends CommandAbstract
+{
+    public String c()
+    {
         return "gamerule";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 2;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.gamerule.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.gamerule.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        String s;
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        String var6;
 
-        if (astring.length == 2) {
-            s = astring[0];
-            String s1 = astring[1];
-            GameRules gamerules = this.d();
+        if (par2ArrayOfStr.length == 2)
+        {
+            var6 = par2ArrayOfStr[0];
+            String var7 = par2ArrayOfStr[1];
+            GameRules var8 = this.d();
 
-            if (gamerules.e(s)) {
-                gamerules.set(s, s1);
-                a(icommandlistener, "commands.gamerule.success", new Object[0]);
-            } else {
-                a(icommandlistener, "commands.gamerule.norule", new Object[] { s});
+            if (var8.e(var6))
+            {
+                var8.set(var6, var7);
+                a(par1ICommandSender, "commands.gamerule.success", new Object[0]);
             }
-        } else if (astring.length == 1) {
-            s = astring[0];
-            GameRules gamerules1 = this.d();
-
-            if (gamerules1.e(s)) {
-                String s2 = gamerules1.get(s);
-
-                icommandlistener.sendMessage(s + " = " + s2);
-            } else {
-                a(icommandlistener, "commands.gamerule.norule", new Object[] { s});
+            else
+            {
+                a(par1ICommandSender, "commands.gamerule.norule", new Object[]{var6});
             }
-        } else if (astring.length == 0) {
-            GameRules gamerules2 = this.d();
+        }
+        else if (par2ArrayOfStr.length == 1)
+        {
+            var6 = par2ArrayOfStr[0];
+            GameRules var4 = this.d();
 
-            icommandlistener.sendMessage(a(gamerules2.b()));
-        } else {
+            if (var4.e(var6))
+            {
+                String var5 = var4.get(var6);
+                par1ICommandSender.sendMessage(var6 + " = " + var5);
+            }
+            else
+            {
+                a(par1ICommandSender, "commands.gamerule.norule", new Object[]{var6});
+            }
+        }
+        else if (par2ArrayOfStr.length == 0)
+        {
+            GameRules var3 = this.d();
+            par1ICommandSender.sendMessage(a(var3.b()));
+        }
+        else
+        {
             throw new ExceptionUsage("commands.gamerule.usage", new Object[0]);
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return astring.length == 1 ? a(astring, this.d().b()) : (astring.length == 2 ? a(astring, new String[] { "true", "false"}) : null);
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return par2ArrayOfStr.length == 1 ? a(par2ArrayOfStr, this.d().b()) : (par2ArrayOfStr.length == 2 ? a(par2ArrayOfStr, new String[]{"true", "false"}): null);
     }
 
-    private GameRules d() {
+    /**
+     * Return the game rule set this command should be able to manipulate.
+     */
+    private GameRules d()
+    {
         return MinecraftServer.getServer().getWorldServer(0).getGameRules();
     }
 }

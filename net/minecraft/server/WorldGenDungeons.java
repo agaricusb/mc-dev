@@ -2,140 +2,181 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class WorldGenDungeons extends WorldGenerator {
+public class WorldGenDungeons extends WorldGenerator
+{
+    public boolean a(World par1World, Random par2Random, int par3, int par4, int par5)
+    {
+        byte var6 = 3;
+        int var7 = par2Random.nextInt(2) + 2;
+        int var8 = par2Random.nextInt(2) + 2;
+        int var9 = 0;
+        int var10;
+        int var11;
+        int var12;
 
-    public WorldGenDungeons() {}
+        for (var10 = par3 - var7 - 1; var10 <= par3 + var7 + 1; ++var10)
+        {
+            for (var11 = par4 - 1; var11 <= par4 + var6 + 1; ++var11)
+            {
+                for (var12 = par5 - var8 - 1; var12 <= par5 + var8 + 1; ++var12)
+                {
+                    Material var13 = par1World.getMaterial(var10, var11, var12);
 
-    public boolean a(World world, Random random, int i, int j, int k) {
-        byte b0 = 3;
-        int l = random.nextInt(2) + 2;
-        int i1 = random.nextInt(2) + 2;
-        int j1 = 0;
-
-        int k1;
-        int l1;
-        int i2;
-
-        for (k1 = i - l - 1; k1 <= i + l + 1; ++k1) {
-            for (l1 = j - 1; l1 <= j + b0 + 1; ++l1) {
-                for (i2 = k - i1 - 1; i2 <= k + i1 + 1; ++i2) {
-                    Material material = world.getMaterial(k1, l1, i2);
-
-                    if (l1 == j - 1 && !material.isBuildable()) {
+                    if (var11 == par4 - 1 && !var13.isBuildable())
+                    {
                         return false;
                     }
 
-                    if (l1 == j + b0 + 1 && !material.isBuildable()) {
+                    if (var11 == par4 + var6 + 1 && !var13.isBuildable())
+                    {
                         return false;
                     }
 
-                    if ((k1 == i - l - 1 || k1 == i + l + 1 || i2 == k - i1 - 1 || i2 == k + i1 + 1) && l1 == j && world.isEmpty(k1, l1, i2) && world.isEmpty(k1, l1 + 1, i2)) {
-                        ++j1;
+                    if ((var10 == par3 - var7 - 1 || var10 == par3 + var7 + 1 || var12 == par5 - var8 - 1 || var12 == par5 + var8 + 1) && var11 == par4 && par1World.isEmpty(var10, var11, var12) && par1World.isEmpty(var10, var11 + 1, var12))
+                    {
+                        ++var9;
                     }
                 }
             }
         }
 
-        if (j1 >= 1 && j1 <= 5) {
-            for (k1 = i - l - 1; k1 <= i + l + 1; ++k1) {
-                for (l1 = j + b0; l1 >= j - 1; --l1) {
-                    for (i2 = k - i1 - 1; i2 <= k + i1 + 1; ++i2) {
-                        if (k1 != i - l - 1 && l1 != j - 1 && i2 != k - i1 - 1 && k1 != i + l + 1 && l1 != j + b0 + 1 && i2 != k + i1 + 1) {
-                            world.setTypeId(k1, l1, i2, 0);
-                        } else if (l1 >= 0 && !world.getMaterial(k1, l1 - 1, i2).isBuildable()) {
-                            world.setTypeId(k1, l1, i2, 0);
-                        } else if (world.getMaterial(k1, l1, i2).isBuildable()) {
-                            if (l1 == j - 1 && random.nextInt(4) != 0) {
-                                world.setTypeId(k1, l1, i2, Block.MOSSY_COBBLESTONE.id);
-                            } else {
-                                world.setTypeId(k1, l1, i2, Block.COBBLESTONE.id);
+        if (var9 >= 1 && var9 <= 5)
+        {
+            for (var10 = par3 - var7 - 1; var10 <= par3 + var7 + 1; ++var10)
+            {
+                for (var11 = par4 + var6; var11 >= par4 - 1; --var11)
+                {
+                    for (var12 = par5 - var8 - 1; var12 <= par5 + var8 + 1; ++var12)
+                    {
+                        if (var10 != par3 - var7 - 1 && var11 != par4 - 1 && var12 != par5 - var8 - 1 && var10 != par3 + var7 + 1 && var11 != par4 + var6 + 1 && var12 != par5 + var8 + 1)
+                        {
+                            par1World.setTypeId(var10, var11, var12, 0);
+                        }
+                        else if (var11 >= 0 && !par1World.getMaterial(var10, var11 - 1, var12).isBuildable())
+                        {
+                            par1World.setTypeId(var10, var11, var12, 0);
+                        }
+                        else if (par1World.getMaterial(var10, var11, var12).isBuildable())
+                        {
+                            if (var11 == par4 - 1 && par2Random.nextInt(4) != 0)
+                            {
+                                par1World.setTypeId(var10, var11, var12, Block.MOSSY_COBBLESTONE.id);
+                            }
+                            else
+                            {
+                                par1World.setTypeId(var10, var11, var12, Block.COBBLESTONE.id);
                             }
                         }
                     }
                 }
             }
 
-            k1 = 0;
+            var10 = 0;
 
-            while (k1 < 2) {
-                l1 = 0;
+            while (var10 < 2)
+            {
+                var11 = 0;
 
-                while (true) {
-                    if (l1 < 3) {
-                        label210: {
-                            i2 = i + random.nextInt(l * 2 + 1) - l;
-                            int j2 = k + random.nextInt(i1 * 2 + 1) - i1;
+                while (true)
+                {
+                    if (var11 < 3)
+                    {
+                        label210:
+                        {
+                            var12 = par3 + par2Random.nextInt(var7 * 2 + 1) - var7;
+                            int var14 = par5 + par2Random.nextInt(var8 * 2 + 1) - var8;
 
-                            if (world.isEmpty(i2, j, j2)) {
-                                int k2 = 0;
+                            if (par1World.isEmpty(var12, par4, var14))
+                            {
+                                int var15 = 0;
 
-                                if (world.getMaterial(i2 - 1, j, j2).isBuildable()) {
-                                    ++k2;
+                                if (par1World.getMaterial(var12 - 1, par4, var14).isBuildable())
+                                {
+                                    ++var15;
                                 }
 
-                                if (world.getMaterial(i2 + 1, j, j2).isBuildable()) {
-                                    ++k2;
+                                if (par1World.getMaterial(var12 + 1, par4, var14).isBuildable())
+                                {
+                                    ++var15;
                                 }
 
-                                if (world.getMaterial(i2, j, j2 - 1).isBuildable()) {
-                                    ++k2;
+                                if (par1World.getMaterial(var12, par4, var14 - 1).isBuildable())
+                                {
+                                    ++var15;
                                 }
 
-                                if (world.getMaterial(i2, j, j2 + 1).isBuildable()) {
-                                    ++k2;
+                                if (par1World.getMaterial(var12, par4, var14 + 1).isBuildable())
+                                {
+                                    ++var15;
                                 }
 
-                                if (k2 == 1) {
-                                    world.setTypeId(i2, j, j2, Block.CHEST.id);
-                                    TileEntityChest tileentitychest = (TileEntityChest) world.getTileEntity(i2, j, j2);
+                                if (var15 == 1)
+                                {
+                                    par1World.setTypeId(var12, par4, var14, Block.CHEST.id);
+                                    TileEntityChest var16 = (TileEntityChest)par1World.getTileEntity(var12, par4, var14);
 
-                                    if (tileentitychest != null) {
-                                        for (int l2 = 0; l2 < 8; ++l2) {
-                                            ItemStack itemstack = this.a(random);
+                                    if (var16 != null)
+                                    {
+                                        for (int var17 = 0; var17 < 8; ++var17)
+                                        {
+                                            ItemStack var18 = this.a(par2Random);
 
-                                            if (itemstack != null) {
-                                                tileentitychest.setItem(random.nextInt(tileentitychest.getSize()), itemstack);
+                                            if (var18 != null)
+                                            {
+                                                var16.setItem(par2Random.nextInt(var16.getSize()), var18);
                                             }
                                         }
                                     }
+
                                     break label210;
                                 }
                             }
 
-                            ++l1;
+                            ++var11;
                             continue;
                         }
                     }
 
-                    ++k1;
+                    ++var10;
                     break;
                 }
             }
 
-            world.setTypeId(i, j, k, Block.MOB_SPAWNER.id);
-            TileEntityMobSpawner tileentitymobspawner = (TileEntityMobSpawner) world.getTileEntity(i, j, k);
+            par1World.setTypeId(par3, par4, par5, Block.MOB_SPAWNER.id);
+            TileEntityMobSpawner var19 = (TileEntityMobSpawner)par1World.getTileEntity(par3, par4, par5);
 
-            if (tileentitymobspawner != null) {
-                tileentitymobspawner.a(this.b(random));
-            } else {
-                System.err.println("Failed to fetch mob spawner entity at (" + i + ", " + j + ", " + k + ")");
+            if (var19 != null)
+            {
+                var19.a(this.b(par2Random));
+            }
+            else
+            {
+                System.err.println("Failed to fetch mob spawner entity at (" + par3 + ", " + par4 + ", " + par5 + ")");
             }
 
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    private ItemStack a(Random random) {
-        int i = random.nextInt(11);
-
-        return i == 0 ? new ItemStack(Item.SADDLE) : (i == 1 ? new ItemStack(Item.IRON_INGOT, random.nextInt(4) + 1) : (i == 2 ? new ItemStack(Item.BREAD) : (i == 3 ? new ItemStack(Item.WHEAT, random.nextInt(4) + 1) : (i == 4 ? new ItemStack(Item.SULPHUR, random.nextInt(4) + 1) : (i == 5 ? new ItemStack(Item.STRING, random.nextInt(4) + 1) : (i == 6 ? new ItemStack(Item.BUCKET) : (i == 7 && random.nextInt(100) == 0 ? new ItemStack(Item.GOLDEN_APPLE) : (i == 8 && random.nextInt(2) == 0 ? new ItemStack(Item.REDSTONE, random.nextInt(4) + 1) : (i == 9 && random.nextInt(10) == 0 ? new ItemStack(Item.byId[Item.RECORD_1.id + random.nextInt(2)]) : (i == 10 ? new ItemStack(Item.INK_SACK, 1, 3) : null))))))))));
+    /**
+     * Picks potentially a random item to add to a dungeon chest.
+     */
+    private ItemStack a(Random par1Random)
+    {
+        int var2 = par1Random.nextInt(11);
+        return var2 == 0 ? new ItemStack(Item.SADDLE) : (var2 == 1 ? new ItemStack(Item.IRON_INGOT, par1Random.nextInt(4) + 1) : (var2 == 2 ? new ItemStack(Item.BREAD) : (var2 == 3 ? new ItemStack(Item.WHEAT, par1Random.nextInt(4) + 1) : (var2 == 4 ? new ItemStack(Item.SULPHUR, par1Random.nextInt(4) + 1) : (var2 == 5 ? new ItemStack(Item.STRING, par1Random.nextInt(4) + 1) : (var2 == 6 ? new ItemStack(Item.BUCKET) : (var2 == 7 && par1Random.nextInt(100) == 0 ? new ItemStack(Item.GOLDEN_APPLE) : (var2 == 8 && par1Random.nextInt(2) == 0 ? new ItemStack(Item.REDSTONE, par1Random.nextInt(4) + 1) : (var2 == 9 && par1Random.nextInt(10) == 0 ? new ItemStack(Item.byId[Item.RECORD_1.id + par1Random.nextInt(2)]) : (var2 == 10 ? new ItemStack(Item.INK_SACK, 1, 3) : null))))))))));
     }
 
-    private String b(Random random) {
-        int i = random.nextInt(4);
-
-        return i == 0 ? "Skeleton" : (i == 1 ? "Zombie" : (i == 2 ? "Zombie" : (i == 3 ? "Spider" : "")));
+    /**
+     * Randomly decides which spawner to use in a dungeon
+     */
+    private String b(Random par1Random)
+    {
+        int var2 = par1Random.nextInt(4);
+        return var2 == 0 ? "Skeleton" : (var2 == 1 ? "Zombie" : (var2 == 2 ? "Zombie" : (var2 == 3 ? "Spider" : "")));
     }
 }

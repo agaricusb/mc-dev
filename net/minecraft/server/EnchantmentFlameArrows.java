@@ -1,21 +1,34 @@
 package net.minecraft.server;
 
-public class EnchantmentFlameArrows extends Enchantment {
-
-    public EnchantmentFlameArrows(int i, int j) {
-        super(i, j, EnchantmentSlotType.BOW);
+public class EnchantmentFlameArrows extends Enchantment
+{
+    public EnchantmentFlameArrows(int par1, int par2)
+    {
+        super(par1, par2, EnchantmentSlotType.BOW);
         this.b("arrowFire");
     }
 
-    public int a(int i) {
+    /**
+     * Returns the minimal value of enchantability needed on the enchantment level passed.
+     */
+    public int a(int par1)
+    {
         return 20;
     }
 
-    public int b(int i) {
+    /**
+     * Returns the maximum value of enchantability nedded on the enchantment level passed.
+     */
+    public int b(int par1)
+    {
         return 50;
     }
 
-    public int getMaxLevel() {
+    /**
+     * Returns the maximum level that the enchantment can have.
+     */
+    public int getMaxLevel()
+    {
         return 1;
     }
 }

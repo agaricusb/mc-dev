@@ -1,16 +1,22 @@
 package net.minecraft.server;
 
-class ContainerAnvilInventory extends InventorySubcontainer {
-
+class ContainerAnvilInventory extends InventorySubcontainer
+{
+    /** Container of this anvil's block. */
     final ContainerAnvil a;
 
-    ContainerAnvilInventory(ContainerAnvil containeranvil, String s, int i) {
-        super(s, i);
-        this.a = containeranvil;
+    ContainerAnvilInventory(ContainerAnvil par1ContainerRepair, String par2Str, int par3)
+    {
+        super(par2Str, par3);
+        this.a = par1ContainerRepair;
     }
 
-    public void update() {
+    /**
+     * Called when an the contents of an Inventory change, usually
+     */
+    public void update()
+    {
         super.update();
-        this.a.a((IInventory) this);
+        this.a.a(this);
     }
 }

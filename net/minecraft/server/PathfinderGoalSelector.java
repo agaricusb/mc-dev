@@ -4,122 +4,153 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PathfinderGoalSelector {
-
+public class PathfinderGoalSelector
+{
+    /** A list of EntityAITaskEntrys in EntityAITasks. */
     private List a = new ArrayList();
+
+    /** A list of EntityAITaskEntrys that are currently being executed. */
     private List b = new ArrayList();
+
+    /** Instance of Profiler. */
     private final MethodProfiler c;
     private int d = 0;
     private int e = 3;
 
-    public PathfinderGoalSelector(MethodProfiler methodprofiler) {
-        this.c = methodprofiler;
+    public PathfinderGoalSelector(MethodProfiler par1Profiler)
+    {
+        this.c = par1Profiler;
     }
 
-    public void a(int i, PathfinderGoal pathfindergoal) {
-        this.a.add(new PathfinderGoalSelectorItem(this, i, pathfindergoal));
+    public void a(int par1, PathfinderGoal par2EntityAIBase)
+    {
+        this.a.add(new PathfinderGoalSelectorItem(this, par1, par2EntityAIBase));
     }
 
-    public void a(PathfinderGoal pathfindergoal) {
-        Iterator iterator = this.a.iterator();
+    public void a(PathfinderGoal par1EntityAIBase)
+    {
+        Iterator var2 = this.a.iterator();
 
-        while (iterator.hasNext()) {
-            PathfinderGoalSelectorItem pathfindergoalselectoritem = (PathfinderGoalSelectorItem) iterator.next();
-            PathfinderGoal pathfindergoal1 = pathfindergoalselectoritem.a;
+        while (var2.hasNext())
+        {
+            PathfinderGoalSelectorItem var3 = (PathfinderGoalSelectorItem)var2.next();
+            PathfinderGoal var4 = var3.a;
 
-            if (pathfindergoal1 == pathfindergoal) {
-                if (this.b.contains(pathfindergoalselectoritem)) {
-                    pathfindergoal1.d();
-                    this.b.remove(pathfindergoalselectoritem);
+            if (var4 == par1EntityAIBase)
+            {
+                if (this.b.contains(var3))
+                {
+                    var4.d();
+                    this.b.remove(var3);
                 }
 
-                iterator.remove();
+                var2.remove();
             }
         }
     }
 
-    public void a() {
-        ArrayList arraylist = new ArrayList();
-        Iterator iterator;
-        PathfinderGoalSelectorItem pathfindergoalselectoritem;
+    public void a()
+    {
+        ArrayList var1 = new ArrayList();
+        Iterator var2;
+        PathfinderGoalSelectorItem var3;
 
-        if (this.d++ % this.e == 0) {
-            iterator = this.a.iterator();
+        if (this.d++ % this.e == 0)
+        {
+            var2 = this.a.iterator();
 
-            while (iterator.hasNext()) {
-                pathfindergoalselectoritem = (PathfinderGoalSelectorItem) iterator.next();
-                boolean flag = this.b.contains(pathfindergoalselectoritem);
+            while (var2.hasNext())
+            {
+                var3 = (PathfinderGoalSelectorItem)var2.next();
+                boolean var4 = this.b.contains(var3);
 
-                if (flag) {
-                    if (this.b(pathfindergoalselectoritem) && this.a(pathfindergoalselectoritem)) {
+                if (var4)
+                {
+                    if (this.b(var3) && this.a(var3))
+                    {
                         continue;
                     }
 
-                    pathfindergoalselectoritem.a.d();
-                    this.b.remove(pathfindergoalselectoritem);
+                    var3.a.d();
+                    this.b.remove(var3);
                 }
 
-                if (this.b(pathfindergoalselectoritem) && pathfindergoalselectoritem.a.a()) {
-                    arraylist.add(pathfindergoalselectoritem);
-                    this.b.add(pathfindergoalselectoritem);
+                if (this.b(var3) && var3.a.a())
+                {
+                    var1.add(var3);
+                    this.b.add(var3);
                 }
             }
-        } else {
-            iterator = this.b.iterator();
+        }
+        else
+        {
+            var2 = this.b.iterator();
 
-            while (iterator.hasNext()) {
-                pathfindergoalselectoritem = (PathfinderGoalSelectorItem) iterator.next();
-                if (!pathfindergoalselectoritem.a.b()) {
-                    pathfindergoalselectoritem.a.d();
-                    iterator.remove();
+            while (var2.hasNext())
+            {
+                var3 = (PathfinderGoalSelectorItem)var2.next();
+
+                if (!var3.a.b())
+                {
+                    var3.a.d();
+                    var2.remove();
                 }
             }
         }
 
         this.c.a("goalStart");
-        iterator = arraylist.iterator();
+        var2 = var1.iterator();
 
-        while (iterator.hasNext()) {
-            pathfindergoalselectoritem = (PathfinderGoalSelectorItem) iterator.next();
-            this.c.a(pathfindergoalselectoritem.a.getClass().getSimpleName());
-            pathfindergoalselectoritem.a.c();
+        while (var2.hasNext())
+        {
+            var3 = (PathfinderGoalSelectorItem)var2.next();
+            this.c.a(var3.a.getClass().getSimpleName());
+            var3.a.c();
             this.c.b();
         }
 
         this.c.b();
         this.c.a("goalTick");
-        iterator = this.b.iterator();
+        var2 = this.b.iterator();
 
-        while (iterator.hasNext()) {
-            pathfindergoalselectoritem = (PathfinderGoalSelectorItem) iterator.next();
-            pathfindergoalselectoritem.a.e();
+        while (var2.hasNext())
+        {
+            var3 = (PathfinderGoalSelectorItem)var2.next();
+            var3.a.e();
         }
 
         this.c.b();
     }
 
-    private boolean a(PathfinderGoalSelectorItem pathfindergoalselectoritem) {
+    private boolean a(PathfinderGoalSelectorItem par1EntityAITaskEntry)
+    {
         this.c.a("canContinue");
-        boolean flag = pathfindergoalselectoritem.a.b();
-
+        boolean var2 = par1EntityAITaskEntry.a.b();
         this.c.b();
-        return flag;
+        return var2;
     }
 
-    private boolean b(PathfinderGoalSelectorItem pathfindergoalselectoritem) {
+    private boolean b(PathfinderGoalSelectorItem par1EntityAITaskEntry)
+    {
         this.c.a("canUse");
-        Iterator iterator = this.a.iterator();
+        Iterator var2 = this.a.iterator();
 
-        while (iterator.hasNext()) {
-            PathfinderGoalSelectorItem pathfindergoalselectoritem1 = (PathfinderGoalSelectorItem) iterator.next();
+        while (var2.hasNext())
+        {
+            PathfinderGoalSelectorItem var3 = (PathfinderGoalSelectorItem)var2.next();
 
-            if (pathfindergoalselectoritem1 != pathfindergoalselectoritem) {
-                if (pathfindergoalselectoritem.b >= pathfindergoalselectoritem1.b) {
-                    if (this.b.contains(pathfindergoalselectoritem1) && !this.a(pathfindergoalselectoritem, pathfindergoalselectoritem1)) {
+            if (var3 != par1EntityAITaskEntry)
+            {
+                if (par1EntityAITaskEntry.b >= var3.b)
+                {
+                    if (this.b.contains(var3) && !this.a(par1EntityAITaskEntry, var3))
+                    {
                         this.c.b();
                         return false;
                     }
-                } else if (this.b.contains(pathfindergoalselectoritem1) && !pathfindergoalselectoritem1.a.i()) {
+                }
+                else if (this.b.contains(var3) && !var3.a.i())
+                {
                     this.c.b();
                     return false;
                 }
@@ -130,7 +161,11 @@ public class PathfinderGoalSelector {
         return true;
     }
 
-    private boolean a(PathfinderGoalSelectorItem pathfindergoalselectoritem, PathfinderGoalSelectorItem pathfindergoalselectoritem1) {
-        return (pathfindergoalselectoritem.a.j() & pathfindergoalselectoritem1.a.j()) == 0;
+    /**
+     * Returns whether two EntityAITaskEntries can be executed concurrently
+     */
+    private boolean a(PathfinderGoalSelectorItem par1EntityAITaskEntry, PathfinderGoalSelectorItem par2EntityAITaskEntry)
+    {
+        return (par1EntityAITaskEntry.a.j() & par2EntityAITaskEntry.a.j()) == 0;
     }
 }

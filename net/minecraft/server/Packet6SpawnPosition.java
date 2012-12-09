@@ -2,50 +2,86 @@ package net.minecraft.server;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class Packet6SpawnPosition extends Packet {
-
+public class Packet6SpawnPosition extends Packet
+{
+    /** X coordinate of spawn. */
     public int x;
+
+    /** Y coordinate of spawn. */
     public int y;
+
+    /** Z coordinate of spawn. */
     public int z;
 
     public Packet6SpawnPosition() {}
 
-    public Packet6SpawnPosition(int i, int j, int k) {
-        this.x = i;
-        this.y = j;
-        this.z = k;
+    public Packet6SpawnPosition(int par1, int par2, int par3)
+    {
+        this.x = par1;
+        this.y = par2;
+        this.z = par3;
     }
 
-    public void a(DataInputStream datainputstream) {
-        this.x = datainputstream.readInt();
-        this.y = datainputstream.readInt();
-        this.z = datainputstream.readInt();
+    /**
+     * Abstract. Reads the raw packet data from the data stream.
+     */
+    public void a(DataInputStream par1DataInputStream) throws IOException
+    {
+        this.x = par1DataInputStream.readInt();
+        this.y = par1DataInputStream.readInt();
+        this.z = par1DataInputStream.readInt();
     }
 
-    public void a(DataOutputStream dataoutputstream) {
-        dataoutputstream.writeInt(this.x);
-        dataoutputstream.writeInt(this.y);
-        dataoutputstream.writeInt(this.z);
+    /**
+     * Abstract. Writes the raw packet data to the data stream.
+     */
+    public void a(DataOutputStream par1DataOutputStream) throws IOException
+    {
+        par1DataOutputStream.writeInt(this.x);
+        par1DataOutputStream.writeInt(this.y);
+        par1DataOutputStream.writeInt(this.z);
     }
 
-    public void handle(NetHandler nethandler) {
-        nethandler.a(this);
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
+    public void handle(NetHandler par1NetHandler)
+    {
+        par1NetHandler.a(this);
     }
 
-    public int a() {
+    /**
+     * Abstract. Return the size of the packet (not counting the header).
+     */
+    public int a()
+    {
         return 12;
     }
 
-    public boolean e() {
+    /**
+     * only false for the abstract Packet class, all real packets return true
+     */
+    public boolean e()
+    {
         return true;
     }
 
-    public boolean a(Packet packet) {
+    /**
+     * eg return packet30entity.entityId == entityId; WARNING : will throw if you compare a packet to a different packet
+     * class
+     */
+    public boolean a(Packet par1Packet)
+    {
         return true;
     }
 
-    public boolean a_() {
+    /**
+     * if this returns false, processPacket is deffered for processReadPackets to handle
+     */
+    public boolean a_()
+    {
         return false;
     }
 }

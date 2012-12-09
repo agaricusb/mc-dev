@@ -2,51 +2,76 @@ package net.minecraft.server;
 
 import java.io.DataInput;
 import java.io.DataOutput;
+import java.io.IOException;
 
-public class NBTTagFloat extends NBTBase {
-
+public class NBTTagFloat extends NBTBase
+{
+    /** The float value for the tag. */
     public float data;
 
-    public NBTTagFloat(String s) {
-        super(s);
+    public NBTTagFloat(String par1Str)
+    {
+        super(par1Str);
     }
 
-    public NBTTagFloat(String s, float f) {
-        super(s);
-        this.data = f;
+    public NBTTagFloat(String par1Str, float par2)
+    {
+        super(par1Str);
+        this.data = par2;
     }
 
-    void write(DataOutput dataoutput) {
-        dataoutput.writeFloat(this.data);
+    /**
+     * Write the actual data contents of the tag, implemented in NBT extension classes
+     */
+    void write(DataOutput par1DataOutput) throws IOException
+    {
+        par1DataOutput.writeFloat(this.data);
     }
 
-    void load(DataInput datainput) {
-        this.data = datainput.readFloat();
+    /**
+     * Read the actual data contents of the tag, implemented in NBT extension classes
+     */
+    void load(DataInput par1DataInput) throws IOException
+    {
+        this.data = par1DataInput.readFloat();
     }
 
-    public byte getTypeId() {
-        return (byte) 5;
+    /**
+     * Gets the type byte for the tag.
+     */
+    public byte getTypeId()
+    {
+        return (byte)5;
     }
 
-    public String toString() {
+    public String toString()
+    {
         return "" + this.data;
     }
 
-    public NBTBase clone() {
+    /**
+     * Creates a clone of the tag.
+     */
+    public NBTBase clone()
+    {
         return new NBTTagFloat(this.getName(), this.data);
     }
 
-    public boolean equals(Object object) {
-        if (super.equals(object)) {
-            NBTTagFloat nbttagfloat = (NBTTagFloat) object;
-
-            return this.data == nbttagfloat.data;
-        } else {
+    public boolean equals(Object par1Obj)
+    {
+        if (super.equals(par1Obj))
+        {
+            NBTTagFloat var2 = (NBTTagFloat)par1Obj;
+            return this.data == var2.data;
+        }
+        else
+        {
             return false;
         }
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         return super.hashCode() ^ Float.floatToIntBits(this.data);
     }
 }

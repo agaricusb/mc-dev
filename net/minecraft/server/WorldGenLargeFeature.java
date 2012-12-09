@@ -8,61 +8,71 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
 
-public class WorldGenLargeFeature extends StructureGenerator {
-
-    private static List e = Arrays.asList(new BiomeBase[] { BiomeBase.DESERT, BiomeBase.DESERT_HILLS, BiomeBase.JUNGLE, BiomeBase.JUNGLE_HILLS, BiomeBase.SWAMPLAND});
+public class WorldGenLargeFeature extends StructureGenerator
+{
+    private static List e = Arrays.asList(new BiomeBase[] {BiomeBase.DESERT, BiomeBase.DESERT_HILLS, BiomeBase.JUNGLE, BiomeBase.JUNGLE_HILLS, BiomeBase.SWAMPLAND});
     private List f;
     private int g;
     private int h;
 
-    public WorldGenLargeFeature() {
+    public WorldGenLargeFeature()
+    {
         this.f = new ArrayList();
         this.g = 32;
         this.h = 8;
         this.f.add(new BiomeMeta(EntityWitch.class, 1, 1, 1));
     }
 
-    public WorldGenLargeFeature(Map map) {
+    public WorldGenLargeFeature(Map par1Map)
+    {
         this();
-        Iterator iterator = map.entrySet().iterator();
+        Iterator var2 = par1Map.entrySet().iterator();
 
-        while (iterator.hasNext()) {
-            Entry entry = (Entry) iterator.next();
+        while (var2.hasNext())
+        {
+            Entry var3 = (Entry)var2.next();
 
-            if (((String) entry.getKey()).equals("distance")) {
-                this.g = MathHelper.a((String) entry.getValue(), this.g, this.h + 1);
+            if (((String)var3.getKey()).equals("distance"))
+            {
+                this.g = MathHelper.a((String) var3.getValue(), this.g, this.h + 1);
             }
         }
     }
 
-    protected boolean a(int i, int j) {
-        int k = i;
-        int l = j;
+    protected boolean a(int par1, int par2)
+    {
+        int var3 = par1;
+        int var4 = par2;
 
-        if (i < 0) {
-            i -= this.g - 1;
+        if (par1 < 0)
+        {
+            par1 -= this.g - 1;
         }
 
-        if (j < 0) {
-            j -= this.g - 1;
+        if (par2 < 0)
+        {
+            par2 -= this.g - 1;
         }
 
-        int i1 = i / this.g;
-        int j1 = j / this.g;
-        Random random = this.c.F(i1, j1, 14357617);
+        int var5 = par1 / this.g;
+        int var6 = par2 / this.g;
+        Random var7 = this.c.F(var5, var6, 14357617);
+        var5 *= this.g;
+        var6 *= this.g;
+        var5 += var7.nextInt(this.g - this.h);
+        var6 += var7.nextInt(this.g - this.h);
 
-        i1 *= this.g;
-        j1 *= this.g;
-        i1 += random.nextInt(this.g - this.h);
-        j1 += random.nextInt(this.g - this.h);
-        if (k == i1 && l == j1) {
-            BiomeBase biomebase = this.c.getWorldChunkManager().getBiome(k * 16 + 8, l * 16 + 8);
-            Iterator iterator = e.iterator();
+        if (var3 == var5 && var4 == var6)
+        {
+            BiomeBase var8 = this.c.getWorldChunkManager().getBiome(var3 * 16 + 8, var4 * 16 + 8);
+            Iterator var9 = e.iterator();
 
-            while (iterator.hasNext()) {
-                BiomeBase biomebase1 = (BiomeBase) iterator.next();
+            while (var9.hasNext())
+            {
+                BiomeBase var10 = (BiomeBase)var9.next();
 
-                if (biomebase == biomebase1) {
+                if (var8 == var10)
+                {
                     return true;
                 }
             }
@@ -71,11 +81,13 @@ public class WorldGenLargeFeature extends StructureGenerator {
         return false;
     }
 
-    protected StructureStart b(int i, int j) {
-        return new WorldGenLargeFeatureStart(this.c, this.b, i, j);
+    protected StructureStart b(int par1, int par2)
+    {
+        return new WorldGenLargeFeatureStart(this.c, this.b, par1, par2);
     }
 
-    public List a() {
+    public List a()
+    {
         return this.f;
     }
 }

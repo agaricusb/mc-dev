@@ -2,74 +2,106 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public class EntityLightning extends EntityWeather {
-
+public class EntityLightning extends EntityWeather
+{
+    /**
+     * Declares which state the lightning bolt is in. Whether it's in the air, hit the ground, etc.
+     */
     private int lifeTicks;
+
+    /**
+     * A random long that is used to change the vertex of the lightning rendered in RenderLightningBolt
+     */
     public long a = 0L;
+
+    /**
+     * Determines the time before the EntityLightningBolt is destroyed. It is a random integer decremented over time.
+     */
     private int c;
 
-    public EntityLightning(World world, double d0, double d1, double d2) {
-        super(world);
-        this.setPositionRotation(d0, d1, d2, 0.0F, 0.0F);
+    public EntityLightning(World par1World, double par2, double par4, double par6)
+    {
+        super(par1World);
+        this.setPositionRotation(par2, par4, par6, 0.0F, 0.0F);
         this.lifeTicks = 2;
         this.a = this.random.nextLong();
         this.c = this.random.nextInt(3) + 1;
-        if (!world.isStatic && world.difficulty >= 2 && world.areChunksLoaded(MathHelper.floor(d0), MathHelper.floor(d1), MathHelper.floor(d2), 10)) {
-            int i = MathHelper.floor(d0);
-            int j = MathHelper.floor(d1);
-            int k = MathHelper.floor(d2);
 
-            if (world.getTypeId(i, j, k) == 0 && Block.FIRE.canPlace(world, i, j, k)) {
-                world.setTypeId(i, j, k, Block.FIRE.id);
+        if (!par1World.isStatic && par1World.difficulty >= 2 && par1World.areChunksLoaded(MathHelper.floor(par2), MathHelper.floor(par4), MathHelper.floor(par6), 10))
+        {
+            int var8 = MathHelper.floor(par2);
+            int var9 = MathHelper.floor(par4);
+            int var10 = MathHelper.floor(par6);
+
+            if (par1World.getTypeId(var8, var9, var10) == 0 && Block.FIRE.canPlace(par1World, var8, var9, var10))
+            {
+                par1World.setTypeId(var8, var9, var10, Block.FIRE.id);
             }
 
-            for (i = 0; i < 4; ++i) {
-                j = MathHelper.floor(d0) + this.random.nextInt(3) - 1;
-                k = MathHelper.floor(d1) + this.random.nextInt(3) - 1;
-                int l = MathHelper.floor(d2) + this.random.nextInt(3) - 1;
+            for (var8 = 0; var8 < 4; ++var8)
+            {
+                var9 = MathHelper.floor(par2) + this.random.nextInt(3) - 1;
+                var10 = MathHelper.floor(par4) + this.random.nextInt(3) - 1;
+                int var11 = MathHelper.floor(par6) + this.random.nextInt(3) - 1;
 
-                if (world.getTypeId(j, k, l) == 0 && Block.FIRE.canPlace(world, j, k, l)) {
-                    world.setTypeId(j, k, l, Block.FIRE.id);
+                if (par1World.getTypeId(var9, var10, var11) == 0 && Block.FIRE.canPlace(par1World, var9, var10, var11))
+                {
+                    par1World.setTypeId(var9, var10, var11, Block.FIRE.id);
                 }
             }
         }
     }
 
-    public void j_() {
+    /**
+     * Called to update the entity's position/logic.
+     */
+    public void j_()
+    {
         super.j_();
-        if (this.lifeTicks == 2) {
+
+        if (this.lifeTicks == 2)
+        {
             this.world.makeSound(this.locX, this.locY, this.locZ, "ambient.weather.thunder", 10000.0F, 0.8F + this.random.nextFloat() * 0.2F);
             this.world.makeSound(this.locX, this.locY, this.locZ, "random.explode", 2.0F, 0.5F + this.random.nextFloat() * 0.2F);
         }
 
         --this.lifeTicks;
-        if (this.lifeTicks < 0) {
-            if (this.c == 0) {
+
+        if (this.lifeTicks < 0)
+        {
+            if (this.c == 0)
+            {
                 this.die();
-            } else if (this.lifeTicks < -this.random.nextInt(10)) {
+            }
+            else if (this.lifeTicks < -this.random.nextInt(10))
+            {
                 --this.c;
                 this.lifeTicks = 1;
                 this.a = this.random.nextLong();
-                if (!this.world.isStatic && this.world.areChunksLoaded(MathHelper.floor(this.locX), MathHelper.floor(this.locY), MathHelper.floor(this.locZ), 10)) {
-                    int i = MathHelper.floor(this.locX);
-                    int j = MathHelper.floor(this.locY);
-                    int k = MathHelper.floor(this.locZ);
 
-                    if (this.world.getTypeId(i, j, k) == 0 && Block.FIRE.canPlace(this.world, i, j, k)) {
-                        this.world.setTypeId(i, j, k, Block.FIRE.id);
+                if (!this.world.isStatic && this.world.areChunksLoaded(MathHelper.floor(this.locX), MathHelper.floor(this.locY), MathHelper.floor(this.locZ), 10))
+                {
+                    int var1 = MathHelper.floor(this.locX);
+                    int var2 = MathHelper.floor(this.locY);
+                    int var3 = MathHelper.floor(this.locZ);
+
+                    if (this.world.getTypeId(var1, var2, var3) == 0 && Block.FIRE.canPlace(this.world, var1, var2, var3))
+                    {
+                        this.world.setTypeId(var1, var2, var3, Block.FIRE.id);
                     }
                 }
             }
         }
 
-        if (!this.world.isStatic && this.lifeTicks >= 0) {
-            double d0 = 3.0D;
-            List list = this.world.getEntities(this, AxisAlignedBB.a().a(this.locX - d0, this.locY - d0, this.locZ - d0, this.locX + d0, this.locY + 6.0D + d0, this.locZ + d0));
+        if (!this.world.isStatic && this.lifeTicks >= 0)
+        {
+            double var6 = 3.0D;
+            List var7 = this.world.getEntities(this, AxisAlignedBB.a().a(this.locX - var6, this.locY - var6, this.locZ - var6, this.locX + var6, this.locY + 6.0D + var6, this.locZ + var6));
 
-            for (int l = 0; l < list.size(); ++l) {
-                Entity entity = (Entity) list.get(l);
-
-                entity.a(this);
+            for (int var4 = 0; var4 < var7.size(); ++var4)
+            {
+                Entity var5 = (Entity)var7.get(var4);
+                var5.a(this);
             }
 
             this.world.r = 2;
@@ -78,7 +110,13 @@ public class EntityLightning extends EntityWeather {
 
     protected void a() {}
 
-    protected void a(NBTTagCompound nbttagcompound) {}
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    protected void a(NBTTagCompound par1NBTTagCompound) {}
 
-    protected void b(NBTTagCompound nbttagcompound) {}
+    /**
+     * (abstract) Protected helper method to write subclass entity data to NBT.
+     */
+    protected void b(NBTTagCompound par1NBTTagCompound) {}
 }

@@ -5,34 +5,36 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import javax.swing.JTextArea;
 
-public class GuiLogOutputHandler extends Handler {
-
+public class GuiLogOutputHandler extends Handler
+{
     private int[] b = new int[1024];
     private int c = 0;
     Formatter a = new GuiLogFormatter(this);
     private JTextArea d;
 
-    public GuiLogOutputHandler(JTextArea jtextarea) {
+    public GuiLogOutputHandler(JTextArea par1JTextArea)
+    {
         this.setFormatter(this.a);
-        this.d = jtextarea;
+        this.d = par1JTextArea;
     }
 
     public void close() {}
 
     public void flush() {}
 
-    public void publish(LogRecord logrecord) {
-        int i = this.d.getDocument().getLength();
-
-        this.d.append(this.a.format(logrecord));
+    public void publish(LogRecord par1LogRecord)
+    {
+        int var2 = this.d.getDocument().getLength();
+        this.d.append(this.a.format(par1LogRecord));
         this.d.setCaretPosition(this.d.getDocument().getLength());
-        int j = this.d.getDocument().getLength() - i;
+        int var3 = this.d.getDocument().getLength() - var2;
 
-        if (this.b[this.c] != 0) {
+        if (this.b[this.c] != 0)
+        {
             this.d.replaceRange("", 0, this.b[this.c]);
         }
 
-        this.b[this.c] = j;
+        this.b[this.c] = var3;
         this.c = (this.c + 1) % 1024;
     }
 }

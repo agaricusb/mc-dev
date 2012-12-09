@@ -1,41 +1,50 @@
 package net.minecraft.server;
 
-public class CommandSaveAll extends CommandAbstract {
-
-    public CommandSaveAll() {}
-
-    public String c() {
+public class CommandSaveAll extends CommandAbstract
+{
+    public String c()
+    {
         return "save-all";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 4;
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        MinecraftServer minecraftserver = MinecraftServer.getServer();
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        MinecraftServer var3 = MinecraftServer.getServer();
+        par1ICommandSender.sendMessage(par1ICommandSender.a("commands.save.start", new Object[0]));
 
-        icommandlistener.sendMessage(icommandlistener.a("commands.save.start", new Object[0]));
-        if (minecraftserver.getServerConfigurationManager() != null) {
-            minecraftserver.getServerConfigurationManager().savePlayers();
+        if (var3.getServerConfigurationManager() != null)
+        {
+            var3.getServerConfigurationManager().savePlayers();
         }
 
-        try {
-            for (int i = 0; i < minecraftserver.worldServer.length; ++i) {
-                if (minecraftserver.worldServer[i] != null) {
-                    WorldServer worldserver = minecraftserver.worldServer[i];
-                    boolean flag = worldserver.savingDisabled;
-
-                    worldserver.savingDisabled = false;
-                    worldserver.save(true, (IProgressUpdate) null);
-                    worldserver.savingDisabled = flag;
+        try
+        {
+            for (int var4 = 0; var4 < var3.worldServer.length; ++var4)
+            {
+                if (var3.worldServer[var4] != null)
+                {
+                    WorldServer var5 = var3.worldServer[var4];
+                    boolean var6 = var5.savingDisabled;
+                    var5.savingDisabled = false;
+                    var5.save(true, (IProgressUpdate) null);
+                    var5.savingDisabled = var6;
                 }
             }
-        } catch (ExceptionWorldConflict exceptionworldconflict) {
-            a(icommandlistener, "commands.save.failed", new Object[] { exceptionworldconflict.getMessage()});
+        }
+        catch (ExceptionWorldConflict var7)
+        {
+            a(par1ICommandSender, "commands.save.failed", new Object[]{var7.getMessage()});
             return;
         }
 
-        a(icommandlistener, "commands.save.success", new Object[0]);
+        a(par1ICommandSender, "commands.save.success", new Object[0]);
     }
 }

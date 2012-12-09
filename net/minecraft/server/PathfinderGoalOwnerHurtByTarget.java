@@ -1,32 +1,47 @@
 package net.minecraft.server;
 
-public class PathfinderGoalOwnerHurtByTarget extends PathfinderGoalTarget {
-
+public class PathfinderGoalOwnerHurtByTarget extends PathfinderGoalTarget
+{
     EntityTameableAnimal a;
     EntityLiving b;
 
-    public PathfinderGoalOwnerHurtByTarget(EntityTameableAnimal entitytameableanimal) {
-        super(entitytameableanimal, 32.0F, false);
-        this.a = entitytameableanimal;
+    public PathfinderGoalOwnerHurtByTarget(EntityTameableAnimal par1EntityTameable)
+    {
+        super(par1EntityTameable, 32.0F, false);
+        this.a = par1EntityTameable;
         this.a(1);
     }
 
-    public boolean a() {
-        if (!this.a.isTamed()) {
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
+        if (!this.a.isTamed())
+        {
             return false;
-        } else {
-            EntityLiving entityliving = this.a.getOwner();
+        }
+        else
+        {
+            EntityLiving var1 = this.a.getOwner();
 
-            if (entityliving == null) {
+            if (var1 == null)
+            {
                 return false;
-            } else {
-                this.b = entityliving.aC();
+            }
+            else
+            {
+                this.b = var1.aC();
                 return this.a(this.b, false);
             }
         }
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.d.b(this.b);
         super.c();
     }

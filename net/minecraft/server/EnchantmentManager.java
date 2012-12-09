@@ -8,27 +8,48 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-public class EnchantmentManager {
-
+public class EnchantmentManager
+{
+    /** Is the random seed of enchantment effects. */
     private static final Random random = new Random();
-    private static final EnchantmentModifierProtection b = new EnchantmentModifierProtection((EmptyClass) null);
-    private static final EnchantmentModifierDamage c = new EnchantmentModifierDamage((EmptyClass) null);
 
-    public static int getEnchantmentLevel(int i, ItemStack itemstack) {
-        if (itemstack == null) {
+    /**
+     * Used to calculate the extra armor of enchantments on armors equipped on player.
+     */
+    private static final EnchantmentModifierProtection b = new EnchantmentModifierProtection((EmptyClass2)null);
+
+    /**
+     * Used to calculate the (magic) extra damage done by enchantments on current equipped item of player.
+     */
+    private static final EnchantmentModifierDamage c = new EnchantmentModifierDamage((EmptyClass2)null);
+
+    /**
+     * Returns the level of enchantment on the ItemStack passed.
+     */
+    public static int getEnchantmentLevel(int par0, ItemStack par1ItemStack)
+    {
+        if (par1ItemStack == null)
+        {
             return 0;
-        } else {
-            NBTTagList nbttaglist = itemstack.getEnchantments();
+        }
+        else
+        {
+            NBTTagList var2 = par1ItemStack.getEnchantments();
 
-            if (nbttaglist == null) {
+            if (var2 == null)
+            {
                 return 0;
-            } else {
-                for (int j = 0; j < nbttaglist.size(); ++j) {
-                    short short1 = ((NBTTagCompound) nbttaglist.get(j)).getShort("id");
-                    short short2 = ((NBTTagCompound) nbttaglist.get(j)).getShort("lvl");
+            }
+            else
+            {
+                for (int var3 = 0; var3 < var2.size(); ++var3)
+                {
+                    short var4 = ((NBTTagCompound)var2.get(var3)).getShort("id");
+                    short var5 = ((NBTTagCompound)var2.get(var3)).getShort("lvl");
 
-                    if (short1 == i) {
-                        return short2;
+                    if (var4 == par0)
+                    {
+                        return var5;
                     }
                 }
 
@@ -37,262 +58,376 @@ public class EnchantmentManager {
         }
     }
 
-    public static Map a(ItemStack itemstack) {
-        LinkedHashMap linkedhashmap = new LinkedHashMap();
-        NBTTagList nbttaglist = itemstack.getEnchantments();
+    /**
+     * Return the enchantments for the specified stack.
+     */
+    public static Map a(ItemStack par0ItemStack)
+    {
+        LinkedHashMap var1 = new LinkedHashMap();
+        NBTTagList var2 = par0ItemStack.getEnchantments();
 
-        if (nbttaglist != null) {
-            for (int i = 0; i < nbttaglist.size(); ++i) {
-                short short1 = ((NBTTagCompound) nbttaglist.get(i)).getShort("id");
-                short short2 = ((NBTTagCompound) nbttaglist.get(i)).getShort("lvl");
-
-                linkedhashmap.put(Integer.valueOf(short1), Integer.valueOf(short2));
+        if (var2 != null)
+        {
+            for (int var3 = 0; var3 < var2.size(); ++var3)
+            {
+                short var4 = ((NBTTagCompound)var2.get(var3)).getShort("id");
+                short var5 = ((NBTTagCompound)var2.get(var3)).getShort("lvl");
+                var1.put(Integer.valueOf(var4), Integer.valueOf(var5));
             }
         }
 
-        return linkedhashmap;
+        return var1;
     }
 
-    public static void a(Map map, ItemStack itemstack) {
-        NBTTagList nbttaglist = new NBTTagList();
-        Iterator iterator = map.keySet().iterator();
+    /**
+     * Set the enchantments for the specified stack.
+     */
+    public static void a(Map par0Map, ItemStack par1ItemStack)
+    {
+        NBTTagList var2 = new NBTTagList();
+        Iterator var3 = par0Map.keySet().iterator();
 
-        while (iterator.hasNext()) {
-            int i = ((Integer) iterator.next()).intValue();
-            NBTTagCompound nbttagcompound = new NBTTagCompound();
-
-            nbttagcompound.setShort("id", (short) i);
-            nbttagcompound.setShort("lvl", (short) ((Integer) map.get(Integer.valueOf(i))).intValue());
-            nbttaglist.add(nbttagcompound);
+        while (var3.hasNext())
+        {
+            int var4 = ((Integer)var3.next()).intValue();
+            NBTTagCompound var5 = new NBTTagCompound();
+            var5.setShort("id", (short)var4);
+            var5.setShort("lvl", (short)((Integer)par0Map.get(Integer.valueOf(var4))).intValue());
+            var2.add(var5);
         }
 
-        if (nbttaglist.size() > 0) {
-            itemstack.a("ench", (NBTBase) nbttaglist);
-        } else if (itemstack.hasTag()) {
-            itemstack.getTag().o("ench");
+        if (var2.size() > 0)
+        {
+            par1ItemStack.a("ench", var2);
+        }
+        else if (par1ItemStack.hasTag())
+        {
+            par1ItemStack.getTag().o("ench");
         }
     }
 
-    private static int getEnchantmentLevel(int i, ItemStack[] aitemstack) {
-        int j = 0;
-        ItemStack[] aitemstack1 = aitemstack;
-        int k = aitemstack.length;
+    /**
+     * Returns the biggest level of the enchantment on the array of ItemStack passed.
+     */
+    private static int getEnchantmentLevel(int par0, ItemStack[] par1ArrayOfItemStack)
+    {
+        int var2 = 0;
+        ItemStack[] var3 = par1ArrayOfItemStack;
+        int var4 = par1ArrayOfItemStack.length;
 
-        for (int l = 0; l < k; ++l) {
-            ItemStack itemstack = aitemstack1[l];
-            int i1 = getEnchantmentLevel(i, itemstack);
+        for (int var5 = 0; var5 < var4; ++var5)
+        {
+            ItemStack var6 = var3[var5];
+            int var7 = getEnchantmentLevel(par0, var6);
 
-            if (i1 > j) {
-                j = i1;
+            if (var7 > var2)
+            {
+                var2 = var7;
             }
         }
 
-        return j;
+        return var2;
     }
 
-    private static void a(EnchantmentModifier enchantmentmodifier, ItemStack itemstack) {
-        if (itemstack != null) {
-            NBTTagList nbttaglist = itemstack.getEnchantments();
+    /**
+     * Executes the enchantment modifier on the ItemStack passed.
+     */
+    private static void a(EnchantmentModifier par0IEnchantmentModifier, ItemStack par1ItemStack)
+    {
+        if (par1ItemStack != null)
+        {
+            NBTTagList var2 = par1ItemStack.getEnchantments();
 
-            if (nbttaglist != null) {
-                for (int i = 0; i < nbttaglist.size(); ++i) {
-                    short short1 = ((NBTTagCompound) nbttaglist.get(i)).getShort("id");
-                    short short2 = ((NBTTagCompound) nbttaglist.get(i)).getShort("lvl");
+            if (var2 != null)
+            {
+                for (int var3 = 0; var3 < var2.size(); ++var3)
+                {
+                    short var4 = ((NBTTagCompound)var2.get(var3)).getShort("id");
+                    short var5 = ((NBTTagCompound)var2.get(var3)).getShort("lvl");
 
-                    if (Enchantment.byId[short1] != null) {
-                        enchantmentmodifier.a(Enchantment.byId[short1], short2);
+                    if (Enchantment.byId[var4] != null)
+                    {
+                        par0IEnchantmentModifier.a(Enchantment.byId[var4], var5);
                     }
                 }
             }
         }
     }
 
-    private static void a(EnchantmentModifier enchantmentmodifier, ItemStack[] aitemstack) {
-        ItemStack[] aitemstack1 = aitemstack;
-        int i = aitemstack.length;
+    /**
+     * Executes the enchantment modifier on the array of ItemStack passed.
+     */
+    private static void a(EnchantmentModifier par0IEnchantmentModifier, ItemStack[] par1ArrayOfItemStack)
+    {
+        ItemStack[] var2 = par1ArrayOfItemStack;
+        int var3 = par1ArrayOfItemStack.length;
 
-        for (int j = 0; j < i; ++j) {
-            ItemStack itemstack = aitemstack1[j];
-
-            a(enchantmentmodifier, itemstack);
+        for (int var4 = 0; var4 < var3; ++var4)
+        {
+            ItemStack var5 = var2[var4];
+            a(par0IEnchantmentModifier, var5);
         }
     }
 
-    public static int a(ItemStack[] aitemstack, DamageSource damagesource) {
+    /**
+     * Returns the modifier of protection enchantments on armors equipped on player.
+     */
+    public static int a(ItemStack[] par0ArrayOfItemStack, DamageSource par1DamageSource)
+    {
         b.a = 0;
-        b.b = damagesource;
-        a((EnchantmentModifier) b, aitemstack);
-        if (b.a > 25) {
+        b.b = par1DamageSource;
+        a(b, par0ArrayOfItemStack);
+
+        if (b.a > 25)
+        {
             b.a = 25;
         }
 
         return (b.a + 1 >> 1) + random.nextInt((b.a >> 1) + 1);
     }
 
-    public static int a(EntityLiving entityliving, EntityLiving entityliving1) {
+    /**
+     * Return the (magic) extra damage of the enchantments on player equipped item.
+     */
+    public static int a(EntityLiving par0EntityLiving, EntityLiving par1EntityLiving)
+    {
         c.a = 0;
-        c.b = entityliving1;
-        a((EnchantmentModifier) c, entityliving.bD());
+        c.b = par1EntityLiving;
+        a(c, par0EntityLiving.bD());
         return c.a > 0 ? 1 + random.nextInt(c.a) : 0;
     }
 
-    public static int getKnockbackEnchantmentLevel(EntityLiving entityliving, EntityLiving entityliving1) {
-        return getEnchantmentLevel(Enchantment.KNOCKBACK.id, entityliving.bD());
+    /**
+     * Returns the knockback value of enchantments on equipped player item.
+     */
+    public static int getKnockbackEnchantmentLevel(EntityLiving par0EntityLiving, EntityLiving par1EntityLiving)
+    {
+        return getEnchantmentLevel(Enchantment.KNOCKBACK.id, par0EntityLiving.bD());
     }
 
-    public static int getFireAspectEnchantmentLevel(EntityLiving entityliving) {
-        return getEnchantmentLevel(Enchantment.FIRE_ASPECT.id, entityliving.bD());
+    public static int getFireAspectEnchantmentLevel(EntityLiving par0EntityLiving)
+    {
+        return getEnchantmentLevel(Enchantment.FIRE_ASPECT.id, par0EntityLiving.bD());
     }
 
-    public static int getOxygenEnchantmentLevel(EntityLiving entityliving) {
-        return getEnchantmentLevel(Enchantment.OXYGEN.id, entityliving.getEquipment());
+    /**
+     * Returns the 'Water Breathing' modifier of enchantments on player equipped armors.
+     */
+    public static int getOxygenEnchantmentLevel(EntityLiving par0EntityLiving)
+    {
+        return getEnchantmentLevel(Enchantment.OXYGEN.id, par0EntityLiving.getEquipment());
     }
 
-    public static int getDigSpeedEnchantmentLevel(EntityLiving entityliving) {
-        return getEnchantmentLevel(Enchantment.DIG_SPEED.id, entityliving.bD());
+    /**
+     * Return the extra efficiency of tools based on enchantments on equipped player item.
+     */
+    public static int getDigSpeedEnchantmentLevel(EntityLiving par0EntityLiving)
+    {
+        return getEnchantmentLevel(Enchantment.DIG_SPEED.id, par0EntityLiving.bD());
     }
 
-    public static int getDurabilityEnchantmentLevel(EntityLiving entityliving) {
-        return getEnchantmentLevel(Enchantment.DURABILITY.id, entityliving.bD());
+    /**
+     * Returns the unbreaking enchantment modifier on current equipped item of player.
+     */
+    public static int getDurabilityEnchantmentLevel(EntityLiving par0EntityLiving)
+    {
+        return getEnchantmentLevel(Enchantment.DURABILITY.id, par0EntityLiving.bD());
     }
 
-    public static boolean hasSilkTouchEnchantment(EntityLiving entityliving) {
-        return getEnchantmentLevel(Enchantment.SILK_TOUCH.id, entityliving.bD()) > 0;
+    /**
+     * Returns the silk touch status of enchantments on current equipped item of player.
+     */
+    public static boolean hasSilkTouchEnchantment(EntityLiving par0EntityLiving)
+    {
+        return getEnchantmentLevel(Enchantment.SILK_TOUCH.id, par0EntityLiving.bD()) > 0;
     }
 
-    public static int getBonusBlockLootEnchantmentLevel(EntityLiving entityliving) {
-        return getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS.id, entityliving.bD());
+    /**
+     * Returns the fortune enchantment modifier of the current equipped item of player.
+     */
+    public static int getBonusBlockLootEnchantmentLevel(EntityLiving par0EntityLiving)
+    {
+        return getEnchantmentLevel(Enchantment.LOOT_BONUS_BLOCKS.id, par0EntityLiving.bD());
     }
 
-    public static int getBonusMonsterLootEnchantmentLevel(EntityLiving entityliving) {
-        return getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS.id, entityliving.bD());
+    /**
+     * Returns the looting enchantment modifier of the current equipped item of player.
+     */
+    public static int getBonusMonsterLootEnchantmentLevel(EntityLiving par0EntityLiving)
+    {
+        return getEnchantmentLevel(Enchantment.LOOT_BONUS_MOBS.id, par0EntityLiving.bD());
     }
 
-    public static boolean hasWaterWorkerEnchantment(EntityLiving entityliving) {
-        return getEnchantmentLevel(Enchantment.WATER_WORKER.id, entityliving.getEquipment()) > 0;
+    /**
+     * Returns the aqua affinity status of enchantments on current equipped item of player.
+     */
+    public static boolean hasWaterWorkerEnchantment(EntityLiving par0EntityLiving)
+    {
+        return getEnchantmentLevel(Enchantment.WATER_WORKER.id, par0EntityLiving.getEquipment()) > 0;
     }
 
-    public static int a(Random random, int i, int j, ItemStack itemstack) {
-        Item item = itemstack.getItem();
-        int k = item.c();
+    /**
+     * Returns the enchantability of itemstack, it's uses a singular formula for each index (2nd parameter: 0, 1 and 2),
+     * cutting to the max enchantability power of the table (3rd parameter)
+     */
+    public static int a(Random par0Random, int par1, int par2, ItemStack par3ItemStack)
+    {
+        Item var4 = par3ItemStack.getItem();
+        int var5 = var4.c();
 
-        if (k <= 0) {
+        if (var5 <= 0)
+        {
             return 0;
-        } else {
-            if (j > 15) {
-                j = 15;
+        }
+        else
+        {
+            if (par2 > 15)
+            {
+                par2 = 15;
             }
 
-            int l = random.nextInt(8) + 1 + (j >> 1) + random.nextInt(j + 1);
-
-            return i == 0 ? Math.max(l / 3, 1) : (i == 1 ? l * 2 / 3 + 1 : Math.max(l, j * 2));
+            int var6 = par0Random.nextInt(8) + 1 + (par2 >> 1) + par0Random.nextInt(par2 + 1);
+            return par1 == 0 ? Math.max(var6 / 3, 1) : (par1 == 1 ? var6 * 2 / 3 + 1 : Math.max(var6, par2 * 2));
         }
     }
 
-    public static ItemStack a(Random random, ItemStack itemstack, int i) {
-        List list = b(random, itemstack, i);
+    /**
+     * Adds a random enchantment to the specified item. Args: random, itemStack, enchantabilityLevel
+     */
+    public static ItemStack a(Random par0Random, ItemStack par1ItemStack, int par2)
+    {
+        List var3 = b(par0Random, par1ItemStack, par2);
 
-        if (list != null) {
-            Iterator iterator = list.iterator();
+        if (var3 != null)
+        {
+            Iterator var4 = var3.iterator();
 
-            while (iterator.hasNext()) {
-                EnchantmentInstance enchantmentinstance = (EnchantmentInstance) iterator.next();
-
-                itemstack.addEnchantment(enchantmentinstance.enchantment, enchantmentinstance.level);
+            while (var4.hasNext())
+            {
+                EnchantmentInstance var5 = (EnchantmentInstance)var4.next();
+                par1ItemStack.addEnchantment(var5.enchantment, var5.level);
             }
         }
 
-        return itemstack;
+        return par1ItemStack;
     }
 
-    public static List b(Random random, ItemStack itemstack, int i) {
-        Item item = itemstack.getItem();
-        int j = item.c();
+    /**
+     * Create a list of random EnchantmentData (enchantments) that can be added together to the ItemStack, the 3rd
+     * parameter is the total enchantability level.
+     */
+    public static List b(Random par0Random, ItemStack par1ItemStack, int par2)
+    {
+        Item var3 = par1ItemStack.getItem();
+        int var4 = var3.c();
 
-        if (j <= 0) {
+        if (var4 <= 0)
+        {
             return null;
-        } else {
-            j /= 2;
-            j = 1 + random.nextInt((j >> 1) + 1) + random.nextInt((j >> 1) + 1);
-            int k = j + i;
-            float f = (random.nextFloat() + random.nextFloat() - 1.0F) * 0.15F;
-            int l = (int) ((float) k * (1.0F + f) + 0.5F);
+        }
+        else
+        {
+            var4 /= 2;
+            var4 = 1 + par0Random.nextInt((var4 >> 1) + 1) + par0Random.nextInt((var4 >> 1) + 1);
+            int var5 = var4 + par2;
+            float var6 = (par0Random.nextFloat() + par0Random.nextFloat() - 1.0F) * 0.15F;
+            int var7 = (int)((float)var5 * (1.0F + var6) + 0.5F);
 
-            if (l < 1) {
-                l = 1;
+            if (var7 < 1)
+            {
+                var7 = 1;
             }
 
-            ArrayList arraylist = null;
-            Map map = b(l, itemstack);
+            ArrayList var8 = null;
+            Map var9 = b(var7, par1ItemStack);
 
-            if (map != null && !map.isEmpty()) {
-                EnchantmentInstance enchantmentinstance = (EnchantmentInstance) WeightedRandom.a(random, map.values());
+            if (var9 != null && !var9.isEmpty())
+            {
+                EnchantmentInstance var10 = (EnchantmentInstance) WeightedRandom.a(par0Random, var9.values());
 
-                if (enchantmentinstance != null) {
-                    arraylist = new ArrayList();
-                    arraylist.add(enchantmentinstance);
+                if (var10 != null)
+                {
+                    var8 = new ArrayList();
+                    var8.add(var10);
 
-                    for (int i1 = l; random.nextInt(50) <= i1; i1 >>= 1) {
-                        Iterator iterator = map.keySet().iterator();
+                    for (int var11 = var7; par0Random.nextInt(50) <= var11; var11 >>= 1)
+                    {
+                        Iterator var12 = var9.keySet().iterator();
 
-                        while (iterator.hasNext()) {
-                            Integer integer = (Integer) iterator.next();
-                            boolean flag = true;
-                            Iterator iterator1 = arraylist.iterator();
+                        while (var12.hasNext())
+                        {
+                            Integer var13 = (Integer)var12.next();
+                            boolean var14 = true;
+                            Iterator var15 = var8.iterator();
 
-                            while (true) {
-                                if (iterator1.hasNext()) {
-                                    EnchantmentInstance enchantmentinstance1 = (EnchantmentInstance) iterator1.next();
+                            while (true)
+                            {
+                                if (var15.hasNext())
+                                {
+                                    EnchantmentInstance var16 = (EnchantmentInstance)var15.next();
 
-                                    if (enchantmentinstance1.enchantment.a(Enchantment.byId[integer.intValue()])) {
+                                    if (var16.enchantment.a(Enchantment.byId[var13.intValue()]))
+                                    {
                                         continue;
                                     }
 
-                                    flag = false;
+                                    var14 = false;
                                 }
 
-                                if (!flag) {
-                                    iterator.remove();
+                                if (!var14)
+                                {
+                                    var12.remove();
                                 }
+
                                 break;
                             }
                         }
 
-                        if (!map.isEmpty()) {
-                            EnchantmentInstance enchantmentinstance2 = (EnchantmentInstance) WeightedRandom.a(random, map.values());
-
-                            arraylist.add(enchantmentinstance2);
+                        if (!var9.isEmpty())
+                        {
+                            EnchantmentInstance var17 = (EnchantmentInstance) WeightedRandom.a(par0Random, var9.values());
+                            var8.add(var17);
                         }
                     }
                 }
             }
 
-            return arraylist;
+            return var8;
         }
     }
 
-    public static Map b(int i, ItemStack itemstack) {
-        Item item = itemstack.getItem();
-        HashMap hashmap = null;
-        Enchantment[] aenchantment = Enchantment.byId;
-        int j = aenchantment.length;
+    /**
+     * Creates a 'Map' of EnchantmentData (enchantments) possible to add on the ItemStack and the enchantability level
+     * passed.
+     */
+    public static Map b(int par0, ItemStack par1ItemStack)
+    {
+        Item var2 = par1ItemStack.getItem();
+        HashMap var3 = null;
+        Enchantment[] var4 = Enchantment.byId;
+        int var5 = var4.length;
 
-        for (int k = 0; k < j; ++k) {
-            Enchantment enchantment = aenchantment[k];
+        for (int var6 = 0; var6 < var5; ++var6)
+        {
+            Enchantment var7 = var4[var6];
 
-            if (enchantment != null && enchantment.slot.canEnchant(item)) {
-                for (int l = enchantment.getStartLevel(); l <= enchantment.getMaxLevel(); ++l) {
-                    if (i >= enchantment.a(l) && i <= enchantment.b(l)) {
-                        if (hashmap == null) {
-                            hashmap = new HashMap();
+            if (var7 != null && var7.slot.canEnchant(var2))
+            {
+                for (int var8 = var7.getStartLevel(); var8 <= var7.getMaxLevel(); ++var8)
+                {
+                    if (par0 >= var7.a(var8) && par0 <= var7.b(var8))
+                    {
+                        if (var3 == null)
+                        {
+                            var3 = new HashMap();
                         }
 
-                        hashmap.put(Integer.valueOf(enchantment.id), new EnchantmentInstance(enchantment, l));
+                        var3.put(Integer.valueOf(var7.id), new EnchantmentInstance(var7, var8));
                     }
                 }
             }
         }
 
-        return hashmap;
+        return var3;
     }
 }

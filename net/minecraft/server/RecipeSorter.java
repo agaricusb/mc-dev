@@ -2,19 +2,22 @@ package net.minecraft.server;
 
 import java.util.Comparator;
 
-class RecipeSorter implements Comparator {
-
+class RecipeSorter implements Comparator
+{
     final CraftingManager a;
 
-    RecipeSorter(CraftingManager craftingmanager) {
-        this.a = craftingmanager;
+    RecipeSorter(CraftingManager par1CraftingManager)
+    {
+        this.a = par1CraftingManager;
     }
 
-    public int a(IRecipe irecipe, IRecipe irecipe1) {
-        return irecipe instanceof ShapelessRecipes && irecipe1 instanceof ShapedRecipes ? 1 : (irecipe1 instanceof ShapelessRecipes && irecipe instanceof ShapedRecipes ? -1 : (irecipe1.a() < irecipe.a() ? -1 : (irecipe1.a() > irecipe.a() ? 1 : 0)));
+    public int a(IRecipe par1IRecipe, IRecipe par2IRecipe)
+    {
+        return par1IRecipe instanceof ShapelessRecipes && par2IRecipe instanceof ShapedRecipes ? 1 : (par2IRecipe instanceof ShapelessRecipes && par1IRecipe instanceof ShapedRecipes ? -1 : (par2IRecipe.a() < par1IRecipe.a() ? -1 : (par2IRecipe.a() > par1IRecipe.a() ? 1 : 0)));
     }
 
-    public int compare(Object object, Object object1) {
-        return this.a((IRecipe) object, (IRecipe) object1);
+    public int compare(Object par1Obj, Object par2Obj)
+    {
+        return this.a((IRecipe) par1Obj, (IRecipe) par2Obj);
     }
 }

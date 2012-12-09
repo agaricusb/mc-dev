@@ -1,26 +1,38 @@
 package net.minecraft.server;
 
-public class ItemEnderPearl extends Item {
-
-    public ItemEnderPearl(int i) {
-        super(i);
+public class ItemEnderPearl extends Item
+{
+    public ItemEnderPearl(int par1)
+    {
+        super(par1);
         this.maxStackSize = 16;
         this.a(CreativeModeTab.f);
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        if (entityhuman.abilities.canInstantlyBuild) {
-            return itemstack;
-        } else if (entityhuman.vehicle != null) {
-            return itemstack;
-        } else {
-            --itemstack.count;
-            world.makeSound(entityhuman, "random.bow", 0.5F, 0.4F / (d.nextFloat() * 0.4F + 0.8F));
-            if (!world.isStatic) {
-                world.addEntity(new EntityEnderPearl(world, entityhuman));
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        if (par3EntityPlayer.abilities.canInstantlyBuild)
+        {
+            return par1ItemStack;
+        }
+        else if (par3EntityPlayer.vehicle != null)
+        {
+            return par1ItemStack;
+        }
+        else
+        {
+            --par1ItemStack.count;
+            par2World.makeSound(par3EntityPlayer, "random.bow", 0.5F, 0.4F / (d.nextFloat() * 0.4F + 0.8F));
+
+            if (!par2World.isStatic)
+            {
+                par2World.addEntity(new EntityEnderPearl(par2World, par3EntityPlayer));
             }
 
-            return itemstack;
+            return par1ItemStack;
         }
     }
 }

@@ -1,32 +1,54 @@
 package net.minecraft.server;
 
-public class EntityComplexPart extends Entity {
-
+public class EntityComplexPart extends Entity
+{
+    /** The dragon entity this dragon part belongs to */
     public final IComplex owner;
+
+    /** The name of the Dragon Part */
     public final String b;
 
-    public EntityComplexPart(IComplex icomplex, String s, float f, float f1) {
-        super(icomplex.d());
-        this.a(f, f1);
-        this.owner = icomplex;
-        this.b = s;
+    public EntityComplexPart(IComplex par1, String par2, float par3, float par4)
+    {
+        super(par1.d());
+        this.a(par3, par4);
+        this.owner = par1;
+        this.b = par2;
     }
 
     protected void a() {}
 
-    protected void a(NBTTagCompound nbttagcompound) {}
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    protected void a(NBTTagCompound par1NBTTagCompound) {}
 
-    protected void b(NBTTagCompound nbttagcompound) {}
+    /**
+     * (abstract) Protected helper method to write subclass entity data to NBT.
+     */
+    protected void b(NBTTagCompound par1NBTTagCompound) {}
 
-    public boolean L() {
+    /**
+     * Returns true if other Entities should be prevented from moving through this Entity.
+     */
+    public boolean L()
+    {
         return true;
     }
 
-    public boolean damageEntity(DamageSource damagesource, int i) {
-        return this.isInvulnerable() ? false : this.owner.a(this, damagesource, i);
+    /**
+     * Called when the entity is attacked.
+     */
+    public boolean damageEntity(DamageSource par1DamageSource, int par2)
+    {
+        return this.isInvulnerable() ? false : this.owner.a(this, par1DamageSource, par2);
     }
 
-    public boolean i(Entity entity) {
-        return this == entity || this.owner == entity;
+    /**
+     * Returns true if Entity argument is equal to this Entity
+     */
+    public boolean i(Entity par1Entity)
+    {
+        return this == par1Entity || this.owner == par1Entity;
     }
 }

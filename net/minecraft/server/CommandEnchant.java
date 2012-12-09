@@ -2,57 +2,79 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public class CommandEnchant extends CommandAbstract {
-
-    public CommandEnchant() {}
-
-    public String c() {
+public class CommandEnchant extends CommandAbstract
+{
+    public String c()
+    {
         return "enchant";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 2;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.enchant.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.enchant.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length < 2) {
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length < 2)
+        {
             throw new ExceptionUsage("commands.enchant.usage", new Object[0]);
-        } else {
-            EntityPlayer entityplayer = c(icommandlistener, astring[0]);
-            int i = a(icommandlistener, astring[1], 1, Enchantment.byId.length - 1);
-            int j = 1;
-            ItemStack itemstack = entityplayer.bT();
+        }
+        else
+        {
+            EntityPlayer var3 = c(par1ICommandSender, par2ArrayOfStr[0]);
+            int var4 = a(par1ICommandSender, par2ArrayOfStr[1], 1, Enchantment.byId.length - 1);
+            int var5 = 1;
+            ItemStack var6 = var3.bT();
 
-            if (itemstack == null) {
-                a(icommandlistener, "commands.enchant.noItem", new Object[0]);
-            } else {
-                Enchantment enchantment = Enchantment.byId[i];
+            if (var6 == null)
+            {
+                a(par1ICommandSender, "commands.enchant.noItem", new Object[0]);
+            }
+            else
+            {
+                Enchantment var7 = Enchantment.byId[var4];
 
-                if (enchantment == null) {
-                    throw new ExceptionInvalidNumber("commands.enchant.notFound", new Object[] { Integer.valueOf(i)});
-                } else if (!enchantment.slot.canEnchant(itemstack.getItem())) {
-                    a(icommandlistener, "commands.enchant.cantEnchant", new Object[0]);
-                } else {
-                    if (astring.length >= 3) {
-                        j = a(icommandlistener, astring[2], enchantment.getStartLevel(), enchantment.getMaxLevel());
+                if (var7 == null)
+                {
+                    throw new ExceptionInvalidNumber("commands.enchant.notFound", new Object[] {Integer.valueOf(var4)});
+                }
+                else if (!var7.slot.canEnchant(var6.getItem()))
+                {
+                    a(par1ICommandSender, "commands.enchant.cantEnchant", new Object[0]);
+                }
+                else
+                {
+                    if (par2ArrayOfStr.length >= 3)
+                    {
+                        var5 = a(par1ICommandSender, par2ArrayOfStr[2], var7.getStartLevel(), var7.getMaxLevel());
                     }
 
-                    if (itemstack.hasTag()) {
-                        NBTTagList nbttaglist = itemstack.getEnchantments();
+                    if (var6.hasTag())
+                    {
+                        NBTTagList var8 = var6.getEnchantments();
 
-                        if (nbttaglist != null) {
-                            for (int k = 0; k < nbttaglist.size(); ++k) {
-                                short short1 = ((NBTTagCompound) nbttaglist.get(k)).getShort("id");
+                        if (var8 != null)
+                        {
+                            for (int var9 = 0; var9 < var8.size(); ++var9)
+                            {
+                                short var10 = ((NBTTagCompound)var8.get(var9)).getShort("id");
 
-                                if (Enchantment.byId[short1] != null) {
-                                    Enchantment enchantment1 = Enchantment.byId[short1];
+                                if (Enchantment.byId[var10] != null)
+                                {
+                                    Enchantment var11 = Enchantment.byId[var10];
 
-                                    if (!enchantment1.a(enchantment)) {
-                                        a(icommandlistener, "commands.enchant.cantCombine", new Object[] { enchantment.c(j), enchantment1.c(((NBTTagCompound) nbttaglist.get(k)).getShort("lvl"))});
+                                    if (!var11.a(var7))
+                                    {
+                                        a(par1ICommandSender, "commands.enchant.cantCombine", new Object[]{var7.c(var5), var11.c(((NBTTagCompound) var8.get(var9)).getShort("lvl"))});
                                         return;
                                     }
                                 }
@@ -60,22 +82,31 @@ public class CommandEnchant extends CommandAbstract {
                         }
                     }
 
-                    itemstack.addEnchantment(enchantment, j);
-                    a(icommandlistener, "commands.enchant.success", new Object[0]);
+                    var6.addEnchantment(var7, var5);
+                    a(par1ICommandSender, "commands.enchant.success", new Object[0]);
                 }
             }
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return astring.length == 1 ? a(astring, this.d()) : null;
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return par2ArrayOfStr.length == 1 ? a(par2ArrayOfStr, this.d()) : null;
     }
 
-    protected String[] d() {
+    protected String[] d()
+    {
         return MinecraftServer.getServer().getPlayers();
     }
 
-    public boolean a(int i) {
-        return i == 0;
+    /**
+     * Return whether the specified command parameter index is a username parameter.
+     */
+    public boolean a(int par1)
+    {
+        return par1 == 0;
     }
 }

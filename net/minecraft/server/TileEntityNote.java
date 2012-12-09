@@ -1,56 +1,81 @@
 package net.minecraft.server;
 
-public class TileEntityNote extends TileEntity {
-
+public class TileEntityNote extends TileEntity
+{
+    /** Note to play */
     public byte note = 0;
+
+    /** stores the latest redstone state */
     public boolean b = false;
 
-    public TileEntityNote() {}
-
-    public void b(NBTTagCompound nbttagcompound) {
-        super.b(nbttagcompound);
-        nbttagcompound.setByte("note", this.note);
+    /**
+     * Writes a tile entity to NBT.
+     */
+    public void b(NBTTagCompound par1NBTTagCompound)
+    {
+        super.b(par1NBTTagCompound);
+        par1NBTTagCompound.setByte("note", this.note);
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
-        super.a(nbttagcompound);
-        this.note = nbttagcompound.getByte("note");
-        if (this.note < 0) {
+    /**
+     * Reads a tile entity from NBT.
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        super.a(par1NBTTagCompound);
+        this.note = par1NBTTagCompound.getByte("note");
+
+        if (this.note < 0)
+        {
             this.note = 0;
         }
 
-        if (this.note > 24) {
+        if (this.note > 24)
+        {
             this.note = 24;
         }
     }
 
-    public void a() {
-        this.note = (byte) ((this.note + 1) % 25);
+    /**
+     * change pitch by -> (currentPitch + 1) % 25
+     */
+    public void a()
+    {
+        this.note = (byte)((this.note + 1) % 25);
         this.update();
     }
 
-    public void play(World world, int i, int j, int k) {
-        if (world.getMaterial(i, j + 1, k) == Material.AIR) {
-            Material material = world.getMaterial(i, j - 1, k);
-            byte b0 = 0;
+    /**
+     * plays the stored note
+     */
+    public void play(World par1World, int par2, int par3, int par4)
+    {
+        if (par1World.getMaterial(par2, par3 + 1, par4) == Material.AIR)
+        {
+            Material var5 = par1World.getMaterial(par2, par3 - 1, par4);
+            byte var6 = 0;
 
-            if (material == Material.STONE) {
-                b0 = 1;
+            if (var5 == Material.STONE)
+            {
+                var6 = 1;
             }
 
-            if (material == Material.SAND) {
-                b0 = 2;
+            if (var5 == Material.SAND)
+            {
+                var6 = 2;
             }
 
-            if (material == Material.SHATTERABLE) {
-                b0 = 3;
+            if (var5 == Material.SHATTERABLE)
+            {
+                var6 = 3;
             }
 
-            if (material == Material.WOOD) {
-                b0 = 4;
+            if (var5 == Material.WOOD)
+            {
+                var6 = 4;
             }
 
-            world.playNote(i, j, k, Block.NOTE_BLOCK.id, b0, this.note);
+            par1World.playNote(par2, par3, par4, Block.NOTE_BLOCK.id, var6, this.note);
         }
     }
 }

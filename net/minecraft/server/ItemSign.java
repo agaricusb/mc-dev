@@ -1,57 +1,81 @@
 package net.minecraft.server;
 
-public class ItemSign extends Item {
-
-    public ItemSign(int i) {
-        super(i);
+public class ItemSign extends Item
+{
+    public ItemSign(int par1)
+    {
+        super(par1);
         this.maxStackSize = 16;
         this.a(CreativeModeTab.c);
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
-        if (l == 0) {
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        if (par7 == 0)
+        {
             return false;
-        } else if (!world.getMaterial(i, j, k).isBuildable()) {
+        }
+        else if (!par3World.getMaterial(par4, par5, par6).isBuildable())
+        {
             return false;
-        } else {
-            if (l == 1) {
-                ++j;
+        }
+        else
+        {
+            if (par7 == 1)
+            {
+                ++par5;
             }
 
-            if (l == 2) {
-                --k;
+            if (par7 == 2)
+            {
+                --par6;
             }
 
-            if (l == 3) {
-                ++k;
+            if (par7 == 3)
+            {
+                ++par6;
             }
 
-            if (l == 4) {
-                --i;
+            if (par7 == 4)
+            {
+                --par4;
             }
 
-            if (l == 5) {
-                ++i;
+            if (par7 == 5)
+            {
+                ++par4;
             }
 
-            if (!entityhuman.a(i, j, k, l, itemstack)) {
+            if (!par2EntityPlayer.a(par4, par5, par6, par7, par1ItemStack))
+            {
                 return false;
-            } else if (!Block.SIGN_POST.canPlace(world, i, j, k)) {
+            }
+            else if (!Block.SIGN_POST.canPlace(par3World, par4, par5, par6))
+            {
                 return false;
-            } else {
-                if (l == 1) {
-                    int i1 = MathHelper.floor((double) ((entityhuman.yaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15;
-
-                    world.setTypeIdAndData(i, j, k, Block.SIGN_POST.id, i1);
-                } else {
-                    world.setTypeIdAndData(i, j, k, Block.WALL_SIGN.id, l);
+            }
+            else
+            {
+                if (par7 == 1)
+                {
+                    int var11 = MathHelper.floor((double) ((par2EntityPlayer.yaw + 180.0F) * 16.0F / 360.0F) + 0.5D) & 15;
+                    par3World.setTypeIdAndData(par4, par5, par6, Block.SIGN_POST.id, var11);
+                }
+                else
+                {
+                    par3World.setTypeIdAndData(par4, par5, par6, Block.WALL_SIGN.id, par7);
                 }
 
-                --itemstack.count;
-                TileEntitySign tileentitysign = (TileEntitySign) world.getTileEntity(i, j, k);
+                --par1ItemStack.count;
+                TileEntitySign var12 = (TileEntitySign)par3World.getTileEntity(par4, par5, par6);
 
-                if (tileentitysign != null) {
-                    entityhuman.a((TileEntity) tileentitysign);
+                if (var12 != null)
+                {
+                    par2EntityPlayer.a(var12);
                 }
 
                 return true;

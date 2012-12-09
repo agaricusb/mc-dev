@@ -2,49 +2,69 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public class CommandKick extends CommandAbstract {
-
-    public CommandKick() {}
-
-    public String c() {
+public class CommandKick extends CommandAbstract
+{
+    public String c()
+    {
         return "kick";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 3;
     }
 
-    public String a(ICommandListener icommandlistener) {
-        return icommandlistener.a("commands.kick.usage", new Object[0]);
+    public String a(ICommandListener par1ICommandSender)
+    {
+        return par1ICommandSender.a("commands.kick.usage", new Object[0]);
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
-        if (astring.length > 0 && astring[0].length() > 1) {
-            EntityPlayer entityplayer = MinecraftServer.getServer().getServerConfigurationManager().f(astring[0]);
-            String s = "Kicked by an operator.";
-            boolean flag = false;
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        if (par2ArrayOfStr.length > 0 && par2ArrayOfStr[0].length() > 1)
+        {
+            EntityPlayer var3 = MinecraftServer.getServer().getServerConfigurationManager().f(par2ArrayOfStr[0]);
+            String var4 = "Kicked by an operator.";
+            boolean var5 = false;
 
-            if (entityplayer == null) {
+            if (var3 == null)
+            {
                 throw new ExceptionPlayerNotFound();
-            } else {
-                if (astring.length >= 2) {
-                    s = a(icommandlistener, astring, 1);
-                    flag = true;
+            }
+            else
+            {
+                if (par2ArrayOfStr.length >= 2)
+                {
+                    var4 = a(par1ICommandSender, par2ArrayOfStr, 1);
+                    var5 = true;
                 }
 
-                entityplayer.netServerHandler.disconnect(s);
-                if (flag) {
-                    a(icommandlistener, "commands.kick.success.reason", new Object[] { entityplayer.getLocalizedName(), s});
-                } else {
-                    a(icommandlistener, "commands.kick.success", new Object[] { entityplayer.getLocalizedName()});
+                var3.netServerHandler.disconnect(var4);
+
+                if (var5)
+                {
+                    a(par1ICommandSender, "commands.kick.success.reason", new Object[]{var3.getLocalizedName(), var4});
+                }
+                else
+                {
+                    a(par1ICommandSender, "commands.kick.success", new Object[]{var3.getLocalizedName()});
                 }
             }
-        } else {
+        }
+        else
+        {
             throw new ExceptionUsage("commands.kick.usage", new Object[0]);
         }
     }
 
-    public List a(ICommandListener icommandlistener, String[] astring) {
-        return astring.length >= 1 ? a(astring, MinecraftServer.getServer().getPlayers()) : null;
+    /**
+     * Adds the strings available in this command to the given list of tab completion options.
+     */
+    public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
+        return par2ArrayOfStr.length >= 1 ? a(par2ArrayOfStr, MinecraftServer.getServer().getPlayers()) : null;
     }
 }

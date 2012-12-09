@@ -1,42 +1,61 @@
 package net.minecraft.server;
 
-public class PathfinderGoalMoveTowardsRestriction extends PathfinderGoal {
-
+public class PathfinderGoalMoveTowardsRestriction extends PathfinderGoal
+{
     private EntityCreature a;
     private double b;
     private double c;
     private double d;
     private float e;
 
-    public PathfinderGoalMoveTowardsRestriction(EntityCreature entitycreature, float f) {
-        this.a = entitycreature;
-        this.e = f;
+    public PathfinderGoalMoveTowardsRestriction(EntityCreature par1EntityCreature, float par2)
+    {
+        this.a = par1EntityCreature;
+        this.e = par2;
         this.a(1);
     }
 
-    public boolean a() {
-        if (this.a.aI()) {
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
+        if (this.a.aI())
+        {
             return false;
-        } else {
-            ChunkCoordinates chunkcoordinates = this.a.aJ();
-            Vec3D vec3d = RandomPositionGenerator.a(this.a, 16, 7, this.a.world.getVec3DPool().create((double) chunkcoordinates.x, (double) chunkcoordinates.y, (double) chunkcoordinates.z));
+        }
+        else
+        {
+            ChunkCoordinates var1 = this.a.aJ();
+            Vec3D var2 = RandomPositionGenerator.a(this.a, 16, 7, this.a.world.getVec3DPool().create((double) var1.x, (double) var1.y, (double) var1.z));
 
-            if (vec3d == null) {
+            if (var2 == null)
+            {
                 return false;
-            } else {
-                this.b = vec3d.c;
-                this.c = vec3d.d;
-                this.d = vec3d.e;
+            }
+            else
+            {
+                this.b = var2.c;
+                this.c = var2.d;
+                this.d = var2.e;
                 return true;
             }
         }
     }
 
-    public boolean b() {
+    /**
+     * Returns whether an in-progress EntityAIBase should continue executing
+     */
+    public boolean b()
+    {
         return !this.a.getNavigation().f();
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.a.getNavigation().a(this.b, this.c, this.d, this.e);
     }
 }

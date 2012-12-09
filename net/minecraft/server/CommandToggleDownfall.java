@@ -1,23 +1,31 @@
 package net.minecraft.server;
 
-public class CommandToggleDownfall extends CommandAbstract {
-
-    public CommandToggleDownfall() {}
-
-    public String c() {
+public class CommandToggleDownfall extends CommandAbstract
+{
+    public String c()
+    {
         return "toggledownfall";
     }
 
-    public int a() {
+    /**
+     * Return the required permission level for this command.
+     */
+    public int a()
+    {
         return 2;
     }
 
-    public void b(ICommandListener icommandlistener, String[] astring) {
+    public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
+    {
         this.d();
-        a(icommandlistener, "commands.downfall.success", new Object[0]);
+        a(par1ICommandSender, "commands.downfall.success", new Object[0]);
     }
 
-    protected void d() {
+    /**
+     * Toggle rain and enable thundering.
+     */
+    protected void d()
+    {
         MinecraftServer.getServer().worldServer[0].y();
         MinecraftServer.getServer().worldServer[0].getWorldData().setThundering(true);
     }

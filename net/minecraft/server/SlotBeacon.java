@@ -1,19 +1,30 @@
 package net.minecraft.server;
 
-class SlotBeacon extends Slot {
-
+class SlotBeacon extends Slot
+{
+    /** The beacon this slot belongs to. */
     final ContainerBeacon a;
 
-    public SlotBeacon(ContainerBeacon containerbeacon, IInventory iinventory, int i, int j, int k) {
-        super(iinventory, i, j, k);
-        this.a = containerbeacon;
+    public SlotBeacon(ContainerBeacon par1ContainerBeacon, IInventory par2IInventory, int par3, int par4, int par5)
+    {
+        super(par2IInventory, par3, par4, par5);
+        this.a = par1ContainerBeacon;
     }
 
-    public boolean isAllowed(ItemStack itemstack) {
-        return itemstack == null ? false : itemstack.id == Item.EMERALD.id || itemstack.id == Item.DIAMOND.id || itemstack.id == Item.GOLD_INGOT.id || itemstack.id == Item.IRON_INGOT.id;
+    /**
+     * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
+     */
+    public boolean isAllowed(ItemStack par1ItemStack)
+    {
+        return par1ItemStack == null ? false : par1ItemStack.id == Item.EMERALD.id || par1ItemStack.id == Item.DIAMOND.id || par1ItemStack.id == Item.GOLD_INGOT.id || par1ItemStack.id == Item.IRON_INGOT.id;
     }
 
-    public int a() {
+    /**
+     * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the case
+     * of armor slots)
+     */
+    public int a()
+    {
         return 1;
     }
 }

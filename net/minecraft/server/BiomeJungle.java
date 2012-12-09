@@ -2,10 +2,11 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BiomeJungle extends BiomeBase {
-
-    public BiomeJungle(int i) {
-        super(i);
+public class BiomeJungle extends BiomeBase
+{
+    public BiomeJungle(int par1)
+    {
+        super(par1);
         this.I.z = 50;
         this.I.B = 25;
         this.I.A = 4;
@@ -13,24 +14,33 @@ public class BiomeJungle extends BiomeBase {
         this.K.add(new BiomeMeta(EntityChicken.class, 10, 4, 4));
     }
 
-    public WorldGenerator a(Random random) {
-        return (WorldGenerator) (random.nextInt(10) == 0 ? this.P : (random.nextInt(2) == 0 ? new WorldGenGroundBush(3, 0) : (random.nextInt(3) == 0 ? new WorldGenMegaTree(false, 10 + random.nextInt(20), 3, 3) : new WorldGenTrees(false, 4 + random.nextInt(7), 3, 3, true))));
+    /**
+     * Gets a WorldGen appropriate for this biome.
+     */
+    public WorldGenerator a(Random par1Random)
+    {
+        return (WorldGenerator)(par1Random.nextInt(10) == 0 ? this.P : (par1Random.nextInt(2) == 0 ? new WorldGenGroundBush(3, 0) : (par1Random.nextInt(3) == 0 ? new WorldGenMegaTree(false, 10 + par1Random.nextInt(20), 3, 3) : new WorldGenTrees(false, 4 + par1Random.nextInt(7), 3, 3, true))));
     }
 
-    public WorldGenerator b(Random random) {
-        return random.nextInt(4) == 0 ? new WorldGenGrass(Block.LONG_GRASS.id, 2) : new WorldGenGrass(Block.LONG_GRASS.id, 1);
+    /**
+     * Gets a WorldGen appropriate for this biome.
+     */
+    public WorldGenerator b(Random par1Random)
+    {
+        return par1Random.nextInt(4) == 0 ? new WorldGenGrass(Block.LONG_GRASS.id, 2) : new WorldGenGrass(Block.LONG_GRASS.id, 1);
     }
 
-    public void a(World world, Random random, int i, int j) {
-        super.a(world, random, i, j);
-        WorldGenVines worldgenvines = new WorldGenVines();
+    public void a(World par1World, Random par2Random, int par3, int par4)
+    {
+        super.a(par1World, par2Random, par3, par4);
+        WorldGenVines var5 = new WorldGenVines();
 
-        for (int k = 0; k < 50; ++k) {
-            int l = i + random.nextInt(16) + 8;
-            byte b0 = 64;
-            int i1 = j + random.nextInt(16) + 8;
-
-            worldgenvines.a(world, random, l, b0, i1);
+        for (int var6 = 0; var6 < 50; ++var6)
+        {
+            int var7 = par3 + par2Random.nextInt(16) + 8;
+            byte var8 = 64;
+            int var9 = par4 + par2Random.nextInt(16) + 8;
+            var5.a(par1World, par2Random, var7, var8, var9);
         }
     }
 }

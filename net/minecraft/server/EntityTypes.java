@@ -4,107 +4,169 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class EntityTypes {
-
+public class EntityTypes
+{
+    /** Provides a mapping between entity classes and a string */
     private static Map b = new HashMap();
+
+    /** Provides a mapping between a string and an entity classes */
     private static Map c = new HashMap();
+
+    /** provides a mapping between an entityID and an Entity Class */
     private static Map d = new HashMap();
+
+    /** provides a mapping between an Entity Class and an entity ID */
     private static Map e = new HashMap();
+
+    /** Maps entity names to their numeric identifiers */
     private static Map f = new HashMap();
+
+    /** This is a HashMap of the Creative Entity Eggs/Spawners. */
     public static HashMap a = new LinkedHashMap();
 
-    private static void a(Class oclass, String s, int i) {
-        b.put(s, oclass);
-        c.put(oclass, s);
-        d.put(Integer.valueOf(i), oclass);
-        e.put(oclass, Integer.valueOf(i));
-        f.put(s, Integer.valueOf(i));
+    /**
+     * adds a mapping between Entity classes and both a string representation and an ID
+     */
+    private static void a(Class par0Class, String par1Str, int par2)
+    {
+        b.put(par1Str, par0Class);
+        c.put(par0Class, par1Str);
+        d.put(Integer.valueOf(par2), par0Class);
+        e.put(par0Class, Integer.valueOf(par2));
+        f.put(par1Str, Integer.valueOf(par2));
     }
 
-    private static void a(Class oclass, String s, int i, int j, int k) {
-        a(oclass, s, i);
-        a.put(Integer.valueOf(i), new MonsterEggInfo(i, j, k));
+    /**
+     * Adds a entity mapping with egg info.
+     */
+    private static void a(Class par0Class, String par1Str, int par2, int par3, int par4)
+    {
+        a(par0Class, par1Str, par2);
+        a.put(Integer.valueOf(par2), new MonsterEggInfo(par2, par3, par4));
     }
 
-    public static Entity createEntityByName(String s, World world) {
-        Entity entity = null;
+    /**
+     * Create a new instance of an entity in the world by using the entity name.
+     */
+    public static Entity createEntityByName(String par0Str, World par1World)
+    {
+        Entity var2 = null;
 
-        try {
-            Class oclass = (Class) b.get(s);
+        try
+        {
+            Class var3 = (Class) b.get(par0Str);
 
-            if (oclass != null) {
-                entity = (Entity) oclass.getConstructor(new Class[] { World.class}).newInstance(new Object[] { world});
+            if (var3 != null)
+            {
+                var2 = (Entity)var3.getConstructor(new Class[] {World.class}).newInstance(new Object[] {par1World});
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        }
+        catch (Exception var4)
+        {
+            var4.printStackTrace();
         }
 
-        return entity;
+        return var2;
     }
 
-    public static Entity a(NBTTagCompound nbttagcompound, World world) {
-        Entity entity = null;
+    /**
+     * create a new instance of an entity from NBT store
+     */
+    public static Entity a(NBTTagCompound par0NBTTagCompound, World par1World)
+    {
+        Entity var2 = null;
 
-        try {
-            Class oclass = (Class) b.get(nbttagcompound.getString("id"));
+        try
+        {
+            Class var3 = (Class) b.get(par0NBTTagCompound.getString("id"));
 
-            if (oclass != null) {
-                entity = (Entity) oclass.getConstructor(new Class[] { World.class}).newInstance(new Object[] { world});
+            if (var3 != null)
+            {
+                var2 = (Entity)var3.getConstructor(new Class[] {World.class}).newInstance(new Object[] {par1World});
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        }
+        catch (Exception var4)
+        {
+            var4.printStackTrace();
         }
 
-        if (entity != null) {
-            entity.e(nbttagcompound);
-        } else {
-            System.out.println("Skipping Entity with id " + nbttagcompound.getString("id"));
+        if (var2 != null)
+        {
+            var2.e(par0NBTTagCompound);
+        }
+        else
+        {
+            System.out.println("Skipping Entity with id " + par0NBTTagCompound.getString("id"));
         }
 
-        return entity;
+        return var2;
     }
 
-    public static Entity a(int i, World world) {
-        Entity entity = null;
+    /**
+     * Create a new instance of an entity in the world by using an entity ID.
+     */
+    public static Entity a(int par0, World par1World)
+    {
+        Entity var2 = null;
 
-        try {
-            Class oclass = (Class) d.get(Integer.valueOf(i));
+        try
+        {
+            Class var3 = (Class) d.get(Integer.valueOf(par0));
 
-            if (oclass != null) {
-                entity = (Entity) oclass.getConstructor(new Class[] { World.class}).newInstance(new Object[] { world});
+            if (var3 != null)
+            {
+                var2 = (Entity)var3.getConstructor(new Class[] {World.class}).newInstance(new Object[] {par1World});
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        }
+        catch (Exception var4)
+        {
+            var4.printStackTrace();
         }
 
-        if (entity == null) {
-            System.out.println("Skipping Entity with id " + i);
+        if (var2 == null)
+        {
+            System.out.println("Skipping Entity with id " + par0);
         }
 
-        return entity;
+        return var2;
     }
 
-    public static int a(Entity entity) {
-        Class oclass = entity.getClass();
-
-        return e.containsKey(oclass) ? ((Integer) e.get(oclass)).intValue() : 0;
+    /**
+     * gets the entityID of a specific entity
+     */
+    public static int a(Entity par0Entity)
+    {
+        Class var1 = par0Entity.getClass();
+        return e.containsKey(var1) ? ((Integer) e.get(var1)).intValue() : 0;
     }
 
-    public static Class a(int i) {
-        return (Class) d.get(Integer.valueOf(i));
+    /**
+     * Return the class assigned to this entity ID.
+     */
+    public static Class a(int par0)
+    {
+        return (Class) d.get(Integer.valueOf(par0));
     }
 
-    public static String b(Entity entity) {
-        return (String) c.get(entity.getClass());
+    /**
+     * Gets the string representation of a specific entity.
+     */
+    public static String b(Entity par0Entity)
+    {
+        return (String) c.get(par0Entity.getClass());
     }
 
-    public static String b(int i) {
-        Class oclass = (Class) d.get(Integer.valueOf(i));
-
-        return oclass != null ? (String) c.get(oclass) : null;
+    /**
+     * Finds the class using IDtoClassMapping and classToStringMapping
+     */
+    public static String b(int par0)
+    {
+        Class var1 = (Class) d.get(Integer.valueOf(par0));
+        return var1 != null ? (String) c.get(var1) : null;
     }
 
-    static {
+    static
+    {
         a(EntityItem.class, "Item", 1);
         a(EntityExperienceOrb.class, "XPOrb", 2);
         a(EntityPainting.class, "Painting", 9);
@@ -128,7 +190,7 @@ public class EntityTypes {
         a(EntitySkeleton.class, "Skeleton", 51, 12698049, 4802889);
         a(EntitySpider.class, "Spider", 52, 3419431, 11013646);
         a(EntityGiantZombie.class, "Giant", 53);
-        a(EntityZombie.class, "Zombie", 54, '\uafaf', 7969893);
+        a(EntityZombie.class, "Zombie", 54, 44975, 7969893);
         a(EntitySlime.class, "Slime", 55, 5349438, 8306542);
         a(EntityGhast.class, "Ghast", 56, 16382457, 12369084);
         a(EntityPigZombie.class, "PigZombie", 57, 15373203, 5009705);

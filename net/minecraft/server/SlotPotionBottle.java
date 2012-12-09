@@ -1,31 +1,48 @@
 package net.minecraft.server;
 
-class SlotPotionBottle extends Slot {
-
+class SlotPotionBottle extends Slot
+{
+    /** The player that has this container open. */
     private EntityHuman a;
 
-    public SlotPotionBottle(EntityHuman entityhuman, IInventory iinventory, int i, int j, int k) {
-        super(iinventory, i, j, k);
-        this.a = entityhuman;
+    public SlotPotionBottle(EntityHuman par1EntityPlayer, IInventory par2IInventory, int par3, int par4, int par5)
+    {
+        super(par2IInventory, par3, par4, par5);
+        this.a = par1EntityPlayer;
     }
 
-    public boolean isAllowed(ItemStack itemstack) {
-        return a_(itemstack);
+    /**
+     * Check if the stack is a valid item for this slot. Always true beside for the armor slots.
+     */
+    public boolean isAllowed(ItemStack par1ItemStack)
+    {
+        return a_(par1ItemStack);
     }
 
-    public int a() {
+    /**
+     * Returns the maximum stack size for a given slot (usually the same as getInventoryStackLimit(), but 1 in the case
+     * of armor slots)
+     */
+    public int a()
+    {
         return 1;
     }
 
-    public void a(EntityHuman entityhuman, ItemStack itemstack) {
-        if (itemstack.id == Item.POTION.id && itemstack.getData() > 0) {
-            this.a.a((Statistic) AchievementList.A, 1);
+    public void a(EntityHuman par1EntityPlayer, ItemStack par2ItemStack)
+    {
+        if (par2ItemStack.id == Item.POTION.id && par2ItemStack.getData() > 0)
+        {
+            this.a.a(AchievementList.A, 1);
         }
 
-        super.a(entityhuman, itemstack);
+        super.a(par1EntityPlayer, par2ItemStack);
     }
 
-    public static boolean a_(ItemStack itemstack) {
-        return itemstack != null && (itemstack.id == Item.POTION.id || itemstack.id == Item.GLASS_BOTTLE.id);
+    /**
+     * Returns true if this itemstack can be filled with a potion
+     */
+    public static boolean a_(ItemStack par0ItemStack)
+    {
+        return par0ItemStack != null && (par0ItemStack.id == Item.POTION.id || par0ItemStack.id == Item.GLASS_BOTTLE.id);
     }
 }

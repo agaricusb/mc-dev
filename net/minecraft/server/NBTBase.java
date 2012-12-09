@@ -4,169 +4,228 @@ import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
 
-public abstract class NBTBase {
+public abstract class NBTBase
+{
+    public static final String[] b = new String[] {"END", "BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "BYTE[]", "STRING", "LIST", "COMPOUND", "INT[]"};
 
-    public static final String[] b = new String[] { "END", "BYTE", "SHORT", "INT", "LONG", "FLOAT", "DOUBLE", "BYTE[]", "STRING", "LIST", "COMPOUND", "INT[]"};
+    /** The UTF string key used to lookup values. */
     private String name;
 
-    abstract void write(DataOutput dataoutput);
+    /**
+     * Write the actual data contents of the tag, implemented in NBT extension classes
+     */
+    abstract void write(DataOutput var1) throws IOException;
 
-    abstract void load(DataInput datainput);
+    /**
+     * Read the actual data contents of the tag, implemented in NBT extension classes
+     */
+    abstract void load(DataInput var1) throws IOException;
 
+    /**
+     * Gets the type byte for the tag.
+     */
     public abstract byte getTypeId();
 
-    protected NBTBase(String s) {
-        if (s == null) {
+    protected NBTBase(String par1Str)
+    {
+        if (par1Str == null)
+        {
             this.name = "";
-        } else {
-            this.name = s;
+        }
+        else
+        {
+            this.name = par1Str;
         }
     }
 
-    public NBTBase setName(String s) {
-        if (s == null) {
+    /**
+     * Sets the name for this tag and returns this for convenience.
+     */
+    public NBTBase setName(String par1Str)
+    {
+        if (par1Str == null)
+        {
             this.name = "";
-        } else {
-            this.name = s;
+        }
+        else
+        {
+            this.name = par1Str;
         }
 
         return this;
     }
 
-    public String getName() {
+    /**
+     * Gets the name corresponding to the tag, or an empty string if none set.
+     */
+    public String getName()
+    {
         return this.name == null ? "" : this.name;
     }
 
-    public static NBTBase b(DataInput datainput) {
-        byte b0 = datainput.readByte();
+    /**
+     * Reads and returns a tag from the given DataInput, or the End tag if no tag could be read.
+     */
+    public static NBTBase b(DataInput par0DataInput) throws IOException
+    {
+        byte var1 = par0DataInput.readByte();
 
-        if (b0 == 0) {
+        if (var1 == 0)
+        {
             return new NBTTagEnd();
-        } else {
-            String s = datainput.readUTF();
-            NBTBase nbtbase = createTag(b0, s);
+        }
+        else
+        {
+            String var2 = par0DataInput.readUTF();
+            NBTBase var3 = createTag(var1, var2);
 
-            try {
-                nbtbase.load(datainput);
-                return nbtbase;
-            } catch (IOException ioexception) {
-                CrashReport crashreport = CrashReport.a(ioexception, "Loading NBT data");
-                CrashReportSystemDetails crashreportsystemdetails = crashreport.a("NBT Tag");
-
-                crashreportsystemdetails.a("Tag name", s);
-                crashreportsystemdetails.a("Tag type", Byte.valueOf(b0));
-                throw new ReportedException(crashreport);
+            try
+            {
+                var3.load(par0DataInput);
+                return var3;
+            }
+            catch (IOException var7)
+            {
+                CrashReport var5 = CrashReport.a(var7, "Loading NBT data");
+                CrashReportSystemDetails var6 = var5.a("NBT Tag");
+                var6.a("Tag name", var2);
+                var6.a("Tag type", Byte.valueOf(var1));
+                throw new ReportedException(var5);
             }
         }
     }
 
-    public static void a(NBTBase nbtbase, DataOutput dataoutput) {
-        dataoutput.writeByte(nbtbase.getTypeId());
-        if (nbtbase.getTypeId() != 0) {
-            dataoutput.writeUTF(nbtbase.getName());
-            nbtbase.write(dataoutput);
+    /**
+     * Writes the specified tag to the given DataOutput, writing the type byte, the UTF string key and then calling the
+     * tag to write its data.
+     */
+    public static void a(NBTBase par0NBTBase, DataOutput par1DataOutput) throws IOException
+    {
+        par1DataOutput.writeByte(par0NBTBase.getTypeId());
+
+        if (par0NBTBase.getTypeId() != 0)
+        {
+            par1DataOutput.writeUTF(par0NBTBase.getName());
+            par0NBTBase.write(par1DataOutput);
         }
     }
 
-    public static NBTBase createTag(byte b0, String s) {
-        switch (b0) {
-        case 0:
-            return new NBTTagEnd();
+    /**
+     * Creates and returns a new tag of the specified type, or null if invalid.
+     */
+    public static NBTBase createTag(byte par0, String par1Str)
+    {
+        switch (par0)
+        {
+            case 0:
+                return new NBTTagEnd();
 
-        case 1:
-            return new NBTTagByte(s);
+            case 1:
+                return new NBTTagByte(par1Str);
 
-        case 2:
-            return new NBTTagShort(s);
+            case 2:
+                return new NBTTagShort(par1Str);
 
-        case 3:
-            return new NBTTagInt(s);
+            case 3:
+                return new NBTTagInt(par1Str);
 
-        case 4:
-            return new NBTTagLong(s);
+            case 4:
+                return new NBTTagLong(par1Str);
 
-        case 5:
-            return new NBTTagFloat(s);
+            case 5:
+                return new NBTTagFloat(par1Str);
 
-        case 6:
-            return new NBTTagDouble(s);
+            case 6:
+                return new NBTTagDouble(par1Str);
 
-        case 7:
-            return new NBTTagByteArray(s);
+            case 7:
+                return new NBTTagByteArray(par1Str);
 
-        case 8:
-            return new NBTTagString(s);
+            case 8:
+                return new NBTTagString(par1Str);
 
-        case 9:
-            return new NBTTagList(s);
+            case 9:
+                return new NBTTagList(par1Str);
 
-        case 10:
-            return new NBTTagCompound(s);
+            case 10:
+                return new NBTTagCompound(par1Str);
 
-        case 11:
-            return new NBTTagIntArray(s);
+            case 11:
+                return new NBTTagIntArray(par1Str);
 
-        default:
-            return null;
+            default:
+                return null;
         }
     }
 
-    public static String getTagName(byte b0) {
-        switch (b0) {
-        case 0:
-            return "TAG_End";
+    /**
+     * Returns the string name of a tag with the specified type, or 'UNKNOWN' if invalid.
+     */
+    public static String getTagName(byte par0)
+    {
+        switch (par0)
+        {
+            case 0:
+                return "TAG_End";
 
-        case 1:
-            return "TAG_Byte";
+            case 1:
+                return "TAG_Byte";
 
-        case 2:
-            return "TAG_Short";
+            case 2:
+                return "TAG_Short";
 
-        case 3:
-            return "TAG_Int";
+            case 3:
+                return "TAG_Int";
 
-        case 4:
-            return "TAG_Long";
+            case 4:
+                return "TAG_Long";
 
-        case 5:
-            return "TAG_Float";
+            case 5:
+                return "TAG_Float";
 
-        case 6:
-            return "TAG_Double";
+            case 6:
+                return "TAG_Double";
 
-        case 7:
-            return "TAG_Byte_Array";
+            case 7:
+                return "TAG_Byte_Array";
 
-        case 8:
-            return "TAG_String";
+            case 8:
+                return "TAG_String";
 
-        case 9:
-            return "TAG_List";
+            case 9:
+                return "TAG_List";
 
-        case 10:
-            return "TAG_Compound";
+            case 10:
+                return "TAG_Compound";
 
-        case 11:
-            return "TAG_Int_Array";
+            case 11:
+                return "TAG_Int_Array";
 
-        default:
-            return "UNKNOWN";
+            default:
+                return "UNKNOWN";
         }
     }
 
+    /**
+     * Creates a clone of the tag.
+     */
     public abstract NBTBase clone();
 
-    public boolean equals(Object object) {
-        if (!(object instanceof NBTBase)) {
+    public boolean equals(Object par1Obj)
+    {
+        if (!(par1Obj instanceof NBTBase))
+        {
             return false;
-        } else {
-            NBTBase nbtbase = (NBTBase) object;
-
-            return this.getTypeId() != nbtbase.getTypeId() ? false : ((this.name != null || nbtbase.name == null) && (this.name == null || nbtbase.name != null) ? this.name == null || this.name.equals(nbtbase.name) : false);
+        }
+        else
+        {
+            NBTBase var2 = (NBTBase)par1Obj;
+            return this.getTypeId() != var2.getTypeId() ? false : ((this.name != null || var2.name == null) && (this.name == null || var2.name != null) ? this.name == null || this.name.equals(var2.name) : false);
         }
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         return this.name.hashCode() ^ this.getTypeId();
     }
 }

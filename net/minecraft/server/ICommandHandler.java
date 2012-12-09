@@ -3,13 +3,22 @@ package net.minecraft.server;
 import java.util.List;
 import java.util.Map;
 
-public interface ICommandHandler {
+public interface ICommandHandler
+{
+    void a(ICommandListener var1, String var2);
 
-    void a(ICommandListener icommandlistener, String s);
+    /**
+     * Performs a "begins with" string match on each token in par2. Only returns commands that par1 can use.
+     */
+    List b(ICommandListener var1, String var2);
 
-    List b(ICommandListener icommandlistener, String s);
+    /**
+     * returns all commands that the commandSender can use
+     */
+    List a(ICommandListener var1);
 
-    List a(ICommandListener icommandlistener);
-
+    /**
+     * returns a map of string to commads. All commands are returned, not just ones which someone has permission to use.
+     */
     Map a();
 }

@@ -1,32 +1,43 @@
 package net.minecraft.server;
 
-public class ChunkPosition {
-
+public class ChunkPosition
+{
+    /** The x coordinate of this ChunkPosition */
     public final int x;
+
+    /** The y coordinate of this ChunkPosition */
     public final int y;
+
+    /** The z coordinate of this ChunkPosition */
     public final int z;
 
-    public ChunkPosition(int i, int j, int k) {
-        this.x = i;
-        this.y = j;
-        this.z = k;
+    public ChunkPosition(int par1, int par2, int par3)
+    {
+        this.x = par1;
+        this.y = par2;
+        this.z = par3;
     }
 
-    public ChunkPosition(Vec3D vec3d) {
-        this(MathHelper.floor(vec3d.c), MathHelper.floor(vec3d.d), MathHelper.floor(vec3d.e));
+    public ChunkPosition(Vec3D par1Vec3)
+    {
+        this(MathHelper.floor(par1Vec3.c), MathHelper.floor(par1Vec3.d), MathHelper.floor(par1Vec3.e));
     }
 
-    public boolean equals(Object object) {
-        if (!(object instanceof ChunkPosition)) {
+    public boolean equals(Object par1Obj)
+    {
+        if (!(par1Obj instanceof ChunkPosition))
+        {
             return false;
-        } else {
-            ChunkPosition chunkposition = (ChunkPosition) object;
-
-            return chunkposition.x == this.x && chunkposition.y == this.y && chunkposition.z == this.z;
+        }
+        else
+        {
+            ChunkPosition var2 = (ChunkPosition)par1Obj;
+            return var2.x == this.x && var2.y == this.y && var2.z == this.z;
         }
     }
 
-    public int hashCode() {
+    public int hashCode()
+    {
         return this.x * 8976890 + this.y * 981131 + this.z;
     }
 }

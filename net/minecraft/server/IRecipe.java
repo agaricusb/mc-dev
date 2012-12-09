@@ -1,11 +1,20 @@
 package net.minecraft.server;
 
-public interface IRecipe {
+public interface IRecipe
+{
+    /**
+     * Used to check if a recipe matches current crafting inventory
+     */
+    boolean a(InventoryCrafting var1, World var2);
 
-    boolean a(InventoryCrafting inventorycrafting, World world);
+    /**
+     * Returns an Item that is the result of this recipe
+     */
+    ItemStack a(InventoryCrafting var1);
 
-    ItemStack a(InventoryCrafting inventorycrafting);
-
+    /**
+     * Returns the size of the recipe area
+     */
     int a();
 
     ItemStack b();

@@ -13,74 +13,97 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class HttpUtilities {
+public class HttpUtilities
+{
+    /**
+     * Builds an encoded HTTP POST content string from a string map
+     */
+    public static String a(Map par0Map)
+    {
+        StringBuilder var1 = new StringBuilder();
+        Iterator var2 = par0Map.entrySet().iterator();
 
-    public static String a(Map map) {
-        StringBuilder stringbuilder = new StringBuilder();
-        Iterator iterator = map.entrySet().iterator();
+        while (var2.hasNext())
+        {
+            Entry var3 = (Entry)var2.next();
 
-        while (iterator.hasNext()) {
-            Entry entry = (Entry) iterator.next();
-
-            if (stringbuilder.length() > 0) {
-                stringbuilder.append('&');
+            if (var1.length() > 0)
+            {
+                var1.append('&');
             }
 
-            try {
-                stringbuilder.append(URLEncoder.encode((String) entry.getKey(), "UTF-8"));
-            } catch (UnsupportedEncodingException unsupportedencodingexception) {
-                unsupportedencodingexception.printStackTrace();
+            try
+            {
+                var1.append(URLEncoder.encode((String)var3.getKey(), "UTF-8"));
+            }
+            catch (UnsupportedEncodingException var6)
+            {
+                var6.printStackTrace();
             }
 
-            if (entry.getValue() != null) {
-                stringbuilder.append('=');
+            if (var3.getValue() != null)
+            {
+                var1.append('=');
 
-                try {
-                    stringbuilder.append(URLEncoder.encode(entry.getValue().toString(), "UTF-8"));
-                } catch (UnsupportedEncodingException unsupportedencodingexception1) {
-                    unsupportedencodingexception1.printStackTrace();
+                try
+                {
+                    var1.append(URLEncoder.encode(var3.getValue().toString(), "UTF-8"));
+                }
+                catch (UnsupportedEncodingException var5)
+                {
+                    var5.printStackTrace();
                 }
             }
         }
 
-        return stringbuilder.toString();
+        return var1.toString();
     }
 
-    public static String a(URL url, Map map, boolean flag) {
-        return a(url, a(map), flag);
+    /**
+     * Sends a HTTP POST request to the given URL with data from a map
+     */
+    public static String a(URL par0URL, Map par1Map, boolean par2)
+    {
+        return a(par0URL, a(par1Map), par2);
     }
 
-    public static String a(URL url, String s, boolean flag) {
-        try {
-            HttpURLConnection httpurlconnection = (HttpURLConnection) url.openConnection();
+    /**
+     * Sends a HTTP POST request to the given URL with data from a string
+     */
+    public static String a(URL par0URL, String par1Str, boolean par2)
+    {
+        try
+        {
+            HttpURLConnection var3 = (HttpURLConnection)par0URL.openConnection();
+            var3.setRequestMethod("POST");
+            var3.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+            var3.setRequestProperty("Content-Length", "" + par1Str.getBytes().length);
+            var3.setRequestProperty("Content-Language", "en-US");
+            var3.setUseCaches(false);
+            var3.setDoInput(true);
+            var3.setDoOutput(true);
+            DataOutputStream var4 = new DataOutputStream(var3.getOutputStream());
+            var4.writeBytes(par1Str);
+            var4.flush();
+            var4.close();
+            BufferedReader var5 = new BufferedReader(new InputStreamReader(var3.getInputStream()));
+            StringBuffer var7 = new StringBuffer();
+            String var6;
 
-            httpurlconnection.setRequestMethod("POST");
-            httpurlconnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-            httpurlconnection.setRequestProperty("Content-Length", "" + s.getBytes().length);
-            httpurlconnection.setRequestProperty("Content-Language", "en-US");
-            httpurlconnection.setUseCaches(false);
-            httpurlconnection.setDoInput(true);
-            httpurlconnection.setDoOutput(true);
-            DataOutputStream dataoutputstream = new DataOutputStream(httpurlconnection.getOutputStream());
-
-            dataoutputstream.writeBytes(s);
-            dataoutputstream.flush();
-            dataoutputstream.close();
-            BufferedReader bufferedreader = new BufferedReader(new InputStreamReader(httpurlconnection.getInputStream()));
-            StringBuffer stringbuffer = new StringBuffer();
-
-            String s1;
-
-            while ((s1 = bufferedreader.readLine()) != null) {
-                stringbuffer.append(s1);
-                stringbuffer.append('\r');
+            while ((var6 = var5.readLine()) != null)
+            {
+                var7.append(var6);
+                var7.append('\r');
             }
 
-            bufferedreader.close();
-            return stringbuffer.toString();
-        } catch (Exception exception) {
-            if (!flag) {
-                Logger.getLogger("Minecraft").log(Level.SEVERE, "Could not post to " + url, exception);
+            var5.close();
+            return var7.toString();
+        }
+        catch (Exception var8)
+        {
+            if (!par2)
+            {
+                Logger.getLogger("Minecraft").log(Level.SEVERE, "Could not post to " + par0URL, var8);
             }
 
             return "";

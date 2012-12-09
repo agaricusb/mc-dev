@@ -2,8 +2,8 @@ package net.minecraft.server;
 
 import java.util.List;
 
-public abstract class EntityFireball extends Entity {
-
+public abstract class EntityFireball extends Entity
+{
     private int e = -1;
     private int f = -1;
     private int g = -1;
@@ -16,55 +16,68 @@ public abstract class EntityFireball extends Entity {
     public double dirY;
     public double dirZ;
 
-    public EntityFireball(World world) {
-        super(world);
+    public EntityFireball(World par1World)
+    {
+        super(par1World);
         this.a(1.0F, 1.0F);
     }
 
     protected void a() {}
 
-    public EntityFireball(World world, double d0, double d1, double d2, double d3, double d4, double d5) {
-        super(world);
+    public EntityFireball(World par1World, double par2, double par4, double par6, double par8, double par10, double par12)
+    {
+        super(par1World);
         this.a(1.0F, 1.0F);
-        this.setPositionRotation(d0, d1, d2, this.yaw, this.pitch);
-        this.setPosition(d0, d1, d2);
-        double d6 = (double) MathHelper.sqrt(d3 * d3 + d4 * d4 + d5 * d5);
-
-        this.dirX = d3 / d6 * 0.1D;
-        this.dirY = d4 / d6 * 0.1D;
-        this.dirZ = d5 / d6 * 0.1D;
+        this.setPositionRotation(par2, par4, par6, this.yaw, this.pitch);
+        this.setPosition(par2, par4, par6);
+        double var14 = (double) MathHelper.sqrt(par8 * par8 + par10 * par10 + par12 * par12);
+        this.dirX = par8 / var14 * 0.1D;
+        this.dirY = par10 / var14 * 0.1D;
+        this.dirZ = par12 / var14 * 0.1D;
     }
 
-    public EntityFireball(World world, EntityLiving entityliving, double d0, double d1, double d2) {
-        super(world);
-        this.shooter = entityliving;
+    public EntityFireball(World par1World, EntityLiving par2EntityLiving, double par3, double par5, double par7)
+    {
+        super(par1World);
+        this.shooter = par2EntityLiving;
         this.a(1.0F, 1.0F);
-        this.setPositionRotation(entityliving.locX, entityliving.locY, entityliving.locZ, entityliving.yaw, entityliving.pitch);
+        this.setPositionRotation(par2EntityLiving.locX, par2EntityLiving.locY, par2EntityLiving.locZ, par2EntityLiving.yaw, par2EntityLiving.pitch);
         this.setPosition(this.locX, this.locY, this.locZ);
         this.height = 0.0F;
         this.motX = this.motY = this.motZ = 0.0D;
-        d0 += this.random.nextGaussian() * 0.4D;
-        d1 += this.random.nextGaussian() * 0.4D;
-        d2 += this.random.nextGaussian() * 0.4D;
-        double d3 = (double) MathHelper.sqrt(d0 * d0 + d1 * d1 + d2 * d2);
-
-        this.dirX = d0 / d3 * 0.1D;
-        this.dirY = d1 / d3 * 0.1D;
-        this.dirZ = d2 / d3 * 0.1D;
+        par3 += this.random.nextGaussian() * 0.4D;
+        par5 += this.random.nextGaussian() * 0.4D;
+        par7 += this.random.nextGaussian() * 0.4D;
+        double var9 = (double) MathHelper.sqrt(par3 * par3 + par5 * par5 + par7 * par7);
+        this.dirX = par3 / var9 * 0.1D;
+        this.dirY = par5 / var9 * 0.1D;
+        this.dirZ = par7 / var9 * 0.1D;
     }
 
-    public void j_() {
-        if (!this.world.isStatic && (this.shooter != null && this.shooter.dead || !this.world.isLoaded((int) this.locX, (int) this.locY, (int) this.locZ))) {
+    /**
+     * Called to update the entity's position/logic.
+     */
+    public void j_()
+    {
+        if (!this.world.isStatic && (this.shooter != null && this.shooter.dead || !this.world.isLoaded((int) this.locX, (int) this.locY, (int) this.locZ)))
+        {
             this.die();
-        } else {
+        }
+        else
+        {
             super.j_();
             this.setOnFire(1);
-            if (this.i) {
-                int i = this.world.getTypeId(this.e, this.f, this.g);
 
-                if (i == this.h) {
+            if (this.i)
+            {
+                int var1 = this.world.getTypeId(this.e, this.f, this.g);
+
+                if (var1 == this.h)
+                {
                     ++this.j;
-                    if (this.j == 600) {
+
+                    if (this.j == 600)
+                    {
                         this.die();
                     }
 
@@ -72,173 +85,226 @@ public abstract class EntityFireball extends Entity {
                 }
 
                 this.i = false;
-                this.motX *= (double) (this.random.nextFloat() * 0.2F);
-                this.motY *= (double) (this.random.nextFloat() * 0.2F);
-                this.motZ *= (double) (this.random.nextFloat() * 0.2F);
+                this.motX *= (double)(this.random.nextFloat() * 0.2F);
+                this.motY *= (double)(this.random.nextFloat() * 0.2F);
+                this.motZ *= (double)(this.random.nextFloat() * 0.2F);
                 this.j = 0;
                 this.as = 0;
-            } else {
+            }
+            else
+            {
                 ++this.as;
             }
 
-            Vec3D vec3d = this.world.getVec3DPool().create(this.locX, this.locY, this.locZ);
-            Vec3D vec3d1 = this.world.getVec3DPool().create(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
-            MovingObjectPosition movingobjectposition = this.world.a(vec3d, vec3d1);
+            Vec3D var15 = this.world.getVec3DPool().create(this.locX, this.locY, this.locZ);
+            Vec3D var2 = this.world.getVec3DPool().create(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
+            MovingObjectPosition var3 = this.world.a(var15, var2);
+            var15 = this.world.getVec3DPool().create(this.locX, this.locY, this.locZ);
+            var2 = this.world.getVec3DPool().create(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
 
-            vec3d = this.world.getVec3DPool().create(this.locX, this.locY, this.locZ);
-            vec3d1 = this.world.getVec3DPool().create(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
-            if (movingobjectposition != null) {
-                vec3d1 = this.world.getVec3DPool().create(movingobjectposition.pos.c, movingobjectposition.pos.d, movingobjectposition.pos.e);
+            if (var3 != null)
+            {
+                var2 = this.world.getVec3DPool().create(var3.pos.c, var3.pos.d, var3.pos.e);
             }
 
-            Entity entity = null;
-            List list = this.world.getEntities(this, this.boundingBox.a(this.motX, this.motY, this.motZ).grow(1.0D, 1.0D, 1.0D));
-            double d0 = 0.0D;
+            Entity var4 = null;
+            List var5 = this.world.getEntities(this, this.boundingBox.a(this.motX, this.motY, this.motZ).grow(1.0D, 1.0D, 1.0D));
+            double var6 = 0.0D;
 
-            for (int j = 0; j < list.size(); ++j) {
-                Entity entity1 = (Entity) list.get(j);
+            for (int var8 = 0; var8 < var5.size(); ++var8)
+            {
+                Entity var9 = (Entity)var5.get(var8);
 
-                if (entity1.L() && (!entity1.i(this.shooter) || this.as >= 25)) {
-                    float f = 0.3F;
-                    AxisAlignedBB axisalignedbb = entity1.boundingBox.grow((double) f, (double) f, (double) f);
-                    MovingObjectPosition movingobjectposition1 = axisalignedbb.a(vec3d, vec3d1);
+                if (var9.L() && (!var9.i(this.shooter) || this.as >= 25))
+                {
+                    float var10 = 0.3F;
+                    AxisAlignedBB var11 = var9.boundingBox.grow((double) var10, (double) var10, (double) var10);
+                    MovingObjectPosition var12 = var11.a(var15, var2);
 
-                    if (movingobjectposition1 != null) {
-                        double d1 = vec3d.d(movingobjectposition1.pos);
+                    if (var12 != null)
+                    {
+                        double var13 = var15.d(var12.pos);
 
-                        if (d1 < d0 || d0 == 0.0D) {
-                            entity = entity1;
-                            d0 = d1;
+                        if (var13 < var6 || var6 == 0.0D)
+                        {
+                            var4 = var9;
+                            var6 = var13;
                         }
                     }
                 }
             }
 
-            if (entity != null) {
-                movingobjectposition = new MovingObjectPosition(entity);
+            if (var4 != null)
+            {
+                var3 = new MovingObjectPosition(var4);
             }
 
-            if (movingobjectposition != null) {
-                this.a(movingobjectposition);
+            if (var3 != null)
+            {
+                this.a(var3);
             }
 
             this.locX += this.motX;
             this.locY += this.motY;
             this.locZ += this.motZ;
-            float f1 = MathHelper.sqrt(this.motX * this.motX + this.motZ * this.motZ);
+            float var16 = MathHelper.sqrt(this.motX * this.motX + this.motZ * this.motZ);
+            this.yaw = (float)(Math.atan2(this.motZ, this.motX) * 180.0D / Math.PI) + 90.0F;
 
-            this.yaw = (float) (Math.atan2(this.motZ, this.motX) * 180.0D / 3.1415927410125732D) + 90.0F;
-
-            for (this.pitch = (float) (Math.atan2((double) f1, this.motY) * 180.0D / 3.1415927410125732D) - 90.0F; this.pitch - this.lastPitch < -180.0F; this.lastPitch -= 360.0F) {
+            for (this.pitch = (float)(Math.atan2((double)var16, this.motY) * 180.0D / Math.PI) - 90.0F; this.pitch - this.lastPitch < -180.0F; this.lastPitch -= 360.0F)
+            {
                 ;
             }
 
-            while (this.pitch - this.lastPitch >= 180.0F) {
+            while (this.pitch - this.lastPitch >= 180.0F)
+            {
                 this.lastPitch += 360.0F;
             }
 
-            while (this.yaw - this.lastYaw < -180.0F) {
+            while (this.yaw - this.lastYaw < -180.0F)
+            {
                 this.lastYaw -= 360.0F;
             }
 
-            while (this.yaw - this.lastYaw >= 180.0F) {
+            while (this.yaw - this.lastYaw >= 180.0F)
+            {
                 this.lastYaw += 360.0F;
             }
 
             this.pitch = this.lastPitch + (this.pitch - this.lastPitch) * 0.2F;
             this.yaw = this.lastYaw + (this.yaw - this.lastYaw) * 0.2F;
-            float f2 = this.c();
+            float var17 = this.c();
 
-            if (this.H()) {
-                for (int k = 0; k < 4; ++k) {
-                    float f3 = 0.25F;
-
-                    this.world.addParticle("bubble", this.locX - this.motX * (double) f3, this.locY - this.motY * (double) f3, this.locZ - this.motZ * (double) f3, this.motX, this.motY, this.motZ);
+            if (this.H())
+            {
+                for (int var19 = 0; var19 < 4; ++var19)
+                {
+                    float var18 = 0.25F;
+                    this.world.addParticle("bubble", this.locX - this.motX * (double) var18, this.locY - this.motY * (double) var18, this.locZ - this.motZ * (double) var18, this.motX, this.motY, this.motZ);
                 }
 
-                f2 = 0.8F;
+                var17 = 0.8F;
             }
 
             this.motX += this.dirX;
             this.motY += this.dirY;
             this.motZ += this.dirZ;
-            this.motX *= (double) f2;
-            this.motY *= (double) f2;
-            this.motZ *= (double) f2;
+            this.motX *= (double)var17;
+            this.motY *= (double)var17;
+            this.motZ *= (double)var17;
             this.world.addParticle("smoke", this.locX, this.locY + 0.5D, this.locZ, 0.0D, 0.0D, 0.0D);
             this.setPosition(this.locX, this.locY, this.locZ);
         }
     }
 
-    protected float c() {
+    /**
+     * Return the motion factor for this projectile. The factor is multiplied by the original motion.
+     */
+    protected float c()
+    {
         return 0.95F;
     }
 
-    protected abstract void a(MovingObjectPosition movingobjectposition);
+    /**
+     * Called when this EntityFireball hits a block or entity.
+     */
+    protected abstract void a(MovingObjectPosition var1);
 
-    public void b(NBTTagCompound nbttagcompound) {
-        nbttagcompound.setShort("xTile", (short) this.e);
-        nbttagcompound.setShort("yTile", (short) this.f);
-        nbttagcompound.setShort("zTile", (short) this.g);
-        nbttagcompound.setByte("inTile", (byte) this.h);
-        nbttagcompound.setByte("inGround", (byte) (this.i ? 1 : 0));
-        nbttagcompound.set("direction", this.a(new double[] { this.motX, this.motY, this.motZ}));
+    /**
+     * (abstract) Protected helper method to write subclass entity data to NBT.
+     */
+    public void b(NBTTagCompound par1NBTTagCompound)
+    {
+        par1NBTTagCompound.setShort("xTile", (short)this.e);
+        par1NBTTagCompound.setShort("yTile", (short)this.f);
+        par1NBTTagCompound.setShort("zTile", (short)this.g);
+        par1NBTTagCompound.setByte("inTile", (byte)this.h);
+        par1NBTTagCompound.setByte("inGround", (byte)(this.i ? 1 : 0));
+        par1NBTTagCompound.set("direction", this.a(new double[]{this.motX, this.motY, this.motZ}));
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
-        this.e = nbttagcompound.getShort("xTile");
-        this.f = nbttagcompound.getShort("yTile");
-        this.g = nbttagcompound.getShort("zTile");
-        this.h = nbttagcompound.getByte("inTile") & 255;
-        this.i = nbttagcompound.getByte("inGround") == 1;
-        if (nbttagcompound.hasKey("direction")) {
-            NBTTagList nbttaglist = nbttagcompound.getList("direction");
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        this.e = par1NBTTagCompound.getShort("xTile");
+        this.f = par1NBTTagCompound.getShort("yTile");
+        this.g = par1NBTTagCompound.getShort("zTile");
+        this.h = par1NBTTagCompound.getByte("inTile") & 255;
+        this.i = par1NBTTagCompound.getByte("inGround") == 1;
 
-            this.motX = ((NBTTagDouble) nbttaglist.get(0)).data;
-            this.motY = ((NBTTagDouble) nbttaglist.get(1)).data;
-            this.motZ = ((NBTTagDouble) nbttaglist.get(2)).data;
-        } else {
+        if (par1NBTTagCompound.hasKey("direction"))
+        {
+            NBTTagList var2 = par1NBTTagCompound.getList("direction");
+            this.motX = ((NBTTagDouble)var2.get(0)).data;
+            this.motY = ((NBTTagDouble)var2.get(1)).data;
+            this.motZ = ((NBTTagDouble)var2.get(2)).data;
+        }
+        else
+        {
             this.die();
         }
     }
 
-    public boolean L() {
+    /**
+     * Returns true if other Entities should be prevented from moving through this Entity.
+     */
+    public boolean L()
+    {
         return true;
     }
 
-    public float Y() {
+    public float Y()
+    {
         return 1.0F;
     }
 
-    public boolean damageEntity(DamageSource damagesource, int i) {
-        if (this.isInvulnerable()) {
+    /**
+     * Called when the entity is attacked.
+     */
+    public boolean damageEntity(DamageSource par1DamageSource, int par2)
+    {
+        if (this.isInvulnerable())
+        {
             return false;
-        } else {
+        }
+        else
+        {
             this.K();
-            if (damagesource.getEntity() != null) {
-                Vec3D vec3d = damagesource.getEntity().Z();
 
-                if (vec3d != null) {
-                    this.motX = vec3d.c;
-                    this.motY = vec3d.d;
-                    this.motZ = vec3d.e;
+            if (par1DamageSource.getEntity() != null)
+            {
+                Vec3D var3 = par1DamageSource.getEntity().Z();
+
+                if (var3 != null)
+                {
+                    this.motX = var3.c;
+                    this.motY = var3.d;
+                    this.motZ = var3.e;
                     this.dirX = this.motX * 0.1D;
                     this.dirY = this.motY * 0.1D;
                     this.dirZ = this.motZ * 0.1D;
                 }
 
-                if (damagesource.getEntity() instanceof EntityLiving) {
-                    this.shooter = (EntityLiving) damagesource.getEntity();
+                if (par1DamageSource.getEntity() instanceof EntityLiving)
+                {
+                    this.shooter = (EntityLiving)par1DamageSource.getEntity();
                 }
 
                 return true;
-            } else {
+            }
+            else
+            {
                 return false;
             }
         }
     }
 
-    public float c(float f) {
+    /**
+     * Gets how bright this entity is.
+     */
+    public float c(float par1)
+    {
         return 1.0F;
     }
 }

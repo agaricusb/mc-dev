@@ -2,102 +2,149 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockSapling extends BlockFlower {
+public class BlockSapling extends BlockFlower
+{
+    public static final String[] a = new String[] {"oak", "spruce", "birch", "jungle"};
 
-    public static final String[] a = new String[] { "oak", "spruce", "birch", "jungle"};
-
-    protected BlockSapling(int i, int j) {
-        super(i, j);
-        float f = 0.4F;
-
-        this.a(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f * 2.0F, 0.5F + f);
+    protected BlockSapling(int par1, int par2)
+    {
+        super(par1, par2);
+        float var3 = 0.4F;
+        this.a(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, var3 * 2.0F, 0.5F + var3);
         this.a(CreativeModeTab.c);
     }
 
-    public void b(World world, int i, int j, int k, Random random) {
-        if (!world.isStatic) {
-            super.b(world, i, j, k, random);
-            if (world.getLightLevel(i, j + 1, k) >= 9 && random.nextInt(7) == 0) {
-                int l = world.getData(i, j, k);
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        if (!par1World.isStatic)
+        {
+            super.b(par1World, par2, par3, par4, par5Random);
 
-                if ((l & 8) == 0) {
-                    world.setData(i, j, k, l | 8);
-                } else {
-                    this.grow(world, i, j, k, random);
+            if (par1World.getLightLevel(par2, par3 + 1, par4) >= 9 && par5Random.nextInt(7) == 0)
+            {
+                int var6 = par1World.getData(par2, par3, par4);
+
+                if ((var6 & 8) == 0)
+                {
+                    par1World.setData(par2, par3, par4, var6 | 8);
+                }
+                else
+                {
+                    this.grow(par1World, par2, par3, par4, par5Random);
                 }
             }
         }
     }
 
-    public int a(int i, int j) {
-        j &= 3;
-        return j == 1 ? 63 : (j == 2 ? 79 : (j == 3 ? 30 : super.a(i, j)));
+    /**
+     * From the specified side and block metadata retrieves the blocks texture. Args: side, metadata
+     */
+    public int a(int par1, int par2)
+    {
+        par2 &= 3;
+        return par2 == 1 ? 63 : (par2 == 2 ? 79 : (par2 == 3 ? 30 : super.a(par1, par2)));
     }
 
-    public void grow(World world, int i, int j, int k, Random random) {
-        int l = world.getData(i, j, k) & 3;
-        Object object = null;
-        int i1 = 0;
-        int j1 = 0;
-        boolean flag = false;
+    /**
+     * Attempts to grow a sapling into a tree
+     */
+    public void grow(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        int var6 = par1World.getData(par2, par3, par4) & 3;
+        Object var7 = null;
+        int var8 = 0;
+        int var9 = 0;
+        boolean var10 = false;
 
-        if (l == 1) {
-            object = new WorldGenTaiga2(true);
-        } else if (l == 2) {
-            object = new WorldGenForest(true);
-        } else if (l == 3) {
-            for (i1 = 0; i1 >= -1; --i1) {
-                for (j1 = 0; j1 >= -1; --j1) {
-                    if (this.d(world, i + i1, j, k + j1, 3) && this.d(world, i + i1 + 1, j, k + j1, 3) && this.d(world, i + i1, j, k + j1 + 1, 3) && this.d(world, i + i1 + 1, j, k + j1 + 1, 3)) {
-                        object = new WorldGenMegaTree(true, 10 + random.nextInt(20), 3, 3);
-                        flag = true;
+        if (var6 == 1)
+        {
+            var7 = new WorldGenTaiga2(true);
+        }
+        else if (var6 == 2)
+        {
+            var7 = new WorldGenForest(true);
+        }
+        else if (var6 == 3)
+        {
+            for (var8 = 0; var8 >= -1; --var8)
+            {
+                for (var9 = 0; var9 >= -1; --var9)
+                {
+                    if (this.d(par1World, par2 + var8, par3, par4 + var9, 3) && this.d(par1World, par2 + var8 + 1, par3, par4 + var9, 3) && this.d(par1World, par2 + var8, par3, par4 + var9 + 1, 3) && this.d(par1World, par2 + var8 + 1, par3, par4 + var9 + 1, 3))
+                    {
+                        var7 = new WorldGenMegaTree(true, 10 + par5Random.nextInt(20), 3, 3);
+                        var10 = true;
                         break;
                     }
                 }
 
-                if (object != null) {
+                if (var7 != null)
+                {
                     break;
                 }
             }
 
-            if (object == null) {
-                j1 = 0;
-                i1 = 0;
-                object = new WorldGenTrees(true, 4 + random.nextInt(7), 3, 3, false);
+            if (var7 == null)
+            {
+                var9 = 0;
+                var8 = 0;
+                var7 = new WorldGenTrees(true, 4 + par5Random.nextInt(7), 3, 3, false);
             }
-        } else {
-            object = new WorldGenTrees(true);
-            if (random.nextInt(10) == 0) {
-                object = new WorldGenBigTree(true);
+        }
+        else
+        {
+            var7 = new WorldGenTrees(true);
+
+            if (par5Random.nextInt(10) == 0)
+            {
+                var7 = new WorldGenBigTree(true);
             }
         }
 
-        if (flag) {
-            world.setRawTypeId(i + i1, j, k + j1, 0);
-            world.setRawTypeId(i + i1 + 1, j, k + j1, 0);
-            world.setRawTypeId(i + i1, j, k + j1 + 1, 0);
-            world.setRawTypeId(i + i1 + 1, j, k + j1 + 1, 0);
-        } else {
-            world.setRawTypeId(i, j, k, 0);
+        if (var10)
+        {
+            par1World.setRawTypeId(par2 + var8, par3, par4 + var9, 0);
+            par1World.setRawTypeId(par2 + var8 + 1, par3, par4 + var9, 0);
+            par1World.setRawTypeId(par2 + var8, par3, par4 + var9 + 1, 0);
+            par1World.setRawTypeId(par2 + var8 + 1, par3, par4 + var9 + 1, 0);
+        }
+        else
+        {
+            par1World.setRawTypeId(par2, par3, par4, 0);
         }
 
-        if (!((WorldGenerator) object).a(world, random, i + i1, j, k + j1)) {
-            if (flag) {
-                world.setRawTypeIdAndData(i + i1, j, k + j1, this.id, l);
-                world.setRawTypeIdAndData(i + i1 + 1, j, k + j1, this.id, l);
-                world.setRawTypeIdAndData(i + i1, j, k + j1 + 1, this.id, l);
-                world.setRawTypeIdAndData(i + i1 + 1, j, k + j1 + 1, this.id, l);
-            } else {
-                world.setRawTypeIdAndData(i, j, k, this.id, l);
+        if (!((WorldGenerator)var7).a(par1World, par5Random, par2 + var8, par3, par4 + var9))
+        {
+            if (var10)
+            {
+                par1World.setRawTypeIdAndData(par2 + var8, par3, par4 + var9, this.id, var6);
+                par1World.setRawTypeIdAndData(par2 + var8 + 1, par3, par4 + var9, this.id, var6);
+                par1World.setRawTypeIdAndData(par2 + var8, par3, par4 + var9 + 1, this.id, var6);
+                par1World.setRawTypeIdAndData(par2 + var8 + 1, par3, par4 + var9 + 1, this.id, var6);
+            }
+            else
+            {
+                par1World.setRawTypeIdAndData(par2, par3, par4, this.id, var6);
             }
         }
     }
 
-    public boolean d(World world, int i, int j, int k, int l) {
-        return world.getTypeId(i, j, k) == this.id && (world.getData(i, j, k) & 3) == l;
+    /**
+     * Determines if the same sapling is present at the given location.
+     */
+    public boolean d(World par1World, int par2, int par3, int par4, int par5)
+    {
+        return par1World.getTypeId(par2, par3, par4) == this.id && (par1World.getData(par2, par3, par4) & 3) == par5;
     }
 
-    public int getDropData(int i) {
-        return i & 3;
+    /**
+     * Determines the damage on the item the block drops. Used in cloth and wood.
+     */
+    public int getDropData(int par1)
+    {
+        return par1 & 3;
     }
 }

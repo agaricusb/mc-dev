@@ -2,19 +2,22 @@ package net.minecraft.server;
 
 import java.util.concurrent.Callable;
 
-class CrashReportTileEntityName implements Callable {
-
+class CrashReportTileEntityName implements Callable
+{
     final TileEntity a;
 
-    CrashReportTileEntityName(TileEntity tileentity) {
-        this.a = tileentity;
+    CrashReportTileEntityName(TileEntity par1TileEntity)
+    {
+        this.a = par1TileEntity;
     }
 
-    public String a() {
+    public String a()
+    {
         return (String) TileEntity.t().get(this.a.getClass()) + " // " + this.a.getClass().getCanonicalName();
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

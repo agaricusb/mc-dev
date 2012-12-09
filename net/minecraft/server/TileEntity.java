@@ -2,138 +2,232 @@ package net.minecraft.server;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
 
-public class TileEntity {
-
+public class TileEntity
+{
+    /**
+     * A HashMap storing string names of classes mapping to the actual java.lang.Class type.
+     */
     private static Map a = new HashMap();
+
+    /**
+     * A HashMap storing the classes and mapping to the string names (reverse of nameToClassMap).
+     */
     private static Map b = new HashMap();
+
+    /** The reference to the world. */
     protected World world;
+
+    /** The x coordinate of the tile entity. */
     public int x;
+
+    /** The y coordinate of the tile entity. */
     public int y;
+
+    /** The z coordinate of the tile entity. */
     public int z;
     protected boolean o;
     public int p = -1;
+
+    /** the Block type that this TileEntity is contained within */
     public Block q;
 
-    public TileEntity() {}
-
-    private static void a(Class oclass, String s) {
-        if (a.containsKey(s)) {
-            throw new IllegalArgumentException("Duplicate id: " + s);
-        } else {
-            a.put(s, oclass);
-            b.put(oclass, s);
+    /**
+     * Adds a new two-way mapping between the class and its string name in both hashmaps.
+     */
+    private static void a(Class par0Class, String par1Str)
+    {
+        if (a.containsKey(par1Str))
+        {
+            throw new IllegalArgumentException("Duplicate id: " + par1Str);
+        }
+        else
+        {
+            a.put(par1Str, par0Class);
+            b.put(par0Class, par1Str);
         }
     }
 
-    public void b(World world) {
-        this.world = world;
+    /**
+     * Sets the worldObj for this tileEntity.
+     */
+    public void b(World par1World)
+    {
+        this.world = par1World;
     }
 
-    public boolean o() {
+    public boolean o()
+    {
         return this.world != null;
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
-        this.x = nbttagcompound.getInt("x");
-        this.y = nbttagcompound.getInt("y");
-        this.z = nbttagcompound.getInt("z");
+    /**
+     * Reads a tile entity from NBT.
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        this.x = par1NBTTagCompound.getInt("x");
+        this.y = par1NBTTagCompound.getInt("y");
+        this.z = par1NBTTagCompound.getInt("z");
     }
 
-    public void b(NBTTagCompound nbttagcompound) {
-        String s = (String) b.get(this.getClass());
+    /**
+     * Writes a tile entity to NBT.
+     */
+    public void b(NBTTagCompound par1NBTTagCompound)
+    {
+        String var2 = (String) b.get(this.getClass());
 
-        if (s == null) {
+        if (var2 == null)
+        {
             throw new RuntimeException(this.getClass() + " is missing a mapping! This is a bug!");
-        } else {
-            nbttagcompound.setString("id", s);
-            nbttagcompound.setInt("x", this.x);
-            nbttagcompound.setInt("y", this.y);
-            nbttagcompound.setInt("z", this.z);
+        }
+        else
+        {
+            par1NBTTagCompound.setString("id", var2);
+            par1NBTTagCompound.setInt("x", this.x);
+            par1NBTTagCompound.setInt("y", this.y);
+            par1NBTTagCompound.setInt("z", this.z);
         }
     }
 
+    /**
+     * Allows the entity to update its state. Overridden in most subclasses, e.g. the mob spawner uses this to count
+     * ticks and creates a new spawn inside its implementation.
+     */
     public void g() {}
 
-    public static TileEntity c(NBTTagCompound nbttagcompound) {
-        TileEntity tileentity = null;
+    /**
+     * Creates a new entity and loads its data from the specified NBT.
+     */
+    public static TileEntity c(NBTTagCompound par0NBTTagCompound)
+    {
+        TileEntity var1 = null;
 
-        try {
-            Class oclass = (Class) a.get(nbttagcompound.getString("id"));
+        try
+        {
+            Class var2 = (Class) a.get(par0NBTTagCompound.getString("id"));
 
-            if (oclass != null) {
-                tileentity = (TileEntity) oclass.newInstance();
+            if (var2 != null)
+            {
+                var1 = (TileEntity)var2.newInstance();
             }
-        } catch (Exception exception) {
-            exception.printStackTrace();
+        }
+        catch (Exception var3)
+        {
+            var3.printStackTrace();
         }
 
-        if (tileentity != null) {
-            tileentity.a(nbttagcompound);
-        } else {
-            System.out.println("Skipping TileEntity with id " + nbttagcompound.getString("id"));
+        if (var1 != null)
+        {
+            var1.a(par0NBTTagCompound);
+        }
+        else
+        {
+            System.out.println("Skipping TileEntity with id " + par0NBTTagCompound.getString("id"));
         }
 
-        return tileentity;
+        return var1;
     }
 
-    public int p() {
-        if (this.p == -1) {
+    /**
+     * Returns block data at the location of this entity (client-only).
+     */
+    public int p()
+    {
+        if (this.p == -1)
+        {
             this.p = this.world.getData(this.x, this.y, this.z);
         }
 
         return this.p;
     }
 
-    public void update() {
-        if (this.world != null) {
+    /**
+     * Called when an the contents of an Inventory change, usually
+     */
+    public void update()
+    {
+        if (this.world != null)
+        {
             this.p = this.world.getData(this.x, this.y, this.z);
             this.world.b(this.x, this.y, this.z, this);
         }
     }
 
-    public Block q() {
-        if (this.q == null) {
+    /**
+     * Gets the block type at the location of this entity (client-only).
+     */
+    public Block q()
+    {
+        if (this.q == null)
+        {
             this.q = Block.byId[this.world.getTypeId(this.x, this.y, this.z)];
         }
 
         return this.q;
     }
 
-    public Packet getUpdatePacket() {
+    /**
+     * Overriden in a sign to provide the text.
+     */
+    public Packet getUpdatePacket()
+    {
         return null;
     }
 
-    public boolean r() {
+    /**
+     * returns true if tile entity is invalid, false otherwise
+     */
+    public boolean r()
+    {
         return this.o;
     }
 
-    public void w_() {
+    /**
+     * invalidates a tile entity
+     */
+    public void w_()
+    {
         this.o = true;
     }
 
-    public void s() {
+    /**
+     * validates a tile entity
+     */
+    public void s()
+    {
         this.o = false;
     }
 
-    public void b(int i, int j) {}
+    /**
+     * Called when a client event is received with the event number and argument, see World.sendClientEvent
+     */
+    public void b(int par1, int par2) {}
 
-    public void h() {
+    /**
+     * Causes the TileEntity to reset all it's cached values for it's container block, blockID, metaData and in the case
+     * of chests, the adjcacent chest check
+     */
+    public void h()
+    {
         this.q = null;
         this.p = -1;
     }
 
-    public void a(CrashReportSystemDetails crashreportsystemdetails) {
-        crashreportsystemdetails.a("Name", (Callable) (new CrashReportTileEntityName(this)));
-        CrashReportSystemDetails.a(crashreportsystemdetails, this.x, this.y, this.z, this.q.id, this.p);
+    public void a(CrashReportSystemDetails par1CrashReportCategory)
+    {
+        par1CrashReportCategory.a("Name", new CrashReportTileEntityName(this));
+        CrashReportSystemDetails.a(par1CrashReportCategory, this.x, this.y, this.z, this.q.id, this.p);
     }
 
-    static Map t() {
+    static Map t()
+    {
         return b;
     }
 
-    static {
+    static
+    {
         a(TileEntityFurnace.class, "Furnace");
         a(TileEntityChest.class, "Chest");
         a(TileEntityEnderChest.class, "EnderChest");

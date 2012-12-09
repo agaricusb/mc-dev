@@ -4,129 +4,172 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-public class ContainerEnchantTable extends Container {
-
+public class ContainerEnchantTable extends Container
+{
+    /** SlotEnchantmentTable object with ItemStack to be enchanted */
     public IInventory enchantSlots = new ContainerEnchantTableInventory(this, "Enchant", 1);
+
+    /** current world (for bookshelf counting) */
     private World world;
     private int x;
     private int y;
     private int z;
     private Random l = new Random();
+
+    /** used as seed for EnchantmentNameParts (see GuiEnchantment) */
     public long f;
+
+    /** 3-member array storing the enchantment levels of each slot */
     public int[] costs = new int[3];
 
-    public ContainerEnchantTable(PlayerInventory playerinventory, World world, int i, int j, int k) {
-        this.world = world;
-        this.x = i;
-        this.y = j;
-        this.z = k;
-        this.a((Slot) (new SlotEnchant(this, this.enchantSlots, 0, 25, 47)));
+    public ContainerEnchantTable(PlayerInventory par1InventoryPlayer, World par2World, int par3, int par4, int par5)
+    {
+        this.world = par2World;
+        this.x = par3;
+        this.y = par4;
+        this.z = par5;
+        this.a(new SlotEnchant(this, this.enchantSlots, 0, 25, 47));
+        int var6;
 
-        int l;
-
-        for (l = 0; l < 3; ++l) {
-            for (int i1 = 0; i1 < 9; ++i1) {
-                this.a(new Slot(playerinventory, i1 + l * 9 + 9, 8 + i1 * 18, 84 + l * 18));
+        for (var6 = 0; var6 < 3; ++var6)
+        {
+            for (int var7 = 0; var7 < 9; ++var7)
+            {
+                this.a(new Slot(par1InventoryPlayer, var7 + var6 * 9 + 9, 8 + var7 * 18, 84 + var6 * 18));
             }
         }
 
-        for (l = 0; l < 9; ++l) {
-            this.a(new Slot(playerinventory, l, 8 + l * 18, 142));
+        for (var6 = 0; var6 < 9; ++var6)
+        {
+            this.a(new Slot(par1InventoryPlayer, var6, 8 + var6 * 18, 142));
         }
     }
 
-    public void addSlotListener(ICrafting icrafting) {
-        super.addSlotListener(icrafting);
-        icrafting.setContainerData(this, 0, this.costs[0]);
-        icrafting.setContainerData(this, 1, this.costs[1]);
-        icrafting.setContainerData(this, 2, this.costs[2]);
+    public void addSlotListener(ICrafting par1ICrafting)
+    {
+        super.addSlotListener(par1ICrafting);
+        par1ICrafting.setContainerData(this, 0, this.costs[0]);
+        par1ICrafting.setContainerData(this, 1, this.costs[1]);
+        par1ICrafting.setContainerData(this, 2, this.costs[2]);
     }
 
-    public void b() {
+    /**
+     * Updates crafting matrix; called from onCraftMatrixChanged. Args: none
+     */
+    public void b()
+    {
         super.b();
 
-        for (int i = 0; i < this.listeners.size(); ++i) {
-            ICrafting icrafting = (ICrafting) this.listeners.get(i);
-
-            icrafting.setContainerData(this, 0, this.costs[0]);
-            icrafting.setContainerData(this, 1, this.costs[1]);
-            icrafting.setContainerData(this, 2, this.costs[2]);
+        for (int var1 = 0; var1 < this.listeners.size(); ++var1)
+        {
+            ICrafting var2 = (ICrafting)this.listeners.get(var1);
+            var2.setContainerData(this, 0, this.costs[0]);
+            var2.setContainerData(this, 1, this.costs[1]);
+            var2.setContainerData(this, 2, this.costs[2]);
         }
     }
 
-    public void a(IInventory iinventory) {
-        if (iinventory == this.enchantSlots) {
-            ItemStack itemstack = iinventory.getItem(0);
-            int i;
+    /**
+     * Callback for when the crafting matrix is changed.
+     */
+    public void a(IInventory par1IInventory)
+    {
+        if (par1IInventory == this.enchantSlots)
+        {
+            ItemStack var2 = par1IInventory.getItem(0);
+            int var3;
 
-            if (itemstack != null && itemstack.v()) {
+            if (var2 != null && var2.v())
+            {
                 this.f = this.l.nextLong();
-                if (!this.world.isStatic) {
-                    i = 0;
 
-                    int j;
+                if (!this.world.isStatic)
+                {
+                    var3 = 0;
+                    int var4;
 
-                    for (j = -1; j <= 1; ++j) {
-                        for (int k = -1; k <= 1; ++k) {
-                            if ((j != 0 || k != 0) && this.world.isEmpty(this.x + k, this.y, this.z + j) && this.world.isEmpty(this.x + k, this.y + 1, this.z + j)) {
-                                if (this.world.getTypeId(this.x + k * 2, this.y, this.z + j * 2) == Block.BOOKSHELF.id) {
-                                    ++i;
+                    for (var4 = -1; var4 <= 1; ++var4)
+                    {
+                        for (int var5 = -1; var5 <= 1; ++var5)
+                        {
+                            if ((var4 != 0 || var5 != 0) && this.world.isEmpty(this.x + var5, this.y, this.z + var4) && this.world.isEmpty(this.x + var5, this.y + 1, this.z + var4))
+                            {
+                                if (this.world.getTypeId(this.x + var5 * 2, this.y, this.z + var4 * 2) == Block.BOOKSHELF.id)
+                                {
+                                    ++var3;
                                 }
 
-                                if (this.world.getTypeId(this.x + k * 2, this.y + 1, this.z + j * 2) == Block.BOOKSHELF.id) {
-                                    ++i;
+                                if (this.world.getTypeId(this.x + var5 * 2, this.y + 1, this.z + var4 * 2) == Block.BOOKSHELF.id)
+                                {
+                                    ++var3;
                                 }
 
-                                if (k != 0 && j != 0) {
-                                    if (this.world.getTypeId(this.x + k * 2, this.y, this.z + j) == Block.BOOKSHELF.id) {
-                                        ++i;
+                                if (var5 != 0 && var4 != 0)
+                                {
+                                    if (this.world.getTypeId(this.x + var5 * 2, this.y, this.z + var4) == Block.BOOKSHELF.id)
+                                    {
+                                        ++var3;
                                     }
 
-                                    if (this.world.getTypeId(this.x + k * 2, this.y + 1, this.z + j) == Block.BOOKSHELF.id) {
-                                        ++i;
+                                    if (this.world.getTypeId(this.x + var5 * 2, this.y + 1, this.z + var4) == Block.BOOKSHELF.id)
+                                    {
+                                        ++var3;
                                     }
 
-                                    if (this.world.getTypeId(this.x + k, this.y, this.z + j * 2) == Block.BOOKSHELF.id) {
-                                        ++i;
+                                    if (this.world.getTypeId(this.x + var5, this.y, this.z + var4 * 2) == Block.BOOKSHELF.id)
+                                    {
+                                        ++var3;
                                     }
 
-                                    if (this.world.getTypeId(this.x + k, this.y + 1, this.z + j * 2) == Block.BOOKSHELF.id) {
-                                        ++i;
+                                    if (this.world.getTypeId(this.x + var5, this.y + 1, this.z + var4 * 2) == Block.BOOKSHELF.id)
+                                    {
+                                        ++var3;
                                     }
                                 }
                             }
                         }
                     }
 
-                    for (j = 0; j < 3; ++j) {
-                        this.costs[j] = EnchantmentManager.a(this.l, j, i, itemstack);
+                    for (var4 = 0; var4 < 3; ++var4)
+                    {
+                        this.costs[var4] = EnchantmentManager.a(this.l, var4, var3, var2);
                     }
 
                     this.b();
                 }
-            } else {
-                for (i = 0; i < 3; ++i) {
-                    this.costs[i] = 0;
+            }
+            else
+            {
+                for (var3 = 0; var3 < 3; ++var3)
+                {
+                    this.costs[var3] = 0;
                 }
             }
         }
     }
 
-    public boolean a(EntityHuman entityhuman, int i) {
-        ItemStack itemstack = this.enchantSlots.getItem(0);
+    /**
+     * enchants the item on the table using the specified slot; also deducts XP from player
+     */
+    public boolean a(EntityHuman par1EntityPlayer, int par2)
+    {
+        ItemStack var3 = this.enchantSlots.getItem(0);
 
-        if (this.costs[i] > 0 && itemstack != null && (entityhuman.expLevel >= this.costs[i] || entityhuman.abilities.canInstantlyBuild)) {
-            if (!this.world.isStatic) {
-                List list = EnchantmentManager.b(this.l, itemstack, this.costs[i]);
+        if (this.costs[par2] > 0 && var3 != null && (par1EntityPlayer.expLevel >= this.costs[par2] || par1EntityPlayer.abilities.canInstantlyBuild))
+        {
+            if (!this.world.isStatic)
+            {
+                List var4 = EnchantmentManager.b(this.l, var3, this.costs[par2]);
 
-                if (list != null) {
-                    entityhuman.levelDown(-this.costs[i]);
-                    Iterator iterator = list.iterator();
+                if (var4 != null)
+                {
+                    par1EntityPlayer.levelDown(-this.costs[par2]);
+                    Iterator var5 = var4.iterator();
 
-                    while (iterator.hasNext()) {
-                        EnchantmentInstance enchantmentinstance = (EnchantmentInstance) iterator.next();
-
-                        itemstack.addEnchantment(enchantmentinstance.enchantment, enchantmentinstance.level);
+                    while (var5.hasNext())
+                    {
+                        EnchantmentInstance var6 = (EnchantmentInstance)var5.next();
+                        var3.addEnchantment(var6.enchantment, var6.level);
                     }
 
                     this.a(this.enchantSlots);
@@ -134,65 +177,92 @@ public class ContainerEnchantTable extends Container {
             }
 
             return true;
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    public void b(EntityHuman entityhuman) {
-        super.b(entityhuman);
-        if (!this.world.isStatic) {
-            ItemStack itemstack = this.enchantSlots.splitWithoutUpdate(0);
+    /**
+     * Callback for when the crafting gui is closed.
+     */
+    public void b(EntityHuman par1EntityPlayer)
+    {
+        super.b(par1EntityPlayer);
 
-            if (itemstack != null) {
-                entityhuman.drop(itemstack);
+        if (!this.world.isStatic)
+        {
+            ItemStack var2 = this.enchantSlots.splitWithoutUpdate(0);
+
+            if (var2 != null)
+            {
+                par1EntityPlayer.drop(var2);
             }
         }
     }
 
-    public boolean a(EntityHuman entityhuman) {
-        return this.world.getTypeId(this.x, this.y, this.z) != Block.ENCHANTMENT_TABLE.id ? false : entityhuman.e((double) this.x + 0.5D, (double) this.y + 0.5D, (double) this.z + 0.5D) <= 64.0D;
+    public boolean a(EntityHuman par1EntityPlayer)
+    {
+        return this.world.getTypeId(this.x, this.y, this.z) != Block.ENCHANTMENT_TABLE.id ? false : par1EntityPlayer.e((double) this.x + 0.5D, (double) this.y + 0.5D, (double) this.z + 0.5D) <= 64.0D;
     }
 
-    public ItemStack b(EntityHuman entityhuman, int i) {
-        ItemStack itemstack = null;
-        Slot slot = (Slot) this.c.get(i);
+    /**
+     * Take a stack from the specified inventory slot.
+     */
+    public ItemStack b(EntityHuman par1EntityPlayer, int par2)
+    {
+        ItemStack var3 = null;
+        Slot var4 = (Slot)this.c.get(par2);
 
-        if (slot != null && slot.d()) {
-            ItemStack itemstack1 = slot.getItem();
+        if (var4 != null && var4.d())
+        {
+            ItemStack var5 = var4.getItem();
+            var3 = var5.cloneItemStack();
 
-            itemstack = itemstack1.cloneItemStack();
-            if (i == 0) {
-                if (!this.a(itemstack1, 1, 37, true)) {
+            if (par2 == 0)
+            {
+                if (!this.a(var5, 1, 37, true))
+                {
                     return null;
                 }
-            } else {
-                if (((Slot) this.c.get(0)).d() || !((Slot) this.c.get(0)).isAllowed(itemstack1)) {
+            }
+            else
+            {
+                if (((Slot)this.c.get(0)).d() || !((Slot)this.c.get(0)).isAllowed(var5))
+                {
                     return null;
                 }
 
-                if (itemstack1.hasTag() && itemstack1.count == 1) {
-                    ((Slot) this.c.get(0)).set(itemstack1.cloneItemStack());
-                    itemstack1.count = 0;
-                } else if (itemstack1.count >= 1) {
-                    ((Slot) this.c.get(0)).set(new ItemStack(itemstack1.id, 1, itemstack1.getData()));
-                    --itemstack1.count;
+                if (var5.hasTag() && var5.count == 1)
+                {
+                    ((Slot)this.c.get(0)).set(var5.cloneItemStack());
+                    var5.count = 0;
+                }
+                else if (var5.count >= 1)
+                {
+                    ((Slot)this.c.get(0)).set(new ItemStack(var5.id, 1, var5.getData()));
+                    --var5.count;
                 }
             }
 
-            if (itemstack1.count == 0) {
-                slot.set((ItemStack) null);
-            } else {
-                slot.e();
+            if (var5.count == 0)
+            {
+                var4.set((ItemStack) null);
+            }
+            else
+            {
+                var4.e();
             }
 
-            if (itemstack1.count == itemstack.count) {
+            if (var5.count == var3.count)
+            {
                 return null;
             }
 
-            slot.a(entityhuman, itemstack1);
+            var4.a(par1EntityPlayer, var5);
         }
 
-        return itemstack;
+        return var3;
     }
 }

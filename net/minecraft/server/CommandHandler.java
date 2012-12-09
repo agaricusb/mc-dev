@@ -9,120 +9,162 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-public class CommandHandler implements ICommandHandler {
-
+public class CommandHandler implements ICommandHandler
+{
+    /** Map of Strings to the ICommand objects they represent */
     private final Map a = new HashMap();
+
+    /** The set of ICommand objects currently loaded. */
     private final Set b = new HashSet();
 
-    public CommandHandler() {}
-
-    public void a(ICommandListener icommandlistener, String s) {
-        if (s.startsWith("/")) {
-            s = s.substring(1);
+    public void a(ICommandListener par1ICommandSender, String par2Str)
+    {
+        if (par2Str.startsWith("/"))
+        {
+            par2Str = par2Str.substring(1);
         }
 
-        String[] astring = s.split(" ");
-        String s1 = astring[0];
+        String[] var3 = par2Str.split(" ");
+        String var4 = var3[0];
+        var3 = a(var3);
+        ICommand var5 = (ICommand)this.a.get(var4);
+        int var6 = this.a(var5, var3);
 
-        astring = a(astring);
-        ICommand icommand = (ICommand) this.a.get(s1);
-        int i = this.a(icommand, astring);
-
-        try {
-            if (icommand == null) {
+        try
+        {
+            if (var5 == null)
+            {
                 throw new ExceptionUnknownCommand();
             }
 
-            if (icommand.b(icommandlistener)) {
-                if (i > -1) {
-                    EntityPlayer[] aentityplayer = PlayerSelector.getPlayers(icommandlistener, astring[i]);
-                    String s2 = astring[i];
-                    EntityPlayer[] aentityplayer1 = aentityplayer;
-                    int j = aentityplayer.length;
+            if (var5.b(par1ICommandSender))
+            {
+                if (var6 > -1)
+                {
+                    EntityPlayer[] var7 = PlayerSelector.getPlayers(par1ICommandSender, var3[var6]);
+                    String var8 = var3[var6];
+                    EntityPlayer[] var9 = var7;
+                    int var10 = var7.length;
 
-                    for (int k = 0; k < j; ++k) {
-                        EntityPlayer entityplayer = aentityplayer1[k];
+                    for (int var11 = 0; var11 < var10; ++var11)
+                    {
+                        EntityPlayer var12 = var9[var11];
+                        var3[var6] = var12.getLocalizedName();
 
-                        astring[i] = entityplayer.getLocalizedName();
-
-                        try {
-                            icommand.b(icommandlistener, astring);
-                        } catch (ExceptionPlayerNotFound exceptionplayernotfound) {
-                            icommandlistener.sendMessage("\u00A7c" + icommandlistener.a(exceptionplayernotfound.getMessage(), exceptionplayernotfound.a()));
+                        try
+                        {
+                            var5.b(par1ICommandSender, var3);
+                        }
+                        catch (ExceptionPlayerNotFound var14)
+                        {
+                            par1ICommandSender.sendMessage("\u00a7c" + par1ICommandSender.a(var14.getMessage(), var14.a()));
                         }
                     }
 
-                    astring[i] = s2;
-                } else {
-                    icommand.b(icommandlistener, astring);
+                    var3[var6] = var8;
                 }
-            } else {
-                icommandlistener.sendMessage("\u00A7cYou do not have permission to use this command.");
+                else
+                {
+                    var5.b(par1ICommandSender, var3);
+                }
             }
-        } catch (ExceptionUsage exceptionusage) {
-            icommandlistener.sendMessage("\u00A7c" + icommandlistener.a("commands.generic.usage", new Object[] { icommandlistener.a(exceptionusage.getMessage(), exceptionusage.a())}));
-        } catch (CommandException commandexception) {
-            icommandlistener.sendMessage("\u00A7c" + icommandlistener.a(commandexception.getMessage(), commandexception.a()));
-        } catch (Throwable throwable) {
-            icommandlistener.sendMessage("\u00A7c" + icommandlistener.a("commands.generic.exception", new Object[0]));
-            throwable.printStackTrace();
+            else
+            {
+                par1ICommandSender.sendMessage("\u00a7cYou do not have permission to use this command.");
+            }
+        }
+        catch (ExceptionUsage var15)
+        {
+            par1ICommandSender.sendMessage("\u00a7c" + par1ICommandSender.a("commands.generic.usage", new Object[]{par1ICommandSender.a(var15.getMessage(), var15.a())}));
+        }
+        catch (CommandException var16)
+        {
+            par1ICommandSender.sendMessage("\u00a7c" + par1ICommandSender.a(var16.getMessage(), var16.a()));
+        }
+        catch (Throwable var17)
+        {
+            par1ICommandSender.sendMessage("\u00a7c" + par1ICommandSender.a("commands.generic.exception", new Object[0]));
+            var17.printStackTrace();
         }
     }
 
-    public ICommand a(ICommand icommand) {
-        List list = icommand.b();
+    /**
+     * adds the command and any aliases it has to the internal map of available commands
+     */
+    public ICommand a(ICommand par1ICommand)
+    {
+        List var2 = par1ICommand.b();
+        this.a.put(par1ICommand.c(), par1ICommand);
+        this.b.add(par1ICommand);
 
-        this.a.put(icommand.c(), icommand);
-        this.b.add(icommand);
-        if (list != null) {
-            Iterator iterator = list.iterator();
+        if (var2 != null)
+        {
+            Iterator var3 = var2.iterator();
 
-            while (iterator.hasNext()) {
-                String s = (String) iterator.next();
-                ICommand icommand1 = (ICommand) this.a.get(s);
+            while (var3.hasNext())
+            {
+                String var4 = (String)var3.next();
+                ICommand var5 = (ICommand)this.a.get(var4);
 
-                if (icommand1 == null || !icommand1.c().equals(s)) {
-                    this.a.put(s, icommand);
+                if (var5 == null || !var5.c().equals(var4))
+                {
+                    this.a.put(var4, par1ICommand);
                 }
             }
         }
 
-        return icommand;
+        return par1ICommand;
     }
 
-    private static String[] a(String[] astring) {
-        String[] astring1 = new String[astring.length - 1];
+    /**
+     * creates a new array and sets elements 0..n-2 to be 0..n-1 of the input (n elements)
+     */
+    private static String[] a(String[] par0ArrayOfStr)
+    {
+        String[] var1 = new String[par0ArrayOfStr.length - 1];
 
-        for (int i = 1; i < astring.length; ++i) {
-            astring1[i - 1] = astring[i];
+        for (int var2 = 1; var2 < par0ArrayOfStr.length; ++var2)
+        {
+            var1[var2 - 1] = par0ArrayOfStr[var2];
         }
 
-        return astring1;
+        return var1;
     }
 
-    public List b(ICommandListener icommandlistener, String s) {
-        String[] astring = s.split(" ", -1);
-        String s1 = astring[0];
+    /**
+     * Performs a "begins with" string match on each token in par2. Only returns commands that par1 can use.
+     */
+    public List b(ICommandListener par1ICommandSender, String par2Str)
+    {
+        String[] var3 = par2Str.split(" ", -1);
+        String var4 = var3[0];
 
-        if (astring.length == 1) {
-            ArrayList arraylist = new ArrayList();
-            Iterator iterator = this.a.entrySet().iterator();
+        if (var3.length == 1)
+        {
+            ArrayList var8 = new ArrayList();
+            Iterator var6 = this.a.entrySet().iterator();
 
-            while (iterator.hasNext()) {
-                Entry entry = (Entry) iterator.next();
+            while (var6.hasNext())
+            {
+                Entry var7 = (Entry)var6.next();
 
-                if (CommandAbstract.a(s1, (String) entry.getKey()) && ((ICommand) entry.getValue()).b(icommandlistener)) {
-                    arraylist.add(entry.getKey());
+                if (CommandAbstract.a(var4, (String) var7.getKey()) && ((ICommand)var7.getValue()).b(par1ICommandSender))
+                {
+                    var8.add(var7.getKey());
                 }
             }
 
-            return arraylist;
-        } else {
-            if (astring.length > 1) {
-                ICommand icommand = (ICommand) this.a.get(s1);
+            return var8;
+        }
+        else
+        {
+            if (var3.length > 1)
+            {
+                ICommand var5 = (ICommand)this.a.get(var4);
 
-                if (icommand != null) {
-                    return icommand.a(icommandlistener, a(astring));
+                if (var5 != null)
+                {
+                    return var5.a(par1ICommandSender, a(var3));
                 }
             }
 
@@ -130,32 +172,51 @@ public class CommandHandler implements ICommandHandler {
         }
     }
 
-    public List a(ICommandListener icommandlistener) {
-        ArrayList arraylist = new ArrayList();
-        Iterator iterator = this.b.iterator();
+    /**
+     * returns all commands that the commandSender can use
+     */
+    public List a(ICommandListener par1ICommandSender)
+    {
+        ArrayList var2 = new ArrayList();
+        Iterator var3 = this.b.iterator();
 
-        while (iterator.hasNext()) {
-            ICommand icommand = (ICommand) iterator.next();
+        while (var3.hasNext())
+        {
+            ICommand var4 = (ICommand)var3.next();
 
-            if (icommand.b(icommandlistener)) {
-                arraylist.add(icommand);
+            if (var4.b(par1ICommandSender))
+            {
+                var2.add(var4);
             }
         }
 
-        return arraylist;
+        return var2;
     }
 
-    public Map a() {
+    /**
+     * returns a map of string to commads. All commands are returned, not just ones which someone has permission to use.
+     */
+    public Map a()
+    {
         return this.a;
     }
 
-    private int a(ICommand icommand, String[] astring) {
-        if (icommand == null) {
+    /**
+     * Return a command's first parameter index containing a valid username.
+     */
+    private int a(ICommand par1ICommand, String[] par2ArrayOfStr)
+    {
+        if (par1ICommand == null)
+        {
             return -1;
-        } else {
-            for (int i = 0; i < astring.length; ++i) {
-                if (icommand.a(i) && PlayerSelector.isList(astring[i])) {
-                    return i;
+        }
+        else
+        {
+            for (int var3 = 0; var3 < par2ArrayOfStr.length; ++var3)
+            {
+                if (par1ICommand.a(var3) && PlayerSelector.isList(par2ArrayOfStr[var3]))
+                {
+                    return var3;
                 }
             }
 

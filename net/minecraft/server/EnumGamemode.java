@@ -1,58 +1,89 @@
 package net.minecraft.server;
 
-public enum EnumGamemode {
-
-    NONE("NOT_SET", 0, -1, ""), SURVIVAL("SURVIVAL", 1, 0, "survival"), CREATIVE("CREATIVE", 2, 1, "creative"), ADVENTURE("ADVENTURE", 3, 2, "adventure");
+public enum EnumGamemode
+{
+    NONE(-1, ""),
+    SURVIVAL(0, "survival"),
+    CREATIVE(1, "creative"),
+    ADVENTURE(2, "adventure");
     int e;
     String f;
 
-    private static final EnumGamemode[] g = new EnumGamemode[] { NONE, SURVIVAL, CREATIVE, ADVENTURE};
-
-    private EnumGamemode(String s, int i, int j, String s1) {
-        this.e = j;
-        this.f = s1;
+    private EnumGamemode(int par3, String par4Str)
+    {
+        this.e = par3;
+        this.f = par4Str;
     }
 
-    public int a() {
+    /**
+     * Returns the ID of this game type
+     */
+    public int a()
+    {
         return this.e;
     }
 
-    public String b() {
+    /**
+     * Returns the name of this game type
+     */
+    public String b()
+    {
         return this.f;
     }
 
-    public void a(PlayerAbilities playerabilities) {
-        if (this == CREATIVE) {
-            playerabilities.canFly = true;
-            playerabilities.canInstantlyBuild = true;
-            playerabilities.isInvulnerable = true;
-        } else {
-            playerabilities.canFly = false;
-            playerabilities.canInstantlyBuild = false;
-            playerabilities.isInvulnerable = false;
-            playerabilities.isFlying = false;
+    /**
+     * Configures the player capabilities based on the game type
+     */
+    public void a(PlayerAbilities par1PlayerCapabilities)
+    {
+        if (this == CREATIVE)
+        {
+            par1PlayerCapabilities.canFly = true;
+            par1PlayerCapabilities.canInstantlyBuild = true;
+            par1PlayerCapabilities.isInvulnerable = true;
+        }
+        else
+        {
+            par1PlayerCapabilities.canFly = false;
+            par1PlayerCapabilities.canInstantlyBuild = false;
+            par1PlayerCapabilities.isInvulnerable = false;
+            par1PlayerCapabilities.isFlying = false;
         }
 
-        playerabilities.mayBuild = !this.isAdventure();
+        par1PlayerCapabilities.mayBuild = !this.isAdventure();
     }
 
-    public boolean isAdventure() {
+    /**
+     * Returns true if this is the ADVENTURE game type
+     */
+    public boolean isAdventure()
+    {
         return this == ADVENTURE;
     }
 
-    public boolean d() {
+    /**
+     * Returns true if this is the CREATIVE game type
+     */
+    public boolean d()
+    {
         return this == CREATIVE;
     }
 
-    public static EnumGamemode a(int i) {
-        EnumGamemode[] aenumgamemode = values();
-        int j = aenumgamemode.length;
+    /**
+     * Returns the game type with the specified ID, or SURVIVAL if none found. Args: id
+     */
+    public static EnumGamemode a(int par0)
+    {
+        EnumGamemode[] var1 = values();
+        int var2 = var1.length;
 
-        for (int k = 0; k < j; ++k) {
-            EnumGamemode enumgamemode = aenumgamemode[k];
+        for (int var3 = 0; var3 < var2; ++var3)
+        {
+            EnumGamemode var4 = var1[var3];
 
-            if (enumgamemode.e == i) {
-                return enumgamemode;
+            if (var4.e == par0)
+            {
+                return var4;
             }
         }
 

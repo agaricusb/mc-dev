@@ -1,35 +1,51 @@
 package net.minecraft.server;
 
-public class ItemMilkBucket extends Item {
-
-    public ItemMilkBucket(int i) {
-        super(i);
+public class ItemMilkBucket extends Item
+{
+    public ItemMilkBucket(int par1)
+    {
+        super(par1);
         this.d(1);
         this.a(CreativeModeTab.f);
     }
 
-    public ItemStack b(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        if (!entityhuman.abilities.canInstantlyBuild) {
-            --itemstack.count;
+    public ItemStack b(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        if (!par3EntityPlayer.abilities.canInstantlyBuild)
+        {
+            --par1ItemStack.count;
         }
 
-        if (!world.isStatic) {
-            entityhuman.by();
+        if (!par2World.isStatic)
+        {
+            par3EntityPlayer.by();
         }
 
-        return itemstack.count <= 0 ? new ItemStack(Item.BUCKET) : itemstack;
+        return par1ItemStack.count <= 0 ? new ItemStack(Item.BUCKET) : par1ItemStack;
     }
 
-    public int a(ItemStack itemstack) {
+    /**
+     * How long it takes to use or consume an item
+     */
+    public int a(ItemStack par1ItemStack)
+    {
         return 32;
     }
 
-    public EnumAnimation d_(ItemStack itemstack) {
+    /**
+     * returns the action that specifies what animation to play when the items is being used
+     */
+    public EnumAnimation d_(ItemStack par1ItemStack)
+    {
         return EnumAnimation.c;
     }
 
-    public ItemStack a(ItemStack itemstack, World world, EntityHuman entityhuman) {
-        entityhuman.a(itemstack, this.a(itemstack));
-        return itemstack;
+    /**
+     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
+     */
+    public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
+    {
+        par3EntityPlayer.a(par1ItemStack, this.a(par1ItemStack));
+        return par1ItemStack;
     }
 }

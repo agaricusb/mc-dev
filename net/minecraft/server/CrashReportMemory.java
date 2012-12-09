@@ -2,27 +2,34 @@ package net.minecraft.server;
 
 import java.util.concurrent.Callable;
 
-class CrashReportMemory implements Callable {
-
+class CrashReportMemory implements Callable
+{
+    /** Reference to the CrashReport object. */
     final CrashReport a;
 
-    CrashReportMemory(CrashReport crashreport) {
-        this.a = crashreport;
+    CrashReportMemory(CrashReport par1CrashReport)
+    {
+        this.a = par1CrashReport;
     }
 
-    public String a() {
-        Runtime runtime = Runtime.getRuntime();
-        long i = runtime.maxMemory();
-        long j = runtime.totalMemory();
-        long k = runtime.freeMemory();
-        long l = i / 1024L / 1024L;
-        long i1 = j / 1024L / 1024L;
-        long j1 = k / 1024L / 1024L;
-
-        return k + " bytes (" + j1 + " MB) / " + j + " bytes (" + i1 + " MB) up to " + i + " bytes (" + l + " MB)";
+    /**
+     * Returns the memory information as a String.  Includes the Free Memory in bytes and MB, Total Memory in bytes and
+     * MB, and Max Memory in Bytes and MB.
+     */
+    public String a()
+    {
+        Runtime var1 = Runtime.getRuntime();
+        long var2 = var1.maxMemory();
+        long var4 = var1.totalMemory();
+        long var6 = var1.freeMemory();
+        long var8 = var2 / 1024L / 1024L;
+        long var10 = var4 / 1024L / 1024L;
+        long var12 = var6 / 1024L / 1024L;
+        return var6 + " bytes (" + var12 + " MB) / " + var4 + " bytes (" + var10 + " MB) up to " + var2 + " bytes (" + var8 + " MB)";
     }
 
-    public Object call() {
+    public Object call()
+    {
         return this.a();
     }
 }

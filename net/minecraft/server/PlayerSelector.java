@@ -7,203 +7,249 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PlayerSelector {
-
+public class PlayerSelector
+{
     private static final Pattern a = Pattern.compile("^@([parf])(?:\\[([\\w=,-]*)\\])?$");
     private static final Pattern b = Pattern.compile("\\G(-?\\w*)(?:$|,)");
     private static final Pattern c = Pattern.compile("\\G(\\w{1,2})=(-?\\w+)(?:$|,)");
 
-    public static EntityPlayer getPlayer(ICommandListener icommandlistener, String s) {
-        EntityPlayer[] aentityplayer = getPlayers(icommandlistener, s);
-
-        return aentityplayer != null && aentityplayer.length == 1 ? aentityplayer[0] : null;
+    public static EntityPlayer getPlayer(ICommandListener par0ICommandSender, String par1Str)
+    {
+        EntityPlayer[] var2 = getPlayers(par0ICommandSender, par1Str);
+        return var2 != null && var2.length == 1 ? var2[0] : null;
     }
 
-    public static String getPlayerNames(ICommandListener icommandlistener, String s) {
-        EntityPlayer[] aentityplayer = getPlayers(icommandlistener, s);
+    public static String getPlayerNames(ICommandListener par0ICommandSender, String par1Str)
+    {
+        EntityPlayer[] var2 = getPlayers(par0ICommandSender, par1Str);
 
-        if (aentityplayer != null && aentityplayer.length != 0) {
-            String[] astring = new String[aentityplayer.length];
+        if (var2 != null && var2.length != 0)
+        {
+            String[] var3 = new String[var2.length];
 
-            for (int i = 0; i < astring.length; ++i) {
-                astring[i] = aentityplayer[i].getLocalizedName();
+            for (int var4 = 0; var4 < var3.length; ++var4)
+            {
+                var3[var4] = var2[var4].getLocalizedName();
             }
 
-            return CommandAbstract.a((Object[]) astring);
-        } else {
+            return CommandAbstract.a(var3);
+        }
+        else
+        {
             return null;
         }
     }
 
-    public static EntityPlayer[] getPlayers(ICommandListener icommandlistener, String s) {
-        Matcher matcher = a.matcher(s);
+    public static EntityPlayer[] getPlayers(ICommandListener par0ICommandSender, String par1Str)
+    {
+        Matcher var2 = a.matcher(par1Str);
 
-        if (matcher.matches()) {
-            Map map = h(matcher.group(2));
-            String s1 = matcher.group(1);
-            int i = c(s1);
-            int j = d(s1);
-            int k = f(s1);
-            int l = e(s1);
-            int i1 = g(s1);
-            int j1 = EnumGamemode.NONE.a();
-            ChunkCoordinates chunkcoordinates = icommandlistener.b();
+        if (var2.matches())
+        {
+            Map var3 = h(var2.group(2));
+            String var4 = var2.group(1);
+            int var5 = c(var4);
+            int var6 = d(var4);
+            int var7 = f(var4);
+            int var8 = e(var4);
+            int var9 = g(var4);
+            int var10 = EnumGamemode.NONE.a();
+            ChunkCoordinates var11 = par0ICommandSender.b();
 
-            if (map.containsKey("rm")) {
-                i = MathHelper.a((String) map.get("rm"), i);
+            if (var3.containsKey("rm"))
+            {
+                var5 = MathHelper.a((String) var3.get("rm"), var5);
             }
 
-            if (map.containsKey("r")) {
-                j = MathHelper.a((String) map.get("r"), j);
+            if (var3.containsKey("r"))
+            {
+                var6 = MathHelper.a((String) var3.get("r"), var6);
             }
 
-            if (map.containsKey("lm")) {
-                k = MathHelper.a((String) map.get("lm"), k);
+            if (var3.containsKey("lm"))
+            {
+                var7 = MathHelper.a((String) var3.get("lm"), var7);
             }
 
-            if (map.containsKey("l")) {
-                l = MathHelper.a((String) map.get("l"), l);
+            if (var3.containsKey("l"))
+            {
+                var8 = MathHelper.a((String) var3.get("l"), var8);
             }
 
-            if (map.containsKey("x")) {
-                chunkcoordinates.x = MathHelper.a((String) map.get("x"), chunkcoordinates.x);
+            if (var3.containsKey("x"))
+            {
+                var11.x = MathHelper.a((String) var3.get("x"), var11.x);
             }
 
-            if (map.containsKey("y")) {
-                chunkcoordinates.y = MathHelper.a((String) map.get("y"), chunkcoordinates.y);
+            if (var3.containsKey("y"))
+            {
+                var11.y = MathHelper.a((String) var3.get("y"), var11.y);
             }
 
-            if (map.containsKey("z")) {
-                chunkcoordinates.z = MathHelper.a((String) map.get("z"), chunkcoordinates.z);
+            if (var3.containsKey("z"))
+            {
+                var11.z = MathHelper.a((String) var3.get("z"), var11.z);
             }
 
-            if (map.containsKey("m")) {
-                j1 = MathHelper.a((String) map.get("m"), j1);
+            if (var3.containsKey("m"))
+            {
+                var10 = MathHelper.a((String) var3.get("m"), var10);
             }
 
-            if (map.containsKey("c")) {
-                i1 = MathHelper.a((String) map.get("c"), i1);
+            if (var3.containsKey("c"))
+            {
+                var9 = MathHelper.a((String) var3.get("c"), var9);
             }
 
-            List list;
+            List var12;
 
-            if (!s1.equals("p") && !s1.equals("a")) {
-                if (!s1.equals("r")) {
+            if (!var4.equals("p") && !var4.equals("a"))
+            {
+                if (!var4.equals("r"))
+                {
                     return null;
-                } else {
-                    list = MinecraftServer.getServer().getServerConfigurationManager().a(chunkcoordinates, i, j, 0, j1, k, l);
-                    Collections.shuffle(list);
-                    list = list.subList(0, Math.min(i1, list.size()));
-                    return list != null && !list.isEmpty() ? (EntityPlayer[]) list.toArray(new EntityPlayer[0]) : new EntityPlayer[0];
                 }
-            } else {
-                list = MinecraftServer.getServer().getServerConfigurationManager().a(chunkcoordinates, i, j, i1, j1, k, l);
-                return list != null && !list.isEmpty() ? (EntityPlayer[]) list.toArray(new EntityPlayer[0]) : new EntityPlayer[0];
+                else
+                {
+                    var12 = MinecraftServer.getServer().getServerConfigurationManager().a(var11, var5, var6, 0, var10, var7, var8);
+                    Collections.shuffle(var12);
+                    var12 = var12.subList(0, Math.min(var9, var12.size()));
+                    return var12 != null && !var12.isEmpty() ? (EntityPlayer[])var12.toArray(new EntityPlayer[0]) : new EntityPlayer[0];
+                }
             }
-        } else {
+            else
+            {
+                var12 = MinecraftServer.getServer().getServerConfigurationManager().a(var11, var5, var6, var9, var10, var7, var8);
+                return var12 != null && !var12.isEmpty() ? (EntityPlayer[])var12.toArray(new EntityPlayer[0]) : new EntityPlayer[0];
+            }
+        }
+        else
+        {
             return null;
         }
     }
 
-    public static boolean isList(String s) {
-        Matcher matcher = a.matcher(s);
+    public static boolean isList(String par0Str)
+    {
+        Matcher var1 = a.matcher(par0Str);
 
-        if (matcher.matches()) {
-            Map map = h(matcher.group(2));
-            String s1 = matcher.group(1);
-            int i = g(s1);
+        if (var1.matches())
+        {
+            Map var2 = h(var1.group(2));
+            String var3 = var1.group(1);
+            int var4 = g(var3);
 
-            if (map.containsKey("c")) {
-                i = MathHelper.a((String) map.get("c"), i);
+            if (var2.containsKey("c"))
+            {
+                var4 = MathHelper.a((String) var2.get("c"), var4);
             }
 
-            return i != 1;
-        } else {
+            return var4 != 1;
+        }
+        else
+        {
             return false;
         }
     }
 
-    public static boolean isPattern(String s, String s1) {
-        Matcher matcher = a.matcher(s);
+    public static boolean isPattern(String par0Str, String par1Str)
+    {
+        Matcher var2 = a.matcher(par0Str);
 
-        if (!matcher.matches()) {
+        if (!var2.matches())
+        {
             return false;
-        } else {
-            String s2 = matcher.group(1);
-
-            return s1 == null || s1.equals(s2);
+        }
+        else
+        {
+            String var3 = var2.group(1);
+            return par1Str == null || par1Str.equals(var3);
         }
     }
 
-    public static boolean isPattern(String s) {
-        return isPattern(s, (String) null);
+    public static boolean isPattern(String par0Str)
+    {
+        return isPattern(par0Str, (String) null);
     }
 
-    private static final int c(String s) {
+    private static final int c(String par0Str)
+    {
         return 0;
     }
 
-    private static final int d(String s) {
+    private static final int d(String par0Str)
+    {
         return 0;
     }
 
-    private static final int e(String s) {
+    private static final int e(String par0Str)
+    {
         return Integer.MAX_VALUE;
     }
 
-    private static final int f(String s) {
+    private static final int f(String par0Str)
+    {
         return 0;
     }
 
-    private static final int g(String s) {
-        return s.equals("a") ? 0 : 1;
+    private static final int g(String par0Str)
+    {
+        return par0Str.equals("a") ? 0 : 1;
     }
 
-    private static Map h(String s) {
-        HashMap hashmap = new HashMap();
+    private static Map h(String par0Str)
+    {
+        HashMap var1 = new HashMap();
 
-        if (s == null) {
-            return hashmap;
-        } else {
-            Matcher matcher = b.matcher(s);
-            int i = 0;
+        if (par0Str == null)
+        {
+            return var1;
+        }
+        else
+        {
+            Matcher var2 = b.matcher(par0Str);
+            int var3 = 0;
+            int var4;
 
-            int j;
+            for (var4 = -1; var2.find(); var4 = var2.end())
+            {
+                String var5 = null;
 
-            for (j = -1; matcher.find(); j = matcher.end()) {
-                String s1 = null;
+                switch (var3++)
+                {
+                    case 0:
+                        var5 = "x";
+                        break;
 
-                switch (i++) {
-                case 0:
-                    s1 = "x";
-                    break;
+                    case 1:
+                        var5 = "y";
+                        break;
 
-                case 1:
-                    s1 = "y";
-                    break;
+                    case 2:
+                        var5 = "z";
+                        break;
 
-                case 2:
-                    s1 = "z";
-                    break;
-
-                case 3:
-                    s1 = "r";
+                    case 3:
+                        var5 = "r";
                 }
 
-                if (s1 != null && matcher.group(1).length() > 0) {
-                    hashmap.put(s1, matcher.group(1));
-                }
-            }
-
-            if (j < s.length()) {
-                matcher = c.matcher(j == -1 ? s : s.substring(j));
-
-                while (matcher.find()) {
-                    hashmap.put(matcher.group(1), matcher.group(2));
+                if (var5 != null && var2.group(1).length() > 0)
+                {
+                    var1.put(var5, var2.group(1));
                 }
             }
 
-            return hashmap;
+            if (var4 < par0Str.length())
+            {
+                var2 = c.matcher(var4 == -1 ? par0Str : par0Str.substring(var4));
+
+                while (var2.find())
+                {
+                    var1.put(var2.group(1), var2.group(2));
+                }
+            }
+
+            return var1;
         }
     }
 }

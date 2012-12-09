@@ -1,317 +1,481 @@
 package net.minecraft.server;
 
-public class Navigation {
-
+public class Navigation
+{
     private EntityLiving a;
     private World b;
+
+    /** The PathEntity being followed. */
     private PathEntity c;
     private float d;
+
+    /**
+     * The number of blocks (extra) +/- in each axis that get pulled out as cache for the pathfinder's search space
+     */
     private float e;
     private boolean f = false;
+
+    /** Time, in number of ticks, following the current path */
     private int g;
+
+    /**
+     * The time when the last position check was done (to detect successful movement)
+     */
     private int h;
+
+    /**
+     * Coordinates of the entity's position last time a check was done (part of monitoring getting 'stuck')
+     */
     private Vec3D i = Vec3D.a(0.0D, 0.0D, 0.0D);
+
+    /**
+     * Specifically, if a wooden door block is even considered to be passable by the pathfinder
+     */
     private boolean j = true;
+
+    /** If door blocks are considered passable even when closed */
     private boolean k = false;
+
+    /** If water blocks are avoided (at least by the pathfinder) */
     private boolean l = false;
+
+    /**
+     * If the entity can swim. Swimming AI enables this and the pathfinder will also cause the entity to swim straight
+     * upwards when underwater
+     */
     private boolean m = false;
 
-    public Navigation(EntityLiving entityliving, World world, float f) {
-        this.a = entityliving;
-        this.b = world;
-        this.e = f;
+    public Navigation(EntityLiving par1EntityLiving, World par2World, float par3)
+    {
+        this.a = par1EntityLiving;
+        this.b = par2World;
+        this.e = par3;
     }
 
-    public void a(boolean flag) {
-        this.l = flag;
+    public void a(boolean par1)
+    {
+        this.l = par1;
     }
 
-    public boolean a() {
+    public boolean a()
+    {
         return this.l;
     }
 
-    public void b(boolean flag) {
-        this.k = flag;
+    public void b(boolean par1)
+    {
+        this.k = par1;
     }
 
-    public void c(boolean flag) {
-        this.j = flag;
+    /**
+     * Sets if the entity can enter open doors
+     */
+    public void c(boolean par1)
+    {
+        this.j = par1;
     }
 
-    public boolean c() {
+    /**
+     * Returns true if the entity can break doors, false otherwise
+     */
+    public boolean c()
+    {
         return this.k;
     }
 
-    public void d(boolean flag) {
-        this.f = flag;
+    /**
+     * Sets if the path should avoid sunlight
+     */
+    public void d(boolean par1)
+    {
+        this.f = par1;
     }
 
-    public void a(float f) {
-        this.d = f;
+    /**
+     * Sets the speed
+     */
+    public void a(float par1)
+    {
+        this.d = par1;
     }
 
-    public void e(boolean flag) {
-        this.m = flag;
+    /**
+     * Sets if the entity can swim
+     */
+    public void e(boolean par1)
+    {
+        this.m = par1;
     }
 
-    public PathEntity a(double d0, double d1, double d2) {
-        return !this.k() ? null : this.b.a(this.a, MathHelper.floor(d0), (int) d1, MathHelper.floor(d2), this.e, this.j, this.k, this.l, this.m);
+    /**
+     * Returns the path to the given coordinates
+     */
+    public PathEntity a(double par1, double par3, double par5)
+    {
+        return !this.k() ? null : this.b.a(this.a, MathHelper.floor(par1), (int) par3, MathHelper.floor(par5), this.e, this.j, this.k, this.l, this.m);
     }
 
-    public boolean a(double d0, double d1, double d2, float f) {
-        PathEntity pathentity = this.a((double) MathHelper.floor(d0), (double) ((int) d1), (double) MathHelper.floor(d2));
-
-        return this.a(pathentity, f);
+    /**
+     * Try to find and set a path to XYZ. Returns true if successful.
+     */
+    public boolean a(double par1, double par3, double par5, float par7)
+    {
+        PathEntity var8 = this.a((double) MathHelper.floor(par1), (double) ((int) par3), (double) MathHelper.floor(par5));
+        return this.a(var8, par7);
     }
 
-    public PathEntity a(EntityLiving entityliving) {
-        return !this.k() ? null : this.b.findPath(this.a, entityliving, this.e, this.j, this.k, this.l, this.m);
+    /**
+     * Returns the path to the given EntityLiving
+     */
+    public PathEntity a(EntityLiving par1EntityLiving)
+    {
+        return !this.k() ? null : this.b.findPath(this.a, par1EntityLiving, this.e, this.j, this.k, this.l, this.m);
     }
 
-    public boolean a(EntityLiving entityliving, float f) {
-        PathEntity pathentity = this.a(entityliving);
-
-        return pathentity != null ? this.a(pathentity, f) : false;
+    /**
+     * Try to find and set a path to EntityLiving. Returns true if successful.
+     */
+    public boolean a(EntityLiving par1EntityLiving, float par2)
+    {
+        PathEntity var3 = this.a(par1EntityLiving);
+        return var3 != null ? this.a(var3, par2) : false;
     }
 
-    public boolean a(PathEntity pathentity, float f) {
-        if (pathentity == null) {
+    /**
+     * sets the active path data if path is 100% unique compared to old path, checks to adjust path for sun avoiding
+     * ents and stores end coords
+     */
+    public boolean a(PathEntity par1PathEntity, float par2)
+    {
+        if (par1PathEntity == null)
+        {
             this.c = null;
             return false;
-        } else {
-            if (!pathentity.a(this.c)) {
-                this.c = pathentity;
+        }
+        else
+        {
+            if (!par1PathEntity.a(this.c))
+            {
+                this.c = par1PathEntity;
             }
 
-            if (this.f) {
+            if (this.f)
+            {
                 this.m();
             }
 
-            if (this.c.d() == 0) {
+            if (this.c.d() == 0)
+            {
                 return false;
-            } else {
-                this.d = f;
-                Vec3D vec3d = this.i();
-
+            }
+            else
+            {
+                this.d = par2;
+                Vec3D var3 = this.i();
                 this.h = this.g;
-                this.i.c = vec3d.c;
-                this.i.d = vec3d.d;
-                this.i.e = vec3d.e;
+                this.i.c = var3.c;
+                this.i.d = var3.d;
+                this.i.e = var3.e;
                 return true;
             }
         }
     }
 
-    public PathEntity d() {
+    /**
+     * gets the actively used PathEntity
+     */
+    public PathEntity d()
+    {
         return this.c;
     }
 
-    public void e() {
+    public void e()
+    {
         ++this.g;
-        if (!this.f()) {
-            if (this.k()) {
+
+        if (!this.f())
+        {
+            if (this.k())
+            {
                 this.h();
             }
 
-            if (!this.f()) {
-                Vec3D vec3d = this.c.a((Entity) this.a);
+            if (!this.f())
+            {
+                Vec3D var1 = this.c.a(this.a);
 
-                if (vec3d != null) {
-                    this.a.getControllerMove().a(vec3d.c, vec3d.d, vec3d.e, this.d);
+                if (var1 != null)
+                {
+                    this.a.getControllerMove().a(var1.c, var1.d, var1.e, this.d);
                 }
             }
         }
     }
 
-    private void h() {
-        Vec3D vec3d = this.i();
-        int i = this.c.d();
+    private void h()
+    {
+        Vec3D var1 = this.i();
+        int var2 = this.c.d();
 
-        for (int j = this.c.e(); j < this.c.d(); ++j) {
-            if (this.c.a(j).b != (int) vec3d.d) {
-                i = j;
+        for (int var3 = this.c.e(); var3 < this.c.d(); ++var3)
+        {
+            if (this.c.a(var3).b != (int)var1.d)
+            {
+                var2 = var3;
                 break;
             }
         }
 
-        float f = this.a.width * this.a.width;
+        float var8 = this.a.width * this.a.width;
+        int var4;
 
-        int k;
-
-        for (k = this.c.e(); k < i; ++k) {
-            if (vec3d.distanceSquared(this.c.a(this.a, k)) < (double) f) {
-                this.c.c(k + 1);
+        for (var4 = this.c.e(); var4 < var2; ++var4)
+        {
+            if (var1.distanceSquared(this.c.a(this.a, var4)) < (double)var8)
+            {
+                this.c.c(var4 + 1);
             }
         }
 
-        k = MathHelper.f(this.a.width);
-        int l = (int) this.a.length + 1;
-        int i1 = k;
+        var4 = MathHelper.f(this.a.width);
+        int var5 = (int)this.a.length + 1;
+        int var6 = var4;
 
-        for (int j1 = i - 1; j1 >= this.c.e(); --j1) {
-            if (this.a(vec3d, this.c.a(this.a, j1), k, l, i1)) {
-                this.c.c(j1);
+        for (int var7 = var2 - 1; var7 >= this.c.e(); --var7)
+        {
+            if (this.a(var1, this.c.a(this.a, var7), var4, var5, var6))
+            {
+                this.c.c(var7);
                 break;
             }
         }
 
-        if (this.g - this.h > 100) {
-            if (vec3d.distanceSquared(this.i) < 2.25D) {
+        if (this.g - this.h > 100)
+        {
+            if (var1.distanceSquared(this.i) < 2.25D)
+            {
                 this.g();
             }
 
             this.h = this.g;
-            this.i.c = vec3d.c;
-            this.i.d = vec3d.d;
-            this.i.e = vec3d.e;
+            this.i.c = var1.c;
+            this.i.d = var1.d;
+            this.i.e = var1.e;
         }
     }
 
-    public boolean f() {
+    /**
+     * If null path or reached the end
+     */
+    public boolean f()
+    {
         return this.c == null || this.c.b();
     }
 
-    public void g() {
+    /**
+     * sets active PathEntity to null
+     */
+    public void g()
+    {
         this.c = null;
     }
 
-    private Vec3D i() {
+    private Vec3D i()
+    {
         return this.b.getVec3DPool().create(this.a.locX, (double) this.j(), this.a.locZ);
     }
 
-    private int j() {
-        if (this.a.H() && this.m) {
-            int i = (int) this.a.boundingBox.b;
-            int j = this.b.getTypeId(MathHelper.floor(this.a.locX), i, MathHelper.floor(this.a.locZ));
-            int k = 0;
+    /**
+     * Gets the safe pathing Y position for the entity depending on if it can path swim or not
+     */
+    private int j()
+    {
+        if (this.a.H() && this.m)
+        {
+            int var1 = (int)this.a.boundingBox.b;
+            int var2 = this.b.getTypeId(MathHelper.floor(this.a.locX), var1, MathHelper.floor(this.a.locZ));
+            int var3 = 0;
 
-            do {
-                if (j != Block.WATER.id && j != Block.STATIONARY_WATER.id) {
-                    return i;
+            do
+            {
+                if (var2 != Block.WATER.id && var2 != Block.STATIONARY_WATER.id)
+                {
+                    return var1;
                 }
 
-                ++i;
-                j = this.b.getTypeId(MathHelper.floor(this.a.locX), i, MathHelper.floor(this.a.locZ));
-                ++k;
-            } while (k <= 16);
+                ++var1;
+                var2 = this.b.getTypeId(MathHelper.floor(this.a.locX), var1, MathHelper.floor(this.a.locZ));
+                ++var3;
+            }
+            while (var3 <= 16);
 
-            return (int) this.a.boundingBox.b;
-        } else {
-            return (int) (this.a.boundingBox.b + 0.5D);
+            return (int)this.a.boundingBox.b;
+        }
+        else
+        {
+            return (int)(this.a.boundingBox.b + 0.5D);
         }
     }
 
-    private boolean k() {
+    /**
+     * If on ground or swimming and can swim
+     */
+    private boolean k()
+    {
         return this.a.onGround || this.m && this.l();
     }
 
-    private boolean l() {
+    /**
+     * Returns true if the entity is in water or lava, false otherwise
+     */
+    private boolean l()
+    {
         return this.a.H() || this.a.J();
     }
 
-    private void m() {
-        if (!this.b.k(MathHelper.floor(this.a.locX), (int) (this.a.boundingBox.b + 0.5D), MathHelper.floor(this.a.locZ))) {
-            for (int i = 0; i < this.c.d(); ++i) {
-                PathPoint pathpoint = this.c.a(i);
+    /**
+     * Trims path data from the end to the first sun covered block
+     */
+    private void m()
+    {
+        if (!this.b.k(MathHelper.floor(this.a.locX), (int) (this.a.boundingBox.b + 0.5D), MathHelper.floor(this.a.locZ)))
+        {
+            for (int var1 = 0; var1 < this.c.d(); ++var1)
+            {
+                PathPoint var2 = this.c.a(var1);
 
-                if (this.b.k(pathpoint.a, pathpoint.b, pathpoint.c)) {
-                    this.c.b(i - 1);
+                if (this.b.k(var2.a, var2.b, var2.c))
+                {
+                    this.c.b(var1 - 1);
                     return;
                 }
             }
         }
     }
 
-    private boolean a(Vec3D vec3d, Vec3D vec3d1, int i, int j, int k) {
-        int l = MathHelper.floor(vec3d.c);
-        int i1 = MathHelper.floor(vec3d.e);
-        double d0 = vec3d1.c - vec3d.c;
-        double d1 = vec3d1.e - vec3d.e;
-        double d2 = d0 * d0 + d1 * d1;
+    /**
+     * Returns true when an entity of specified size could safely walk in a straight line between the two points. Args:
+     * pos1, pos2, entityXSize, entityYSize, entityZSize
+     */
+    private boolean a(Vec3D par1Vec3, Vec3D par2Vec3, int par3, int par4, int par5)
+    {
+        int var6 = MathHelper.floor(par1Vec3.c);
+        int var7 = MathHelper.floor(par1Vec3.e);
+        double var8 = par2Vec3.c - par1Vec3.c;
+        double var10 = par2Vec3.e - par1Vec3.e;
+        double var12 = var8 * var8 + var10 * var10;
 
-        if (d2 < 1.0E-8D) {
+        if (var12 < 1.0E-8D)
+        {
             return false;
-        } else {
-            double d3 = 1.0D / Math.sqrt(d2);
+        }
+        else
+        {
+            double var14 = 1.0D / Math.sqrt(var12);
+            var8 *= var14;
+            var10 *= var14;
+            par3 += 2;
+            par5 += 2;
 
-            d0 *= d3;
-            d1 *= d3;
-            i += 2;
-            k += 2;
-            if (!this.a(l, (int) vec3d.d, i1, i, j, k, vec3d, d0, d1)) {
+            if (!this.a(var6, (int) par1Vec3.d, var7, par3, par4, par5, par1Vec3, var8, var10))
+            {
                 return false;
-            } else {
-                i -= 2;
-                k -= 2;
-                double d4 = 1.0D / Math.abs(d0);
-                double d5 = 1.0D / Math.abs(d1);
-                double d6 = (double) (l * 1) - vec3d.c;
-                double d7 = (double) (i1 * 1) - vec3d.e;
+            }
+            else
+            {
+                par3 -= 2;
+                par5 -= 2;
+                double var16 = 1.0D / Math.abs(var8);
+                double var18 = 1.0D / Math.abs(var10);
+                double var20 = (double)(var6 * 1) - par1Vec3.c;
+                double var22 = (double)(var7 * 1) - par1Vec3.e;
 
-                if (d0 >= 0.0D) {
-                    ++d6;
+                if (var8 >= 0.0D)
+                {
+                    ++var20;
                 }
 
-                if (d1 >= 0.0D) {
-                    ++d7;
+                if (var10 >= 0.0D)
+                {
+                    ++var22;
                 }
 
-                d6 /= d0;
-                d7 /= d1;
-                int j1 = d0 < 0.0D ? -1 : 1;
-                int k1 = d1 < 0.0D ? -1 : 1;
-                int l1 = MathHelper.floor(vec3d1.c);
-                int i2 = MathHelper.floor(vec3d1.e);
-                int j2 = l1 - l;
-                int k2 = i2 - i1;
+                var20 /= var8;
+                var22 /= var10;
+                int var24 = var8 < 0.0D ? -1 : 1;
+                int var25 = var10 < 0.0D ? -1 : 1;
+                int var26 = MathHelper.floor(par2Vec3.c);
+                int var27 = MathHelper.floor(par2Vec3.e);
+                int var28 = var26 - var6;
+                int var29 = var27 - var7;
 
-                do {
-                    if (j2 * j1 <= 0 && k2 * k1 <= 0) {
+                do
+                {
+                    if (var28 * var24 <= 0 && var29 * var25 <= 0)
+                    {
                         return true;
                     }
 
-                    if (d6 < d7) {
-                        d6 += d4;
-                        l += j1;
-                        j2 = l1 - l;
-                    } else {
-                        d7 += d5;
-                        i1 += k1;
-                        k2 = i2 - i1;
+                    if (var20 < var22)
+                    {
+                        var20 += var16;
+                        var6 += var24;
+                        var28 = var26 - var6;
                     }
-                } while (this.a(l, (int) vec3d.d, i1, i, j, k, vec3d, d0, d1));
+                    else
+                    {
+                        var22 += var18;
+                        var7 += var25;
+                        var29 = var27 - var7;
+                    }
+                }
+                while (this.a(var6, (int) par1Vec3.d, var7, par3, par4, par5, par1Vec3, var8, var10));
 
                 return false;
             }
         }
     }
 
-    private boolean a(int i, int j, int k, int l, int i1, int j1, Vec3D vec3d, double d0, double d1) {
-        int k1 = i - l / 2;
-        int l1 = k - j1 / 2;
+    /**
+     * Returns true when an entity could stand at a position, including solid blocks under the entire entity. Args:
+     * xOffset, yOffset, zOffset, entityXSize, entityYSize, entityZSize, originPosition, vecX, vecZ
+     */
+    private boolean a(int par1, int par2, int par3, int par4, int par5, int par6, Vec3D par7Vec3, double par8, double par10)
+    {
+        int var12 = par1 - par4 / 2;
+        int var13 = par3 - par6 / 2;
 
-        if (!this.b(k1, j, l1, l, i1, j1, vec3d, d0, d1)) {
+        if (!this.b(var12, par2, var13, par4, par5, par6, par7Vec3, par8, par10))
+        {
             return false;
-        } else {
-            for (int i2 = k1; i2 < k1 + l; ++i2) {
-                for (int j2 = l1; j2 < l1 + j1; ++j2) {
-                    double d2 = (double) i2 + 0.5D - vec3d.c;
-                    double d3 = (double) j2 + 0.5D - vec3d.e;
+        }
+        else
+        {
+            for (int var14 = var12; var14 < var12 + par4; ++var14)
+            {
+                for (int var15 = var13; var15 < var13 + par6; ++var15)
+                {
+                    double var16 = (double)var14 + 0.5D - par7Vec3.c;
+                    double var18 = (double)var15 + 0.5D - par7Vec3.e;
 
-                    if (d2 * d0 + d3 * d1 >= 0.0D) {
-                        int k2 = this.b.getTypeId(i2, j - 1, j2);
+                    if (var16 * par8 + var18 * par10 >= 0.0D)
+                    {
+                        int var20 = this.b.getTypeId(var14, par2 - 1, var15);
 
-                        if (k2 <= 0) {
+                        if (var20 <= 0)
+                        {
                             return false;
                         }
 
-                        Material material = Block.byId[k2].material;
+                        Material var21 = Block.byId[var20].material;
 
-                        if (material == Material.WATER && !this.a.H()) {
+                        if (var21 == Material.WATER && !this.a.H())
+                        {
                             return false;
                         }
 
-                        if (material == Material.LAVA) {
+                        if (var21 == Material.LAVA)
+                        {
                             return false;
                         }
                     }
@@ -322,17 +486,27 @@ public class Navigation {
         }
     }
 
-    private boolean b(int i, int j, int k, int l, int i1, int j1, Vec3D vec3d, double d0, double d1) {
-        for (int k1 = i; k1 < i + l; ++k1) {
-            for (int l1 = j; l1 < j + i1; ++l1) {
-                for (int i2 = k; i2 < k + j1; ++i2) {
-                    double d2 = (double) k1 + 0.5D - vec3d.c;
-                    double d3 = (double) i2 + 0.5D - vec3d.e;
+    /**
+     * Returns true if an entity does not collide with any solid blocks at the position. Args: xOffset, yOffset,
+     * zOffset, entityXSize, entityYSize, entityZSize, originPosition, vecX, vecZ
+     */
+    private boolean b(int par1, int par2, int par3, int par4, int par5, int par6, Vec3D par7Vec3, double par8, double par10)
+    {
+        for (int var12 = par1; var12 < par1 + par4; ++var12)
+        {
+            for (int var13 = par2; var13 < par2 + par5; ++var13)
+            {
+                for (int var14 = par3; var14 < par3 + par6; ++var14)
+                {
+                    double var15 = (double)var12 + 0.5D - par7Vec3.c;
+                    double var17 = (double)var14 + 0.5D - par7Vec3.e;
 
-                    if (d2 * d0 + d3 * d1 >= 0.0D) {
-                        int j2 = this.b.getTypeId(k1, l1, i2);
+                    if (var15 * par8 + var17 * par10 >= 0.0D)
+                    {
+                        int var19 = this.b.getTypeId(var12, var13, var14);
 
-                        if (j2 > 0 && !Block.byId[j2].c(this.b, k1, l1, i2)) {
+                        if (var19 > 0 && !Block.byId[var19].c(this.b, var12, var13, var14))
+                        {
                             return false;
                         }
                     }

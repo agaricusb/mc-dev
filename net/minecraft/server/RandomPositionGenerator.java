@@ -2,72 +2,103 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class RandomPositionGenerator {
-
+public class RandomPositionGenerator
+{
+    /**
+     * used to store a driection when the user passes a point to move towards or away from. WARNING: NEVER THREAD SAFE.
+     * MULTIPLE findTowards and findAway calls, will share this var
+     */
     private static Vec3D a = Vec3D.a(0.0D, 0.0D, 0.0D);
 
-    public static Vec3D a(EntityCreature entitycreature, int i, int j) {
-        return c(entitycreature, i, j, (Vec3D) null);
+    /**
+     * finds a random target within par1(x,z) and par2 (y) blocks
+     */
+    public static Vec3D a(EntityCreature par0EntityCreature, int par1, int par2)
+    {
+        return c(par0EntityCreature, par1, par2, (Vec3D) null);
     }
 
-    public static Vec3D a(EntityCreature entitycreature, int i, int j, Vec3D vec3d) {
-        a.c = vec3d.c - entitycreature.locX;
-        a.d = vec3d.d - entitycreature.locY;
-        a.e = vec3d.e - entitycreature.locZ;
-        return c(entitycreature, i, j, a);
+    /**
+     * finds a random target within par1(x,z) and par2 (y) blocks in the direction of the point par3
+     */
+    public static Vec3D a(EntityCreature par0EntityCreature, int par1, int par2, Vec3D par3Vec3)
+    {
+        a.c = par3Vec3.c - par0EntityCreature.locX;
+        a.d = par3Vec3.d - par0EntityCreature.locY;
+        a.e = par3Vec3.e - par0EntityCreature.locZ;
+        return c(par0EntityCreature, par1, par2, a);
     }
 
-    public static Vec3D b(EntityCreature entitycreature, int i, int j, Vec3D vec3d) {
-        a.c = entitycreature.locX - vec3d.c;
-        a.d = entitycreature.locY - vec3d.d;
-        a.e = entitycreature.locZ - vec3d.e;
-        return c(entitycreature, i, j, a);
+    /**
+     * finds a random target within par1(x,z) and par2 (y) blocks in the reverse direction of the point par3
+     */
+    public static Vec3D b(EntityCreature par0EntityCreature, int par1, int par2, Vec3D par3Vec3)
+    {
+        a.c = par0EntityCreature.locX - par3Vec3.c;
+        a.d = par0EntityCreature.locY - par3Vec3.d;
+        a.e = par0EntityCreature.locZ - par3Vec3.e;
+        return c(par0EntityCreature, par1, par2, a);
     }
 
-    private static Vec3D c(EntityCreature entitycreature, int i, int j, Vec3D vec3d) {
-        Random random = entitycreature.aB();
-        boolean flag = false;
-        int k = 0;
-        int l = 0;
-        int i1 = 0;
-        float f = -99999.0F;
-        boolean flag1;
+    /**
+     * searches 10 blocks at random in a within par1(x,z) and par2 (y) distance, ignores those not in the direction of
+     * par3Vec3, then points to the tile for which creature.getBlockPathWeight returns the highest number
+     */
+    private static Vec3D c(EntityCreature par0EntityCreature, int par1, int par2, Vec3D par3Vec3)
+    {
+        Random var4 = par0EntityCreature.aB();
+        boolean var5 = false;
+        int var6 = 0;
+        int var7 = 0;
+        int var8 = 0;
+        float var9 = -99999.0F;
+        boolean var10;
 
-        if (entitycreature.aM()) {
-            double d0 = (double) (entitycreature.aJ().e(MathHelper.floor(entitycreature.locX), MathHelper.floor(entitycreature.locY), MathHelper.floor(entitycreature.locZ)) + 4.0F);
-            double d1 = (double) (entitycreature.aK() + (float) i);
-
-            flag1 = d0 < d1 * d1;
-        } else {
-            flag1 = false;
+        if (par0EntityCreature.aM())
+        {
+            double var11 = (double)(par0EntityCreature.aJ().e(MathHelper.floor(par0EntityCreature.locX), MathHelper.floor(par0EntityCreature.locY), MathHelper.floor(par0EntityCreature.locZ)) + 4.0F);
+            double var13 = (double)(par0EntityCreature.aK() + (float)par1);
+            var10 = var11 < var13 * var13;
+        }
+        else
+        {
+            var10 = false;
         }
 
-        for (int j1 = 0; j1 < 10; ++j1) {
-            int k1 = random.nextInt(2 * i) - i;
-            int l1 = random.nextInt(2 * j) - j;
-            int i2 = random.nextInt(2 * i) - i;
+        for (int var16 = 0; var16 < 10; ++var16)
+        {
+            int var12 = var4.nextInt(2 * par1) - par1;
+            int var17 = var4.nextInt(2 * par2) - par2;
+            int var14 = var4.nextInt(2 * par1) - par1;
 
-            if (vec3d == null || (double) k1 * vec3d.c + (double) i2 * vec3d.e >= 0.0D) {
-                k1 += MathHelper.floor(entitycreature.locX);
-                l1 += MathHelper.floor(entitycreature.locY);
-                i2 += MathHelper.floor(entitycreature.locZ);
-                if (!flag1 || entitycreature.e(k1, l1, i2)) {
-                    float f1 = entitycreature.a(k1, l1, i2);
+            if (par3Vec3 == null || (double)var12 * par3Vec3.c + (double)var14 * par3Vec3.e >= 0.0D)
+            {
+                var12 += MathHelper.floor(par0EntityCreature.locX);
+                var17 += MathHelper.floor(par0EntityCreature.locY);
+                var14 += MathHelper.floor(par0EntityCreature.locZ);
 
-                    if (f1 > f) {
-                        f = f1;
-                        k = k1;
-                        l = l1;
-                        i1 = i2;
-                        flag = true;
+                if (!var10 || par0EntityCreature.e(var12, var17, var14))
+                {
+                    float var15 = par0EntityCreature.a(var12, var17, var14);
+
+                    if (var15 > var9)
+                    {
+                        var9 = var15;
+                        var6 = var12;
+                        var7 = var17;
+                        var8 = var14;
+                        var5 = true;
                     }
                 }
             }
         }
 
-        if (flag) {
-            return entitycreature.world.getVec3DPool().create((double) k, (double) l, (double) i1);
-        } else {
+        if (var5)
+        {
+            return par0EntityCreature.world.getVec3DPool().create((double) var6, (double) var7, (double) var8);
+        }
+        else
+        {
             return null;
         }
     }

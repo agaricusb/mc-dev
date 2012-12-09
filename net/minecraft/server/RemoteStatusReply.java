@@ -2,39 +2,68 @@ package net.minecraft.server;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
-public class RemoteStatusReply {
-
+public class RemoteStatusReply
+{
+    /** Output stream */
     private ByteArrayOutputStream buffer;
+
+    /** ByteArrayOutputStream wrapper */
     private DataOutputStream stream;
 
-    public RemoteStatusReply(int i) {
-        this.buffer = new ByteArrayOutputStream(i);
+    public RemoteStatusReply(int par1)
+    {
+        this.buffer = new ByteArrayOutputStream(par1);
         this.stream = new DataOutputStream(this.buffer);
     }
 
-    public void write(byte[] abyte) {
-        this.stream.write(abyte, 0, abyte.length);
+    /**
+     * Writes the given byte array to the output stream
+     */
+    public void write(byte[] par1ArrayOfByte) throws IOException
+    {
+        this.stream.write(par1ArrayOfByte, 0, par1ArrayOfByte.length);
     }
 
-    public void write(String s) {
-        this.stream.writeBytes(s);
+    /**
+     * Writes the given String to the output stream
+     */
+    public void write(String par1Str) throws IOException
+    {
+        this.stream.writeBytes(par1Str);
         this.stream.write(0);
     }
 
-    public void write(int i) {
-        this.stream.write(i);
+    /**
+     * Writes the given int to the output stream
+     */
+    public void write(int par1) throws IOException
+    {
+        this.stream.write(par1);
     }
 
-    public void write(short short1) {
-        this.stream.writeShort(Short.reverseBytes(short1));
+    /**
+     * Writes the given short to the output stream
+     */
+    public void write(short par1) throws IOException
+    {
+        this.stream.writeShort(Short.reverseBytes(par1));
     }
 
-    public byte[] getBytes() {
+    /**
+     * Returns the contents of the output stream as a byte array
+     */
+    public byte[] getBytes()
+    {
         return this.buffer.toByteArray();
     }
 
-    public void reset() {
+    /**
+     * Resets the byte array output.
+     */
+    public void reset()
+    {
         this.buffer.reset();
     }
 }

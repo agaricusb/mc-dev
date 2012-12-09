@@ -1,54 +1,66 @@
 package net.minecraft.server;
 
-public class ContainerFurnace extends Container {
-
+public class ContainerFurnace extends Container
+{
     private TileEntityFurnace furnace;
     private int f = 0;
     private int g = 0;
     private int h = 0;
 
-    public ContainerFurnace(PlayerInventory playerinventory, TileEntityFurnace tileentityfurnace) {
-        this.furnace = tileentityfurnace;
-        this.a(new Slot(tileentityfurnace, 0, 56, 17));
-        this.a(new Slot(tileentityfurnace, 1, 56, 53));
-        this.a(new SlotFurnaceResult(playerinventory.player, tileentityfurnace, 2, 116, 35));
+    public ContainerFurnace(PlayerInventory par1InventoryPlayer, TileEntityFurnace par2TileEntityFurnace)
+    {
+        this.furnace = par2TileEntityFurnace;
+        this.a(new Slot(par2TileEntityFurnace, 0, 56, 17));
+        this.a(new Slot(par2TileEntityFurnace, 1, 56, 53));
+        this.a(new SlotFurnaceResult(par1InventoryPlayer.player, par2TileEntityFurnace, 2, 116, 35));
+        int var3;
 
-        int i;
-
-        for (i = 0; i < 3; ++i) {
-            for (int j = 0; j < 9; ++j) {
-                this.a(new Slot(playerinventory, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+        for (var3 = 0; var3 < 3; ++var3)
+        {
+            for (int var4 = 0; var4 < 9; ++var4)
+            {
+                this.a(new Slot(par1InventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
             }
         }
 
-        for (i = 0; i < 9; ++i) {
-            this.a(new Slot(playerinventory, i, 8 + i * 18, 142));
+        for (var3 = 0; var3 < 9; ++var3)
+        {
+            this.a(new Slot(par1InventoryPlayer, var3, 8 + var3 * 18, 142));
         }
     }
 
-    public void addSlotListener(ICrafting icrafting) {
-        super.addSlotListener(icrafting);
-        icrafting.setContainerData(this, 0, this.furnace.cookTime);
-        icrafting.setContainerData(this, 1, this.furnace.burnTime);
-        icrafting.setContainerData(this, 2, this.furnace.ticksForCurrentFuel);
+    public void addSlotListener(ICrafting par1ICrafting)
+    {
+        super.addSlotListener(par1ICrafting);
+        par1ICrafting.setContainerData(this, 0, this.furnace.cookTime);
+        par1ICrafting.setContainerData(this, 1, this.furnace.burnTime);
+        par1ICrafting.setContainerData(this, 2, this.furnace.ticksForCurrentFuel);
     }
 
-    public void b() {
+    /**
+     * Updates crafting matrix; called from onCraftMatrixChanged. Args: none
+     */
+    public void b()
+    {
         super.b();
 
-        for (int i = 0; i < this.listeners.size(); ++i) {
-            ICrafting icrafting = (ICrafting) this.listeners.get(i);
+        for (int var1 = 0; var1 < this.listeners.size(); ++var1)
+        {
+            ICrafting var2 = (ICrafting)this.listeners.get(var1);
 
-            if (this.f != this.furnace.cookTime) {
-                icrafting.setContainerData(this, 0, this.furnace.cookTime);
+            if (this.f != this.furnace.cookTime)
+            {
+                var2.setContainerData(this, 0, this.furnace.cookTime);
             }
 
-            if (this.g != this.furnace.burnTime) {
-                icrafting.setContainerData(this, 1, this.furnace.burnTime);
+            if (this.g != this.furnace.burnTime)
+            {
+                var2.setContainerData(this, 1, this.furnace.burnTime);
             }
 
-            if (this.h != this.furnace.ticksForCurrentFuel) {
-                icrafting.setContainerData(this, 2, this.furnace.ticksForCurrentFuel);
+            if (this.h != this.furnace.ticksForCurrentFuel)
+            {
+                var2.setContainerData(this, 2, this.furnace.ticksForCurrentFuel);
             }
         }
 
@@ -57,57 +69,83 @@ public class ContainerFurnace extends Container {
         this.h = this.furnace.ticksForCurrentFuel;
     }
 
-    public boolean a(EntityHuman entityhuman) {
-        return this.furnace.a_(entityhuman);
+    public boolean a(EntityHuman par1EntityPlayer)
+    {
+        return this.furnace.a_(par1EntityPlayer);
     }
 
-    public ItemStack b(EntityHuman entityhuman, int i) {
-        ItemStack itemstack = null;
-        Slot slot = (Slot) this.c.get(i);
+    /**
+     * Take a stack from the specified inventory slot.
+     */
+    public ItemStack b(EntityHuman par1EntityPlayer, int par2)
+    {
+        ItemStack var3 = null;
+        Slot var4 = (Slot)this.c.get(par2);
 
-        if (slot != null && slot.d()) {
-            ItemStack itemstack1 = slot.getItem();
+        if (var4 != null && var4.d())
+        {
+            ItemStack var5 = var4.getItem();
+            var3 = var5.cloneItemStack();
 
-            itemstack = itemstack1.cloneItemStack();
-            if (i == 2) {
-                if (!this.a(itemstack1, 3, 39, true)) {
+            if (par2 == 2)
+            {
+                if (!this.a(var5, 3, 39, true))
+                {
                     return null;
                 }
 
-                slot.a(itemstack1, itemstack);
-            } else if (i != 1 && i != 0) {
-                if (RecipesFurnace.getInstance().getResult(itemstack1.getItem().id) != null) {
-                    if (!this.a(itemstack1, 0, 1, false)) {
+                var4.a(var5, var3);
+            }
+            else if (par2 != 1 && par2 != 0)
+            {
+                if (RecipesFurnace.getInstance().getResult(var5.getItem().id) != null)
+                {
+                    if (!this.a(var5, 0, 1, false))
+                    {
                         return null;
                     }
-                } else if (TileEntityFurnace.isFuel(itemstack1)) {
-                    if (!this.a(itemstack1, 1, 2, false)) {
+                }
+                else if (TileEntityFurnace.isFuel(var5))
+                {
+                    if (!this.a(var5, 1, 2, false))
+                    {
                         return null;
                     }
-                } else if (i >= 3 && i < 30) {
-                    if (!this.a(itemstack1, 30, 39, false)) {
+                }
+                else if (par2 >= 3 && par2 < 30)
+                {
+                    if (!this.a(var5, 30, 39, false))
+                    {
                         return null;
                     }
-                } else if (i >= 30 && i < 39 && !this.a(itemstack1, 3, 30, false)) {
+                }
+                else if (par2 >= 30 && par2 < 39 && !this.a(var5, 3, 30, false))
+                {
                     return null;
                 }
-            } else if (!this.a(itemstack1, 3, 39, false)) {
+            }
+            else if (!this.a(var5, 3, 39, false))
+            {
                 return null;
             }
 
-            if (itemstack1.count == 0) {
-                slot.set((ItemStack) null);
-            } else {
-                slot.e();
+            if (var5.count == 0)
+            {
+                var4.set((ItemStack) null);
+            }
+            else
+            {
+                var4.e();
             }
 
-            if (itemstack1.count == itemstack.count) {
+            if (var5.count == var3.count)
+            {
                 return null;
             }
 
-            slot.a(entityhuman, itemstack1);
+            var4.a(par1EntityPlayer, var5);
         }
 
-        return itemstack;
+        return var3;
     }
 }

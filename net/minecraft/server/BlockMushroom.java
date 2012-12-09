@@ -2,31 +2,41 @@ package net.minecraft.server;
 
 import java.util.Random;
 
-public class BlockMushroom extends BlockFlower {
-
-    protected BlockMushroom(int i, int j) {
-        super(i, j);
-        float f = 0.2F;
-
-        this.a(0.5F - f, 0.0F, 0.5F - f, 0.5F + f, f * 2.0F, 0.5F + f);
+public class BlockMushroom extends BlockFlower
+{
+    protected BlockMushroom(int par1, int par2)
+    {
+        super(par1, par2);
+        float var3 = 0.2F;
+        this.a(0.5F - var3, 0.0F, 0.5F - var3, 0.5F + var3, var3 * 2.0F, 0.5F + var3);
         this.b(true);
     }
 
-    public void b(World world, int i, int j, int k, Random random) {
-        if (random.nextInt(25) == 0) {
-            byte b0 = 4;
-            int l = 5;
+    /**
+     * Ticks the block if it's been scheduled
+     */
+    public void b(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        if (par5Random.nextInt(25) == 0)
+        {
+            byte var6 = 4;
+            int var7 = 5;
+            int var8;
+            int var9;
+            int var10;
 
-            int i1;
-            int j1;
-            int k1;
+            for (var8 = par2 - var6; var8 <= par2 + var6; ++var8)
+            {
+                for (var9 = par4 - var6; var9 <= par4 + var6; ++var9)
+                {
+                    for (var10 = par3 - 1; var10 <= par3 + 1; ++var10)
+                    {
+                        if (par1World.getTypeId(var8, var10, var9) == this.id)
+                        {
+                            --var7;
 
-            for (i1 = i - b0; i1 <= i + b0; ++i1) {
-                for (j1 = k - b0; j1 <= k + b0; ++j1) {
-                    for (k1 = j - 1; k1 <= j + 1; ++k1) {
-                        if (world.getTypeId(i1, k1, j1) == this.id) {
-                            --l;
-                            if (l <= 0) {
+                            if (var7 <= 0)
+                            {
                                 return;
                             }
                         }
@@ -34,62 +44,89 @@ public class BlockMushroom extends BlockFlower {
                 }
             }
 
-            i1 = i + random.nextInt(3) - 1;
-            j1 = j + random.nextInt(2) - random.nextInt(2);
-            k1 = k + random.nextInt(3) - 1;
+            var8 = par2 + par5Random.nextInt(3) - 1;
+            var9 = par3 + par5Random.nextInt(2) - par5Random.nextInt(2);
+            var10 = par4 + par5Random.nextInt(3) - 1;
 
-            for (int l1 = 0; l1 < 4; ++l1) {
-                if (world.isEmpty(i1, j1, k1) && this.d(world, i1, j1, k1)) {
-                    i = i1;
-                    j = j1;
-                    k = k1;
+            for (int var11 = 0; var11 < 4; ++var11)
+            {
+                if (par1World.isEmpty(var8, var9, var10) && this.d(par1World, var8, var9, var10))
+                {
+                    par2 = var8;
+                    par3 = var9;
+                    par4 = var10;
                 }
 
-                i1 = i + random.nextInt(3) - 1;
-                j1 = j + random.nextInt(2) - random.nextInt(2);
-                k1 = k + random.nextInt(3) - 1;
+                var8 = par2 + par5Random.nextInt(3) - 1;
+                var9 = par3 + par5Random.nextInt(2) - par5Random.nextInt(2);
+                var10 = par4 + par5Random.nextInt(3) - 1;
             }
 
-            if (world.isEmpty(i1, j1, k1) && this.d(world, i1, j1, k1)) {
-                world.setTypeId(i1, j1, k1, this.id);
+            if (par1World.isEmpty(var8, var9, var10) && this.d(par1World, var8, var9, var10))
+            {
+                par1World.setTypeId(var8, var9, var10, this.id);
             }
         }
     }
 
-    public boolean canPlace(World world, int i, int j, int k) {
-        return super.canPlace(world, i, j, k) && this.d(world, i, j, k);
+    /**
+     * Checks to see if its valid to put this block at the specified coordinates. Args: world, x, y, z
+     */
+    public boolean canPlace(World par1World, int par2, int par3, int par4)
+    {
+        return super.canPlace(par1World, par2, par3, par4) && this.d(par1World, par2, par3, par4);
     }
 
-    protected boolean d_(int i) {
-        return Block.q[i];
+    /**
+     * Gets passed in the blockID of the block below and supposed to return true if its allowed to grow on the type of
+     * blockID passed in. Args: blockID
+     */
+    protected boolean d_(int par1)
+    {
+        return Block.q[par1];
     }
 
-    public boolean d(World world, int i, int j, int k) {
-        if (j >= 0 && j < 256) {
-            int l = world.getTypeId(i, j - 1, k);
-
-            return l == Block.MYCEL.id || world.l(i, j, k) < 13 && this.d_(l);
-        } else {
+    /**
+     * Can this block stay at this position.  Similar to canPlaceBlockAt except gets checked often with plants.
+     */
+    public boolean d(World par1World, int par2, int par3, int par4)
+    {
+        if (par3 >= 0 && par3 < 256)
+        {
+            int var5 = par1World.getTypeId(par2, par3 - 1, par4);
+            return var5 == Block.MYCEL.id || par1World.l(par2, par3, par4) < 13 && this.d_(var5);
+        }
+        else
+        {
             return false;
         }
     }
 
-    public boolean grow(World world, int i, int j, int k, Random random) {
-        int l = world.getData(i, j, k);
+    /**
+     * Fertilize the mushroom.
+     */
+    public boolean grow(World par1World, int par2, int par3, int par4, Random par5Random)
+    {
+        int var6 = par1World.getData(par2, par3, par4);
+        par1World.setRawTypeId(par2, par3, par4, 0);
+        WorldGenHugeMushroom var7 = null;
 
-        world.setRawTypeId(i, j, k, 0);
-        WorldGenHugeMushroom worldgenhugemushroom = null;
-
-        if (this.id == Block.BROWN_MUSHROOM.id) {
-            worldgenhugemushroom = new WorldGenHugeMushroom(0);
-        } else if (this.id == Block.RED_MUSHROOM.id) {
-            worldgenhugemushroom = new WorldGenHugeMushroom(1);
+        if (this.id == Block.BROWN_MUSHROOM.id)
+        {
+            var7 = new WorldGenHugeMushroom(0);
+        }
+        else if (this.id == Block.RED_MUSHROOM.id)
+        {
+            var7 = new WorldGenHugeMushroom(1);
         }
 
-        if (worldgenhugemushroom != null && worldgenhugemushroom.a(world, random, i, j, k)) {
+        if (var7 != null && var7.a(par1World, par5Random, par2, par3, par4))
+        {
             return true;
-        } else {
-            world.setRawTypeIdAndData(i, j, k, this.id, l);
+        }
+        else
+        {
+            par1World.setRawTypeIdAndData(par2, par3, par4, this.id, var6);
             return false;
         }
     }

@@ -1,72 +1,98 @@
 package net.minecraft.server;
 
-public class ContainerChest extends Container {
-
+public class ContainerChest extends Container
+{
     private IInventory container;
     private int f;
 
-    public ContainerChest(IInventory iinventory, IInventory iinventory1) {
-        this.container = iinventory1;
-        this.f = iinventory1.getSize() / 9;
-        iinventory1.startOpen();
-        int i = (this.f - 4) * 18;
+    public ContainerChest(IInventory par1IInventory, IInventory par2IInventory)
+    {
+        this.container = par2IInventory;
+        this.f = par2IInventory.getSize() / 9;
+        par2IInventory.startOpen();
+        int var3 = (this.f - 4) * 18;
+        int var4;
+        int var5;
 
-        int j;
-        int k;
-
-        for (j = 0; j < this.f; ++j) {
-            for (k = 0; k < 9; ++k) {
-                this.a(new Slot(iinventory1, k + j * 9, 8 + k * 18, 18 + j * 18));
+        for (var4 = 0; var4 < this.f; ++var4)
+        {
+            for (var5 = 0; var5 < 9; ++var5)
+            {
+                this.a(new Slot(par2IInventory, var5 + var4 * 9, 8 + var5 * 18, 18 + var4 * 18));
             }
         }
 
-        for (j = 0; j < 3; ++j) {
-            for (k = 0; k < 9; ++k) {
-                this.a(new Slot(iinventory, k + j * 9 + 9, 8 + k * 18, 103 + j * 18 + i));
+        for (var4 = 0; var4 < 3; ++var4)
+        {
+            for (var5 = 0; var5 < 9; ++var5)
+            {
+                this.a(new Slot(par1IInventory, var5 + var4 * 9 + 9, 8 + var5 * 18, 103 + var4 * 18 + var3));
             }
         }
 
-        for (j = 0; j < 9; ++j) {
-            this.a(new Slot(iinventory, j, 8 + j * 18, 161 + i));
+        for (var4 = 0; var4 < 9; ++var4)
+        {
+            this.a(new Slot(par1IInventory, var4, 8 + var4 * 18, 161 + var3));
         }
     }
 
-    public boolean a(EntityHuman entityhuman) {
-        return this.container.a_(entityhuman);
+    public boolean a(EntityHuman par1EntityPlayer)
+    {
+        return this.container.a_(par1EntityPlayer);
     }
 
-    public ItemStack b(EntityHuman entityhuman, int i) {
-        ItemStack itemstack = null;
-        Slot slot = (Slot) this.c.get(i);
+    /**
+     * Take a stack from the specified inventory slot.
+     */
+    public ItemStack b(EntityHuman par1EntityPlayer, int par2)
+    {
+        ItemStack var3 = null;
+        Slot var4 = (Slot)this.c.get(par2);
 
-        if (slot != null && slot.d()) {
-            ItemStack itemstack1 = slot.getItem();
+        if (var4 != null && var4.d())
+        {
+            ItemStack var5 = var4.getItem();
+            var3 = var5.cloneItemStack();
 
-            itemstack = itemstack1.cloneItemStack();
-            if (i < this.f * 9) {
-                if (!this.a(itemstack1, this.f * 9, this.c.size(), true)) {
+            if (par2 < this.f * 9)
+            {
+                if (!this.a(var5, this.f * 9, this.c.size(), true))
+                {
                     return null;
                 }
-            } else if (!this.a(itemstack1, 0, this.f * 9, false)) {
+            }
+            else if (!this.a(var5, 0, this.f * 9, false))
+            {
                 return null;
             }
 
-            if (itemstack1.count == 0) {
-                slot.set((ItemStack) null);
-            } else {
-                slot.e();
+            if (var5.count == 0)
+            {
+                var4.set((ItemStack) null);
+            }
+            else
+            {
+                var4.e();
             }
         }
 
-        return itemstack;
+        return var3;
     }
 
-    public void b(EntityHuman entityhuman) {
-        super.b(entityhuman);
+    /**
+     * Callback for when the crafting gui is closed.
+     */
+    public void b(EntityHuman par1EntityPlayer)
+    {
+        super.b(par1EntityPlayer);
         this.container.f();
     }
 
-    public IInventory d() {
+    /**
+     * Return this chest container's lower chest inventory.
+     */
+    public IInventory d()
+    {
         return this.container;
     }
 }

@@ -1,26 +1,25 @@
 package net.minecraft.server;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
-class WorldGenNetherStart extends StructureStart {
+class WorldGenNetherStart extends StructureStart
+{
+    public WorldGenNetherStart(World par1World, Random par2Random, int par3, int par4)
+    {
+        WorldGenNetherPiece15 var5 = new WorldGenNetherPiece15(par2Random, (par3 << 4) + 2, (par4 << 4) + 2);
+        this.a.add(var5);
+        var5.a(var5, this.a, par2Random);
+        ArrayList var6 = var5.d;
 
-    public WorldGenNetherStart(World world, Random random, int i, int j) {
-        WorldGenNetherPiece15 worldgennetherpiece15 = new WorldGenNetherPiece15(random, (i << 4) + 2, (j << 4) + 2);
-
-        this.a.add(worldgennetherpiece15);
-        worldgennetherpiece15.a(worldgennetherpiece15, this.a, random);
-        ArrayList arraylist = worldgennetherpiece15.d;
-
-        while (!arraylist.isEmpty()) {
-            int k = random.nextInt(arraylist.size());
-            StructurePiece structurepiece = (StructurePiece) arraylist.remove(k);
-
-            structurepiece.a((StructurePiece) worldgennetherpiece15, (List) this.a, random);
+        while (!var6.isEmpty())
+        {
+            int var7 = par2Random.nextInt(var6.size());
+            StructurePiece var8 = (StructurePiece)var6.remove(var7);
+            var8.a(var5, this.a, par2Random);
         }
 
         this.c();
-        this.a(world, random, 48, 70);
+        this.a(par1World, par2Random, 48, 70);
     }
 }

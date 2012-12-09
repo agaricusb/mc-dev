@@ -1,131 +1,193 @@
 package net.minecraft.server;
 
-public abstract class EntityMonster extends EntityCreature implements IMonster {
-
-    public EntityMonster(World world) {
-        super(world);
+public abstract class EntityMonster extends EntityCreature implements IMonster
+{
+    public EntityMonster(World par1World)
+    {
+        super(par1World);
         this.bc = 5;
     }
 
-    public void c() {
+    /**
+     * Called frequently so the entity can update its state every tick as required. For example, zombies and skeletons
+     * use this to react to sunlight and start to burn.
+     */
+    public void c()
+    {
         this.bo();
-        float f = this.c(1.0F);
+        float var1 = this.c(1.0F);
 
-        if (f > 0.5F) {
+        if (var1 > 0.5F)
+        {
             this.bA += 2;
         }
 
         super.c();
     }
 
-    public void j_() {
+    /**
+     * Called to update the entity's position/logic.
+     */
+    public void j_()
+    {
         super.j_();
-        if (!this.world.isStatic && this.world.difficulty == 0) {
+
+        if (!this.world.isStatic && this.world.difficulty == 0)
+        {
             this.die();
         }
     }
 
-    protected Entity findTarget() {
-        EntityHuman entityhuman = this.world.findNearbyVulnerablePlayer(this, 16.0D);
-
-        return entityhuman != null && this.n(entityhuman) ? entityhuman : null;
+    /**
+     * Finds the closest player within 16 blocks to attack, or null if this Entity isn't interested in attacking
+     * (Animals, Spiders at day, peaceful PigZombies).
+     */
+    protected Entity findTarget()
+    {
+        EntityHuman var1 = this.world.findNearbyVulnerablePlayer(this, 16.0D);
+        return var1 != null && this.n(var1) ? var1 : null;
     }
 
-    public boolean damageEntity(DamageSource damagesource, int i) {
-        if (this.isInvulnerable()) {
+    /**
+     * Called when the entity is attacked.
+     */
+    public boolean damageEntity(DamageSource par1DamageSource, int par2)
+    {
+        if (this.isInvulnerable())
+        {
             return false;
-        } else if (super.damageEntity(damagesource, i)) {
-            Entity entity = damagesource.getEntity();
+        }
+        else if (super.damageEntity(par1DamageSource, par2))
+        {
+            Entity var3 = par1DamageSource.getEntity();
 
-            if (this.passenger != entity && this.vehicle != entity) {
-                if (entity != this) {
-                    this.target = entity;
+            if (this.passenger != var3 && this.vehicle != var3)
+            {
+                if (var3 != this)
+                {
+                    this.target = var3;
                 }
 
                 return true;
-            } else {
+            }
+            else
+            {
                 return true;
             }
-        } else {
+        }
+        else
+        {
             return false;
         }
     }
 
-    public boolean m(Entity entity) {
-        int i = this.c(entity);
+    public boolean m(Entity par1Entity)
+    {
+        int var2 = this.c(par1Entity);
 
-        if (this.hasEffect(MobEffectList.INCREASE_DAMAGE)) {
-            i += 3 << this.getEffect(MobEffectList.INCREASE_DAMAGE).getAmplifier();
+        if (this.hasEffect(MobEffectList.INCREASE_DAMAGE))
+        {
+            var2 += 3 << this.getEffect(MobEffectList.INCREASE_DAMAGE).getAmplifier();
         }
 
-        if (this.hasEffect(MobEffectList.WEAKNESS)) {
-            i -= 2 << this.getEffect(MobEffectList.WEAKNESS).getAmplifier();
+        if (this.hasEffect(MobEffectList.WEAKNESS))
+        {
+            var2 -= 2 << this.getEffect(MobEffectList.WEAKNESS).getAmplifier();
         }
 
-        int j = 0;
+        int var3 = 0;
 
-        if (entity instanceof EntityLiving) {
-            i += EnchantmentManager.a((EntityLiving) this, (EntityLiving) entity);
-            j += EnchantmentManager.getKnockbackEnchantmentLevel(this, (EntityLiving) entity);
+        if (par1Entity instanceof EntityLiving)
+        {
+            var2 += EnchantmentManager.a(this, (EntityLiving) par1Entity);
+            var3 += EnchantmentManager.getKnockbackEnchantmentLevel(this, (EntityLiving) par1Entity);
         }
 
-        boolean flag = entity.damageEntity(DamageSource.mobAttack(this), i);
+        boolean var4 = par1Entity.damageEntity(DamageSource.mobAttack(this), var2);
 
-        if (flag) {
-            if (j > 0) {
-                entity.g((double) (-MathHelper.sin(this.yaw * 3.1415927F / 180.0F) * (float) j * 0.5F), 0.1D, (double) (MathHelper.cos(this.yaw * 3.1415927F / 180.0F) * (float) j * 0.5F));
+        if (var4)
+        {
+            if (var3 > 0)
+            {
+                par1Entity.g((double) (-MathHelper.sin(this.yaw * (float) Math.PI / 180.0F) * (float) var3 * 0.5F), 0.1D, (double) (MathHelper.cos(this.yaw * (float) Math.PI / 180.0F) * (float) var3 * 0.5F));
                 this.motX *= 0.6D;
                 this.motZ *= 0.6D;
             }
 
-            int k = EnchantmentManager.getFireAspectEnchantmentLevel(this);
+            int var5 = EnchantmentManager.getFireAspectEnchantmentLevel(this);
 
-            if (k > 0) {
-                entity.setOnFire(k * 4);
+            if (var5 > 0)
+            {
+                par1Entity.setOnFire(var5 * 4);
             }
         }
 
-        return flag;
+        return var4;
     }
 
-    protected void a(Entity entity, float f) {
-        if (this.attackTicks <= 0 && f < 2.0F && entity.boundingBox.e > this.boundingBox.b && entity.boundingBox.b < this.boundingBox.e) {
+    /**
+     * Basic mob attack. Default to touch of death in EntityCreature. Overridden by each mob to define their attack.
+     */
+    protected void a(Entity par1Entity, float par2)
+    {
+        if (this.attackTicks <= 0 && par2 < 2.0F && par1Entity.boundingBox.e > this.boundingBox.b && par1Entity.boundingBox.b < this.boundingBox.e)
+        {
             this.attackTicks = 20;
-            this.m(entity);
+            this.m(par1Entity);
         }
     }
 
-    public float a(int i, int j, int k) {
-        return 0.5F - this.world.p(i, j, k);
+    /**
+     * Takes a coordinate in and returns a weight to determine how likely this creature will try to path to the block.
+     * Args: x, y, z
+     */
+    public float a(int par1, int par2, int par3)
+    {
+        return 0.5F - this.world.p(par1, par2, par3);
     }
 
-    protected boolean i_() {
-        int i = MathHelper.floor(this.locX);
-        int j = MathHelper.floor(this.boundingBox.b);
-        int k = MathHelper.floor(this.locZ);
+    /**
+     * Checks to make sure the light is not too bright where the mob is spawning
+     */
+    protected boolean i_()
+    {
+        int var1 = MathHelper.floor(this.locX);
+        int var2 = MathHelper.floor(this.boundingBox.b);
+        int var3 = MathHelper.floor(this.locZ);
 
-        if (this.world.b(EnumSkyBlock.SKY, i, j, k) > this.random.nextInt(32)) {
+        if (this.world.b(EnumSkyBlock.SKY, var1, var2, var3) > this.random.nextInt(32))
+        {
             return false;
-        } else {
-            int l = this.world.getLightLevel(i, j, k);
+        }
+        else
+        {
+            int var4 = this.world.getLightLevel(var1, var2, var3);
 
-            if (this.world.M()) {
-                int i1 = this.world.j;
-
+            if (this.world.M())
+            {
+                int var5 = this.world.j;
                 this.world.j = 10;
-                l = this.world.getLightLevel(i, j, k);
-                this.world.j = i1;
+                var4 = this.world.getLightLevel(var1, var2, var3);
+                this.world.j = var5;
             }
 
-            return l <= this.random.nextInt(8);
+            return var4 <= this.random.nextInt(8);
         }
     }
 
-    public boolean canSpawn() {
+    /**
+     * Checks if the entity's current position is a valid location to spawn this entity.
+     */
+    public boolean canSpawn()
+    {
         return this.i_() && super.canSpawn();
     }
 
-    public int c(Entity entity) {
+    /**
+     * Returns the amount of damage a mob should deal.
+     */
+    public int c(Entity par1Entity)
+    {
         return 2;
     }
 }

@@ -1,7 +1,7 @@
 package net.minecraft.server;
 
-public class VillageDoor {
-
+public class VillageDoor
+{
     public final int locX;
     public final int locY;
     public final int locZ;
@@ -11,59 +11,73 @@ public class VillageDoor {
     public boolean removed = false;
     private int bookings = 0;
 
-    public VillageDoor(int i, int j, int k, int l, int i1, int j1) {
-        this.locX = i;
-        this.locY = j;
-        this.locZ = k;
-        this.d = l;
-        this.e = i1;
-        this.addedTime = j1;
+    public VillageDoor(int par1, int par2, int par3, int par4, int par5, int par6)
+    {
+        this.locX = par1;
+        this.locY = par2;
+        this.locZ = par3;
+        this.d = par4;
+        this.e = par5;
+        this.addedTime = par6;
     }
 
-    public int b(int i, int j, int k) {
-        int l = i - this.locX;
-        int i1 = j - this.locY;
-        int j1 = k - this.locZ;
-
-        return l * l + i1 * i1 + j1 * j1;
+    /**
+     * Returns the squared distance between this door and the given coordinate.
+     */
+    public int b(int par1, int par2, int par3)
+    {
+        int var4 = par1 - this.locX;
+        int var5 = par2 - this.locY;
+        int var6 = par3 - this.locZ;
+        return var4 * var4 + var5 * var5 + var6 * var6;
     }
 
-    public int c(int i, int j, int k) {
-        int l = i - this.locX - this.d;
-        int i1 = j - this.locY;
-        int j1 = k - this.locZ - this.e;
-
-        return l * l + i1 * i1 + j1 * j1;
+    /**
+     * Get the square of the distance from a location 2 blocks away from the door considered 'inside' and the given
+     * arguments
+     */
+    public int c(int par1, int par2, int par3)
+    {
+        int var4 = par1 - this.locX - this.d;
+        int var5 = par2 - this.locY;
+        int var6 = par3 - this.locZ - this.e;
+        return var4 * var4 + var5 * var5 + var6 * var6;
     }
 
-    public int getIndoorsX() {
+    public int getIndoorsX()
+    {
         return this.locX + this.d;
     }
 
-    public int getIndoorsY() {
+    public int getIndoorsY()
+    {
         return this.locY;
     }
 
-    public int getIndoorsZ() {
+    public int getIndoorsZ()
+    {
         return this.locZ + this.e;
     }
 
-    public boolean a(int i, int j) {
-        int k = i - this.locX;
-        int l = j - this.locZ;
-
-        return k * this.d + l * this.e >= 0;
+    public boolean a(int par1, int par2)
+    {
+        int var3 = par1 - this.locX;
+        int var4 = par2 - this.locZ;
+        return var3 * this.d + var4 * this.e >= 0;
     }
 
-    public void d() {
+    public void d()
+    {
         this.bookings = 0;
     }
 
-    public void e() {
+    public void e()
+    {
         ++this.bookings;
     }
 
-    public int f() {
+    public int f()
+    {
         return this.bookings;
     }
 }

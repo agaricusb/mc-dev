@@ -1,41 +1,60 @@
 package net.minecraft.server;
 
-public class PathfinderGoalPanic extends PathfinderGoal {
-
+public class PathfinderGoalPanic extends PathfinderGoal
+{
     private EntityCreature a;
     private float b;
     private double c;
     private double d;
     private double e;
 
-    public PathfinderGoalPanic(EntityCreature entitycreature, float f) {
-        this.a = entitycreature;
-        this.b = f;
+    public PathfinderGoalPanic(EntityCreature par1EntityCreature, float par2)
+    {
+        this.a = par1EntityCreature;
+        this.b = par2;
         this.a(1);
     }
 
-    public boolean a() {
-        if (this.a.aC() == null) {
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
+        if (this.a.aC() == null)
+        {
             return false;
-        } else {
-            Vec3D vec3d = RandomPositionGenerator.a(this.a, 5, 4);
+        }
+        else
+        {
+            Vec3D var1 = RandomPositionGenerator.a(this.a, 5, 4);
 
-            if (vec3d == null) {
+            if (var1 == null)
+            {
                 return false;
-            } else {
-                this.c = vec3d.c;
-                this.d = vec3d.d;
-                this.e = vec3d.e;
+            }
+            else
+            {
+                this.c = var1.c;
+                this.d = var1.d;
+                this.e = var1.e;
                 return true;
             }
         }
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.a.getNavigation().a(this.c, this.d, this.e, this.b);
     }
 
-    public boolean b() {
+    /**
+     * Returns whether an in-progress EntityAIBase should continue executing
+     */
+    public boolean b()
+    {
         return !this.a.getNavigation().f();
     }
 }

@@ -1,35 +1,56 @@
 package net.minecraft.server;
 
-public class PathfinderGoalTradeWithPlayer extends PathfinderGoal {
-
+public class PathfinderGoalTradeWithPlayer extends PathfinderGoal
+{
     private EntityVillager a;
 
-    public PathfinderGoalTradeWithPlayer(EntityVillager entityvillager) {
-        this.a = entityvillager;
+    public PathfinderGoalTradeWithPlayer(EntityVillager par1EntityVillager)
+    {
+        this.a = par1EntityVillager;
         this.a(5);
     }
 
-    public boolean a() {
-        if (!this.a.isAlive()) {
+    /**
+     * Returns whether the EntityAIBase should begin execution.
+     */
+    public boolean a()
+    {
+        if (!this.a.isAlive())
+        {
             return false;
-        } else if (this.a.H()) {
+        }
+        else if (this.a.H())
+        {
             return false;
-        } else if (!this.a.onGround) {
+        }
+        else if (!this.a.onGround)
+        {
             return false;
-        } else if (this.a.velocityChanged) {
+        }
+        else if (this.a.velocityChanged)
+        {
             return false;
-        } else {
-            EntityHuman entityhuman = this.a.m_();
-
-            return entityhuman == null ? false : (this.a.e(entityhuman) > 16.0D ? false : entityhuman.activeContainer instanceof Container);
+        }
+        else
+        {
+            EntityHuman var1 = this.a.m_();
+            return var1 == null ? false : (this.a.e(var1) > 16.0D ? false : var1.activeContainer instanceof Container);
         }
     }
 
-    public void c() {
+    /**
+     * Execute a one shot task or start executing a continuous task
+     */
+    public void c()
+    {
         this.a.getNavigation().g();
     }
 
-    public void d() {
+    /**
+     * Resets the task
+     */
+    public void d()
+    {
         this.a.b_((EntityHuman) null);
     }
 }

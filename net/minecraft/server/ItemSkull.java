@@ -1,90 +1,121 @@
 package net.minecraft.server;
 
-public class ItemSkull extends Item {
+public class ItemSkull extends Item
+{
+    private static final String[] a = new String[] {"skeleton", "wither", "zombie", "char", "creeper"};
+    private static final int[] b = new int[] {224, 225, 226, 227, 228};
 
-    private static final String[] a = new String[] { "skeleton", "wither", "zombie", "char", "creeper"};
-    private static final int[] b = new int[] { 224, 225, 226, 227, 228};
-
-    public ItemSkull(int i) {
-        super(i);
+    public ItemSkull(int par1)
+    {
+        super(par1);
         this.a(CreativeModeTab.c);
         this.setMaxDurability(0);
         this.a(true);
     }
 
-    public boolean interactWith(ItemStack itemstack, EntityHuman entityhuman, World world, int i, int j, int k, int l, float f, float f1, float f2) {
-        if (l == 0) {
+    /**
+     * Callback for item usage. If the item does something special on right clicking, he will have one of those. Return
+     * True if something happen and false if it don't. This is for ITEMS, not BLOCKS
+     */
+    public boolean interactWith(ItemStack par1ItemStack, EntityHuman par2EntityPlayer, World par3World, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    {
+        if (par7 == 0)
+        {
             return false;
-        } else if (!world.getMaterial(i, j, k).isBuildable()) {
+        }
+        else if (!par3World.getMaterial(par4, par5, par6).isBuildable())
+        {
             return false;
-        } else {
-            if (l == 1) {
-                ++j;
+        }
+        else
+        {
+            if (par7 == 1)
+            {
+                ++par5;
             }
 
-            if (l == 2) {
-                --k;
+            if (par7 == 2)
+            {
+                --par6;
             }
 
-            if (l == 3) {
-                ++k;
+            if (par7 == 3)
+            {
+                ++par6;
             }
 
-            if (l == 4) {
-                --i;
+            if (par7 == 4)
+            {
+                --par4;
             }
 
-            if (l == 5) {
-                ++i;
+            if (par7 == 5)
+            {
+                ++par4;
             }
 
-            if (!entityhuman.a(i, j, k, l, itemstack)) {
+            if (!par2EntityPlayer.a(par4, par5, par6, par7, par1ItemStack))
+            {
                 return false;
-            } else if (!Block.SKULL.canPlace(world, i, j, k)) {
+            }
+            else if (!Block.SKULL.canPlace(par3World, par4, par5, par6))
+            {
                 return false;
-            } else {
-                world.setTypeIdAndData(i, j, k, Block.SKULL.id, l);
-                int i1 = 0;
+            }
+            else
+            {
+                par3World.setTypeIdAndData(par4, par5, par6, Block.SKULL.id, par7);
+                int var11 = 0;
 
-                if (l == 1) {
-                    i1 = MathHelper.floor((double) (entityhuman.yaw * 16.0F / 360.0F) + 0.5D) & 15;
+                if (par7 == 1)
+                {
+                    var11 = MathHelper.floor((double) (par2EntityPlayer.yaw * 16.0F / 360.0F) + 0.5D) & 15;
                 }
 
-                TileEntity tileentity = world.getTileEntity(i, j, k);
+                TileEntity var12 = par3World.getTileEntity(par4, par5, par6);
 
-                if (tileentity != null && tileentity instanceof TileEntitySkull) {
-                    String s = "";
+                if (var12 != null && var12 instanceof TileEntitySkull)
+                {
+                    String var13 = "";
 
-                    if (itemstack.hasTag() && itemstack.getTag().hasKey("SkullOwner")) {
-                        s = itemstack.getTag().getString("SkullOwner");
+                    if (par1ItemStack.hasTag() && par1ItemStack.getTag().hasKey("SkullOwner"))
+                    {
+                        var13 = par1ItemStack.getTag().getString("SkullOwner");
                     }
 
-                    ((TileEntitySkull) tileentity).setSkullType(itemstack.getData(), s);
-                    ((TileEntitySkull) tileentity).setRotation(i1);
-                    ((BlockSkull) Block.SKULL).a(world, i, j, k, (TileEntitySkull) tileentity);
+                    ((TileEntitySkull)var12).setSkullType(par1ItemStack.getData(), var13);
+                    ((TileEntitySkull)var12).setRotation(var11);
+                    ((BlockSkull) Block.SKULL).a(par3World, par4, par5, par6, (TileEntitySkull) var12);
                 }
 
-                --itemstack.count;
+                --par1ItemStack.count;
                 return true;
             }
         }
     }
 
-    public int filterData(int i) {
-        return i;
+    /**
+     * Returns the metadata of the block which this Item (ItemBlock) can place
+     */
+    public int filterData(int par1)
+    {
+        return par1;
     }
 
-    public String c_(ItemStack itemstack) {
-        int i = itemstack.getData();
+    public String c_(ItemStack par1ItemStack)
+    {
+        int var2 = par1ItemStack.getData();
 
-        if (i < 0 || i >= a.length) {
-            i = 0;
+        if (var2 < 0 || var2 >= a.length)
+        {
+            var2 = 0;
         }
 
-        return super.getName() + "." + a[i];
+        return super.getName() + "." + a[var2];
     }
 
-    public String j(ItemStack itemstack) {
-        return itemstack.getData() == 3 && itemstack.hasTag() && itemstack.getTag().hasKey("SkullOwner") ? LocaleI18n.get("item.skull.player.name", new Object[] { itemstack.getTag().getString("SkullOwner")}) : super.j(itemstack);
+    public String j(ItemStack par1ItemStack)
+    {
+        return par1ItemStack.getData() == 3 && par1ItemStack.hasTag() && par1ItemStack.getTag().hasKey("SkullOwner") ? LocaleI18n.get("item.skull.player.name", new Object[]{par1ItemStack.getTag().getString("SkullOwner")}): super.j(par1ItemStack);
     }
 }

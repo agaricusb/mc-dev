@@ -1,70 +1,110 @@
 package net.minecraft.server;
 
-public abstract class EntityAgeable extends EntityCreature {
-
-    public EntityAgeable(World world) {
-        super(world);
+public abstract class EntityAgeable extends EntityCreature
+{
+    public EntityAgeable(World par1World)
+    {
+        super(par1World);
     }
 
-    public abstract EntityAgeable createChild(EntityAgeable entityageable);
+    public abstract EntityAgeable createChild(EntityAgeable var1);
 
-    public boolean a(EntityHuman entityhuman) {
-        ItemStack itemstack = entityhuman.inventory.getItemInHand();
+    /**
+     * Called when a player interacts with a mob. e.g. gets milk from a cow, gets into the saddle on a pig.
+     */
+    public boolean a(EntityHuman par1EntityPlayer)
+    {
+        ItemStack var2 = par1EntityPlayer.inventory.getItemInHand();
 
-        if (itemstack != null && itemstack.id == Item.MONSTER_EGG.id && !this.world.isStatic) {
-            Class oclass = EntityTypes.a(itemstack.getData());
+        if (var2 != null && var2.id == Item.MONSTER_EGG.id && !this.world.isStatic)
+        {
+            Class var3 = EntityTypes.a(var2.getData());
 
-            if (oclass != null && oclass.isAssignableFrom(this.getClass())) {
-                EntityAgeable entityageable = this.createChild(this);
+            if (var3 != null && var3.isAssignableFrom(this.getClass()))
+            {
+                EntityAgeable var4 = this.createChild(this);
 
-                if (entityageable != null) {
-                    entityageable.setAge(-24000);
-                    entityageable.setPositionRotation(this.locX, this.locY, this.locZ, 0.0F, 0.0F);
-                    this.world.addEntity(entityageable);
+                if (var4 != null)
+                {
+                    var4.setAge(-24000);
+                    var4.setPositionRotation(this.locX, this.locY, this.locZ, 0.0F, 0.0F);
+                    this.world.addEntity(var4);
                 }
             }
         }
 
-        return super.a(entityhuman);
+        return super.a(par1EntityPlayer);
     }
 
-    protected void a() {
+    protected void a()
+    {
         super.a();
         this.datawatcher.a(12, new Integer(0));
     }
 
-    public int getAge() {
+    /**
+     * The age value may be negative or positive or zero. If it's negative, it get's incremented on each tick, if it's
+     * positive, it get's decremented each tick. Don't confuse this with EntityLiving.getAge. With a negative value the
+     * Entity is considered a child.
+     */
+    public int getAge()
+    {
         return this.datawatcher.getInt(12);
     }
 
-    public void setAge(int i) {
-        this.datawatcher.watch(12, Integer.valueOf(i));
+    /**
+     * The age value may be negative or positive or zero. If it's negative, it get's incremented on each tick, if it's
+     * positive, it get's decremented each tick. With a negative value the Entity is considered a child.
+     */
+    public void setAge(int par1)
+    {
+        this.datawatcher.watch(12, Integer.valueOf(par1));
     }
 
-    public void b(NBTTagCompound nbttagcompound) {
-        super.b(nbttagcompound);
-        nbttagcompound.setInt("Age", this.getAge());
+    /**
+     * (abstract) Protected helper method to write subclass entity data to NBT.
+     */
+    public void b(NBTTagCompound par1NBTTagCompound)
+    {
+        super.b(par1NBTTagCompound);
+        par1NBTTagCompound.setInt("Age", this.aE());
     }
 
-    public void a(NBTTagCompound nbttagcompound) {
-        super.a(nbttagcompound);
-        this.setAge(nbttagcompound.getInt("Age"));
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        super.a(par1NBTTagCompound);
+        this.setAge(par1NBTTagCompound.getInt("Age"));
     }
 
-    public void c() {
+    /**
+     * Called frequently so the entity can update its state every tick as required. For example, zombies and skeletons
+     * use this to react to sunlight and start to burn.
+     */
+    public void c()
+    {
         super.c();
-        int i = this.getAge();
+        int var1 = this.aE();
 
-        if (i < 0) {
-            ++i;
-            this.setAge(i);
-        } else if (i > 0) {
-            --i;
-            this.setAge(i);
+        if (var1 < 0)
+        {
+            ++var1;
+            this.setAge(var1);
+        }
+        else if (var1 > 0)
+        {
+            --var1;
+            this.setAge(var1);
         }
     }
 
-    public boolean isBaby() {
-        return this.getAge() < 0;
+    /**
+     * If Animal, checks if the age timer is negative
+     */
+    public boolean isBaby()
+    {
+        return this.aE() < 0;
     }
 }

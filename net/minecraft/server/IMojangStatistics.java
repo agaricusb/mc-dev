@@ -1,10 +1,13 @@
 package net.minecraft.server;
 
-public interface IMojangStatistics {
+public interface IMojangStatistics
+{
+    void a(MojangStatisticsGenerator var1);
 
-    void a(MojangStatisticsGenerator mojangstatisticsgenerator);
+    void b(MojangStatisticsGenerator var1);
 
-    void b(MojangStatisticsGenerator mojangstatisticsgenerator);
-
+    /**
+     * Returns whether snooping is enabled or not.
+     */
     boolean getSnooperEnabled();
 }

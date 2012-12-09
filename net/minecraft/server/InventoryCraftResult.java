@@ -1,56 +1,97 @@
 package net.minecraft.server;
 
-public class InventoryCraftResult implements IInventory {
-
+public class InventoryCraftResult implements IInventory
+{
+    /** A list of one item containing the result of the crafting formula */
     private ItemStack[] items = new ItemStack[1];
 
-    public InventoryCraftResult() {}
-
-    public int getSize() {
+    /**
+     * Returns the number of slots in the inventory.
+     */
+    public int getSize()
+    {
         return 1;
     }
 
-    public ItemStack getItem(int i) {
+    /**
+     * Returns the stack in slot i
+     */
+    public ItemStack getItem(int par1)
+    {
         return this.items[0];
     }
 
-    public String getName() {
+    /**
+     * Returns the name of the inventory.
+     */
+    public String getName()
+    {
         return "Result";
     }
 
-    public ItemStack splitStack(int i, int j) {
-        if (this.items[0] != null) {
-            ItemStack itemstack = this.items[0];
-
+    /**
+     * Removes from an inventory slot (first arg) up to a specified number (second arg) of items and returns them in a
+     * new stack.
+     */
+    public ItemStack splitStack(int par1, int par2)
+    {
+        if (this.items[0] != null)
+        {
+            ItemStack var3 = this.items[0];
             this.items[0] = null;
-            return itemstack;
-        } else {
+            return var3;
+        }
+        else
+        {
             return null;
         }
     }
 
-    public ItemStack splitWithoutUpdate(int i) {
-        if (this.items[0] != null) {
-            ItemStack itemstack = this.items[0];
-
+    /**
+     * When some containers are closed they call this on each slot, then drop whatever it returns as an EntityItem -
+     * like when you close a workbench GUI.
+     */
+    public ItemStack splitWithoutUpdate(int par1)
+    {
+        if (this.items[0] != null)
+        {
+            ItemStack var2 = this.items[0];
             this.items[0] = null;
-            return itemstack;
-        } else {
+            return var2;
+        }
+        else
+        {
             return null;
         }
     }
 
-    public void setItem(int i, ItemStack itemstack) {
-        this.items[0] = itemstack;
+    /**
+     * Sets the given item stack to the specified slot in the inventory (can be crafting or armor sections).
+     */
+    public void setItem(int par1, ItemStack par2ItemStack)
+    {
+        this.items[0] = par2ItemStack;
     }
 
-    public int getMaxStackSize() {
+    /**
+     * Returns the maximum stack size for a inventory slot. Seems to always be 64, possibly will be extended. *Isn't
+     * this more of a set than a get?*
+     */
+    public int getMaxStackSize()
+    {
         return 64;
     }
 
+    /**
+     * Called when an the contents of an Inventory change, usually
+     */
     public void update() {}
 
-    public boolean a_(EntityHuman entityhuman) {
+    /**
+     * Do not make give this method the name canInteractWith because it clashes with Container
+     */
+    public boolean a_(EntityHuman par1EntityPlayer)
+    {
         return true;
     }
 

@@ -1,14 +1,15 @@
 package net.minecraft.server;
 
-public class ChunkCoordinatesPortal extends ChunkCoordinates {
-
+public class ChunkCoordinatesPortal extends ChunkCoordinates
+{
     public long d;
 
     final PortalTravelAgent e;
 
-    public ChunkCoordinatesPortal(PortalTravelAgent portaltravelagent, int i, int j, int k, long l) {
-        super(i, j, k);
-        this.e = portaltravelagent;
-        this.d = l;
+    public ChunkCoordinatesPortal(PortalTravelAgent par1Teleporter, int par2, int par3, int par4, long par5)
+    {
+        super(par2, par3, par4);
+        this.e = par1Teleporter;
+        this.d = par5;
     }
 }
