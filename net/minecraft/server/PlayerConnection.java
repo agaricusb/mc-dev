@@ -8,7 +8,7 @@ import java.util.Iterator;
 import java.util.Random;
 import java.util.logging.Logger;
 
-public class NetServerHandler extends NetHandler
+public class PlayerConnection extends Connection
 {
     /** The logging system. */
     public static Logger logger = Logger.getLogger("Minecraft");
@@ -53,13 +53,13 @@ public class NetServerHandler extends NetHandler
     private boolean checkMovement = true;
     private IntHashMap s = new IntHashMap();
 
-    public NetServerHandler(MinecraftServer par1, INetworkManager par2, EntityPlayer par3)
+    public PlayerConnection(MinecraftServer par1, INetworkManager par2, EntityPlayer par3)
     {
         this.minecraftServer = par1;
         this.networkManager = par2;
         par2.a(this);
         this.player = par3;
-        par3.netServerHandler = this;
+        par3.playerConnection = this;
     }
 
     /**
@@ -105,8 +105,8 @@ public class NetServerHandler extends NetHandler
             this.player.l();
             this.sendPacket(new Packet255KickDisconnect(par1Str));
             this.networkManager.d();
-            this.minecraftServer.getServerConfigurationManager().sendAll(new Packet3Chat("\u00a7e" + this.player.name + " left the game."));
-            this.minecraftServer.getServerConfigurationManager().disconnect(this.player);
+            this.minecraftServer.getPlayerList().sendAll(new Packet3Chat("\u00a7e" + this.player.name + " left the game."));
+            this.minecraftServer.getPlayerList().disconnect(this.player);
             this.disconnected = true;
         }
     }
@@ -184,7 +184,7 @@ public class NetServerHandler extends NetHandler
                         this.player.vehicle.V();
                     }
 
-                    this.minecraftServer.getServerConfigurationManager().d(this.player);
+                    this.minecraftServer.getPlayerList().d(this.player);
                     this.y = this.player.locX;
                     this.z = this.player.locY;
                     this.q = this.player.locZ;
@@ -290,7 +290,7 @@ public class NetServerHandler extends NetHandler
                 var25 = var13 * var13 + var15 * var15 + var17 * var17;
                 boolean var31 = false;
 
-                if (var25 > 0.0625D && !this.player.isSleeping() && !this.player.itemInWorldManager.isCreative())
+                if (var25 > 0.0625D && !this.player.isSleeping() && !this.player.playerInteractManager.isCreative())
                 {
                     var31 = true;
                     logger.warning(this.player.name + " moved wrongly!");
@@ -307,7 +307,7 @@ public class NetServerHandler extends NetHandler
 
                 AxisAlignedBB var33 = this.player.boundingBox.clone().grow((double) var27, (double) var27, (double) var27).a(0.0D, -0.55D, 0.0D);
 
-                if (!this.minecraftServer.getAllowFlight() && !this.player.itemInWorldManager.isCreative() && !var2.c(var33))
+                if (!this.minecraftServer.getAllowFlight() && !this.player.playerInteractManager.isCreative() && !var2.c(var33))
                 {
                     if (var29 >= -0.03125D)
                     {
@@ -327,7 +327,7 @@ public class NetServerHandler extends NetHandler
                 }
 
                 this.player.onGround = par1Packet10Flying.g;
-                this.minecraftServer.getServerConfigurationManager().d(this.player);
+                this.minecraftServer.getPlayerList().d(this.player);
                 this.player.b(this.player.locY - var3, par1Packet10Flying.g);
             }
         }
@@ -343,7 +343,7 @@ public class NetServerHandler extends NetHandler
         this.z = par3;
         this.q = par5;
         this.player.setLocation(par1, par3, par5, par7, par8);
-        this.player.netServerHandler.sendPacket(new Packet13PlayerLookMove(par1, par3 + 1.6200000047683716D, par3, par5, par7, par8, false));
+        this.player.playerConnection.sendPacket(new Packet13PlayerLookMove(par1, par3 + 1.6200000047683716D, par3, par5, par7, par8, false));
     }
 
     public void a(Packet14BlockDig par1Packet14BlockDig)
@@ -352,7 +352,11 @@ public class NetServerHandler extends NetHandler
 
         if (par1Packet14BlockDig.e == 4)
         {
-            this.player.bR();
+            this.player.f(false);
+        }
+        else if (par1Packet14BlockDig.e == 3)
+        {
+            this.player.f(true);
         }
         else if (par1Packet14BlockDig.e == 5)
         {
@@ -360,89 +364,83 @@ public class NetServerHandler extends NetHandler
         }
         else
         {
-            boolean var3 = var2.worldProvider.dimension != 0 || this.minecraftServer.getServerConfigurationManager().getOPs().isEmpty() || this.minecraftServer.getServerConfigurationManager().isOp(this.player.name) || this.minecraftServer.I();
-            boolean var4 = false;
+            int var3 = this.minecraftServer.getSpawnProtection();
+            boolean var4 = var2.worldProvider.dimension != 0 || this.minecraftServer.getPlayerList().getOPs().isEmpty() || this.minecraftServer.getPlayerList().isOp(this.player.name) || var3 <= 0 || this.minecraftServer.I();
+            boolean var5 = false;
 
             if (par1Packet14BlockDig.e == 0)
             {
-                var4 = true;
+                var5 = true;
+            }
+
+            if (par1Packet14BlockDig.e == 1)
+            {
+                var5 = true;
             }
 
             if (par1Packet14BlockDig.e == 2)
             {
-                var4 = true;
+                var5 = true;
             }
 
-            int var5 = par1Packet14BlockDig.a;
-            int var6 = par1Packet14BlockDig.b;
-            int var7 = par1Packet14BlockDig.c;
+            int var6 = par1Packet14BlockDig.a;
+            int var7 = par1Packet14BlockDig.b;
+            int var8 = par1Packet14BlockDig.c;
 
-            if (var4)
+            if (var5)
             {
-                double var8 = this.player.locX - ((double)var5 + 0.5D);
-                double var10 = this.player.locY - ((double)var6 + 0.5D) + 1.5D;
-                double var12 = this.player.locZ - ((double)var7 + 0.5D);
-                double var14 = var8 * var8 + var10 * var10 + var12 * var12;
+                double var9 = this.player.locX - ((double)var6 + 0.5D);
+                double var11 = this.player.locY - ((double)var7 + 0.5D) + 1.5D;
+                double var13 = this.player.locZ - ((double)var8 + 0.5D);
+                double var15 = var9 * var9 + var11 * var11 + var13 * var13;
 
-                if (var14 > 36.0D)
+                if (var15 > 36.0D)
                 {
                     return;
                 }
 
-                if (var6 >= this.minecraftServer.getMaxBuildHeight())
+                if (var7 >= this.minecraftServer.getMaxBuildHeight())
                 {
                     return;
                 }
             }
 
-            ChunkCoordinates var19 = var2.getSpawn();
-            int var9 = MathHelper.a(var5 - var19.x);
-            int var20 = MathHelper.a(var7 - var19.z);
+            ChunkCoordinates var17 = var2.getSpawn();
+            int var10 = MathHelper.a(var6 - var17.x);
+            int var18 = MathHelper.a(var8 - var17.z);
 
-            if (var9 > var20)
+            if (var10 > var18)
             {
-                var20 = var9;
+                var18 = var10;
             }
 
             if (par1Packet14BlockDig.e == 0)
             {
-                if (var20 <= this.minecraftServer.getSpawnProtection() && !var3)
+                if (var18 <= var3 && !var4)
                 {
-                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
+                    this.player.playerConnection.sendPacket(new Packet53BlockChange(var6, var7, var8, var2));
                 }
                 else
                 {
-                    this.player.itemInWorldManager.dig(var5, var6, var7, par1Packet14BlockDig.face);
+                    this.player.playerInteractManager.dig(var6, var7, var8, par1Packet14BlockDig.face);
                 }
             }
             else if (par1Packet14BlockDig.e == 2)
             {
-                this.player.itemInWorldManager.a(var5, var6, var7);
+                this.player.playerInteractManager.a(var6, var7, var8);
 
-                if (var2.getTypeId(var5, var6, var7) != 0)
+                if (var2.getTypeId(var6, var7, var8) != 0)
                 {
-                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
+                    this.player.playerConnection.sendPacket(new Packet53BlockChange(var6, var7, var8, var2));
                 }
             }
             else if (par1Packet14BlockDig.e == 1)
             {
-                this.player.itemInWorldManager.c(var5, var6, var7);
+                this.player.playerInteractManager.c(var6, var7, var8);
 
-                if (var2.getTypeId(var5, var6, var7) != 0)
+                if (var2.getTypeId(var6, var7, var8) != 0)
                 {
-                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
-                }
-            }
-            else if (par1Packet14BlockDig.e == 3)
-            {
-                double var11 = this.player.locX - ((double)var5 + 0.5D);
-                double var13 = this.player.locY - ((double)var6 + 0.5D);
-                double var15 = this.player.locZ - ((double)var7 + 0.5D);
-                double var17 = var11 * var11 + var13 * var13 + var15 * var15;
-
-                if (var17 < 256.0D)
-                {
-                    this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
+                    this.player.playerConnection.sendPacket(new Packet53BlockChange(var6, var7, var8, var2));
                 }
             }
         }
@@ -457,7 +455,8 @@ public class NetServerHandler extends NetHandler
         int var6 = par1Packet15Place.f();
         int var7 = par1Packet15Place.g();
         int var8 = par1Packet15Place.getFace();
-        boolean var9 = var2.worldProvider.dimension != 0 || this.minecraftServer.getServerConfigurationManager().getOPs().isEmpty() || this.minecraftServer.getServerConfigurationManager().isOp(this.player.name) || this.minecraftServer.I();
+        int var9 = this.minecraftServer.getSpawnProtection();
+        boolean var10 = var2.worldProvider.dimension != 0 || this.minecraftServer.getPlayerList().getOPs().isEmpty() || this.minecraftServer.getPlayerList().isOp(this.player.name) || var9 <= 0 || this.minecraftServer.I();
 
         if (par1Packet15Place.getFace() == 255)
         {
@@ -466,27 +465,27 @@ public class NetServerHandler extends NetHandler
                 return;
             }
 
-            this.player.itemInWorldManager.useItem(this.player, var2, var3);
+            this.player.playerInteractManager.useItem(this.player, var2, var3);
         }
         else if (par1Packet15Place.f() >= this.minecraftServer.getMaxBuildHeight() - 1 && (par1Packet15Place.getFace() == 1 || par1Packet15Place.f() >= this.minecraftServer.getMaxBuildHeight()))
         {
-            this.player.netServerHandler.sendPacket(new Packet3Chat("\u00a77Height limit for building is " + this.minecraftServer.getMaxBuildHeight()));
+            this.player.playerConnection.sendPacket(new Packet3Chat("\u00a77Height limit for building is " + this.minecraftServer.getMaxBuildHeight()));
             var4 = true;
         }
         else
         {
-            ChunkCoordinates var10 = var2.getSpawn();
-            int var11 = MathHelper.a(var5 - var10.x);
-            int var12 = MathHelper.a(var7 - var10.z);
+            ChunkCoordinates var11 = var2.getSpawn();
+            int var12 = MathHelper.a(var5 - var11.x);
+            int var13 = MathHelper.a(var7 - var11.z);
 
-            if (var11 > var12)
+            if (var12 > var13)
             {
-                var12 = var11;
+                var13 = var12;
             }
 
-            if (this.checkMovement && this.player.e((double) var5 + 0.5D, (double) var6 + 0.5D, (double) var7 + 0.5D) < 64.0D && (var12 > this.minecraftServer.getSpawnProtection() || var9))
+            if (this.checkMovement && this.player.e((double) var5 + 0.5D, (double) var6 + 0.5D, (double) var7 + 0.5D) < 64.0D && (var13 > var9 || var10))
             {
-                this.player.itemInWorldManager.interact(this.player, var2, var3, var5, var6, var7, var8, par1Packet15Place.j(), par1Packet15Place.l(), par1Packet15Place.m());
+                this.player.playerInteractManager.interact(this.player, var2, var3, var5, var6, var7, var8, par1Packet15Place.j(), par1Packet15Place.l(), par1Packet15Place.m());
             }
 
             var4 = true;
@@ -494,7 +493,7 @@ public class NetServerHandler extends NetHandler
 
         if (var4)
         {
-            this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
+            this.player.playerConnection.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
 
             if (var8 == 0)
             {
@@ -526,7 +525,7 @@ public class NetServerHandler extends NetHandler
                 ++var5;
             }
 
-            this.player.netServerHandler.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
+            this.player.playerConnection.sendPacket(new Packet53BlockChange(var5, var6, var7, var2));
         }
 
         var3 = this.player.inventory.getItemInHand();
@@ -541,13 +540,13 @@ public class NetServerHandler extends NetHandler
         {
             this.player.h = true;
             this.player.inventory.items[this.player.inventory.itemInHandIndex] = ItemStack.b(this.player.inventory.items[this.player.inventory.itemInHandIndex]);
-            Slot var13 = this.player.activeContainer.a(this.player.inventory, this.player.inventory.itemInHandIndex);
+            Slot var14 = this.player.activeContainer.a(this.player.inventory, this.player.inventory.itemInHandIndex);
             this.player.activeContainer.b();
             this.player.h = false;
 
             if (!ItemStack.matches(this.player.inventory.getItemInHand(), par1Packet15Place.getItemStack()))
             {
-                this.sendPacket(new Packet103SetSlot(this.player.activeContainer.windowId, var13.g, this.player.inventory.getItemInHand()));
+                this.sendPacket(new Packet103SetSlot(this.player.activeContainer.windowId, var14.g, this.player.inventory.getItemInHand()));
             }
         }
     }
@@ -555,8 +554,8 @@ public class NetServerHandler extends NetHandler
     public void a(String par1Str, Object[] par2ArrayOfObj)
     {
         logger.info(this.player.name + " lost connection: " + par1Str);
-        this.minecraftServer.getServerConfigurationManager().sendAll(new Packet3Chat("\u00a7e" + this.player.name + " left the game."));
-        this.minecraftServer.getServerConfigurationManager().disconnect(this.player);
+        this.minecraftServer.getPlayerList().sendAll(new Packet3Chat("\u00a7e" + this.player.name + " left the game."));
+        this.minecraftServer.getPlayerList().disconnect(this.player);
         this.disconnected = true;
 
         if (this.minecraftServer.I() && this.player.name.equals(this.minecraftServer.H()))
@@ -653,12 +652,12 @@ public class NetServerHandler extends NetHandler
 
                     var2 = "<" + this.player.name + "> " + var2;
                     logger.info(var2);
-                    this.minecraftServer.getServerConfigurationManager().sendAll(new Packet3Chat(var2, false));
+                    this.minecraftServer.getPlayerList().sendAll(new Packet3Chat(var2, false));
                 }
 
                 this.m += 20;
 
-                if (this.m > 200 && !this.minecraftServer.getServerConfigurationManager().isOp(this.player.name))
+                if (this.m > 200 && !this.minecraftServer.getPlayerList().isOp(this.player.name))
                 {
                     this.disconnect("disconnect.spam");
                 }
@@ -758,21 +757,21 @@ public class NetServerHandler extends NetHandler
         {
             if (this.player.viewingCredits)
             {
-                this.player = this.minecraftServer.getServerConfigurationManager().moveToWorld(this.player, 0, true);
+                this.player = this.minecraftServer.getPlayerList().moveToWorld(this.player, 0, true);
             }
             else if (this.player.p().getWorldData().isHardcore())
             {
                 if (this.minecraftServer.I() && this.player.name.equals(this.minecraftServer.H()))
                 {
-                    this.player.netServerHandler.disconnect("You have died. Game over, man, it\'s game over!");
+                    this.player.playerConnection.disconnect("You have died. Game over, man, it\'s game over!");
                     this.minecraftServer.P();
                 }
                 else
                 {
                     BanEntry var2 = new BanEntry(this.player.name);
                     var2.setReason("Death in Hardcore");
-                    this.minecraftServer.getServerConfigurationManager().getNameBans().add(var2);
-                    this.player.netServerHandler.disconnect("You have died. Game over, man, it\'s game over!");
+                    this.minecraftServer.getPlayerList().getNameBans().add(var2);
+                    this.player.playerConnection.disconnect("You have died. Game over, man, it\'s game over!");
                 }
             }
             else
@@ -782,13 +781,15 @@ public class NetServerHandler extends NetHandler
                     return;
                 }
 
-                this.player = this.minecraftServer.getServerConfigurationManager().moveToWorld(this.player, 0, false);
+                this.player = this.minecraftServer.getPlayerList().moveToWorld(this.player, 0, false);
             }
         }
     }
 
     /**
-     * packet.processPacket is only called if this returns true
+     * If this returns false, all packets will be queued for the main thread to handle, even if they would otherwise be
+     * processed asynchronously. Used to avoid processing packets on the client before the world has been downloaded
+     * (which happens on the main thread)
      */
     public boolean b()
     {
@@ -813,7 +814,7 @@ public class NetServerHandler extends NetHandler
 
             if (ItemStack.matches(par1Packet102WindowClick.item, var2))
             {
-                this.player.netServerHandler.sendPacket(new Packet106Transaction(par1Packet102WindowClick.a, par1Packet102WindowClick.d, true));
+                this.player.playerConnection.sendPacket(new Packet106Transaction(par1Packet102WindowClick.a, par1Packet102WindowClick.d, true));
                 this.player.h = true;
                 this.player.activeContainer.b();
                 this.player.broadcastCarriedItem();
@@ -822,7 +823,7 @@ public class NetServerHandler extends NetHandler
             else
             {
                 this.s.a(this.player.activeContainer.windowId, Short.valueOf(par1Packet102WindowClick.d));
-                this.player.netServerHandler.sendPacket(new Packet106Transaction(par1Packet102WindowClick.a, par1Packet102WindowClick.d, false));
+                this.player.playerConnection.sendPacket(new Packet106Transaction(par1Packet102WindowClick.a, par1Packet102WindowClick.d, false));
                 this.player.activeContainer.a(this.player, false);
                 ArrayList var3 = new ArrayList();
 
@@ -850,7 +851,7 @@ public class NetServerHandler extends NetHandler
      */
     public void a(Packet107SetCreativeSlot par1Packet107CreativeSetSlot)
     {
-        if (this.player.itemInWorldManager.isCreative())
+        if (this.player.playerInteractManager.isCreative())
         {
             boolean var2 = par1Packet107CreativeSetSlot.slot < 0;
             ItemStack var3 = par1Packet107CreativeSetSlot.b;
@@ -1000,7 +1001,7 @@ public class NetServerHandler extends NetHandler
             }
         }
 
-        this.player.netServerHandler.sendPacket(new Packet203TabComplete(var2.toString()));
+        this.player.playerConnection.sendPacket(new Packet203TabComplete(var2.toString()));
     }
 
     public void a(Packet204LocaleAndViewDistance par1Packet204ClientInfo)

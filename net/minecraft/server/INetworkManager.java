@@ -7,7 +7,7 @@ public interface INetworkManager
     /**
      * Sets the NetHandler for this NetworkManager. Server-only.
      */
-    void a(NetHandler var1);
+    void a(Connection var1);
 
     /**
      * Adds the packet to the correct send queue (chunk data packets go to a separate queue).

@@ -44,7 +44,7 @@ public class DedicatedServerConnectionThread extends Thread
         {
             for (int var2 = 0; var2 < this.b.size(); ++var2)
             {
-                NetLoginHandler var3 = (NetLoginHandler)this.b.get(var2);
+                PendingConnection var3 = (PendingConnection)this.b.get(var2);
 
                 try
                 {
@@ -89,7 +89,7 @@ public class DedicatedServerConnectionThread extends Thread
                     this.c.put(var2, Long.valueOf(var3));
                 }
 
-                NetLoginHandler var9 = new NetLoginHandler(this.f.d(), var1, "Connection #" + this.d++);
+                PendingConnection var9 = new PendingConnection(this.f.d(), var1, "Connection #" + this.d++);
                 this.a(var9);
             }
             catch (IOException var8)
@@ -101,7 +101,7 @@ public class DedicatedServerConnectionThread extends Thread
         System.out.println("Closing listening thread");
     }
 
-    private void a(NetLoginHandler par1NetLoginHandler)
+    private void a(PendingConnection par1NetLoginHandler)
     {
         if (par1NetLoginHandler == null)
         {

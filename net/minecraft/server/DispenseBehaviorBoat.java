@@ -1,10 +1,12 @@
 package net.minecraft.server;
 
+
 public class DispenseBehaviorBoat extends DispenseBehaviorItem
 {
     /** Reference to the BehaviorDefaultDispenseItem object. */
     private final DispenseBehaviorItem c;
 
+    /** Reference to the MinecraftServer object. */
     final MinecraftServer b;
 
     public DispenseBehaviorBoat(MinecraftServer par1MinecraftServer)

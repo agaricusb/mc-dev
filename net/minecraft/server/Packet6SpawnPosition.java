@@ -47,7 +47,7 @@ public class Packet6SpawnPosition extends Packet
     /**
      * Passes this Packet on to the NetHandler for processing.
      */
-    public void handle(NetHandler par1NetHandler)
+    public void handle(Connection par1NetHandler)
     {
         par1NetHandler.a(this);
     }
@@ -78,7 +78,8 @@ public class Packet6SpawnPosition extends Packet
     }
 
     /**
-     * if this returns false, processPacket is deffered for processReadPackets to handle
+     * If this returns true, the packet may be processed on any thread; otherwise it is queued for the main thread to
+     * handle.
      */
     public boolean a_()
     {

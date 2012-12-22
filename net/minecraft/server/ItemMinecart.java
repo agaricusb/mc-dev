@@ -20,7 +20,7 @@ public class ItemMinecart extends Item
     {
         int var11 = par3World.getTypeId(par4, par5, par6);
 
-        if (BlockMinecartTrack.d(var11))
+        if (BlockMinecartTrack.e(var11))
         {
             if (!par3World.isStatic)
             {

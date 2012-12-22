@@ -79,6 +79,7 @@ public class ItemBoat extends Item
                     }
 
                     EntityBoat var35 = new EntityBoat(par2World, (double)((float)var29 + 0.5F), (double)((float)var33 + 1.0F), (double)((float)var34 + 0.5F));
+                    var35.yaw = (float)(((MathHelper.floor((double) (par3EntityPlayer.yaw * 4.0F / 360.0F) + 0.5D) & 3) - 1) * 90);
 
                     if (!par2World.getCubes(var35, var35.boundingBox.grow(-0.1D, -0.1D, -0.1D)).isEmpty())
                     {

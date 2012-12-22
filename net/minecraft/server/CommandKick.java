@@ -26,7 +26,7 @@ public class CommandKick extends CommandAbstract
     {
         if (par2ArrayOfStr.length > 0 && par2ArrayOfStr[0].length() > 1)
         {
-            EntityPlayer var3 = MinecraftServer.getServer().getServerConfigurationManager().f(par2ArrayOfStr[0]);
+            EntityPlayer var3 = MinecraftServer.getServer().getPlayerList().f(par2ArrayOfStr[0]);
             String var4 = "Kicked by an operator.";
             boolean var5 = false;
 
@@ -42,7 +42,7 @@ public class CommandKick extends CommandAbstract
                     var5 = true;
                 }
 
-                var3.netServerHandler.disconnect(var4);
+                var3.playerConnection.disconnect(var4);
 
                 if (var5)
                 {

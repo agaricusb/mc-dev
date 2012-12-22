@@ -20,15 +20,15 @@ public class EntityWolf extends EntityTameableAnimal
         super(par1World);
         this.texture = "/mob/wolf.png";
         this.a(0.6F, 0.8F);
-        this.bG = 0.3F;
+        this.bH = 0.3F;
         this.getNavigation().a(true);
         this.goalSelector.a(1, new PathfinderGoalFloat(this));
         this.goalSelector.a(2, this.d);
         this.goalSelector.a(3, new PathfinderGoalLeapAtTarget(this, 0.4F));
-        this.goalSelector.a(4, new PathfinderGoalMeleeAttack(this, this.bG, true));
-        this.goalSelector.a(5, new PathfinderGoalFollowOwner(this, this.bG, 10.0F, 2.0F));
-        this.goalSelector.a(6, new PathfinderGoalBreed(this, this.bG));
-        this.goalSelector.a(7, new PathfinderGoalRandomStroll(this, this.bG));
+        this.goalSelector.a(4, new PathfinderGoalMeleeAttack(this, this.bH, true));
+        this.goalSelector.a(5, new PathfinderGoalFollowOwner(this, this.bH, 10.0F, 2.0F));
+        this.goalSelector.a(6, new PathfinderGoalBreed(this, this.bH));
+        this.goalSelector.a(7, new PathfinderGoalRandomStroll(this, this.bH));
         this.goalSelector.a(8, new PathfinderGoalBeg(this, 8.0F));
         this.goalSelector.a(9, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
         this.goalSelector.a(9, new PathfinderGoalRandomLookaround(this));
@@ -95,7 +95,7 @@ public class EntityWolf extends EntityTameableAnimal
     {
         super.b(par1NBTTagCompound);
         par1NBTTagCompound.setBoolean("Angry", this.isAngry());
-        par1NBTTagCompound.setByte("CollarColor", (byte)this.getCollarColor());
+        par1NBTTagCompound.setByte("CollarColor", (byte) this.getCollarColor());
     }
 
     /**
@@ -196,7 +196,7 @@ public class EntityWolf extends EntityTameableAnimal
 
         if (this.bM())
         {
-            this.bH = 10;
+            this.bI = 10;
         }
 
         if (this.G())
@@ -335,7 +335,7 @@ public class EntityWolf extends EntityTameableAnimal
             if (par1EntityPlayer.name.equalsIgnoreCase(this.getOwnerName()) && !this.world.isStatic && !this.c(var2))
             {
                 this.d.a(!this.isSitting());
-                this.bE = false;
+                this.bF = false;
                 this.setPathEntity((PathEntity) null);
             }
         }

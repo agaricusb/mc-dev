@@ -164,7 +164,7 @@ public class NBTTagCompound extends NBTBase
      */
     public void setBoolean(String par1Str, boolean par2)
     {
-        this.setByte(par1Str, (byte)(par2 ? 1 : 0));
+        this.setByte(par1Str, (byte) (par2 ? 1 : 0));
     }
 
     /**

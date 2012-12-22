@@ -2,7 +2,7 @@ package net.minecraft.server;
 
 import java.util.ArrayList;
 
-public class RecipesArmorDye implements IRecipe
+public class RecipeArmorDye implements IRecipe
 {
     /**
      * Used to check if a recipe matches current crafting inventory
@@ -77,7 +77,7 @@ public class RecipesArmorDye implements IRecipe
 
                     var2 = var8.cloneItemStack();
 
-                    if (var6.b_(var8))
+                    if (var6.a(var8))
                     {
                         var9 = var6.b(var2);
                         var10 = (float)(var9 >> 16 & 255) / 255.0F;

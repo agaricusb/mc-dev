@@ -20,7 +20,7 @@ public class BlockMinecartTrack extends Block
     /**
      * Return true if the parameter is a blockID for a valid rail block (current is rail, powered or detector).
      */
-    public static final boolean d(int par0)
+    public static final boolean e(int par0)
     {
         return par0 == Block.RAILS.id || par0 == Block.GOLDEN_RAIL.id || par0 == Block.DETECTOR_RAIL.id;
     }

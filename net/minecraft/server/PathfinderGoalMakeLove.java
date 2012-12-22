@@ -20,7 +20,7 @@ public class PathfinderGoalMakeLove extends PathfinderGoal
      */
     public boolean a()
     {
-        if (this.b.aE() != 0)
+        if (this.b.getAge() != 0)
         {
             return false;
         }
@@ -51,7 +51,7 @@ public class PathfinderGoalMakeLove extends PathfinderGoal
                 else
                 {
                     this.c = (EntityVillager)var1;
-                    return this.c.aE() == 0;
+                    return this.c.getAge() == 0;
                 }
             }
         }
@@ -81,7 +81,7 @@ public class PathfinderGoalMakeLove extends PathfinderGoal
      */
     public boolean b()
     {
-        return this.e >= 0 && this.f() && this.b.aE() == 0;
+        return this.e >= 0 && this.f() && this.b.getAge() == 0;
     }
 
     /**

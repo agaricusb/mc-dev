@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class TileEntityCommand extends TileEntity implements ICommandListener
 {
     /** The command this block will execute when powered. */

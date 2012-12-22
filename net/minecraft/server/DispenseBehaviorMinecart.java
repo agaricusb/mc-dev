@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class DispenseBehaviorMinecart extends DispenseBehaviorItem
 {
     /** Reference to the BehaviorDefaultDispenseItem object. */
@@ -29,13 +30,13 @@ public class DispenseBehaviorMinecart extends DispenseBehaviorItem
         int var14 = var4.getTypeId(var11, var12, var13);
         double var15;
 
-        if (BlockMinecartTrack.d(var14))
+        if (BlockMinecartTrack.e(var14))
         {
             var15 = 0.0D;
         }
         else
         {
-            if (var14 != 0 || !BlockMinecartTrack.d(var4.getTypeId(var11, var12 - 1, var13)))
+            if (var14 != 0 || !BlockMinecartTrack.e(var4.getTypeId(var11, var12 - 1, var13)))
             {
                 return this.c.a(par1IBlockSource, par2ItemStack);
             }

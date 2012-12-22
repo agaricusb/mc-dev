@@ -55,6 +55,9 @@ public class MinecraftEncryption
         }
     }
 
+    /**
+     * Compute a serverId hash for use by sendSessionRequest()
+     */
     public static byte[] a(String par0Str, PublicKey par1PublicKey, SecretKey par2SecretKey)
     {
         try
@@ -68,6 +71,9 @@ public class MinecraftEncryption
         }
     }
 
+    /**
+     * Compute a message digest on arbitrary byte[] data
+     */
     private static byte[] a(String par0Str, byte[]... par1ArrayOfByte)
     {
         try
@@ -91,6 +97,9 @@ public class MinecraftEncryption
         }
     }
 
+    /**
+     * Create a new PublicKey from encoded X.509 data
+     */
     public static PublicKey a(byte[] par0ArrayOfByte)
     {
         try
@@ -112,16 +121,25 @@ public class MinecraftEncryption
         return null;
     }
 
+    /**
+     * Decrypt shared secret AES key using RSA private key
+     */
     public static SecretKey a(PrivateKey par0PrivateKey, byte[] par1ArrayOfByte)
     {
         return new SecretKeySpec(b(par0PrivateKey, par1ArrayOfByte), "AES");
     }
 
+    /**
+     * Decrypt byte[] data with RSA private key
+     */
     public static byte[] b(Key par0Key, byte[] par1ArrayOfByte)
     {
         return a(2, par0Key, par1ArrayOfByte);
     }
 
+    /**
+     * Encrypt or decrypt byte[] data using the specified key
+     */
     private static byte[] a(int par0, Key par1Key, byte[] par2ArrayOfByte)
     {
         try
@@ -142,7 +160,7 @@ public class MinecraftEncryption
     }
 
     /**
-     * Creates the Chiper Instance.
+     * Creates the Cipher Instance.
      */
     private static Cipher a(int par0, String par1Str, Key par2Key)
     {
@@ -169,6 +187,9 @@ public class MinecraftEncryption
         return null;
     }
 
+    /**
+     * Create a new BufferedBlockCipher instance
+     */
     private static BufferedBlockCipher a(boolean par0, Key par1Key)
     {
         BufferedBlockCipher var2 = new BufferedBlockCipher(new CFBBlockCipher(new AESFastEngine(), 8));

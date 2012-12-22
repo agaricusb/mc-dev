@@ -32,12 +32,14 @@ public class Packet23VehicleSpawn extends Packet
      * Not sent if the thrower entity ID is 0. The speed of this fireball along the Z axis.
      */
     public int g;
+    public int h;
+    public int i;
 
     /** The type of object. */
-    public int h;
+    public int j;
 
     /** 0 if not a fireball. Otherwise, this is the Entity ID of the thrower. */
-    public int i;
+    public int k;
 
     public Packet23VehicleSpawn() {}
 
@@ -52,8 +54,10 @@ public class Packet23VehicleSpawn extends Packet
         this.b = MathHelper.floor(par1Entity.locX * 32.0D);
         this.c = MathHelper.floor(par1Entity.locY * 32.0D);
         this.d = MathHelper.floor(par1Entity.locZ * 32.0D);
-        this.h = par2;
-        this.i = par3;
+        this.h = MathHelper.d(par1Entity.pitch * 256.0F / 360.0F);
+        this.i = MathHelper.d(par1Entity.yaw * 256.0F / 360.0F);
+        this.j = par2;
+        this.k = par3;
 
         if (par3 > 0)
         {
@@ -104,13 +108,15 @@ public class Packet23VehicleSpawn extends Packet
     public void a(DataInputStream par1DataInputStream) throws IOException
     {
         this.a = par1DataInputStream.readInt();
-        this.h = par1DataInputStream.readByte();
+        this.j = par1DataInputStream.readByte();
         this.b = par1DataInputStream.readInt();
         this.c = par1DataInputStream.readInt();
         this.d = par1DataInputStream.readInt();
-        this.i = par1DataInputStream.readInt();
+        this.h = par1DataInputStream.readByte();
+        this.i = par1DataInputStream.readByte();
+        this.k = par1DataInputStream.readInt();
 
-        if (this.i > 0)
+        if (this.k > 0)
         {
             this.e = par1DataInputStream.readShort();
             this.f = par1DataInputStream.readShort();
@@ -124,13 +130,15 @@ public class Packet23VehicleSpawn extends Packet
     public void a(DataOutputStream par1DataOutputStream) throws IOException
     {
         par1DataOutputStream.writeInt(this.a);
-        par1DataOutputStream.writeByte(this.h);
+        par1DataOutputStream.writeByte(this.j);
         par1DataOutputStream.writeInt(this.b);
         par1DataOutputStream.writeInt(this.c);
         par1DataOutputStream.writeInt(this.d);
-        par1DataOutputStream.writeInt(this.i);
+        par1DataOutputStream.writeByte(this.h);
+        par1DataOutputStream.writeByte(this.i);
+        par1DataOutputStream.writeInt(this.k);
 
-        if (this.i > 0)
+        if (this.k > 0)
         {
             par1DataOutputStream.writeShort(this.e);
             par1DataOutputStream.writeShort(this.f);
@@ -141,7 +149,7 @@ public class Packet23VehicleSpawn extends Packet
     /**
      * Passes this Packet on to the NetHandler for processing.
      */
-    public void handle(NetHandler par1NetHandler)
+    public void handle(Connection par1NetHandler)
     {
         par1NetHandler.a(this);
     }
@@ -151,6 +159,6 @@ public class Packet23VehicleSpawn extends Packet
      */
     public int a()
     {
-        return 21 + this.i > 0 ? 6 : 0;
+        return 21 + this.k > 0 ? 6 : 0;
     }
 }

@@ -194,7 +194,7 @@ public class BlockSkull extends BlockContainer
                     {
                         var8 = new EntityWither(par1World);
                         var8.setPositionRotation((double) par2 + 0.5D, (double) par3 - 1.45D, (double) (par4 + var7) + 1.5D, 90.0F, 0.0F);
-                        var8.aw = 90.0F;
+                        var8.ax = 90.0F;
                         var8.m();
                         par1World.addEntity(var8);
                     }

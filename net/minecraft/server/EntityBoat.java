@@ -67,7 +67,7 @@ public class EntityBoat extends Entity
     public EntityBoat(World par1World, double par2, double par4, double par6)
     {
         this(par1World);
-        this.setPosition(par2, par4 + (double)this.height, par6);
+        this.setPosition(par2, par4 + (double) this.height, par6);
         this.motX = 0.0D;
         this.motY = 0.0D;
         this.motZ = 0.0D;

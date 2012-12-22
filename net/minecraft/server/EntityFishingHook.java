@@ -20,16 +20,16 @@ public class EntityFishingHook extends Entity
     private int j = 0;
 
     /** the number of ticks remaining until this fish can no longer be caught */
-    private int as = 0;
+    private int at = 0;
 
     /** the bobber that the fish hit */
     public Entity hooked = null;
-    private int at;
-    private double au;
+    private int au;
     private double av;
     private double aw;
     private double ax;
     private double ay;
+    private double az;
 
     public EntityFishingHook(World par1World)
     {
@@ -88,15 +88,15 @@ public class EntityFishingHook extends Entity
     {
         super.j_();
 
-        if (this.at > 0)
+        if (this.au > 0)
         {
-            double var21 = this.locX + (this.au - this.locX) / (double)this.at;
-            double var22 = this.locY + (this.av - this.locY) / (double)this.at;
-            double var23 = this.locZ + (this.aw - this.locZ) / (double)this.at;
-            double var7 = MathHelper.g(this.ax - (double) this.yaw);
-            this.yaw = (float)((double)this.yaw + var7 / (double)this.at);
-            this.pitch = (float)((double)this.pitch + (this.ay - (double)this.pitch) / (double)this.at);
-            --this.at;
+            double var21 = this.locX + (this.av - this.locX) / (double)this.au;
+            double var22 = this.locY + (this.aw - this.locY) / (double)this.au;
+            double var23 = this.locZ + (this.ax - this.locZ) / (double)this.au;
+            double var7 = MathHelper.g(this.ay - (double) this.yaw);
+            this.yaw = (float)((double)this.yaw + var7 / (double)this.au);
+            this.pitch = (float)((double)this.pitch + (this.az - (double)this.pitch) / (double)this.au);
+            --this.au;
             this.setPosition(var21, var22, var23);
             this.b(this.yaw, this.pitch);
         }
@@ -104,7 +104,7 @@ public class EntityFishingHook extends Entity
         {
             if (!this.world.isStatic)
             {
-                ItemStack var1 = this.owner.bT();
+                ItemStack var1 = this.owner.bS();
 
                 if (this.owner.dead || !this.owner.isAlive() || var1 == null || var1.getItem() != Item.FISHING_ROD || this.e(this.owner) > 1024.0D)
                 {
@@ -271,9 +271,9 @@ public class EntityFishingHook extends Entity
 
                 if (var26 > 0.0D)
                 {
-                    if (this.as > 0)
+                    if (this.at > 0)
                     {
-                        --this.as;
+                        --this.at;
                     }
                     else
                     {
@@ -286,7 +286,7 @@ public class EntityFishingHook extends Entity
 
                         if (this.random.nextInt(var28) == 0)
                         {
-                            this.as = this.random.nextInt(30) + 10;
+                            this.at = this.random.nextInt(30) + 10;
                             this.motY -= 0.20000000298023224D;
                             this.makeSound("random.splash", 0.25F, 1.0F + (this.random.nextFloat() - this.random.nextFloat()) * 0.4F);
                             float var30 = (float) MathHelper.floor(this.boundingBox.b);
@@ -311,7 +311,7 @@ public class EntityFishingHook extends Entity
                     }
                 }
 
-                if (this.as > 0)
+                if (this.at > 0)
                 {
                     this.motY -= (double)(this.random.nextFloat() * this.random.nextFloat() * this.random.nextFloat()) * 0.2D;
                 }
@@ -338,12 +338,12 @@ public class EntityFishingHook extends Entity
      */
     public void b(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setShort("xTile", (short)this.d);
-        par1NBTTagCompound.setShort("yTile", (short)this.e);
-        par1NBTTagCompound.setShort("zTile", (short)this.f);
-        par1NBTTagCompound.setByte("inTile", (byte)this.g);
-        par1NBTTagCompound.setByte("shake", (byte)this.a);
-        par1NBTTagCompound.setByte("inGround", (byte)(this.h ? 1 : 0));
+        par1NBTTagCompound.setShort("xTile", (short) this.d);
+        par1NBTTagCompound.setShort("yTile", (short) this.e);
+        par1NBTTagCompound.setShort("zTile", (short) this.f);
+        par1NBTTagCompound.setByte("inTile", (byte) this.g);
+        par1NBTTagCompound.setByte("shake", (byte) this.a);
+        par1NBTTagCompound.setByte("inGround", (byte) (this.h ? 1 : 0));
     }
 
     /**
@@ -381,7 +381,7 @@ public class EntityFishingHook extends Entity
                 this.hooked.motZ += var6 * var10;
                 var1 = 3;
             }
-            else if (this.as > 0)
+            else if (this.at > 0)
             {
                 EntityItem var13 = new EntityItem(this.world, this.locX, this.locY, this.locZ, new ItemStack(Item.RAW_FISH));
                 double var3 = this.owner.locX - this.locX;
@@ -394,7 +394,7 @@ public class EntityFishingHook extends Entity
                 var13.motZ = var7 * var11;
                 this.world.addEntity(var13);
                 this.owner.a(StatisticList.B, 1);
-                this.owner.world.addEntity(new EntityExperienceOrb(this.owner.world, this.owner.locX, this.owner.locY + 0.5D, this.owner.locZ + 0.5D, this.random.nextInt(3) + 1));
+                this.owner.world.addEntity(new EntityExperienceOrb(this.owner.world, this.owner.locX, this.owner.locY + 0.5D, this.owner.locZ + 0.5D, this.random.nextInt(6) + 1));
                 var1 = 1;
             }
 

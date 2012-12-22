@@ -251,7 +251,7 @@ public class VillageCollection extends WorldMapBase
 
     private void c(int par1, int par2, int par3)
     {
-        int var4 = ((BlockDoor) Block.WOODEN_DOOR).d((IBlockAccess)this.world, par1, par2, par3);
+        int var4 = ((BlockDoor) Block.WOODEN_DOOR).d((IBlockAccess) this.world, par1, par2, par3);
         int var5;
         int var6;
 

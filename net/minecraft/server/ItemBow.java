@@ -19,7 +19,7 @@ public class ItemBow extends Item
 
         if (var5 || par3EntityPlayer.inventory.e(Item.ARROW.id))
         {
-            int var6 = this.a(par1ItemStack) - par4;
+            int var6 = this.c_(par1ItemStack) - par4;
             float var7 = (float)var6 / 20.0F;
             var7 = (var7 * var7 + var7 * 2.0F) / 3.0F;
 
@@ -86,7 +86,7 @@ public class ItemBow extends Item
     /**
      * How long it takes to use or consume an item
      */
-    public int a(ItemStack par1ItemStack)
+    public int c_(ItemStack par1ItemStack)
     {
         return 72000;
     }
@@ -94,7 +94,7 @@ public class ItemBow extends Item
     /**
      * returns the action that specifies what animation to play when the items is being used
      */
-    public EnumAnimation d_(ItemStack par1ItemStack)
+    public EnumAnimation b_(ItemStack par1ItemStack)
     {
         return EnumAnimation.e;
     }
@@ -106,7 +106,7 @@ public class ItemBow extends Item
     {
         if (par3EntityPlayer.abilities.canInstantlyBuild || par3EntityPlayer.inventory.e(Item.ARROW.id))
         {
-            par3EntityPlayer.a(par1ItemStack, this.a(par1ItemStack));
+            par3EntityPlayer.a(par1ItemStack, this.c_(par1ItemStack));
         }
 
         return par1ItemStack;

@@ -7,7 +7,7 @@ public class ItemTool extends Item
     protected float a = 4.0F;
 
     /** Damage versus entities. */
-    private int cl;
+    private int co;
 
     /** The material this tool is made from. */
     protected EnumToolMaterial b;
@@ -20,7 +20,7 @@ public class ItemTool extends Item
         this.maxStackSize = 1;
         this.setMaxDurability(par3EnumToolMaterial.a());
         this.a = par3EnumToolMaterial.b();
-        this.cl = par2 + par3EnumToolMaterial.c();
+        this.co = par2 + par3EnumToolMaterial.c();
         this.a(CreativeModeTab.i);
     }
 
@@ -66,7 +66,7 @@ public class ItemTool extends Item
      */
     public int a(Entity par1Entity)
     {
-        return this.cl;
+        return this.co;
     }
 
     /**

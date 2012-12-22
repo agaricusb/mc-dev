@@ -18,6 +18,9 @@ public class WorldGenVillageFarm extends WorldGenVillagePiece
         this.c = this.a(par3Random);
     }
 
+    /**
+     * Returns a crop type to be planted on this field.
+     */
     private int a(Random par1Random)
     {
         switch (par1Random.nextInt(5))

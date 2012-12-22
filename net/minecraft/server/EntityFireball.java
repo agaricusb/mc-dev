@@ -11,7 +11,7 @@ public abstract class EntityFireball extends Entity
     private boolean i = false;
     public EntityLiving shooter;
     private int j;
-    private int as = 0;
+    private int at = 0;
     public double dirX;
     public double dirY;
     public double dirZ;
@@ -89,11 +89,11 @@ public abstract class EntityFireball extends Entity
                 this.motY *= (double)(this.random.nextFloat() * 0.2F);
                 this.motZ *= (double)(this.random.nextFloat() * 0.2F);
                 this.j = 0;
-                this.as = 0;
+                this.at = 0;
             }
             else
             {
-                ++this.as;
+                ++this.at;
             }
 
             Vec3D var15 = this.world.getVec3DPool().create(this.locX, this.locY, this.locZ);
@@ -115,7 +115,7 @@ public abstract class EntityFireball extends Entity
             {
                 Entity var9 = (Entity)var5.get(var8);
 
-                if (var9.L() && (!var9.i(this.shooter) || this.as >= 25))
+                if (var9.L() && (!var9.i(this.shooter) || this.at >= 25))
                 {
                     float var10 = 0.3F;
                     AxisAlignedBB var11 = var9.boundingBox.grow((double) var10, (double) var10, (double) var10);
@@ -214,11 +214,11 @@ public abstract class EntityFireball extends Entity
      */
     public void b(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setShort("xTile", (short)this.e);
-        par1NBTTagCompound.setShort("yTile", (short)this.f);
-        par1NBTTagCompound.setShort("zTile", (short)this.g);
-        par1NBTTagCompound.setByte("inTile", (byte)this.h);
-        par1NBTTagCompound.setByte("inGround", (byte)(this.i ? 1 : 0));
+        par1NBTTagCompound.setShort("xTile", (short) this.e);
+        par1NBTTagCompound.setShort("yTile", (short) this.f);
+        par1NBTTagCompound.setShort("zTile", (short) this.g);
+        par1NBTTagCompound.setByte("inTile", (byte) this.h);
+        par1NBTTagCompound.setByte("inGround", (byte) (this.i ? 1 : 0));
         par1NBTTagCompound.set("direction", this.a(new double[]{this.motX, this.motY, this.motZ}));
     }
 

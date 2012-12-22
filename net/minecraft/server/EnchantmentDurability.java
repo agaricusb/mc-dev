@@ -1,5 +1,7 @@
 package net.minecraft.server;
 
+import java.util.Random;
+
 public class EnchantmentDurability extends Enchantment
 {
     protected EnchantmentDurability(int par1, int par2)
@@ -30,5 +32,15 @@ public class EnchantmentDurability extends Enchantment
     public int getMaxLevel()
     {
         return 3;
+    }
+
+    public boolean canEnchant(ItemStack par1ItemStack)
+    {
+        return par1ItemStack.f() ? true : super.canEnchant(par1ItemStack);
+    }
+
+    public static boolean a(ItemStack par0ItemStack, int par1, Random par2Random)
+    {
+        return par0ItemStack.getItem() instanceof ItemArmor && par2Random.nextFloat() < 0.6F ? false : par2Random.nextInt(par1 + 1) > 0;
     }
 }

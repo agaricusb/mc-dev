@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class SecondaryWorldServer extends WorldServer
 {
     public SecondaryWorldServer(MinecraftServer par1MinecraftServer, IDataManager par2ISaveHandler, String par3Str, int par4, WorldSettings par5WorldSettings, WorldServer par6WorldServer, MethodProfiler par7Profiler)

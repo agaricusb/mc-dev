@@ -232,7 +232,7 @@ public class BlockDispenser extends BlockContainer
 
                         if (var9.hasTag())
                         {
-                            var14.itemStack.setTag((NBTTagCompound) var9.getTag().clone());
+                            var14.getItemStack().setTag((NBTTagCompound) var9.getTag().clone());
                         }
 
                         float var15 = 0.05F;

@@ -167,7 +167,7 @@ public class WorldLoaderServer extends WorldLoader
                         }
                         else
                         {
-                            NBTTagCompound var13 = NBTCompressedStreamTools.a((DataInput) var12); // read
+                            NBTTagCompound var13 = NBTCompressedStreamTools.a((DataInput) var12);
                             var12.close();
                             NBTTagCompound var14 = var13.getCompound("Level");
                             OldChunk var15 = OldChunkLoader.a(var14);
@@ -176,7 +176,7 @@ public class WorldLoaderServer extends WorldLoader
                             var16.set("Level", var17);
                             OldChunkLoader.a(var15, var17, par3WorldChunkManager);
                             DataOutputStream var18 = var9.b(var10, var11);
-                            NBTCompressedStreamTools.a(var16, (DataOutput) var18); // write
+                            NBTCompressedStreamTools.a(var16, (DataOutput) var18);
                             var18.close();
                         }
                     }

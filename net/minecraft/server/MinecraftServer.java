@@ -11,6 +11,61 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import net.minecraft.server.WorldLoaderServer;
+import net.minecraft.server.AxisAlignedBB;
+import net.minecraft.server.DispenseBehaviorArrow;
+import net.minecraft.server.DispenseBehaviorEmptyBucket;
+import net.minecraft.server.DispenseBehaviorFilledBucket;
+import net.minecraft.server.DispenseBehaviorBoat;
+import net.minecraft.server.DispenseBehaviorFireball;
+import net.minecraft.server.DispenseBehaviorFireworks;
+import net.minecraft.server.DispenseBehaviorMinecart;
+import net.minecraft.server.DispenseBehaviorEgg;
+import net.minecraft.server.DispenseBehaviorExpBottle;
+import net.minecraft.server.DispenseBehaviorMonsterEgg;
+import net.minecraft.server.DispenseBehaviorPotion;
+import net.minecraft.server.DispenseBehaviorSnowBall;
+import net.minecraft.server.BlockDispenser;
+import net.minecraft.server.CrashReportProfilerPosition;
+import net.minecraft.server.CrashReportPlayerCount;
+import net.minecraft.server.CrashReportVec3DPoolSize;
+import net.minecraft.server.ChunkCoordinates;
+import net.minecraft.server.CommandAbstract;
+import net.minecraft.server.ConvertProgressUpdater;
+import net.minecraft.server.CrashReport;
+import net.minecraft.server.DedicatedServer;
+import net.minecraft.server.DemoWorldServer;
+import net.minecraft.server.EnumGamemode;
+import net.minecraft.server.ICommandHandler;
+import net.minecraft.server.ICommandListener;
+import net.minecraft.server.IMojangStatistics;
+import net.minecraft.server.IProgressUpdate;
+import net.minecraft.server.Convertable;
+import net.minecraft.server.IDataManager;
+import net.minecraft.server.IUpdatePlayerListBox;
+import net.minecraft.server.Item;
+import net.minecraft.server.MathHelper;
+import net.minecraft.server.ExceptionWorldConflict;
+import net.minecraft.server.ServerConnection;
+import net.minecraft.server.Packet;
+import net.minecraft.server.Packet4UpdateTime;
+import net.minecraft.server.MojangStatisticsGenerator;
+import net.minecraft.server.MethodProfiler;
+import net.minecraft.server.RemoteControlCommandListener;
+import net.minecraft.server.ReportedException;
+import net.minecraft.server.CommandDispatcher;
+import net.minecraft.server.PlayerList;
+import net.minecraft.server.StatisticList;
+import net.minecraft.server.LocaleLanguage;
+import net.minecraft.server.StripColor;
+import net.minecraft.server.ThreadShutdown;
+import net.minecraft.server.ThreadServerApplication;
+import net.minecraft.server.WorldData;
+import net.minecraft.server.WorldManager;
+import net.minecraft.server.WorldServer;
+import net.minecraft.server.SecondaryWorldServer;
+import net.minecraft.server.WorldSettings;
+import net.minecraft.server.WorldType;
 
 public abstract class MinecraftServer implements ICommandListener, Runnable, IMojangStatistics
 {
@@ -40,7 +95,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     public WorldServer[] worldServer;
 
     /** The ServerConfigurationManager instance. */
-    private ServerConfigurationManagerAbstract t;
+    private PlayerList t;
 
     /**
      * Indicates whether the server is running or not. Set to false to initiate a shutdown.
@@ -133,6 +188,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         BlockDispenser.a.a(Item.EXP_BOTTLE, new DispenseBehaviorExpBottle(this));
         BlockDispenser.a.a(Item.POTION, new DispenseBehaviorPotion(this));
         BlockDispenser.a.a(Item.MONSTER_EGG, new DispenseBehaviorMonsterEgg(this));
+        BlockDispenser.a.a(Item.FIREWORKS, new DispenseBehaviorFireworks(this));
         BlockDispenser.a.a(Item.FIREBALL, new DispenseBehaviorFireball(this));
         DispenseBehaviorMinecart var1 = new DispenseBehaviorMinecart(this);
         BlockDispenser.a.a(Item.MINECART, var1);
@@ -823,7 +879,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
      */
     public String getVersion()
     {
-        return "1.4.5";
+        return "1.4.6";
     }
 
     /**
@@ -1308,12 +1364,12 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
         return this.isStopped;
     }
 
-    public ServerConfigurationManagerAbstract getServerConfigurationManager()
+    public PlayerList getPlayerList()
     {
         return this.t;
     }
 
-    public void a(ServerConfigurationManagerAbstract par1ServerConfigurationManager)
+    public void a(PlayerList par1ServerConfigurationManager)
     {
         this.t = par1ServerConfigurationManager;
     }
@@ -1370,7 +1426,7 @@ public abstract class MinecraftServer implements ICommandListener, Runnable, IMo
     /**
      * Gets the current player count, maximum player count, and player entity list.
      */
-    public static ServerConfigurationManagerAbstract a(MinecraftServer par0MinecraftServer)
+    public static PlayerList a(MinecraftServer par0MinecraftServer)
     {
         return par0MinecraftServer.t;
     }

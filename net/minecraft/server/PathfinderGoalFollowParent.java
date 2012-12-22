@@ -22,7 +22,7 @@ public class PathfinderGoalFollowParent extends PathfinderGoal
      */
     public boolean a()
     {
-        if (this.a.aE() >= 0)
+        if (this.a.getAge() >= 0)
         {
             return false;
         }
@@ -37,7 +37,7 @@ public class PathfinderGoalFollowParent extends PathfinderGoal
             {
                 EntityAnimal var6 = (EntityAnimal)var5.next();
 
-                if (var6.aE() >= 0)
+                if (var6.getAge() >= 0)
                 {
                     double var7 = this.a.e(var6);
 

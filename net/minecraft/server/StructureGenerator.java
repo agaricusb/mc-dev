@@ -16,7 +16,7 @@ public abstract class StructureGenerator extends WorldGenBase
     protected Map d = new HashMap();
 
     /**
-     * Recursively called by generate() (func_867_a) and optionally by itself.
+     * Recursively called by generate() (generate) and optionally by itself.
      */
     protected void a(World par1World, int par2, int par3, int par4, int par5, byte[] par6ArrayOfByte)
     {

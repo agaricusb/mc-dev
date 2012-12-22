@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class DispenseBehaviorExpBottle extends DispenseBehaviorProjectile
 {
     /** Reference to the MinecraftServer object. */

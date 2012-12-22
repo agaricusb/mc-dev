@@ -103,7 +103,7 @@ public class ItemBlock extends Item
         }
     }
 
-    public String c_(ItemStack par1ItemStack)
+    public String d(ItemStack par1ItemStack)
     {
         return Block.byId[this.id].a();
     }

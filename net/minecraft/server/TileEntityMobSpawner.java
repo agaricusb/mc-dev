@@ -1,6 +1,8 @@
 package net.minecraft.server;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class TileEntityMobSpawner extends TileEntity
 {
@@ -11,21 +13,34 @@ public class TileEntityMobSpawner extends TileEntity
      * The string ID of the mobs being spawned from this spawner. Defaults to pig, apparently.
      */
     private String mobName = "Pig";
+    private List mobs = null;
 
     /** The extra NBT data to add to spawned entities */
-    private NBTTagCompound spawnData = null;
+    private TileEntityMobSpawnerData spawnData = null;
     public double b;
     public double c = 0.0D;
     private int minSpawnDelay = 200;
     private int maxSpawnDelay = 800;
     private int spawnCount = 4;
+    private Entity j;
+
+    /** Maximum number of entities for limiting mob spawning */
     private int maxNearbyEntities = 6;
+
+    /** Required player range for mob spawning to occur */
     private int requiredPlayerRange = 16;
+
+    /** Range for spawning new entities with mob spawners */
     private int spawnRange = 4;
 
     public TileEntityMobSpawner()
     {
         this.spawnDelay = 20;
+    }
+
+    public String getMobName()
+    {
+        return this.spawnData == null ? this.mobName : this.spawnData.c;
     }
 
     public void a(String par1Str)
@@ -49,11 +64,13 @@ public class TileEntityMobSpawner extends TileEntity
     {
         if (this.b())
         {
+            double var5;
+
             if (this.world.isStatic)
             {
                 double var1 = (double)((float)this.x + this.world.random.nextFloat());
                 double var3 = (double)((float)this.y + this.world.random.nextFloat());
-                double var5 = (double)((float)this.z + this.world.random.nextFloat());
+                var5 = (double)((float)this.z + this.world.random.nextFloat());
                 this.world.addParticle("smoke", var1, var3, var5, 0.0D, 0.0D, 0.0D);
                 this.world.addParticle("flame", var1, var3, var5, 0.0D, 0.0D, 0.0D);
 
@@ -78,45 +95,52 @@ public class TileEntityMobSpawner extends TileEntity
                     return;
                 }
 
-                for (int var11 = 0; var11 < this.spawnCount; ++var11)
-                {
-                    Entity var2 = EntityTypes.createEntityByName(this.mobName, this.world);
+                boolean var12 = false;
 
-                    if (var2 == null)
+                for (int var2 = 0; var2 < this.spawnCount; ++var2)
+                {
+                    Entity var13 = EntityTypes.createEntityByName(this.getMobName(), this.world);
+
+                    if (var13 == null)
                     {
                         return;
                     }
 
-                    int var12 = this.world.a(var2.getClass(), AxisAlignedBB.a().a((double) this.x, (double) this.y, (double) this.z, (double) (this.x + 1), (double) (this.y + 1), (double) (this.z + 1)).grow((double) (this.spawnRange * 2), 4.0D, (double) (this.spawnRange * 2))).size();
+                    int var4 = this.world.a(var13.getClass(), AxisAlignedBB.a().a((double) this.x, (double) this.y, (double) this.z, (double) (this.x + 1), (double) (this.y + 1), (double) (this.z + 1)).grow((double) (this.spawnRange * 2), 4.0D, (double) (this.spawnRange * 2))).size();
 
-                    if (var12 >= this.maxNearbyEntities)
+                    if (var4 >= this.maxNearbyEntities)
                     {
                         this.e();
                         return;
                     }
 
-                    if (var2 != null)
+                    if (var13 != null)
                     {
-                        double var4 = (double)this.x + (this.world.random.nextDouble() - this.world.random.nextDouble()) * (double)this.spawnRange;
-                        double var6 = (double)(this.y + this.world.random.nextInt(3) - 1);
-                        double var8 = (double)this.z + (this.world.random.nextDouble() - this.world.random.nextDouble()) * (double)this.spawnRange;
-                        EntityLiving var10 = var2 instanceof EntityLiving ? (EntityLiving)var2 : null;
-                        var2.setPositionRotation(var4, var6, var8, this.world.random.nextFloat() * 360.0F, 0.0F);
+                        var5 = (double)this.x + (this.world.random.nextDouble() - this.world.random.nextDouble()) * (double)this.spawnRange;
+                        double var7 = (double)(this.y + this.world.random.nextInt(3) - 1);
+                        double var9 = (double)this.z + (this.world.random.nextDouble() - this.world.random.nextDouble()) * (double)this.spawnRange;
+                        EntityLiving var11 = var13 instanceof EntityLiving ? (EntityLiving)var13 : null;
+                        var13.setPositionRotation(var5, var7, var9, this.world.random.nextFloat() * 360.0F, 0.0F);
 
-                        if (var10 == null || var10.canSpawn())
+                        if (var11 == null || var11.canSpawn())
                         {
-                            this.a(var2);
-                            this.world.addEntity(var2);
+                            this.a(var13);
+                            this.world.addEntity(var13);
                             this.world.triggerEffect(2004, this.x, this.y, this.z, 0);
 
-                            if (var10 != null)
+                            if (var11 != null)
                             {
-                                var10.aR();
+                                var11.aR();
                             }
 
-                            this.e();
+                            var12 = true;
                         }
                     }
+                }
+
+                if (var12)
+                {
+                    this.e();
                 }
             }
 
@@ -130,7 +154,7 @@ public class TileEntityMobSpawner extends TileEntity
         {
             NBTTagCompound var2 = new NBTTagCompound();
             par1Entity.c(var2);
-            Iterator var3 = this.spawnData.c().iterator();
+            Iterator var3 = this.spawnData.b.c().iterator();
 
             while (var3.hasNext())
             {
@@ -160,6 +184,12 @@ public class TileEntityMobSpawner extends TileEntity
             this.spawnDelay = this.minSpawnDelay + this.world.random.nextInt(this.maxSpawnDelay - this.minSpawnDelay);
         }
 
+        if (this.mobs != null && this.mobs.size() > 0)
+        {
+            this.spawnData = (TileEntityMobSpawnerData) WeightedRandom.a(this.world.random, this.mobs);
+            this.world.notify(this.x, this.y, this.z);
+        }
+
         this.world.playNote(this.x, this.y, this.z, this.q().id, 1, 0);
     }
 
@@ -172,9 +202,24 @@ public class TileEntityMobSpawner extends TileEntity
         this.mobName = par1NBTTagCompound.getString("EntityId");
         this.spawnDelay = par1NBTTagCompound.getShort("Delay");
 
+        if (par1NBTTagCompound.hasKey("SpawnPotentials"))
+        {
+            this.mobs = new ArrayList();
+            NBTTagList var2 = par1NBTTagCompound.getList("SpawnPotentials");
+
+            for (int var3 = 0; var3 < var2.size(); ++var3)
+            {
+                this.mobs.add(new TileEntityMobSpawnerData(this, (NBTTagCompound)var2.get(var3)));
+            }
+        }
+        else
+        {
+            this.mobs = null;
+        }
+
         if (par1NBTTagCompound.hasKey("SpawnData"))
         {
-            this.spawnData = par1NBTTagCompound.getCompound("SpawnData");
+            this.spawnData = new TileEntityMobSpawnerData(this, par1NBTTagCompound.getCompound("SpawnData"), this.mobName);
         }
         else
         {
@@ -198,6 +243,11 @@ public class TileEntityMobSpawner extends TileEntity
         {
             this.spawnRange = par1NBTTagCompound.getShort("SpawnRange");
         }
+
+        if (this.world != null && this.world.isStatic)
+        {
+            this.j = null;
+        }
     }
 
     /**
@@ -206,18 +256,40 @@ public class TileEntityMobSpawner extends TileEntity
     public void b(NBTTagCompound par1NBTTagCompound)
     {
         super.b(par1NBTTagCompound);
-        par1NBTTagCompound.setString("EntityId", this.mobName);
-        par1NBTTagCompound.setShort("Delay", (short)this.spawnDelay);
-        par1NBTTagCompound.setShort("MinSpawnDelay", (short)this.minSpawnDelay);
-        par1NBTTagCompound.setShort("MaxSpawnDelay", (short)this.maxSpawnDelay);
-        par1NBTTagCompound.setShort("SpawnCount", (short)this.spawnCount);
-        par1NBTTagCompound.setShort("MaxNearbyEntities", (short)this.maxNearbyEntities);
-        par1NBTTagCompound.setShort("RequiredPlayerRange", (short)this.requiredPlayerRange);
-        par1NBTTagCompound.setShort("SpawnRange", (short)this.spawnRange);
+        par1NBTTagCompound.setString("EntityId", this.getMobName());
+        par1NBTTagCompound.setShort("Delay", (short) this.spawnDelay);
+        par1NBTTagCompound.setShort("MinSpawnDelay", (short) this.minSpawnDelay);
+        par1NBTTagCompound.setShort("MaxSpawnDelay", (short) this.maxSpawnDelay);
+        par1NBTTagCompound.setShort("SpawnCount", (short) this.spawnCount);
+        par1NBTTagCompound.setShort("MaxNearbyEntities", (short) this.maxNearbyEntities);
+        par1NBTTagCompound.setShort("RequiredPlayerRange", (short) this.requiredPlayerRange);
+        par1NBTTagCompound.setShort("SpawnRange", (short) this.spawnRange);
 
         if (this.spawnData != null)
         {
-            par1NBTTagCompound.setCompound("SpawnData", this.spawnData);
+            par1NBTTagCompound.setCompound("SpawnData", (NBTTagCompound) this.spawnData.b.clone());
+        }
+
+        if (this.spawnData != null || this.mobs != null && this.mobs.size() > 0)
+        {
+            NBTTagList var2 = new NBTTagList();
+
+            if (this.mobs != null && this.mobs.size() > 0)
+            {
+                Iterator var3 = this.mobs.iterator();
+
+                while (var3.hasNext())
+                {
+                    TileEntityMobSpawnerData var4 = (TileEntityMobSpawnerData)var3.next();
+                    var2.add(var4.a());
+                }
+            }
+            else
+            {
+                var2.add(this.spawnData.a());
+            }
+
+            par1NBTTagCompound.set("SpawnPotentials", var2);
         }
     }
 
@@ -228,6 +300,7 @@ public class TileEntityMobSpawner extends TileEntity
     {
         NBTTagCompound var1 = new NBTTagCompound();
         this.b(var1);
+        var1.o("SpawnPotentials");
         return new Packet132TileEntityData(this.x, this.y, this.z, 1, var1);
     }
 

@@ -23,6 +23,9 @@ public class EntityDamageSource extends DamageSource
         return LocaleI18n.get("death." + this.translationIndex, new Object[]{par1EntityPlayer.name, this.r.getLocalizedName()});
     }
 
+    /**
+     * Return whether this damage source will have its damage amount scaled based on the current difficulty.
+     */
     public boolean n()
     {
         return this.r != null && this.r instanceof EntityLiving && !(this.r instanceof EntityHuman);

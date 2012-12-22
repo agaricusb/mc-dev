@@ -138,7 +138,7 @@ public class EntityBat extends EntityAmbient
             {
                 if (this.random.nextInt(200) == 0)
                 {
-                    this.ay = (float)this.random.nextInt(360);
+                    this.az = (float)this.random.nextInt(360);
                 }
 
                 if (this.world.findNearbyPlayer(this, 4.0D) != null)
@@ -168,7 +168,7 @@ public class EntityBat extends EntityAmbient
             this.motZ += (Math.signum(var5) * 0.5D - this.motZ) * 0.10000000149011612D;
             float var7 = (float)(Math.atan2(this.motZ, this.motX) * 180.0D / Math.PI) - 90.0F;
             float var8 = MathHelper.g(var7 - this.yaw);
-            this.bC = 0.5F;
+            this.bD = 0.5F;
             this.yaw += var8;
 
             if (this.random.nextInt(100) == 0 && this.world.t(MathHelper.floor(this.locX), (int) this.locY + 1, MathHelper.floor(this.locZ)))

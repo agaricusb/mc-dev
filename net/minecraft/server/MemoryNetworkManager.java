@@ -12,13 +12,15 @@ public class MemoryNetworkManager implements INetworkManager
     private static final SocketAddress a = new InetSocketAddress("127.0.0.1", 0);
     private final List b = Collections.synchronizedList(new ArrayList());
     private MemoryNetworkManager c;
-    private NetHandler d;
+    private Connection d;
+
+    /** set to true by {server,network}Shutdown */
     private boolean e = false;
     private String f = "";
     private Object[] g;
     private boolean h = false;
 
-    public MemoryNetworkManager(NetHandler par1NetHandler) throws IOException
+    public MemoryNetworkManager(Connection par1NetHandler) throws IOException
     {
         this.d = par1NetHandler;
     }
@@ -26,7 +28,7 @@ public class MemoryNetworkManager implements INetworkManager
     /**
      * Sets the NetHandler for this NetworkManager. Server-only.
      */
-    public void a(NetHandler par1NetHandler)
+    public void a(Connection par1NetHandler)
     {
         this.d = par1NetHandler;
     }
@@ -106,6 +108,9 @@ public class MemoryNetworkManager implements INetworkManager
         return 0;
     }
 
+    /**
+     * acts immiditally if isWritePacket, otherwise adds it to the readCache to be processed next tick
+     */
     public void b(Packet par1Packet)
     {
         String var2 = this.d.a() ? ">" : "<";

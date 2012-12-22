@@ -7,7 +7,7 @@ public class EntityMagmaCube extends EntitySlime
         super(par1World);
         this.texture = "/mob/lava.png";
         this.fireProof = true;
-        this.aM = 0.2F;
+        this.aN = 0.2F;
     }
 
     /**

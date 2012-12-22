@@ -14,9 +14,14 @@ public class Packet56MapChunkBulk extends Packet
     private int[] d;
     public int[] a;
     public int[] b;
+
+    /** The compressed chunk data buffer */
     private byte[] buffer;
     private byte[][] inflatedBuffers;
+
+    /** total size of the compressed data */
     private int size;
+    private boolean h;
     private static byte[] buildBuffer = new byte[0];
 
     public Packet56MapChunkBulk() {}
@@ -29,6 +34,7 @@ public class Packet56MapChunkBulk extends Packet
         this.a = new int[var2];
         this.b = new int[var2];
         this.inflatedBuffers = new byte[var2][];
+        this.h = !par1List.isEmpty() && !((Chunk)par1List.get(0)).world.worldProvider.f;
         int var3 = 0;
 
         for (int var4 = 0; var4 < var2; ++var4)
@@ -74,6 +80,7 @@ public class Packet56MapChunkBulk extends Packet
     {
         short var2 = par1DataInputStream.readShort();
         this.size = par1DataInputStream.readInt();
+        this.h = par1DataInputStream.readBoolean();
         this.c = new int[var2];
         this.d = new int[var2];
         this.a = new int[var2];
@@ -94,7 +101,7 @@ public class Packet56MapChunkBulk extends Packet
         {
             var4.inflate(var3);
         }
-        catch (DataFormatException var11)
+        catch (DataFormatException var12)
         {
             throw new IOException("Bad compressed data format");
         }
@@ -112,17 +119,26 @@ public class Packet56MapChunkBulk extends Packet
             this.a[var6] = par1DataInputStream.readShort();
             this.b[var6] = par1DataInputStream.readShort();
             int var7 = 0;
-            int var8;
+            int var8 = 0;
+            int var9;
 
-            for (var8 = 0; var8 < 16; ++var8)
+            for (var9 = 0; var9 < 16; ++var9)
             {
-                var7 += this.a[var6] >> var8 & 1;
+                var7 += this.a[var6] >> var9 & 1;
+                var8 += this.b[var6] >> var9 & 1;
             }
 
-            var8 = 2048 * 5 * var7 + 256;
-            this.inflatedBuffers[var6] = new byte[var8];
-            System.arraycopy(var3, var5, this.inflatedBuffers[var6], 0, var8);
-            var5 += var8;
+            var9 = 2048 * 4 * var7 + 256;
+            var9 += 2048 * var8;
+
+            if (this.h)
+            {
+                var9 += 2048 * var7;
+            }
+
+            this.inflatedBuffers[var6] = new byte[var9];
+            System.arraycopy(var3, var5, this.inflatedBuffers[var6], 0, var9);
+            var5 += var9;
         }
     }
 
@@ -133,6 +149,7 @@ public class Packet56MapChunkBulk extends Packet
     {
         par1DataOutputStream.writeShort(this.c.length);
         par1DataOutputStream.writeInt(this.size);
+        par1DataOutputStream.writeBoolean(this.h);
         par1DataOutputStream.write(this.buffer, 0, this.size);
 
         for (int var2 = 0; var2 < this.c.length; ++var2)
@@ -147,7 +164,7 @@ public class Packet56MapChunkBulk extends Packet
     /**
      * Passes this Packet on to the NetHandler for processing.
      */
-    public void handle(NetHandler par1NetHandler)
+    public void handle(Connection par1NetHandler)
     {
         par1NetHandler.a(this);
     }

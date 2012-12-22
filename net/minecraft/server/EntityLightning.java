@@ -93,18 +93,23 @@ public class EntityLightning extends EntityWeather
             }
         }
 
-        if (!this.world.isStatic && this.lifeTicks >= 0)
+        if (this.lifeTicks >= 0)
         {
-            double var6 = 3.0D;
-            List var7 = this.world.getEntities(this, AxisAlignedBB.a().a(this.locX - var6, this.locY - var6, this.locZ - var6, this.locX + var6, this.locY + 6.0D + var6, this.locZ + var6));
-
-            for (int var4 = 0; var4 < var7.size(); ++var4)
+            if (this.world.isStatic)
             {
-                Entity var5 = (Entity)var7.get(var4);
-                var5.a(this);
+                this.world.q = 2;
             }
+            else
+            {
+                double var6 = 3.0D;
+                List var7 = this.world.getEntities(this, AxisAlignedBB.a().a(this.locX - var6, this.locY - var6, this.locZ - var6, this.locX + var6, this.locY + 6.0D + var6, this.locZ + var6));
 
-            this.world.r = 2;
+                for (int var4 = 0; var4 < var7.size(); ++var4)
+                {
+                    Entity var5 = (Entity)var7.get(var4);
+                    var5.a(this);
+                }
+            }
         }
     }
 

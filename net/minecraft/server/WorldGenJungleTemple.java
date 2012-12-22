@@ -186,7 +186,7 @@ public class WorldGenJungleTemple extends WorldGenScatteredPiece
 
             if (!this.h)
             {
-                this.h = this.a(par1World, par3StructureBoundingBox, par2Random, 8, -3, 3, l, 2 + par2Random.nextInt(5));
+                this.h = this.a(par1World, par3StructureBoundingBox, par2Random, 8, -3, 3, StructurePieceTreasure.a(l, new StructurePieceTreasure[]{Item.ENCHANTED_BOOK.b(par2Random)}), 2 + par2Random.nextInt(5));
             }
 
             this.a(par1World, Block.MOSSY_COBBLESTONE.id, 0, 9, -3, 2, par3StructureBoundingBox);
@@ -203,9 +203,9 @@ public class WorldGenJungleTemple extends WorldGenScatteredPiece
             this.a(par1World, Block.SMOOTH_BRICK.id, 3, 8, -2, 11, par3StructureBoundingBox);
             this.a(par1World, Block.SMOOTH_BRICK.id, 3, 9, -2, 11, par3StructureBoundingBox);
             this.a(par1World, Block.SMOOTH_BRICK.id, 3, 10, -2, 11, par3StructureBoundingBox);
-            this.a(par1World, Block.LEVER.id, BlockLever.d(this.c(Block.LEVER.id, 2)), 8, -2, 12, par3StructureBoundingBox);
-            this.a(par1World, Block.LEVER.id, BlockLever.d(this.c(Block.LEVER.id, 2)), 9, -2, 12, par3StructureBoundingBox);
-            this.a(par1World, Block.LEVER.id, BlockLever.d(this.c(Block.LEVER.id, 2)), 10, -2, 12, par3StructureBoundingBox);
+            this.a(par1World, Block.LEVER.id, BlockLever.e(this.c(Block.LEVER.id, 2)), 8, -2, 12, par3StructureBoundingBox);
+            this.a(par1World, Block.LEVER.id, BlockLever.e(this.c(Block.LEVER.id, 2)), 9, -2, 12, par3StructureBoundingBox);
+            this.a(par1World, Block.LEVER.id, BlockLever.e(this.c(Block.LEVER.id, 2)), 10, -2, 12, par3StructureBoundingBox);
             this.a(par1World, par3StructureBoundingBox, 8, -3, 8, 8, -3, 10, false, par2Random, n);
             this.a(par1World, par3StructureBoundingBox, 10, -3, 8, 10, -3, 10, false, par2Random, n);
             this.a(par1World, Block.MOSSY_COBBLESTONE.id, 0, 10, -2, 9, par3StructureBoundingBox);
@@ -219,7 +219,7 @@ public class WorldGenJungleTemple extends WorldGenScatteredPiece
 
             if (!this.i)
             {
-                this.i = this.a(par1World, par3StructureBoundingBox, par2Random, 9, -3, 10, l, 2 + par2Random.nextInt(5));
+                this.i = this.a(par1World, par3StructureBoundingBox, par2Random, 9, -3, 10, StructurePieceTreasure.a(l, new StructurePieceTreasure[]{Item.ENCHANTED_BOOK.b(par2Random)}), 2 + par2Random.nextInt(5));
             }
 
             return true;

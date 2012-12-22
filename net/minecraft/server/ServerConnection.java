@@ -28,7 +28,7 @@ public abstract class ServerConnection
     /**
      * adds this connection to the list of currently connected players
      */
-    public void a(NetServerHandler par1NetServerHandler)
+    public void a(PlayerConnection par1NetServerHandler)
     {
         this.d.add(par1NetServerHandler);
     }
@@ -45,7 +45,7 @@ public abstract class ServerConnection
     {
         for (int var1 = 0; var1 < this.d.size(); ++var1)
         {
-            NetServerHandler var2 = (NetServerHandler)this.d.get(var1);
+            PlayerConnection var2 = (PlayerConnection)this.d.get(var1);
 
             try
             {

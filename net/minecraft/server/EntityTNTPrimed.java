@@ -94,7 +94,7 @@ public class EntityTNTPrimed extends Entity
      */
     protected void b(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setByte("Fuse", (byte)this.fuseTicks);
+        par1NBTTagCompound.setByte("Fuse", (byte) this.fuseTicks);
     }
 
     /**

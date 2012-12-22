@@ -19,6 +19,8 @@ public class EntityExperienceOrb extends Entity
 
     /** The closest EntityPlayer to this orb. */
     private EntityHuman targetPlayer;
+
+    /** Threshold color for tracking players */
     private int targetTime;
 
     public EntityExperienceOrb(World par1World, double par2, double par4, double par6, int par8)
@@ -184,9 +186,9 @@ public class EntityExperienceOrb extends Entity
      */
     public void b(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setShort("Health", (short)((byte)this.d));
-        par1NBTTagCompound.setShort("Age", (short)this.b);
-        par1NBTTagCompound.setShort("Value", (short)this.value);
+        par1NBTTagCompound.setShort("Health", (short) ((byte) this.d));
+        par1NBTTagCompound.setShort("Age", (short) this.b);
+        par1NBTTagCompound.setShort("Value", (short) this.value);
     }
 
     /**
@@ -206,9 +208,9 @@ public class EntityExperienceOrb extends Entity
     {
         if (!this.world.isStatic)
         {
-            if (this.c == 0 && par1EntityPlayer.bR == 0)
+            if (this.c == 0 && par1EntityPlayer.bS == 0)
             {
-                par1EntityPlayer.bR = 2;
+                par1EntityPlayer.bS = 2;
                 this.makeSound("random.orb", 0.1F, 0.5F * ((this.random.nextFloat() - this.random.nextFloat()) * 0.7F + 1.8F));
                 par1EntityPlayer.receive(this, 1);
                 par1EntityPlayer.giveExp(this.value);

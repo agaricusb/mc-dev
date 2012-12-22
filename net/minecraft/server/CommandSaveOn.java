@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class CommandSaveOn extends CommandAbstract
 {
     public String c()

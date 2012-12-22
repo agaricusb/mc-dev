@@ -31,9 +31,9 @@ public class CommandEnchant extends CommandAbstract
         else
         {
             EntityPlayer var3 = c(par1ICommandSender, par2ArrayOfStr[0]);
-            int var4 = a(par1ICommandSender, par2ArrayOfStr[1], 1, Enchantment.byId.length - 1);
+            int var4 = a(par1ICommandSender, par2ArrayOfStr[1], 0, Enchantment.byId.length - 1);
             int var5 = 1;
-            ItemStack var6 = var3.bT();
+            ItemStack var6 = var3.bS();
 
             if (var6 == null)
             {
@@ -47,7 +47,7 @@ public class CommandEnchant extends CommandAbstract
                 {
                     throw new ExceptionInvalidNumber("commands.enchant.notFound", new Object[] {Integer.valueOf(var4)});
                 }
-                else if (!var7.slot.canEnchant(var6.getItem()))
+                else if (!var7.canEnchant(var6))
                 {
                     a(par1ICommandSender, "commands.enchant.cantEnchant", new Object[0]);
                 }

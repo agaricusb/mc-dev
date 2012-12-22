@@ -27,7 +27,7 @@ public class CommandBanIp extends CommandAbstract
      */
     public boolean b(ICommandListener par1ICommandSender)
     {
-        return MinecraftServer.getServer().getServerConfigurationManager().getIPBans().isEnabled() && super.b(par1ICommandSender);
+        return MinecraftServer.getServer().getPlayerList().getIPBans().isEnabled() && super.b(par1ICommandSender);
     }
 
     public String a(ICommandListener par1ICommandSender)
@@ -53,7 +53,7 @@ public class CommandBanIp extends CommandAbstract
             }
             else
             {
-                EntityPlayer var5 = MinecraftServer.getServer().getServerConfigurationManager().f(par2ArrayOfStr[0]);
+                EntityPlayer var5 = MinecraftServer.getServer().getPlayerList().f(par2ArrayOfStr[0]);
 
                 if (var5 == null)
                 {
@@ -90,8 +90,8 @@ public class CommandBanIp extends CommandAbstract
             var4.setReason(par3Str);
         }
 
-        MinecraftServer.getServer().getServerConfigurationManager().getIPBans().add(var4);
-        List var5 = MinecraftServer.getServer().getServerConfigurationManager().j(par2Str);
+        MinecraftServer.getServer().getPlayerList().getIPBans().add(var4);
+        List var5 = MinecraftServer.getServer().getPlayerList().j(par2Str);
         String[] var6 = new String[var5.size()];
         int var7 = 0;
         EntityPlayer var9;
@@ -99,7 +99,7 @@ public class CommandBanIp extends CommandAbstract
         for (Iterator var8 = var5.iterator(); var8.hasNext(); var6[var7++] = var9.getLocalizedName())
         {
             var9 = (EntityPlayer)var8.next();
-            var9.netServerHandler.disconnect("You have been IP banned.");
+            var9.playerConnection.disconnect("You have been IP banned.");
         }
 
         if (var5.isEmpty())

@@ -83,7 +83,7 @@ public class EntityItemFrame extends EntityHanging
         if (this.i() != null)
         {
             par1NBTTagCompound.setCompound("Item", this.i().save(new NBTTagCompound()));
-            par1NBTTagCompound.setByte("ItemRotation", (byte)this.j());
+            par1NBTTagCompound.setByte("ItemRotation", (byte) this.j());
             par1NBTTagCompound.setFloat("ItemDropChance", this.e);
         }
 

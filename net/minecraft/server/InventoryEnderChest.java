@@ -46,7 +46,7 @@ public class InventoryEnderChest extends InventorySubcontainer
             if (var3 != null)
             {
                 NBTTagCompound var4 = new NBTTagCompound();
-                var4.setByte("Slot", (byte)var2);
+                var4.setByte("Slot", (byte) var2);
                 var3.save(var4);
                 var1.add(var4);
             }

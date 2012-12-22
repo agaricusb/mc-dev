@@ -102,7 +102,7 @@ public class ItemSkull extends Item
         return par1;
     }
 
-    public String c_(ItemStack par1ItemStack)
+    public String d(ItemStack par1ItemStack)
     {
         int var2 = par1ItemStack.getData();
 
@@ -114,8 +114,8 @@ public class ItemSkull extends Item
         return super.getName() + "." + a[var2];
     }
 
-    public String j(ItemStack par1ItemStack)
+    public String l(ItemStack par1ItemStack)
     {
-        return par1ItemStack.getData() == 3 && par1ItemStack.hasTag() && par1ItemStack.getTag().hasKey("SkullOwner") ? LocaleI18n.get("item.skull.player.name", new Object[]{par1ItemStack.getTag().getString("SkullOwner")}): super.j(par1ItemStack);
+        return par1ItemStack.getData() == 3 && par1ItemStack.hasTag() && par1ItemStack.getTag().hasKey("SkullOwner") ? LocaleI18n.get("item.skull.player.name", new Object[]{par1ItemStack.getTag().getString("SkullOwner")}): super.l(par1ItemStack);
     }
 }

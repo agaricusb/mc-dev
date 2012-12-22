@@ -173,13 +173,13 @@ public abstract class Entity
 
     /** Whether the entity is inside a Portal */
     protected boolean ao;
-    private int h;
+    protected int ap;
 
     /** Which dimension the player is in (-1 = the Nether, 0 = normal world) */
     public int dimension;
-    protected int aq;
+    protected int ar;
     private boolean invulnerable;
-    public EnumEntitySize ar;
+    public EnumEntitySize as;
 
     public Entity(World par1World)
     {
@@ -214,9 +214,9 @@ public abstract class Entity
         this.fireProof = false;
         this.datawatcher = new DataWatcher();
         this.ah = false;
-        this.aq = 0;
+        this.ar = 0;
         this.invulnerable = false;
-        this.ar = EnumEntitySize.SIZE_2;
+        this.as = EnumEntitySize.SIZE_2;
         this.world = par1World;
         this.setPosition(0.0D, 0.0D, 0.0D);
 
@@ -266,27 +266,27 @@ public abstract class Entity
 
         if ((double)var3 < 0.375D)
         {
-            this.ar = EnumEntitySize.SIZE_1;
+            this.as = EnumEntitySize.SIZE_1;
         }
         else if ((double)var3 < 0.75D)
         {
-            this.ar = EnumEntitySize.SIZE_2;
+            this.as = EnumEntitySize.SIZE_2;
         }
         else if ((double)var3 < 1.0D)
         {
-            this.ar = EnumEntitySize.SIZE_3;
+            this.as = EnumEntitySize.SIZE_3;
         }
         else if ((double)var3 < 1.375D)
         {
-            this.ar = EnumEntitySize.SIZE_4;
+            this.as = EnumEntitySize.SIZE_4;
         }
         else if ((double)var3 < 1.75D)
         {
-            this.ar = EnumEntitySize.SIZE_5;
+            this.as = EnumEntitySize.SIZE_5;
         }
         else
         {
-            this.ar = EnumEntitySize.SIZE_6;
+            this.as = EnumEntitySize.SIZE_6;
         }
     }
 
@@ -332,7 +332,6 @@ public abstract class Entity
             this.vehicle = null;
         }
 
-        ++this.ticksLived;
         this.P = this.Q;
         this.lastX = this.locX;
         this.lastY = this.locY;
@@ -351,9 +350,9 @@ public abstract class Entity
             {
                 if (var1.getAllowNether())
                 {
-                    if (this.vehicle == null && this.h++ >= var2)
+                    if (this.vehicle == null && this.ap++ >= var2)
                     {
-                        this.h = var2;
+                        this.ap = var2;
                         this.portalCooldown = this.ab();
                         byte var3;
 
@@ -374,14 +373,14 @@ public abstract class Entity
             }
             else
             {
-                if (this.h > 0)
+                if (this.ap > 0)
                 {
-                    this.h -= 4;
+                    this.ap -= 4;
                 }
 
-                if (this.h < 0)
+                if (this.ap < 0)
                 {
-                    this.h = 0;
+                    this.ap = 0;
                 }
             }
 
@@ -481,6 +480,7 @@ public abstract class Entity
     public void setOnFire(int par1)
     {
         int var2 = par1 * 20;
+        var2 = EnchantmentProtection.a(this, var2);
 
         if (this.fireTicks < var2)
         {
@@ -920,7 +920,7 @@ public abstract class Entity
         }
     }
 
-    protected void makeSound(String par1Str, float par2, float par3)
+    public void makeSound(String par1Str, float par2, float par3)
     {
         this.world.makeSound(this, par1Str, par2, par3);
     }
@@ -1069,7 +1069,7 @@ public abstract class Entity
 
         if (var7 != 0 && Block.byId[var7].material == par1Material)
         {
-            float var8 = BlockFluids.d(this.world.getData(var4, var5, var6)) - 0.11111111F;
+            float var8 = BlockFluids.e(this.world.getData(var4, var5, var6)) - 0.11111111F;
             float var9 = (float)(var5 + 1) - var8;
             return var2 < (double)var9;
         }
@@ -1357,8 +1357,8 @@ public abstract class Entity
             par1NBTTagCompound.set("Motion", this.a(new double[]{this.motX, this.motY, this.motZ}));
             par1NBTTagCompound.set("Rotation", this.a(new float[]{this.yaw, this.pitch}));
             par1NBTTagCompound.setFloat("FallDistance", this.fallDistance);
-            par1NBTTagCompound.setShort("Fire", (short)this.fireTicks);
-            par1NBTTagCompound.setShort("Air", (short)this.getAirTicks());
+            par1NBTTagCompound.setShort("Fire", (short) this.fireTicks);
+            par1NBTTagCompound.setShort("Air", (short) this.getAirTicks());
             par1NBTTagCompound.setBoolean("OnGround", this.onGround);
             par1NBTTagCompound.setInt("Dimension", this.dimension);
             par1NBTTagCompound.setBoolean("Invulnerable", this.invulnerable);
@@ -1632,7 +1632,7 @@ public abstract class Entity
 
     public void V()
     {
-        if (!(this.passenger instanceof EntityHuman) || !((EntityHuman)this.passenger).bW())
+        if (!(this.passenger instanceof EntityHuman) || !((EntityHuman)this.passenger).bV())
         {
             this.passenger.T = this.T;
             this.passenger.U = this.U + this.X() + this.passenger.W();
@@ -1769,7 +1769,7 @@ public abstract class Entity
 
             if (!this.world.isStatic && !this.ao)
             {
-                this.aq = Direction.a(var1, var3);
+                this.ar = Direction.a(var1, var3);
             }
 
             this.ao = true;
@@ -2073,6 +2073,9 @@ public abstract class Entity
         return String.format("%s[\'%s\'/%d, l=\'%s\', x=%.2f, y=%.2f, z=%.2f]", new Object[] {this.getClass().getSimpleName(), this.getLocalizedName(), Integer.valueOf(this.id), this.world == null ? "~NULL~" : this.world.getWorldData().getName(), Double.valueOf(this.locX), Double.valueOf(this.locY), Double.valueOf(this.locZ)});
     }
 
+    /**
+     * Return whether this entity is invulnerable to damage.
+     */
     public boolean isInvulnerable()
     {
         return this.invulnerable;
@@ -2094,7 +2097,7 @@ public abstract class Entity
         par1Entity.d(var3);
         this.e(var3);
         this.portalCooldown = par1Entity.portalCooldown;
-        this.aq = par1Entity.aq;
+        this.ar = par1Entity.ar;
     }
 
     public void b(int par1)
@@ -2110,7 +2113,7 @@ public abstract class Entity
             this.world.kill(this);
             this.dead = false;
             this.world.methodProfiler.a("reposition");
-            var2.getServerConfigurationManager().a(this, var3, var4, var5);
+            var2.getPlayerList().a(this, var3, var4, var5);
             this.world.methodProfiler.c("reloading");
             Entity var6 = EntityTypes.createEntityByName(EntityTypes.b(this), var5);
 
@@ -2140,7 +2143,7 @@ public abstract class Entity
 
     public int at()
     {
-        return this.aq;
+        return this.ar;
     }
 
     /**

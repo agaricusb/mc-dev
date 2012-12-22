@@ -18,7 +18,7 @@ public class CommandKill extends CommandAbstract
     public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
     {
         EntityPlayer var3 = c(par1ICommandSender);
-        var3.d(DamageSource.OUT_OF_WORLD, 1000);
+        var3.damageEntity(DamageSource.OUT_OF_WORLD, 1000);
         par1ICommandSender.sendMessage("Ouch. That looks like it hurt.");
     }
 }

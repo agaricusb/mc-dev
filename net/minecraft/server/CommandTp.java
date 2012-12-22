@@ -63,7 +63,7 @@ public class CommandTp extends CommandAbstract
                         return;
                     }
 
-                    var3.netServerHandler.a(var11.locX, var11.locY, var11.locZ, var11.yaw, var11.pitch);
+                    var3.playerConnection.a(var11.locX, var11.locY, var11.locZ, var11.yaw, var11.pitch);
                     a(par1ICommandSender, "commands.tp.success", new Object[]{var3.getLocalizedName(), var11.getLocalizedName()});
                 }
             }

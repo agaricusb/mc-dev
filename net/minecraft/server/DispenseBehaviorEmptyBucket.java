@@ -1,10 +1,11 @@
 package net.minecraft.server;
 
+
 public class DispenseBehaviorEmptyBucket extends DispenseBehaviorItem
 {
-    /** Reference to the BehaviorDefaultDispenseItem object. */
     private final DispenseBehaviorItem c;
 
+    /** Reference to the MinecraftServer object. */
     final MinecraftServer b;
 
     public DispenseBehaviorEmptyBucket(MinecraftServer par1)

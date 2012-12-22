@@ -6,7 +6,11 @@ import java.util.List;
 public class EntitySenses
 {
     EntityLiving entity;
+
+    /** Cache of entities which we can see */
     List seenEntities = new ArrayList();
+
+    /** Cache of entities which we cannot see */
     List unseenEntities = new ArrayList();
 
     public EntitySenses(EntityLiving par1EntityLiving)

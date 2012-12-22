@@ -25,7 +25,7 @@ public class NBTCompressedStreamTools
 
         try
         {
-            var2 = a((DataInput)var1); // read
+            var2 = a((DataInput) var1);
         }
         finally
         {
@@ -44,7 +44,7 @@ public class NBTCompressedStreamTools
 
         try
         {
-            a(par0NBTTagCompound, (DataOutput)var2); // write
+            a(par0NBTTagCompound, (DataOutput) var2);
         }
         finally
         {
@@ -59,7 +59,7 @@ public class NBTCompressedStreamTools
 
         try
         {
-            var2 = a((DataInput)var1); // read
+            var2 = a((DataInput) var1);
         }
         finally
         {
@@ -76,7 +76,7 @@ public class NBTCompressedStreamTools
 
         try
         {
-            a(par0NBTTagCompound, (DataOutput)var2); // write
+            a(par0NBTTagCompound, (DataOutput) var2);
         }
         finally
         {

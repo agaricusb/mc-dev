@@ -75,7 +75,7 @@ public abstract class EntityFlying extends EntityLiving
             this.motZ *= (double)var3;
         }
 
-        this.bf = this.bg;
+        this.bg = this.bh;
         double var10 = this.locX - this.lastX;
         double var9 = this.locZ - this.lastZ;
         float var7 = MathHelper.sqrt(var10 * var10 + var9 * var9) * 4.0F;
@@ -85,8 +85,8 @@ public abstract class EntityFlying extends EntityLiving
             var7 = 1.0F;
         }
 
-        this.bg += (var7 - this.bg) * 0.4F;
-        this.bh += this.bg;
+        this.bh += (var7 - this.bh) * 0.4F;
+        this.bi += this.bh;
     }
 
     /**

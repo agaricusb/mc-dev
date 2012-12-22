@@ -22,7 +22,7 @@ public class CommandBanList extends CommandAbstract
      */
     public boolean b(ICommandListener par1ICommandSender)
     {
-        return (MinecraftServer.getServer().getServerConfigurationManager().getIPBans().isEnabled() || MinecraftServer.getServer().getServerConfigurationManager().getNameBans().isEnabled()) && super.b(par1ICommandSender);
+        return (MinecraftServer.getServer().getPlayerList().getIPBans().isEnabled() || MinecraftServer.getServer().getPlayerList().getNameBans().isEnabled()) && super.b(par1ICommandSender);
     }
 
     public String a(ICommandListener par1ICommandSender)
@@ -34,13 +34,13 @@ public class CommandBanList extends CommandAbstract
     {
         if (par2ArrayOfStr.length >= 1 && par2ArrayOfStr[0].equalsIgnoreCase("ips"))
         {
-            par1ICommandSender.sendMessage(par1ICommandSender.a("commands.banlist.ips", new Object[]{Integer.valueOf(MinecraftServer.getServer().getServerConfigurationManager().getIPBans().getEntries().size())}));
-            par1ICommandSender.sendMessage(a(MinecraftServer.getServer().getServerConfigurationManager().getIPBans().getEntries().keySet().toArray()));
+            par1ICommandSender.sendMessage(par1ICommandSender.a("commands.banlist.ips", new Object[]{Integer.valueOf(MinecraftServer.getServer().getPlayerList().getIPBans().getEntries().size())}));
+            par1ICommandSender.sendMessage(a(MinecraftServer.getServer().getPlayerList().getIPBans().getEntries().keySet().toArray()));
         }
         else
         {
-            par1ICommandSender.sendMessage(par1ICommandSender.a("commands.banlist.players", new Object[]{Integer.valueOf(MinecraftServer.getServer().getServerConfigurationManager().getNameBans().getEntries().size())}));
-            par1ICommandSender.sendMessage(a(MinecraftServer.getServer().getServerConfigurationManager().getNameBans().getEntries().keySet().toArray()));
+            par1ICommandSender.sendMessage(par1ICommandSender.a("commands.banlist.players", new Object[]{Integer.valueOf(MinecraftServer.getServer().getPlayerList().getNameBans().getEntries().size())}));
+            par1ICommandSender.sendMessage(a(MinecraftServer.getServer().getPlayerList().getNameBans().getEntries().keySet().toArray()));
         }
     }
 

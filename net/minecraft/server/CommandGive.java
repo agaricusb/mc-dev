@@ -50,7 +50,7 @@ public class CommandGive extends CommandAbstract
                 ItemStack var7 = new ItemStack(var4, var5, var6);
                 EntityItem var8 = var3.drop(var7);
                 var8.pickupDelay = 0;
-                a(par1ICommandSender, "commands.give.success", new Object[]{Item.byId[var4].i(var7), Integer.valueOf(var4), Integer.valueOf(var5), var3.getLocalizedName()});
+                a(par1ICommandSender, "commands.give.success", new Object[]{Item.byId[var4].k(var7), Integer.valueOf(var4), Integer.valueOf(var5), var3.getLocalizedName()});
             }
         }
         else

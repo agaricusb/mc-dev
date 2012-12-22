@@ -1,6 +1,6 @@
 package net.minecraft.server;
 
-public class ItemInWorldManager
+public class PlayerInteractManager
 {
     /** The world object that this object is connected to. */
     public World world;
@@ -28,7 +28,7 @@ public class ItemInWorldManager
     private int n;
     private int o;
 
-    public ItemInWorldManager(World par1World)
+    public PlayerInteractManager(World par1World)
     {
         this.gamemode = EnumGamemode.NONE;
         this.o = -1;
@@ -129,6 +129,10 @@ public class ItemInWorldManager
         }
     }
 
+    /**
+     * if not creative, it calls destroyBlockInWorldPartially untill the block is broken first. par4 is the specific
+     * side. tryHarvestBlock can also be the result of this call
+     */
     public void dig(int par1, int par2, int par3, int par4)
     {
         if (!this.gamemode.isAdventure() || this.player.f(par1, par2, par3))
@@ -252,11 +256,11 @@ public class ItemInWorldManager
 
             if (this.isCreative())
             {
-                this.player.netServerHandler.sendPacket(new Packet53BlockChange(par1, par2, par3, this.world));
+                this.player.playerConnection.sendPacket(new Packet53BlockChange(par1, par2, par3, this.world));
             }
             else
             {
-                ItemStack var7 = this.player.bT();
+                ItemStack var7 = this.player.bS();
                 boolean var8 = this.player.b(Block.byId[var4]);
 
                 if (var7 != null)
@@ -265,7 +269,7 @@ public class ItemInWorldManager
 
                     if (var7.count == 0)
                     {
-                        this.player.bU();
+                        this.player.bT();
                     }
                 }
 
@@ -326,24 +330,30 @@ public class ItemInWorldManager
      */
     public boolean interact(EntityHuman par1EntityPlayer, World par2World, ItemStack par3ItemStack, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
     {
-        int var11 = par2World.getTypeId(par4, par5, par6);
+        int var11;
 
-        if (var11 > 0 && Block.byId[var11].interact(par2World, par4, par5, par6, par1EntityPlayer, par7, par8, par9, par10))
+        if (!par1EntityPlayer.isSneaking() || par1EntityPlayer.bD() == null)
         {
-            return true;
+            var11 = par2World.getTypeId(par4, par5, par6);
+
+            if (var11 > 0 && Block.byId[var11].interact(par2World, par4, par5, par6, par1EntityPlayer, par7, par8, par9, par10))
+            {
+                return true;
+            }
         }
-        else if (par3ItemStack == null)
+
+        if (par3ItemStack == null)
         {
             return false;
         }
         else if (this.isCreative())
         {
-            int var12 = par3ItemStack.getData();
-            int var13 = par3ItemStack.count;
-            boolean var14 = par3ItemStack.placeItem(par1EntityPlayer, par2World, par4, par5, par6, par7, par8, par9, par10);
-            par3ItemStack.setData(var12);
-            par3ItemStack.count = var13;
-            return var14;
+            var11 = par3ItemStack.getData();
+            int var12 = par3ItemStack.count;
+            boolean var13 = par3ItemStack.placeItem(par1EntityPlayer, par2World, par4, par5, par6, par7, par8, par9, par10);
+            par3ItemStack.setData(var11);
+            par3ItemStack.count = var12;
+            return var13;
         }
         else
         {

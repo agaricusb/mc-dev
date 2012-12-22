@@ -27,7 +27,7 @@ public class CommandOp extends CommandAbstract
     {
         if (par2ArrayOfStr.length == 1 && par2ArrayOfStr[0].length() > 0)
         {
-            MinecraftServer.getServer().getServerConfigurationManager().addOp(par2ArrayOfStr[0]);
+            MinecraftServer.getServer().getPlayerList().addOp(par2ArrayOfStr[0]);
             a(par1ICommandSender, "commands.op.success", new Object[]{par2ArrayOfStr[0]});
         }
         else
@@ -52,7 +52,7 @@ public class CommandOp extends CommandAbstract
             {
                 String var8 = var5[var7];
 
-                if (!MinecraftServer.getServer().getServerConfigurationManager().isOp(var8) && a(var3, var8))
+                if (!MinecraftServer.getServer().getPlayerList().isOp(var8) && a(var3, var8))
                 {
                     var4.add(var8);
                 }

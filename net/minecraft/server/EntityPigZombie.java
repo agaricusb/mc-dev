@@ -14,7 +14,7 @@ public class EntityPigZombie extends EntityZombie
     {
         super(par1World);
         this.texture = "/mob/pigzombie.png";
-        this.bG = 0.5F;
+        this.bH = 0.5F;
         this.fireProof = true;
     }
 
@@ -31,7 +31,7 @@ public class EntityPigZombie extends EntityZombie
      */
     public void j_()
     {
-        this.bG = this.target != null ? 0.95F : 0.5F;
+        this.bH = this.target != null ? 0.95F : 0.5F;
 
         if (this.soundDelay > 0 && --this.soundDelay == 0)
         {
@@ -55,7 +55,7 @@ public class EntityPigZombie extends EntityZombie
     public void b(NBTTagCompound par1NBTTagCompound)
     {
         super.b(par1NBTTagCompound);
-        par1NBTTagCompound.setShort("Anger", (short)this.angerLevel);
+        par1NBTTagCompound.setShort("Anger", (short) this.angerLevel);
     }
 
     /**
@@ -211,7 +211,7 @@ public class EntityPigZombie extends EntityZombie
 
         if (var2 != null)
         {
-            var3 += var2.a((Entity)this); // getDamageVsEntity
+            var3 += var2.a((Entity) this);
         }
 
         return var3;

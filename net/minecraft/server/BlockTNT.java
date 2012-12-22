@@ -87,7 +87,7 @@ public class BlockTNT extends Block
      */
     public boolean interact(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer, int par6, float par7, float par8, float par9)
     {
-        if (par5EntityPlayer.bT() != null && par5EntityPlayer.bT().id == Item.FLINT_AND_STEEL.id)
+        if (par5EntityPlayer.bS() != null && par5EntityPlayer.bS().id == Item.FLINT_AND_STEEL.id)
         {
             this.postBreak(par1World, par2, par3, par4, 1);
             par1World.setTypeId(par2, par3, par4, 0);

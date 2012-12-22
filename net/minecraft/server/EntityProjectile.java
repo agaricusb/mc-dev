@@ -255,12 +255,12 @@ public abstract class EntityProjectile extends Entity implements IProjectile
      */
     public void b(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setShort("xTile", (short)this.blockX);
-        par1NBTTagCompound.setShort("yTile", (short)this.blockY);
-        par1NBTTagCompound.setShort("zTile", (short)this.blockZ);
-        par1NBTTagCompound.setByte("inTile", (byte)this.inBlockId);
-        par1NBTTagCompound.setByte("shake", (byte)this.shake);
-        par1NBTTagCompound.setByte("inGround", (byte)(this.inGround ? 1 : 0));
+        par1NBTTagCompound.setShort("xTile", (short) this.blockX);
+        par1NBTTagCompound.setShort("yTile", (short) this.blockY);
+        par1NBTTagCompound.setShort("zTile", (short) this.blockZ);
+        par1NBTTagCompound.setByte("inTile", (byte) this.inBlockId);
+        par1NBTTagCompound.setByte("shake", (byte) this.shake);
+        par1NBTTagCompound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
 
         if ((this.shooterName == null || this.shooterName.length() == 0) && this.shooter != null && this.shooter instanceof EntityHuman)
         {

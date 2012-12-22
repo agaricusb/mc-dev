@@ -4,7 +4,6 @@ import java.util.concurrent.Callable;
 
 public class CrashReportProfilerPosition implements Callable
 {
-    /** Reference to the MinecraftServer object. */
     final MinecraftServer a;
 
     public CrashReportProfilerPosition(MinecraftServer par1MinecraftServer)

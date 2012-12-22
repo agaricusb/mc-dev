@@ -71,7 +71,7 @@ public class LongHashMap
 
     public boolean contains(long par1)
     {
-        return this.getEntry(par1) != null;
+        return this.c(par1) != null;
     }
 
     final LongHashMapEntry c(long par1)

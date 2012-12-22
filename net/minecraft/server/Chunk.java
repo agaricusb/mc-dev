@@ -130,7 +130,7 @@ public class Chunk
 
                         if (this.sections[var10] == null)
                         {
-                            this.sections[var10] = new ChunkSection(var10 << 4);
+                            this.sections[var10] = new ChunkSection(var10 << 4, !par1World.worldProvider.f);
                         }
 
                         this.sections[var10].a(var6, var8 & 15, var7, var9);
@@ -543,7 +543,7 @@ public class Chunk
                     return false;
                 }
 
-                var10 = this.sections[par2 >> 4] = new ChunkSection(par2 >> 4 << 4);
+                var10 = this.sections[par2 >> 4] = new ChunkSection(par2 >> 4 << 4, !this.world.worldProvider.f);
                 var11 = par2 >= var7;
             }
 
@@ -686,7 +686,7 @@ public class Chunk
     public int getBrightness(EnumSkyBlock par1EnumSkyBlock, int par2, int par3, int par4)
     {
         ChunkSection var5 = this.sections[par3 >> 4];
-        return var5 == null ? (this.d(par2, par3, par4) ? par1EnumSkyBlock.c : 0) : (par1EnumSkyBlock == EnumSkyBlock.SKY ? var5.c(par2, par3 & 15, par4) : (par1EnumSkyBlock == EnumSkyBlock.BLOCK ? var5.d(par2, par3 & 15, par4) : par1EnumSkyBlock.c));
+        return var5 == null ? (this.d(par2, par3, par4) ? par1EnumSkyBlock.c : 0) : (par1EnumSkyBlock == EnumSkyBlock.SKY ? (this.world.worldProvider.f ? 0 : var5.c(par2, par3 & 15, par4)) : (par1EnumSkyBlock == EnumSkyBlock.BLOCK ? var5.d(par2, par3 & 15, par4) : par1EnumSkyBlock.c));
     }
 
     /**
@@ -699,7 +699,7 @@ public class Chunk
 
         if (var6 == null)
         {
-            var6 = this.sections[par3 >> 4] = new ChunkSection(par3 >> 4 << 4);
+            var6 = this.sections[par3 >> 4] = new ChunkSection(par3 >> 4 << 4, !this.world.worldProvider.f);
             this.initLighting();
         }
 

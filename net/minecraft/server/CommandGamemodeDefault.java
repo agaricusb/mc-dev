@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class CommandGamemodeDefault extends CommandGamemode
 {
     public String c()

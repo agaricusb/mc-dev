@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class DispenseBehaviorEgg extends DispenseBehaviorProjectile
 {
     final MinecraftServer b;

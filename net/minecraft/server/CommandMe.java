@@ -27,7 +27,7 @@ public class CommandMe extends CommandAbstract
         if (par2ArrayOfStr.length > 0)
         {
             String var3 = a(par1ICommandSender, par2ArrayOfStr, 0);
-            MinecraftServer.getServer().getServerConfigurationManager().sendAll(new Packet3Chat("* " + par1ICommandSender.getName() + " " + var3));
+            MinecraftServer.getServer().getPlayerList().sendAll(new Packet3Chat("* " + par1ICommandSender.getName() + " " + var3));
         }
         else
         {

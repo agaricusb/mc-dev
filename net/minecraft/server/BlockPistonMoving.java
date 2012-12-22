@@ -112,7 +112,7 @@ public class BlockPistonMoving extends BlockContainer
     {
         if (!par1World.isStatic)
         {
-            TileEntityPiston var8 = this.d((IBlockAccess)par1World, par2, par3, par4);
+            TileEntityPiston var8 = this.d((IBlockAccess) par1World, par2, par3, par4);
 
             if (var8 != null)
             {
@@ -147,7 +147,7 @@ public class BlockPistonMoving extends BlockContainer
      */
     public AxisAlignedBB e(World par1World, int par2, int par3, int par4)
     {
-        TileEntityPiston var5 = this.d((IBlockAccess)par1World, par2, par3, par4);
+        TileEntityPiston var5 = this.d((IBlockAccess) par1World, par2, par3, par4);
 
         if (var5 == null)
         {

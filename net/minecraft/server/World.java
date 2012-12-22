@@ -57,12 +57,7 @@ public abstract class World implements IBlockAccess
      * Set to 2 whenever a lightning bolt is generated in SSP. Decrements if > 0 in updateWeather(). Value appears to be
      * unused.
      */
-    protected int q = 0;
-
-    /**
-     * If > 0, the sky and skylight colors are illuminated by a lightning flash
-     */
-    public int r = 0;
+    public int q = 0;
 
     /** true while the server is editing blocks */
     public boolean suppressPhysics = false;
@@ -75,7 +70,7 @@ public abstract class World implements IBlockAccess
 
     /** The WorldProvider instance that World uses. */
     public final WorldProvider worldProvider;
-    protected List w = new ArrayList();
+    protected List v = new ArrayList();
 
     /** Handles chunk operations and caching */
     protected IChunkProvider chunkProvider;
@@ -97,10 +92,10 @@ public abstract class World implements IBlockAccess
     public final MethodProfiler methodProfiler;
 
     /** The world-local pool of vectors */
-    private final Vec3DPool K = new Vec3DPool(300, 2000);
-    private final Calendar L = Calendar.getInstance();
-    private ArrayList M = new ArrayList();
-    private boolean N;
+    private final Vec3DPool J = new Vec3DPool(300, 2000);
+    private final Calendar K = Calendar.getInstance();
+    private ArrayList L = new ArrayList();
+    private boolean M;
 
     /** indicates if enemies are spawned or not */
     protected boolean allowMonsters = true;
@@ -112,7 +107,7 @@ public abstract class World implements IBlockAccess
     protected Set chunkTickList = new HashSet();
 
     /** number of ticks until the next random ambients play */
-    private int O;
+    private int N;
 
     /**
      * is a temporary list of blocks and light values used when updating light levels. Holds up to 32x32x32 blocks (the
@@ -120,17 +115,15 @@ public abstract class World implements IBlockAccess
      * 4-bit L is a light level used when darkening blocks. 6-bit numbers x, y and z represent the block's offset from
      * the original block, plus 32 (i.e. value of 31 would mean a -1 offset
      */
-    int[] I;
+    int[] H;
 
     /**
      * entities within AxisAlignedBB excluding one, set and returned in getEntitiesWithinAABBExcludingEntity(Entity
      * var1, AxisAlignedBB var2)
      */
-    private List P;
+    private List O;
 
-    /**
-     * This is set to true when you are a client connected to a multiplayer world, false otherwise.
-     */
+    /** This is set to true for client worlds, and false for server worlds. */
     public boolean isStatic;
 
     /**
@@ -158,9 +151,9 @@ public abstract class World implements IBlockAccess
 
     public World(IDataManager par1ISaveHandler, String par2Str, WorldSettings par3WorldSettings, WorldProvider par4WorldProvider, MethodProfiler par5Profiler)
     {
-        this.O = this.random.nextInt(12000);
-        this.I = new int[32768];
-        this.P = new ArrayList();
+        this.N = this.random.nextInt(12000);
+        this.H = new int[32768];
+        this.O = new ArrayList();
         this.isStatic = false;
         this.dataManager = par1ISaveHandler;
         this.methodProfiler = par5Profiler;
@@ -605,9 +598,9 @@ public abstract class World implements IBlockAccess
      */
     public void notify(int par1, int par2, int par3)
     {
-        for (int var4 = 0; var4 < this.w.size(); ++var4)
+        for (int var4 = 0; var4 < this.v.size(); ++var4)
         {
-            ((IWorldAccess)this.w.get(var4)).a(par1, par2, par3);
+            ((IWorldAccess)this.v.get(var4)).a(par1, par2, par3);
         }
     }
 
@@ -649,9 +642,9 @@ public abstract class World implements IBlockAccess
      */
     public void j(int par1, int par2, int par3)
     {
-        for (int var4 = 0; var4 < this.w.size(); ++var4)
+        for (int var4 = 0; var4 < this.v.size(); ++var4)
         {
-            ((IWorldAccess)this.w.get(var4)).a(par1, par2, par3, par1, par2, par3);
+            ((IWorldAccess)this.v.get(var4)).a(par1, par2, par3, par1, par2, par3);
         }
     }
 
@@ -661,9 +654,9 @@ public abstract class World implements IBlockAccess
      */
     public void e(int par1, int par2, int par3, int par4, int par5, int par6)
     {
-        for (int var7 = 0; var7 < this.w.size(); ++var7)
+        for (int var7 = 0; var7 < this.v.size(); ++var7)
         {
-            ((IWorldAccess)this.w.get(var7)).a(par1, par2, par3, par4, par5, par6);
+            ((IWorldAccess)this.v.get(var7)).a(par1, par2, par3, par4, par5, par6);
         }
     }
 
@@ -920,9 +913,9 @@ public abstract class World implements IBlockAccess
                         Chunk var6 = this.getChunkAt(par2 >> 4, par4 >> 4);
                         var6.a(par1EnumSkyBlock, par2 & 15, par3, par4 & 15, par5);
 
-                        for (int var7 = 0; var7 < this.w.size(); ++var7)
+                        for (int var7 = 0; var7 < this.v.size(); ++var7)
                         {
-                            ((IWorldAccess)this.w.get(var7)).b(par2, par3, par4);
+                            ((IWorldAccess)this.v.get(var7)).b(par2, par3, par4);
                         }
                     }
                 }
@@ -935,9 +928,9 @@ public abstract class World implements IBlockAccess
      */
     public void o(int par1, int par2, int par3)
     {
-        for (int var4 = 0; var4 < this.w.size(); ++var4)
+        for (int var4 = 0; var4 < this.v.size(); ++var4)
         {
-            ((IWorldAccess)this.w.get(var4)).b(par1, par2, par3);
+            ((IWorldAccess)this.v.get(var4)).b(par1, par2, par3);
         }
     }
 
@@ -1189,20 +1182,23 @@ public abstract class World implements IBlockAccess
     {
         if (par1Entity != null && par2Str != null)
         {
-            for (int var5 = 0; var5 < this.w.size(); ++var5)
+            for (int var5 = 0; var5 < this.v.size(); ++var5)
             {
-                ((IWorldAccess)this.w.get(var5)).a(par2Str, par1Entity.locX, par1Entity.locY - (double) par1Entity.height, par1Entity.locZ, par3, par4);
+                ((IWorldAccess)this.v.get(var5)).a(par2Str, par1Entity.locX, par1Entity.locY - (double) par1Entity.height, par1Entity.locZ, par3, par4);
             }
         }
     }
 
+    /**
+     * Plays sound to all near players except the player reference given
+     */
     public void a(EntityHuman par1EntityPlayer, String par2Str, float par3, float par4)
     {
         if (par1EntityPlayer != null && par2Str != null)
         {
-            for (int var5 = 0; var5 < this.w.size(); ++var5)
+            for (int var5 = 0; var5 < this.v.size(); ++var5)
             {
-                ((IWorldAccess)this.w.get(var5)).a(par1EntityPlayer, par2Str, par1EntityPlayer.locX, par1EntityPlayer.locY - (double) par1EntityPlayer.height, par1EntityPlayer.locZ, par3, par4);
+                ((IWorldAccess)this.v.get(var5)).a(par1EntityPlayer, par2Str, par1EntityPlayer.locX, par1EntityPlayer.locY - (double) par1EntityPlayer.height, par1EntityPlayer.locZ, par3, par4);
             }
         }
     }
@@ -1216,9 +1212,9 @@ public abstract class World implements IBlockAccess
     {
         if (par7Str != null)
         {
-            for (int var10 = 0; var10 < this.w.size(); ++var10)
+            for (int var10 = 0; var10 < this.v.size(); ++var10)
             {
-                ((IWorldAccess)this.w.get(var10)).a(par7Str, par1, par3, par5, par8, par9);
+                ((IWorldAccess)this.v.get(var10)).a(par7Str, par1, par3, par5, par8, par9);
             }
         }
     }
@@ -1226,16 +1222,16 @@ public abstract class World implements IBlockAccess
     /**
      * par8 is loudness, all pars passed to minecraftInstance.sndManager.playSound
      */
-    public void b(double par1, double par3, double par5, String par7Str, float par8, float par9) {}
+    public void a(double par1, double par3, double par5, String par7Str, float par8, float par9, boolean par10) {}
 
     /**
      * Plays a record at the specified coordinates of the specified name. Args: recordName, x, y, z
      */
     public void a(String par1Str, int par2, int par3, int par4)
     {
-        for (int var5 = 0; var5 < this.w.size(); ++var5)
+        for (int var5 = 0; var5 < this.v.size(); ++var5)
         {
-            ((IWorldAccess)this.w.get(var5)).a(par1Str, par2, par3, par4);
+            ((IWorldAccess)this.v.get(var5)).a(par1Str, par2, par3, par4);
         }
     }
 
@@ -1244,9 +1240,9 @@ public abstract class World implements IBlockAccess
      */
     public void addParticle(String par1Str, double par2, double par4, double par6, double par8, double par10, double par12)
     {
-        for (int var14 = 0; var14 < this.w.size(); ++var14)
+        for (int var14 = 0; var14 < this.v.size(); ++var14)
         {
-            ((IWorldAccess)this.w.get(var14)).a(par1Str, par2, par4, par6, par8, par10, par12);
+            ((IWorldAccess)this.v.get(var14)).a(par1Str, par2, par4, par6, par8, par10, par12);
         }
     }
 
@@ -1298,9 +1294,9 @@ public abstract class World implements IBlockAccess
      */
     protected void a(Entity par1Entity)
     {
-        for (int var2 = 0; var2 < this.w.size(); ++var2)
+        for (int var2 = 0; var2 < this.v.size(); ++var2)
         {
-            ((IWorldAccess)this.w.get(var2)).a(par1Entity);
+            ((IWorldAccess)this.v.get(var2)).a(par1Entity);
         }
     }
 
@@ -1309,9 +1305,9 @@ public abstract class World implements IBlockAccess
      */
     protected void b(Entity par1Entity)
     {
-        for (int var2 = 0; var2 < this.w.size(); ++var2)
+        for (int var2 = 0; var2 < this.v.size(); ++var2)
         {
-            ((IWorldAccess)this.w.get(var2)).b(par1Entity);
+            ((IWorldAccess)this.v.get(var2)).b(par1Entity);
         }
     }
 
@@ -1370,7 +1366,7 @@ public abstract class World implements IBlockAccess
      */
     public void addIWorldAccess(IWorldAccess par1IWorldAccess)
     {
-        this.w.add(par1IWorldAccess);
+        this.v.add(par1IWorldAccess);
     }
 
     /**
@@ -1379,7 +1375,7 @@ public abstract class World implements IBlockAccess
      */
     public List getCubes(Entity par1Entity, AxisAlignedBB par2AxisAlignedBB)
     {
-        this.M.clear();
+        this.L.clear();
         int var3 = MathHelper.floor(par2AxisAlignedBB.a);
         int var4 = MathHelper.floor(par2AxisAlignedBB.d + 1.0D);
         int var5 = MathHelper.floor(par2AxisAlignedBB.b);
@@ -1399,7 +1395,7 @@ public abstract class World implements IBlockAccess
 
                         if (var12 != null)
                         {
-                            var12.a(this, var9, var11, var10, par2AxisAlignedBB, this.M, par1Entity);
+                            var12.a(this, var9, var11, var10, par2AxisAlignedBB, this.L, par1Entity);
                         }
                     }
                 }
@@ -1415,18 +1411,18 @@ public abstract class World implements IBlockAccess
 
             if (var13 != null && var13.a(par2AxisAlignedBB))
             {
-                this.M.add(var13);
+                this.L.add(var13);
             }
 
             var13 = par1Entity.g((Entity) var16.get(var15));
 
             if (var13 != null && var13.a(par2AxisAlignedBB))
             {
-                this.M.add(var13);
+                this.L.add(var13);
             }
         }
 
-        return this.M;
+        return this.L;
     }
 
     /**
@@ -1434,7 +1430,7 @@ public abstract class World implements IBlockAccess
      */
     public List a(AxisAlignedBB par1AxisAlignedBB)
     {
-        this.M.clear();
+        this.L.clear();
         int var2 = MathHelper.floor(par1AxisAlignedBB.a);
         int var3 = MathHelper.floor(par1AxisAlignedBB.d + 1.0D);
         int var4 = MathHelper.floor(par1AxisAlignedBB.b);
@@ -1454,14 +1450,14 @@ public abstract class World implements IBlockAccess
 
                         if (var11 != null)
                         {
-                            var11.a(this, var8, var10, var9, par1AxisAlignedBB, this.M, (Entity) null);
+                            var11.a(this, var8, var10, var9, par1AxisAlignedBB, this.L, (Entity) null);
                         }
                     }
                 }
             }
         }
 
-        return this.M;
+        return this.L;
     }
 
     /**
@@ -1557,11 +1553,12 @@ public abstract class World implements IBlockAccess
 
             try
             {
+                ++var2.ticksLived;
                 var2.j_();
             }
-            catch (Throwable var6)
+            catch (Throwable var8)
             {
-                var4 = CrashReport.a(var6, "Ticking entity");
+                var4 = CrashReport.a(var8, "Ticking entity");
                 var5 = var4.a("Entity being ticked");
 
                 if (var2 == null)
@@ -1630,9 +1627,9 @@ public abstract class World implements IBlockAccess
                 {
                     this.playerJoinedWorld(var2);
                 }
-                catch (Throwable var8)
+                catch (Throwable var6)
                 {
-                    var4 = CrashReport.a(var8, "Ticking entity");
+                    var4 = CrashReport.a(var6, "Ticking entity");
                     var5 = var4.a("Entity being ticked");
 
                     if (var2 == null)
@@ -1669,7 +1666,7 @@ public abstract class World implements IBlockAccess
         }
 
         this.methodProfiler.c("tileEntities");
-        this.N = true;
+        this.M = true;
         Iterator var14 = this.tileEntityList.iterator();
 
         while (var14.hasNext())
@@ -1716,7 +1713,7 @@ public abstract class World implements IBlockAccess
             }
         }
 
-        this.N = false;
+        this.M = false;
 
         if (!this.b.isEmpty())
         {
@@ -1762,7 +1759,7 @@ public abstract class World implements IBlockAccess
 
     public void a(Collection par1Collection)
     {
-        if (this.N)
+        if (this.M)
         {
             this.a.addAll(par1Collection);
         }
@@ -1806,6 +1803,7 @@ public abstract class World implements IBlockAccess
                 }
                 else
                 {
+                    ++par1Entity.ticksLived;
                     par1Entity.j_();
                 }
             }
@@ -2061,7 +2059,7 @@ public abstract class World implements IBlockAccess
 
                         if (var15 != null && var15.material == par2Material)
                         {
-                            double var16 = (double)((float)(var13 + 1) - BlockFluids.d(this.getData(var12, var13, var14)));
+                            double var16 = (double)((float)(var13 + 1) - BlockFluids.e(this.getData(var12, var13, var14)));
 
                             if ((double)var7 >= var16)
                             {
@@ -2309,7 +2307,7 @@ public abstract class World implements IBlockAccess
     {
         if (par4TileEntity != null && !par4TileEntity.r())
         {
-            if (this.N)
+            if (this.M)
             {
                 par4TileEntity.x = par1;
                 par4TileEntity.y = par2;
@@ -2336,7 +2334,7 @@ public abstract class World implements IBlockAccess
     {
         TileEntity var4 = this.getTileEntity(par1, par2, par3);
 
-        if (var4 != null && this.N)
+        if (var4 != null && this.M)
         {
             var4.w_();
             this.a.remove(var4);
@@ -2486,11 +2484,6 @@ public abstract class World implements IBlockAccess
     {
         if (!this.worldProvider.f)
         {
-            if (this.q > 0)
-            {
-                --this.q;
-            }
-
             int var1 = this.worldData.getThunderDuration();
 
             if (var1 <= 0)
@@ -2618,9 +2611,9 @@ public abstract class World implements IBlockAccess
 
         this.methodProfiler.b();
 
-        if (this.O > 0)
+        if (this.N > 0)
         {
-            --this.O;
+            --this.N;
         }
 
         this.methodProfiler.a("playerCheckLight");
@@ -2642,7 +2635,7 @@ public abstract class World implements IBlockAccess
     {
         this.methodProfiler.c("moodSound");
 
-        if (this.O == 0 && !this.isStatic)
+        if (this.N == 0 && !this.isStatic)
         {
             this.k = this.k * 3 + 1013904223;
             int var4 = this.k >> 2;
@@ -2660,7 +2653,7 @@ public abstract class World implements IBlockAccess
                 if (var9 != null && var9.e((double) var5 + 0.5D, (double) var7 + 0.5D, (double) var6 + 0.5D) > 4.0D)
                 {
                     this.makeSound((double) var5 + 0.5D, (double) var7 + 0.5D, (double) var6 + 0.5D, "ambient.cave.cave", 0.7F, 0.8F + this.random.nextFloat() * 0.2F);
-                    this.O = this.random.nextInt(12000) + 6000;
+                    this.N = this.random.nextInt(12000) + 6000;
                 }
             }
         }
@@ -2931,7 +2924,7 @@ public abstract class World implements IBlockAccess
 
             if (var24 > var7)
             {
-                this.I[var6++] = 133152;
+                this.H[var6++] = 133152;
             }
             else if (var24 < var7)
             {
@@ -2940,11 +2933,11 @@ public abstract class World implements IBlockAccess
                     ;
                 }
 
-                this.I[var6++] = 133152 + (var7 << 18);
+                this.H[var6++] = 133152 + (var7 << 18);
 
                 while (var5 < var6)
                 {
-                    var9 = this.I[var5++];
+                    var9 = this.H[var5++];
                     var10 = (var9 & 63) - 32 + par2;
                     var24 = (var9 >> 6 & 63) - 32 + par3;
                     var12 = (var9 >> 12 & 63) - 32 + par4;
@@ -2992,9 +2985,9 @@ public abstract class World implements IBlockAccess
                                         var23 = 1;
                                     }
 
-                                    if (var14 == var13 - var23 && var6 < this.I.length)
+                                    if (var14 == var13 - var23 && var6 < this.H.length)
                                     {
-                                        this.I[var6++] = var20 - par2 + 32 + (var21 - par3 + 32 << 6) + (var22 - par4 + 32 << 12) + (var13 - var23 << 18);
+                                        this.H[var6++] = var20 - par2 + 32 + (var21 - par3 + 32 << 6) + (var22 - par4 + 32 << 12) + (var13 - var23 << 18);
                                     }
                                 }
                             }
@@ -3010,7 +3003,7 @@ public abstract class World implements IBlockAccess
 
             while (var5 < var6)
             {
-                var9 = this.I[var5++];
+                var9 = this.H[var5++];
                 var10 = (var9 & 63) - 32 + par2;
                 var24 = (var9 >> 6 & 63) - 32 + par3;
                 var12 = (var9 >> 12 & 63) - 32 + par4;
@@ -3059,36 +3052,36 @@ public abstract class World implements IBlockAccess
                             var19 = -var19;
                         }
 
-                        if (var17 + var18 + var19 < 17 && var6 < this.I.length - 6)
+                        if (var17 + var18 + var19 < 17 && var6 < this.H.length - 6)
                         {
                             if (this.b(par1EnumSkyBlock, var10 - 1, var24, var12) < var16)
                             {
-                                this.I[var6++] = var10 - 1 - par2 + 32 + (var24 - par3 + 32 << 6) + (var12 - par4 + 32 << 12);
+                                this.H[var6++] = var10 - 1 - par2 + 32 + (var24 - par3 + 32 << 6) + (var12 - par4 + 32 << 12);
                             }
 
                             if (this.b(par1EnumSkyBlock, var10 + 1, var24, var12) < var16)
                             {
-                                this.I[var6++] = var10 + 1 - par2 + 32 + (var24 - par3 + 32 << 6) + (var12 - par4 + 32 << 12);
+                                this.H[var6++] = var10 + 1 - par2 + 32 + (var24 - par3 + 32 << 6) + (var12 - par4 + 32 << 12);
                             }
 
                             if (this.b(par1EnumSkyBlock, var10, var24 - 1, var12) < var16)
                             {
-                                this.I[var6++] = var10 - par2 + 32 + (var24 - 1 - par3 + 32 << 6) + (var12 - par4 + 32 << 12);
+                                this.H[var6++] = var10 - par2 + 32 + (var24 - 1 - par3 + 32 << 6) + (var12 - par4 + 32 << 12);
                             }
 
                             if (this.b(par1EnumSkyBlock, var10, var24 + 1, var12) < var16)
                             {
-                                this.I[var6++] = var10 - par2 + 32 + (var24 + 1 - par3 + 32 << 6) + (var12 - par4 + 32 << 12);
+                                this.H[var6++] = var10 - par2 + 32 + (var24 + 1 - par3 + 32 << 6) + (var12 - par4 + 32 << 12);
                             }
 
                             if (this.b(par1EnumSkyBlock, var10, var24, var12 - 1) < var16)
                             {
-                                this.I[var6++] = var10 - par2 + 32 + (var24 - par3 + 32 << 6) + (var12 - 1 - par4 + 32 << 12);
+                                this.H[var6++] = var10 - par2 + 32 + (var24 - par3 + 32 << 6) + (var12 - 1 - par4 + 32 << 12);
                             }
 
                             if (this.b(par1EnumSkyBlock, var10, var24, var12 + 1) < var16)
                             {
-                                this.I[var6++] = var10 - par2 + 32 + (var24 - par3 + 32 << 6) + (var12 + 1 - par4 + 32 << 12);
+                                this.H[var6++] = var10 - par2 + 32 + (var24 - par3 + 32 << 6) + (var12 + 1 - par4 + 32 << 12);
                             }
                         }
                     }
@@ -3117,7 +3110,7 @@ public abstract class World implements IBlockAccess
      */
     public List getEntities(Entity par1Entity, AxisAlignedBB par2AxisAlignedBB)
     {
-        this.P.clear();
+        this.O.clear();
         int var3 = MathHelper.floor((par2AxisAlignedBB.a - 2.0D) / 16.0D);
         int var4 = MathHelper.floor((par2AxisAlignedBB.d + 2.0D) / 16.0D);
         int var5 = MathHelper.floor((par2AxisAlignedBB.c - 2.0D) / 16.0D);
@@ -3129,12 +3122,12 @@ public abstract class World implements IBlockAccess
             {
                 if (this.isChunkLoaded(var7, var8))
                 {
-                    this.getChunkAt(var7, var8).a(par1Entity, par2AxisAlignedBB, this.P);
+                    this.getChunkAt(var7, var8).a(par1Entity, par2AxisAlignedBB, this.O);
                 }
             }
         }
 
-        return this.P;
+        return this.O;
     }
 
     /**
@@ -3413,7 +3406,7 @@ public abstract class World implements IBlockAccess
         {
             EntityHuman var13 = (EntityHuman)this.players.get(var12);
 
-            if (!var13.abilities.isInvulnerable)
+            if (!var13.abilities.isInvulnerable && var13.isAlive())
             {
                 double var14 = var13.e(par1, par3, par5);
                 double var16 = par7;
@@ -3425,7 +3418,7 @@ public abstract class World implements IBlockAccess
 
                 if (var13.isInvisible())
                 {
-                    float var18 = var13.bS();
+                    float var18 = var13.bR();
 
                     if (var18 < 0.1F)
                     {
@@ -3654,9 +3647,9 @@ public abstract class World implements IBlockAccess
 
     public void e(int par1, int par2, int par3, int par4, int par5)
     {
-        for (int var6 = 0; var6 < this.w.size(); ++var6)
+        for (int var6 = 0; var6 < this.v.size(); ++var6)
         {
-            ((IWorldAccess)this.w.get(var6)).a(par1, par2, par3, par4, par5);
+            ((IWorldAccess)this.v.get(var6)).a(par1, par2, par3, par4, par5);
         }
     }
 
@@ -3674,9 +3667,22 @@ public abstract class World implements IBlockAccess
      */
     public void a(EntityHuman par1EntityPlayer, int par2, int par3, int par4, int par5, int par6)
     {
-        for (int var7 = 0; var7 < this.w.size(); ++var7)
+        try
         {
-            ((IWorldAccess)this.w.get(var7)).a(par1EntityPlayer, par2, par3, par4, par5, par6);
+            for (int var7 = 0; var7 < this.v.size(); ++var7)
+            {
+                ((IWorldAccess)this.v.get(var7)).a(par1EntityPlayer, par2, par3, par4, par5, par6);
+            }
+        }
+        catch (Throwable var10)
+        {
+            CrashReport var8 = CrashReport.a(var10, "Playing level event");
+            CrashReportSystemDetails var9 = var8.a("Level event being played");
+            var9.a("Block coordinates", CrashReportSystemDetails.a(par3, par4, par5));
+            var9.a("Event source", par1EntityPlayer);
+            var9.a("Event type", Integer.valueOf(par2));
+            var9.a("Event data", Integer.valueOf(par6));
+            throw new ReportedException(var8);
         }
     }
 
@@ -3747,9 +3753,9 @@ public abstract class World implements IBlockAccess
      */
     public void g(int par1, int par2, int par3, int par4, int par5)
     {
-        for (int var6 = 0; var6 < this.w.size(); ++var6)
+        for (int var6 = 0; var6 < this.v.size(); ++var6)
         {
-            IWorldAccess var7 = (IWorldAccess)this.w.get(var6);
+            IWorldAccess var7 = (IWorldAccess)this.v.get(var6);
             var7.b(par1, par2, par3, par4, par5);
         }
     }
@@ -3759,7 +3765,7 @@ public abstract class World implements IBlockAccess
      */
     public Vec3DPool getVec3DPool()
     {
-        return this.K;
+        return this.J;
     }
 
     /**
@@ -3769,9 +3775,9 @@ public abstract class World implements IBlockAccess
     {
         if (this.getTime() % 600L == 0L)
         {
-            this.L.setTimeInMillis(System.currentTimeMillis());
+            this.K.setTimeInMillis(System.currentTimeMillis());
         }
 
-        return this.L;
+        return this.K;
     }
 }

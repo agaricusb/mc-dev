@@ -6,14 +6,17 @@ import java.io.IOException;
 
 public class Packet70Bed extends Packet
 {
+    /**
+     * The client prints clientMessage[eventType] to chat when this packet is received.
+     */
     public static final String[] a = new String[] {"tile.bed.notValid", null, null, "gameMode.changed"};
 
-    /**
-     * Either 1 or 2. 1 indicates to begin raining, 2 indicates to stop raining.
-     */
+    /** 0: Invalid bed, 1: Rain starts, 2: Rain stops, 3: Game mode changed. */
     public int b;
 
-    /** Used only when reason = 3. 0 is survival, 1 is creative. */
+    /**
+     * When reason==3, the game mode to set.  See EnumGameType for a list of values.
+     */
     public int c;
 
     public Packet70Bed() {}
@@ -45,7 +48,7 @@ public class Packet70Bed extends Packet
     /**
      * Passes this Packet on to the NetHandler for processing.
      */
-    public void handle(NetHandler par1NetHandler)
+    public void handle(Connection par1NetHandler)
     {
         par1NetHandler.a(this);
     }

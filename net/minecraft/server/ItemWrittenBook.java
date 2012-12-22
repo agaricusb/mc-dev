@@ -25,7 +25,7 @@ public class ItemWrittenBook extends Item
         }
     }
 
-    public String j(ItemStack par1ItemStack)
+    public String l(ItemStack par1ItemStack)
     {
         if (par1ItemStack.hasTag())
         {
@@ -38,7 +38,7 @@ public class ItemWrittenBook extends Item
             }
         }
 
-        return super.j(par1ItemStack);
+        return super.l(par1ItemStack);
     }
 
     /**

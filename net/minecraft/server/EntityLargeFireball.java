@@ -2,6 +2,8 @@ package net.minecraft.server;
 
 public class EntityLargeFireball extends EntityFireball
 {
+    public int e = 1;
+
     public EntityLargeFireball(World par1World)
     {
         super(par1World);
@@ -24,8 +26,30 @@ public class EntityLargeFireball extends EntityFireball
                 par1MovingObjectPosition.entity.damageEntity(DamageSource.fireball(this, this.shooter), 6);
             }
 
-            this.world.createExplosion((Entity) null, this.locX, this.locY, this.locZ, 1.0F, true, this.world.getGameRules().getBoolean("mobGriefing"));
+            this.world.createExplosion((Entity) null, this.locX, this.locY, this.locZ, (float) this.e, true, this.world.getGameRules().getBoolean("mobGriefing"));
             this.die();
+        }
+    }
+
+    /**
+     * (abstract) Protected helper method to write subclass entity data to NBT.
+     */
+    public void b(NBTTagCompound par1NBTTagCompound)
+    {
+        super.b(par1NBTTagCompound);
+        par1NBTTagCompound.setInt("ExplosionPower", this.e);
+    }
+
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        super.a(par1NBTTagCompound);
+
+        if (par1NBTTagCompound.hasKey("ExplosionPower"))
+        {
+            this.e = par1NBTTagCompound.getInt("ExplosionPower");
         }
     }
 }

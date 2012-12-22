@@ -95,7 +95,7 @@ public class Item
     public static Item CLAY_BALL = (new Item(81)).b(9, 3).b("clay").a(CreativeModeTab.l);
     public static Item SUGAR_CANE = (new ItemReed(82, Block.SUGAR_CANE_BLOCK)).b(11, 1).b("reeds").a(CreativeModeTab.l);
     public static Item PAPER = (new Item(83)).b(10, 3).b("paper").a(CreativeModeTab.f);
-    public static Item BOOK = (new Item(84)).b(11, 3).b("book").a(CreativeModeTab.f);
+    public static Item BOOK = (new ItemBook(84)).b(11, 3).b("book").a(CreativeModeTab.f);
     public static Item SLIME_BALL = (new Item(85)).b(14, 1).b("slimeball").a(CreativeModeTab.f);
     public static Item STORAGE_MINECART = (new ItemMinecart(86, 1)).b(7, 9).b("minecartChest");
     public static Item POWERED_MINECART = (new ItemMinecart(87, 2)).b(7, 10).b("minecartFurnace");
@@ -168,6 +168,9 @@ public class Item
     public static Item CARROT_STICK = (new ItemCarrotStick(142)).b(6, 6).b("carrotOnAStick");
     public static Item NETHER_STAR = (new ItemNetherStar(143)).b(9, 11).b("netherStar").a(CreativeModeTab.l);
     public static Item PUMPKIN_PIE = (new ItemFood(144, 8, 0.3F, false)).b(8, 9).b("pumpkinPie").a(CreativeModeTab.h);
+    public static Item FIREWORKS = (new ItemFireworks(145)).b(9, 12).b("fireworks");
+    public static Item FIREWORKS_CHARGE = (new ItemFireworksCharge(146)).b(10, 12).b("fireworksCharge").a(CreativeModeTab.f);
+    public static ItemEnchantedBook ENCHANTED_BOOK = (ItemEnchantedBook)(new ItemEnchantedBook(147)).b(15, 12).d(1).b("enchantedBook");
     public static Item RECORD_1 = (new ItemRecord(2000, "13")).b(0, 15).b("record");
     public static Item RECORD_2 = (new ItemRecord(2001, "cat")).b(1, 15).b("record");
     public static Item RECORD_3 = (new ItemRecord(2002, "blocks")).b(2, 15).b("record");
@@ -181,7 +184,7 @@ public class Item
     public static Item RECORD_11 = (new ItemRecord(2010, "11")).b(10, 15).b("record");
     public static Item RECORD_12 = (new ItemRecord(2011, "wait")).b(11, 15).b("record");
 
-    /** Item index + 256 */
+    /** The ID of this item. */
     public final int id;
 
     /** Maximum size of the stack. */
@@ -194,18 +197,18 @@ public class Item
     protected int textureId;
 
     /** If true, render the object in full 3D, like weapons and tools. */
-    protected boolean cj = false;
+    protected boolean cm = false;
 
     /**
      * Some items (like dyes) have multiple subtypes on same item, this is field define this behavior
      */
-    protected boolean ck = false;
+    protected boolean cn = false;
     private Item craftingResult = null;
 
     /**
      * The string representing this item's effect on a potion when used as an ingredient.
      */
-    private String cl = null;
+    private String co = null;
 
     /** full name of item from language file */
     private String name;
@@ -292,12 +295,12 @@ public class Item
 
     public boolean l()
     {
-        return this.ck;
+        return this.cn;
     }
 
     protected Item a(boolean par1)
     {
-        this.ck = par1;
+        this.cn = par1;
         return this;
     }
 
@@ -320,7 +323,7 @@ public class Item
 
     public boolean n()
     {
-        return this.durability > 0 && !this.ck;
+        return this.durability > 0 && !this.cn;
     }
 
     /**
@@ -366,7 +369,7 @@ public class Item
      */
     public Item o()
     {
-        this.cj = true;
+        this.cm = true;
         return this;
     }
 
@@ -379,9 +382,9 @@ public class Item
         return this;
     }
 
-    public String g(ItemStack par1ItemStack)
+    public String i(ItemStack par1ItemStack)
     {
-        String var2 = this.c_(par1ItemStack);
+        String var2 = this.d(par1ItemStack);
         return var2 == null ? "" : LocaleI18n.get(var2);
     }
 
@@ -390,7 +393,7 @@ public class Item
         return this.name;
     }
 
-    public String c_(ItemStack par1ItemStack)
+    public String d(ItemStack par1ItemStack)
     {
         return this.name;
     }
@@ -405,7 +408,7 @@ public class Item
      * If this returns true, after a recipe involving this item is crafted the container item will be added to the
      * player's inventory instead of remaining in the crafting grid.
      */
-    public boolean h(ItemStack par1ItemStack)
+    public boolean j(ItemStack par1ItemStack)
     {
         return true;
     }
@@ -436,9 +439,9 @@ public class Item
         return LocaleI18n.get(this.getName() + ".name");
     }
 
-    public String i(ItemStack par1ItemStack)
+    public String k(ItemStack par1ItemStack)
     {
-        return LocaleI18n.get(this.c_(par1ItemStack) + ".name");
+        return LocaleI18n.get(this.d(par1ItemStack) + ".name");
     }
 
     /**
@@ -463,7 +466,7 @@ public class Item
     /**
      * returns the action that specifies what animation to play when the items is being used
      */
-    public EnumAnimation d_(ItemStack par1ItemStack)
+    public EnumAnimation b_(ItemStack par1ItemStack)
     {
         return EnumAnimation.a;
     }
@@ -471,7 +474,7 @@ public class Item
     /**
      * How long it takes to use or consume an item
      */
-    public int a(ItemStack par1ItemStack)
+    public int c_(ItemStack par1ItemStack)
     {
         return 0;
     }
@@ -486,7 +489,7 @@ public class Item
      */
     protected Item c(String par1Str)
     {
-        this.cl = par1Str;
+        this.co = par1Str;
         return this;
     }
 
@@ -495,7 +498,7 @@ public class Item
      */
     public String u()
     {
-        return this.cl;
+        return this.co;
     }
 
     /**
@@ -503,18 +506,18 @@ public class Item
      */
     public boolean v()
     {
-        return this.cl != null;
+        return this.co != null;
     }
 
-    public String j(ItemStack par1ItemStack)
+    public String l(ItemStack par1ItemStack)
     {
-        return ("" + LocaleLanguage.a().c(this.g(par1ItemStack))).trim();
+        return ("" + LocaleLanguage.a().c(this.i(par1ItemStack))).trim();
     }
 
     /**
      * Checks isDamagable and if it cannot be stacked
      */
-    public boolean k(ItemStack par1ItemStack)
+    public boolean d_(ItemStack par1ItemStack)
     {
         return this.getMaxStackSize() == 1 && this.n();
     }

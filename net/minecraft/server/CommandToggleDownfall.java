@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class CommandToggleDownfall extends CommandAbstract
 {
     public String c()

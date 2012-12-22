@@ -105,39 +105,40 @@ public class Explosion
         var3 = MathHelper.floor(this.posX - (double) this.size - 1.0D);
         var4 = MathHelper.floor(this.posX + (double) this.size + 1.0D);
         var5 = MathHelper.floor(this.posY - (double) this.size - 1.0D);
-        int var28 = MathHelper.floor(this.posY + (double) this.size + 1.0D);
+        int var29 = MathHelper.floor(this.posY + (double) this.size + 1.0D);
         int var7 = MathHelper.floor(this.posZ - (double) this.size - 1.0D);
-        int var29 = MathHelper.floor(this.posZ + (double) this.size + 1.0D);
-        List var9 = this.world.getEntities(this.source, AxisAlignedBB.a().a((double) var3, (double) var5, (double) var7, (double) var4, (double) var28, (double) var29));
-        Vec3D var30 = this.world.getVec3DPool().create(this.posX, this.posY, this.posZ);
+        int var30 = MathHelper.floor(this.posZ + (double) this.size + 1.0D);
+        List var9 = this.world.getEntities(this.source, AxisAlignedBB.a().a((double) var3, (double) var5, (double) var7, (double) var4, (double) var29, (double) var30));
+        Vec3D var31 = this.world.getVec3DPool().create(this.posX, this.posY, this.posZ);
 
         for (int var11 = 0; var11 < var9.size(); ++var11)
         {
-            Entity var31 = (Entity)var9.get(var11);
-            double var13 = var31.f(this.posX, this.posY, this.posZ) / (double)this.size;
+            Entity var32 = (Entity)var9.get(var11);
+            double var13 = var32.f(this.posX, this.posY, this.posZ) / (double)this.size;
 
             if (var13 <= 1.0D)
             {
-                var15 = var31.locX - this.posX;
-                var17 = var31.locY + (double)var31.getHeadHeight() - this.posY;
-                var19 = var31.locZ - this.posZ;
-                double var33 = (double) MathHelper.sqrt(var15 * var15 + var17 * var17 + var19 * var19);
+                var15 = var32.locX - this.posX;
+                var17 = var32.locY + (double)var32.getHeadHeight() - this.posY;
+                var19 = var32.locZ - this.posZ;
+                double var34 = (double) MathHelper.sqrt(var15 * var15 + var17 * var17 + var19 * var19);
 
-                if (var33 != 0.0D)
+                if (var34 != 0.0D)
                 {
-                    var15 /= var33;
-                    var17 /= var33;
-                    var19 /= var33;
-                    double var32 = (double)this.world.a(var30, var31.boundingBox);
-                    double var34 = (1.0D - var13) * var32;
-                    var31.damageEntity(DamageSource.EXPLOSION, (int) ((var34 * var34 + var34) / 2.0D * 8.0D * (double) this.size + 1.0D));
-                    var31.motX += var15 * var34;
-                    var31.motY += var17 * var34;
-                    var31.motZ += var19 * var34;
+                    var15 /= var34;
+                    var17 /= var34;
+                    var19 /= var34;
+                    double var33 = (double)this.world.a(var31, var32.boundingBox);
+                    double var35 = (1.0D - var13) * var33;
+                    var32.damageEntity(DamageSource.EXPLOSION, (int) ((var35 * var35 + var35) / 2.0D * 8.0D * (double) this.size + 1.0D));
+                    double var36 = EnchantmentProtection.a(var32, var35);
+                    var32.motX += var15 * var36;
+                    var32.motY += var17 * var36;
+                    var32.motZ += var19 * var36;
 
-                    if (var31 instanceof EntityHuman)
+                    if (var32 instanceof EntityHuman)
                     {
-                        this.l.put((EntityHuman)var31, this.world.getVec3DPool().create(var15 * var34, var17 * var34, var19 * var34));
+                        this.l.put((EntityHuman)var32, this.world.getVec3DPool().create(var15 * var35, var17 * var35, var19 * var35));
                     }
                 }
             }

@@ -10,33 +10,33 @@ public class ItemFood extends Item
     private final float c;
 
     /** Whether wolves like this food (true for raw and cooked porkchop). */
-    private final boolean cl;
+    private final boolean co;
 
     /**
      * If this field is true, the food can be consumed even if the player don't need to eat.
      */
-    private boolean cm;
+    private boolean cp;
 
     /**
      * represents the potion effect that will occurr upon eating this food. Set by setPotionEffect
      */
-    private int cn;
+    private int cq;
 
     /** set by setPotionEffect */
-    private int co;
+    private int cr;
 
     /** set by setPotionEffect */
-    private int cp;
+    private int cs;
 
     /** probably of the set potion effect occurring */
-    private float cq;
+    private float ct;
 
     public ItemFood(int par1, int par2, float par3, boolean par4)
     {
         super(par1);
         this.a = 32;
         this.b = par2;
-        this.cl = par4;
+        this.co = par4;
         this.c = par3;
         this.a(CreativeModeTab.h);
     }
@@ -57,16 +57,16 @@ public class ItemFood extends Item
 
     protected void c(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
     {
-        if (!par2World.isStatic && this.cn > 0 && par2World.random.nextFloat() < this.cq)
+        if (!par2World.isStatic && this.cq > 0 && par2World.random.nextFloat() < this.ct)
         {
-            par3EntityPlayer.addEffect(new MobEffect(this.cn, this.co * 20, this.cp));
+            par3EntityPlayer.addEffect(new MobEffect(this.cq, this.cr * 20, this.cs));
         }
     }
 
     /**
      * How long it takes to use or consume an item
      */
-    public int a(ItemStack par1ItemStack)
+    public int c_(ItemStack par1ItemStack)
     {
         return 32;
     }
@@ -74,7 +74,7 @@ public class ItemFood extends Item
     /**
      * returns the action that specifies what animation to play when the items is being used
      */
-    public EnumAnimation d_(ItemStack par1ItemStack)
+    public EnumAnimation b_(ItemStack par1ItemStack)
     {
         return EnumAnimation.b;
     }
@@ -84,9 +84,9 @@ public class ItemFood extends Item
      */
     public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
     {
-        if (par3EntityPlayer.f(this.cm))
+        if (par3EntityPlayer.g(this.cp))
         {
-            par3EntityPlayer.a(par1ItemStack, this.a(par1ItemStack));
+            par3EntityPlayer.a(par1ItemStack, this.c_(par1ItemStack));
         }
 
         return par1ItemStack;
@@ -110,7 +110,7 @@ public class ItemFood extends Item
      */
     public boolean i()
     {
-        return this.cl;
+        return this.co;
     }
 
     /**
@@ -119,10 +119,10 @@ public class ItemFood extends Item
      */
     public ItemFood a(int par1, int par2, int par3, float par4)
     {
-        this.cn = par1;
-        this.co = par2;
-        this.cp = par3;
-        this.cq = par4;
+        this.cq = par1;
+        this.cr = par2;
+        this.cs = par3;
+        this.ct = par4;
         return this;
     }
 
@@ -131,7 +131,7 @@ public class ItemFood extends Item
      */
     public ItemFood j()
     {
-        this.cm = true;
+        this.cp = true;
         return this;
     }
 }

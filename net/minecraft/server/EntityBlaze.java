@@ -14,7 +14,7 @@ public class EntityBlaze extends EntityMonster
         super(par1World);
         this.texture = "/mob/fire.png";
         this.fireProof = true;
-        this.bc = 10;
+        this.bd = 10;
     }
 
     public int getMaxHealth()

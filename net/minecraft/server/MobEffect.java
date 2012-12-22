@@ -10,7 +10,11 @@ public class MobEffect
 
     /** The amplifier of the potion effect */
     private int amplification;
+
+    /** Whether the potion is a splash potion */
     private boolean splash;
+
+    /** Whether the potion effect came from a beacon */
     private boolean ambient;
 
     public MobEffect(int par1, int par2)
@@ -90,6 +94,9 @@ public class MobEffect
         this.splash = par1;
     }
 
+    /**
+     * Gets whether this potion effect originated from a beacon
+     */
     public boolean isAmbient()
     {
         return this.ambient;
@@ -172,8 +179,8 @@ public class MobEffect
      */
     public NBTTagCompound a(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setByte("Id", (byte)this.getEffectId());
-        par1NBTTagCompound.setByte("Amplifier", (byte)this.getAmplifier());
+        par1NBTTagCompound.setByte("Id", (byte) this.getEffectId());
+        par1NBTTagCompound.setByte("Amplifier", (byte) this.getAmplifier());
         par1NBTTagCompound.setInt("Duration", this.getDuration());
         par1NBTTagCompound.setBoolean("Ambient", this.isAmbient());
         return par1NBTTagCompound;

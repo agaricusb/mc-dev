@@ -19,6 +19,8 @@ public class ContainerAnvil extends Container
 
     /** The maximum cost of repairing/renaming in the anvil. */
     public int a = 0;
+
+    /** determined by damage of input item and stackSize of repair materials */
     private int l = 0;
     private String m;
 
@@ -64,6 +66,9 @@ public class ContainerAnvil extends Container
         }
     }
 
+    /**
+     * called when the Anvil Input Slot changes, calculates the new result and puts it in the output slot
+     */
     public void d()
     {
         ItemStack var1 = this.g.getItem(0);
@@ -82,115 +87,125 @@ public class ContainerAnvil extends Container
             ItemStack var5 = var1.cloneItemStack();
             ItemStack var6 = this.g.getItem(1);
             Map var7 = EnchantmentManager.a(var5);
-            int var18 = var3 + var1.getRepairCost() + (var6 == null ? 0 : var6.getRepairCost());
+            boolean var8 = false;
+            int var19 = var3 + var1.getRepairCost() + (var6 == null ? 0 : var6.getRepairCost());
             this.l = 0;
-            int var8;
             int var9;
             int var10;
-            int var12;
-            Enchantment var21;
-            Iterator var20;
+            int var11;
+            int var13;
+            int var14;
+            Iterator var21;
+            Enchantment var22;
 
             if (var6 != null)
             {
+                var8 = var6.id == Item.ENCHANTED_BOOK.id && Item.ENCHANTED_BOOK.g(var6).size() > 0;
+
                 if (var5.f() && Item.byId[var5.id].a(var1, var6))
                 {
-                    var8 = Math.min(var5.i(), var5.k() / 4);
+                    var9 = Math.min(var5.i(), var5.k() / 4);
 
-                    if (var8 <= 0)
+                    if (var9 <= 0)
                     {
                         this.f.setItem(0, (ItemStack) null);
                         this.a = 0;
                         return;
                     }
 
-                    for (var9 = 0; var8 > 0 && var9 < var6.count; ++var9)
+                    for (var10 = 0; var9 > 0 && var10 < var6.count; ++var10)
                     {
-                        var10 = var5.i() - var8;
-                        var5.setData(var10);
-                        var2 += Math.max(1, var8 / 100) + var7.size();
-                        var8 = Math.min(var5.i(), var5.k() / 4);
+                        var11 = var5.i() - var9;
+                        var5.setData(var11);
+                        var2 += Math.max(1, var9 / 100) + var7.size();
+                        var9 = Math.min(var5.i(), var5.k() / 4);
                     }
 
-                    this.l = var9;
+                    this.l = var10;
                 }
                 else
                 {
-                    if (var5.id != var6.id || !var5.f())
+                    if (!var8 && (var5.id != var6.id || !var5.f()))
                     {
                         this.f.setItem(0, (ItemStack) null);
                         this.a = 0;
                         return;
                     }
 
-                    if (var5.f())
+                    if (var5.f() && !var8)
                     {
-                        var8 = var1.k() - var1.i();
-                        var9 = var6.k() - var6.i();
-                        var10 = var9 + var5.k() * 12 / 100;
-                        int var11 = var8 + var10;
-                        var12 = var5.k() - var11;
+                        var9 = var1.k() - var1.i();
+                        var10 = var6.k() - var6.i();
+                        var11 = var10 + var5.k() * 12 / 100;
+                        int var12 = var9 + var11;
+                        var13 = var5.k() - var12;
 
-                        if (var12 < 0)
+                        if (var13 < 0)
                         {
-                            var12 = 0;
+                            var13 = 0;
                         }
 
-                        if (var12 < var5.getData())
+                        if (var13 < var5.getData())
                         {
-                            var5.setData(var12);
-                            var2 += Math.max(1, var10 / 100);
+                            var5.setData(var13);
+                            var2 += Math.max(1, var11 / 100);
                         }
                     }
 
-                    Map var19 = EnchantmentManager.a(var6);
-                    var20 = var19.keySet().iterator();
+                    Map var20 = EnchantmentManager.a(var6);
+                    var21 = var20.keySet().iterator();
 
-                    while (var20.hasNext())
+                    while (var21.hasNext())
                     {
-                        var10 = ((Integer)var20.next()).intValue();
-                        var21 = Enchantment.byId[var10];
-                        var12 = var7.containsKey(Integer.valueOf(var10)) ? ((Integer)var7.get(Integer.valueOf(var10))).intValue() : 0;
-                        int var13 = ((Integer)var19.get(Integer.valueOf(var10))).intValue();
+                        var11 = ((Integer)var21.next()).intValue();
+                        var22 = Enchantment.byId[var11];
+                        var13 = var7.containsKey(Integer.valueOf(var11)) ? ((Integer)var7.get(Integer.valueOf(var11))).intValue() : 0;
+                        var14 = ((Integer)var20.get(Integer.valueOf(var11))).intValue();
                         int var10000;
 
-                        if (var12 == var13)
+                        if (var13 == var14)
                         {
-                            ++var13;
-                            var10000 = var13;
+                            ++var14;
+                            var10000 = var14;
                         }
                         else
                         {
-                            var10000 = Math.max(var13, var12);
+                            var10000 = Math.max(var14, var13);
                         }
 
-                        var13 = var10000;
-                        int var14 = var13 - var12;
-                        boolean var15 = true;
-                        Iterator var16 = var7.keySet().iterator();
+                        var14 = var10000;
+                        int var15 = var14 - var13;
+                        boolean var16 = var22.canEnchant(var1);
 
-                        while (var16.hasNext())
+                        if (this.n.abilities.canInstantlyBuild)
                         {
-                            int var17 = ((Integer)var16.next()).intValue();
+                            var16 = true;
+                        }
 
-                            if (var17 != var10 && !var21.a(Enchantment.byId[var17]))
+                        Iterator var17 = var7.keySet().iterator();
+
+                        while (var17.hasNext())
+                        {
+                            int var18 = ((Integer)var17.next()).intValue();
+
+                            if (var18 != var11 && !var22.a(Enchantment.byId[var18]))
                             {
-                                var15 = false;
-                                var2 += var14;
+                                var16 = false;
+                                var2 += var15;
                             }
                         }
 
-                        if (var15)
+                        if (var16)
                         {
-                            if (var13 > var21.getMaxLevel())
+                            if (var14 > var22.getMaxLevel())
                             {
-                                var13 = var21.getMaxLevel();
+                                var14 = var22.getMaxLevel();
                             }
 
-                            var7.put(Integer.valueOf(var10), Integer.valueOf(var13));
-                            byte var23 = 0;
+                            var7.put(Integer.valueOf(var11), Integer.valueOf(var14));
+                            int var23 = 0;
 
-                            switch (var21.getRandomWeight())
+                            switch (var22.getRandomWeight())
                             {
                                 case 1:
                                     var23 = 8;
@@ -216,7 +231,12 @@ public class ContainerAnvil extends Container
                                     var23 = 1;
                             }
 
-                            var2 += var23 * var14;
+                            if (var8)
+                            {
+                                var23 = Math.max(1, var23 / 2);
+                            }
+
+                            var2 += var23 * var15;
                         }
                     }
                 }
@@ -229,31 +249,30 @@ public class ContainerAnvil extends Container
 
                 if (var1.s())
                 {
-                    var18 += var4 / 2;
+                    var19 += var4 / 2;
                 }
 
                 var5.c(this.m);
             }
 
-            var8 = 0;
-            byte var22;
+            var9 = 0;
 
-            for (var20 = var7.keySet().iterator(); var20.hasNext(); var18 += var8 + var12 * var22)
+            for (var21 = var7.keySet().iterator(); var21.hasNext(); var19 += var9 + var13 * var14)
             {
-                var10 = ((Integer)var20.next()).intValue();
-                var21 = Enchantment.byId[var10];
-                var12 = ((Integer)var7.get(Integer.valueOf(var10))).intValue();
-                var22 = 0;
-                ++var8;
+                var11 = ((Integer)var21.next()).intValue();
+                var22 = Enchantment.byId[var11];
+                var13 = ((Integer)var7.get(Integer.valueOf(var11))).intValue();
+                var14 = 0;
+                ++var9;
 
-                switch (var21.getRandomWeight())
+                switch (var22.getRandomWeight())
                 {
                     case 1:
-                        var22 = 8;
+                        var14 = 8;
                         break;
 
                     case 2:
-                        var22 = 4;
+                        var14 = 4;
 
                     case 3:
                     case 4:
@@ -265,15 +284,25 @@ public class ContainerAnvil extends Container
                         break;
 
                     case 5:
-                        var22 = 2;
+                        var14 = 2;
                         break;
 
                     case 10:
-                        var22 = 1;
+                        var14 = 1;
+                }
+
+                if (var8)
+                {
+                    var14 = Math.max(1, var14 / 2);
                 }
             }
 
-            this.a = var18 + var2;
+            if (var8)
+            {
+                var19 = Math.max(1, var19 / 2);
+            }
+
+            this.a = var19 + var2;
 
             if (var2 <= 0)
             {
@@ -293,25 +322,25 @@ public class ContainerAnvil extends Container
 
             if (var5 != null)
             {
-                var9 = var5.getRepairCost();
+                var10 = var5.getRepairCost();
 
-                if (var6 != null && var9 < var6.getRepairCost())
+                if (var6 != null && var10 < var6.getRepairCost())
                 {
-                    var9 = var6.getRepairCost();
+                    var10 = var6.getRepairCost();
                 }
 
                 if (var5.s())
                 {
-                    var9 -= 9;
+                    var10 -= 9;
                 }
 
-                if (var9 < 0)
+                if (var10 < 0)
                 {
-                    var9 = 0;
+                    var10 = 0;
                 }
 
-                var9 += 2;
-                var5.setRepairCost(var9);
+                var10 += 2;
+                var5.setRepairCost(var10);
                 EnchantmentManager.a(var7, var5);
             }
 
@@ -406,6 +435,9 @@ public class ContainerAnvil extends Container
         return var3;
     }
 
+    /**
+     * used by the Anvil GUI to update the Item Name being typed by the player
+     */
     public void a(String par1Str)
     {
         this.m = par1Str;

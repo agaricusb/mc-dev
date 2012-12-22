@@ -125,7 +125,7 @@ public class PathfinderGoalBreed extends PathfinderGoal
                 this.a.addParticle("heart", this.d.locX + (double) (var2.nextFloat() * this.d.width * 2.0F) - (double) this.d.width, this.d.locY + 0.5D + (double) (var2.nextFloat() * this.d.length), this.d.locZ + (double) (var2.nextFloat() * this.d.width * 2.0F) - (double) this.d.width, var4, var6, var8);
             }
 
-            this.a.addEntity(new EntityExperienceOrb(this.a, this.d.locX, this.d.locY, this.d.locZ, var2.nextInt(4) + 1));
+            this.a.addEntity(new EntityExperienceOrb(this.a, this.d.locX, this.d.locY, this.d.locZ, var2.nextInt(7) + 1));
         }
     }
 }

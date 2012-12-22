@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class CommandSaveAll extends CommandAbstract
 {
     public String c()
@@ -20,9 +21,9 @@ public class CommandSaveAll extends CommandAbstract
         MinecraftServer var3 = MinecraftServer.getServer();
         par1ICommandSender.sendMessage(par1ICommandSender.a("commands.save.start", new Object[0]));
 
-        if (var3.getServerConfigurationManager() != null)
+        if (var3.getPlayerList() != null)
         {
-            var3.getServerConfigurationManager().savePlayers();
+            var3.getPlayerList().savePlayers();
         }
 
         try

@@ -122,6 +122,10 @@ public class WorldGenFlatInfo
                 }
             }
         }
+        else
+        {
+            var1.append(";");
+        }
 
         return var1.toString();
     }

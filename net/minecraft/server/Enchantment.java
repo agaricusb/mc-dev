@@ -1,8 +1,11 @@
 package net.minecraft.server;
 
+import java.util.ArrayList;
+
 public abstract class Enchantment
 {
     public static final Enchantment[] byId = new Enchantment[256];
+    public static final Enchantment[] c;
 
     /** Converts environmental damage to armour damage */
     public static final Enchantment PROTECTION_ENVIRONMENTAL = new EnchantmentProtection(0, 10, 0);
@@ -26,6 +29,7 @@ public abstract class Enchantment
 
     /** Increases underwater mining rate */
     public static final Enchantment WATER_WORKER = new EnchantmentWaterWorker(6, 2);
+    public static final Enchantment THORNS = new EnchantmentThorns(7, 1);
 
     /** Extra damage to mobs */
     public static final Enchantment DAMAGE_ALL = new EnchantmentWeaponDamage(16, 10, 0);
@@ -175,14 +179,44 @@ public abstract class Enchantment
         return this;
     }
 
+    /**
+     * Return the name of key in translation table of this enchantment.
+     */
     public String a()
     {
         return "enchantment." + this.name;
     }
 
+    /**
+     * Returns the correct traslated name of the enchantment and the level in roman numbers.
+     */
     public String c(int par1)
     {
         String var2 = LocaleI18n.get(this.a());
         return var2 + " " + LocaleI18n.get("enchantment.level." + par1);
+    }
+
+    public boolean canEnchant(ItemStack par1ItemStack)
+    {
+        return this.slot.canEnchant(par1ItemStack.getItem());
+    }
+
+    static
+    {
+        ArrayList var0 = new ArrayList();
+        Enchantment[] var1 = byId;
+        int var2 = var1.length;
+
+        for (int var3 = 0; var3 < var2; ++var3)
+        {
+            Enchantment var4 = var1[var3];
+
+            if (var4 != null)
+            {
+                var0.add(var4);
+            }
+        }
+
+        c = (Enchantment[])var0.toArray(new Enchantment[0]);
     }
 }

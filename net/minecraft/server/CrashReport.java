@@ -209,11 +209,17 @@ public class CrashReport
         return this.c;
     }
 
+    /**
+     * Creates a CrashReportCategory
+     */
     public CrashReportSystemDetails a(String par1Str)
     {
         return this.a(par1Str, 1);
     }
 
+    /**
+     * Creates a CrashReportCategory for the given stack trace depth
+     */
     public CrashReportSystemDetails a(String par1Str, int par2)
     {
         CrashReportSystemDetails var3 = new CrashReportSystemDetails(this, par1Str);
@@ -274,6 +280,9 @@ public class CrashReport
         }
     }
 
+    /**
+     * Creates a crash report for the exception
+     */
     public static CrashReport a(Throwable par0Throwable, String par1Str)
     {
         CrashReport var2;

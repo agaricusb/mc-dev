@@ -135,7 +135,7 @@ public class EntitySheep extends EntityAnimal
     {
         super.b(par1NBTTagCompound);
         par1NBTTagCompound.setBoolean("Sheared", this.isSheared());
-        par1NBTTagCompound.setByte("Color", (byte)this.getColor());
+        par1NBTTagCompound.setByte("Color", (byte) this.getColor());
     }
 
     /**
@@ -244,7 +244,7 @@ public class EntitySheep extends EntityAnimal
 
         if (this.isBaby())
         {
-            int var1 = this.aE() + 1200;
+            int var1 = this.getAge() + 1200;
 
             if (var1 > 0)
             {

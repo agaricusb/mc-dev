@@ -21,7 +21,7 @@ public abstract class BlockFluids extends Block
     /**
      * Returns the percentage of the fluid block that is air, based on the given flow decay of the fluid.
      */
-    public static float d(int par0)
+    public static float e(int par0)
     {
         if (par0 >= 8)
         {

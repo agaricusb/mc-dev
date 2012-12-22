@@ -108,10 +108,10 @@ public class PathfinderGoalPassengerCarrotStick extends PathfinderGoal
             }
         }
 
-        float var21 = 0.16277136F / (var8 * var8 * var8);
+        float var22 = 0.16277136F / (var8 * var8 * var8);
         float var10 = MathHelper.sin(var2.yaw * (float) Math.PI / 180.0F);
         float var11 = MathHelper.cos(var2.yaw * (float) Math.PI / 180.0F);
-        float var12 = var2.aF() * var21;
+        float var12 = var2.aF() * var22;
         float var13 = Math.max(var7, 1.0F);
         var13 = var12 / var13;
         float var14 = var7 * var13;
@@ -166,7 +166,9 @@ public class PathfinderGoalPassengerCarrotStick extends PathfinderGoal
 
                 if (var20.count == 0)
                 {
-                    var1.inventory.items[var1.inventory.itemInHandIndex] = new ItemStack(Item.FISHING_ROD);
+                    ItemStack var21 = new ItemStack(Item.FISHING_ROD);
+                    var21.setTag(var20.tag);
+                    var1.inventory.items[var1.inventory.itemInHandIndex] = var21;
                 }
             }
         }

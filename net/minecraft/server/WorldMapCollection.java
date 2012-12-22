@@ -167,7 +167,7 @@ public class WorldMapCollection
             if (var1 != null && var1.exists())
             {
                 DataInputStream var2 = new DataInputStream(new FileInputStream(var1));
-                NBTTagCompound var3 = NBTCompressedStreamTools.a((DataInput) var2); // read
+                NBTTagCompound var3 = NBTCompressedStreamTools.a((DataInput) var2);
                 var2.close();
                 Iterator var4 = var3.c().iterator();
 
@@ -232,7 +232,7 @@ public class WorldMapCollection
                     }
 
                     DataOutputStream var9 = new DataOutputStream(new FileOutputStream(var3));
-                    NBTCompressedStreamTools.a(var4, (DataOutput) var9); // write
+                    NBTCompressedStreamTools.a(var4, (DataOutput) var9);
                     var9.close();
                 }
             }

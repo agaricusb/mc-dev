@@ -24,6 +24,8 @@ public class Village
     private int f = 0;
     private int time = 0;
     private int population = 0;
+
+    /** Timestamp of tick count when villager last bred */
     private int noBreedTicks;
 
     /** List of player reputations with this village */
@@ -548,11 +550,17 @@ public class Village
         par1NBTTagCompound.set("Players", var7);
     }
 
+    /**
+     * Prevent villager breeding for a fixed interval of time
+     */
     public void h()
     {
         this.noBreedTicks = this.time;
     }
 
+    /**
+     * Return whether villagers mating refractory period has passed
+     */
     public boolean i()
     {
         return this.noBreedTicks == 0 || this.time - this.noBreedTicks >= 3600;

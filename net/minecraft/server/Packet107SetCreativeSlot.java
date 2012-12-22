@@ -12,7 +12,7 @@ public class Packet107SetCreativeSlot extends Packet
     /**
      * Passes this Packet on to the NetHandler for processing.
      */
-    public void handle(NetHandler par1NetHandler)
+    public void handle(Connection par1NetHandler)
     {
         par1NetHandler.a(this);
     }

@@ -216,7 +216,7 @@ public class WorldGenPyramidPiece extends WorldGenScatteredPiece
             {
                 int var11 = Direction.a[var10] * 2;
                 int var12 = Direction.b[var10] * 2;
-                this.h[var10] = this.a(par1World, par3StructureBoundingBox, par2Random, 10 + var11, -11, 10 + var12, i, 2 + par2Random.nextInt(5));
+                this.h[var10] = this.a(par1World, par3StructureBoundingBox, par2Random, 10 + var11, -11, 10 + var12, StructurePieceTreasure.a(i, new StructurePieceTreasure[]{Item.ENCHANTED_BOOK.b(par2Random)}), 2 + par2Random.nextInt(5));
             }
         }
 

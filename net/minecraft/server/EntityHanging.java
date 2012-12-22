@@ -97,7 +97,7 @@ public abstract class EntityHanging extends Entity
         }
 
         var6 += this.g(this.g());
-        this.setPosition((double)var5, (double)var6, (double)var7);
+        this.setPosition((double) var5, (double) var6, (double) var7);
         float var9 = -0.03125F;
         this.boundingBox.b((double) (var5 - var2 - var9), (double) (var6 - var3 - var9), (double) (var7 - var4 - var9), (double) (var5 + var2 + var9), (double) (var6 + var3 + var9), (double) (var7 + var4 + var9));
     }
@@ -280,7 +280,7 @@ public abstract class EntityHanging extends Entity
      */
     public void b(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setByte("Direction", (byte)this.direction);
+        par1NBTTagCompound.setByte("Direction", (byte) this.direction);
         par1NBTTagCompound.setInt("TileX", this.x);
         par1NBTTagCompound.setInt("TileY", this.y);
         par1NBTTagCompound.setInt("TileZ", this.z);
@@ -288,19 +288,19 @@ public abstract class EntityHanging extends Entity
         switch (this.direction)
         {
             case 0:
-                par1NBTTagCompound.setByte("Dir", (byte)2);
+                par1NBTTagCompound.setByte("Dir", (byte) 2);
                 break;
 
             case 1:
-                par1NBTTagCompound.setByte("Dir", (byte)1);
+                par1NBTTagCompound.setByte("Dir", (byte) 1);
                 break;
 
             case 2:
-                par1NBTTagCompound.setByte("Dir", (byte)0);
+                par1NBTTagCompound.setByte("Dir", (byte) 0);
                 break;
 
             case 3:
-                par1NBTTagCompound.setByte("Dir", (byte)3);
+                par1NBTTagCompound.setByte("Dir", (byte) 3);
         }
     }
 

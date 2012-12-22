@@ -6,7 +6,7 @@ public class EntityGiantZombie extends EntityMonster
     {
         super(par1World);
         this.texture = "/mob/zombie.png";
-        this.bG = 0.5F;
+        this.bH = 0.5F;
         this.height *= 6.0F;
         this.a(this.width * 6.0F, this.length * 6.0F);
     }

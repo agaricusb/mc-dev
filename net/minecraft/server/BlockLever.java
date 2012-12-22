@@ -58,6 +58,9 @@ public class BlockLever extends Block
         return par1World.t(par2 - 1, par3, par4) ? true : (par1World.t(par2 + 1, par3, par4) ? true : (par1World.t(par2, par3, par4 - 1) ? true : (par1World.t(par2, par3, par4 + 1) ? true : (par1World.v(par2, par3 - 1, par4) ? true : par1World.t(par2, par3 + 1, par4)))));
     }
 
+    /**
+     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
+     */
     public int getPlacedData(World par1World, int par2, int par3, int par4, int par5, float par6, float par7, float par8, int par9)
     {
         int var11 = par9 & 8;
@@ -100,7 +103,7 @@ public class BlockLever extends Block
     /**
      * only used in ComponentScatteredFeatureJunglePyramid.addComponentParts"
      */
-    public static int d(int par0)
+    public static int e(int par0)
     {
         switch (par0)
         {
@@ -344,7 +347,7 @@ public class BlockLever extends Block
     /**
      * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
      * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
-     * Y, Z, side
+     * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
      */
     public boolean b(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
@@ -353,7 +356,7 @@ public class BlockLever extends Block
 
     /**
      * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
-     * side
+     * side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
      */
     public boolean c(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {

@@ -89,9 +89,12 @@ public abstract class BlockStepAbstract extends Block
         return this.a;
     }
 
+    /**
+     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
+     */
     public int getPlacedData(World par1World, int par2, int par3, int par4, int par5, float par6, float par7, float par8, int par9)
     {
-        return this.a ? 0 : (par5 != 0 && (par5 == 1 || (double)par7 <= 0.5D) ? par9 : par9 | 8);
+        return this.a ? par9 : (par5 != 0 && (par5 == 1 || (double)par7 <= 0.5D) ? par9 : par9 | 8);
     }
 
     /**
@@ -122,4 +125,12 @@ public abstract class BlockStepAbstract extends Block
      * Returns the slab block name with step type.
      */
     public abstract String d(int var1);
+
+    /**
+     * Get the block's damage value (for use with pick block).
+     */
+    public int getDropData(World par1World, int par2, int par3, int par4)
+    {
+        return super.getDropData(par1World, par2, par3, par4) & 7;
+    }
 }

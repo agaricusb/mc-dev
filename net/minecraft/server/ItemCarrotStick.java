@@ -26,7 +26,9 @@ public class ItemCarrotStick extends Item
 
                 if (par1ItemStack.count == 0)
                 {
-                    return new ItemStack(Item.FISHING_ROD);
+                    ItemStack var5 = new ItemStack(Item.FISHING_ROD);
+                    var5.setTag(par1ItemStack.tag);
+                    return var5;
                 }
             }
         }

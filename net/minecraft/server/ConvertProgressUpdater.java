@@ -1,10 +1,10 @@
 package net.minecraft.server;
 
+
 public class ConvertProgressUpdater implements IProgressUpdate
 {
     private long b;
 
-    /** Reference to the MinecraftServer object. */
     final MinecraftServer a;
 
     public ConvertProgressUpdater(MinecraftServer par1MinecraftServer)

@@ -68,7 +68,7 @@ public class ItemSword extends Item
     /**
      * returns the action that specifies what animation to play when the items is being used
      */
-    public EnumAnimation d_(ItemStack par1ItemStack)
+    public EnumAnimation b_(ItemStack par1ItemStack)
     {
         return EnumAnimation.d;
     }
@@ -76,7 +76,7 @@ public class ItemSword extends Item
     /**
      * How long it takes to use or consume an item
      */
-    public int a(ItemStack par1ItemStack)
+    public int c_(ItemStack par1ItemStack)
     {
         return 72000;
     }
@@ -86,7 +86,7 @@ public class ItemSword extends Item
      */
     public ItemStack a(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
     {
-        par3EntityPlayer.a(par1ItemStack, this.a(par1ItemStack));
+        par3EntityPlayer.a(par1ItemStack, this.c_(par1ItemStack));
         return par1ItemStack;
     }
 

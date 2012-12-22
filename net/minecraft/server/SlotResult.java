@@ -118,7 +118,7 @@ public class SlotResult extends Slot
                 {
                     ItemStack var5 = new ItemStack(var4.getItem().r());
 
-                    if (!var4.getItem().h(var4) || !this.b.inventory.pickup(var5))
+                    if (!var4.getItem().j(var4) || !this.b.inventory.pickup(var5))
                     {
                         if (this.a.getItem(var3) == null)
                         {

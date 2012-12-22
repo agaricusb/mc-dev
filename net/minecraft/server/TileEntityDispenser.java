@@ -112,6 +112,9 @@ public class TileEntityDispenser extends TileEntity implements IInventory
         this.update();
     }
 
+    /**
+     * Add item stack in first available inventory slot
+     */
     public int addItem(ItemStack par1ItemStack)
     {
         for (int var2 = 0; var2 < this.items.length; ++var2)
@@ -168,7 +171,7 @@ public class TileEntityDispenser extends TileEntity implements IInventory
             if (this.items[var3] != null)
             {
                 NBTTagCompound var4 = new NBTTagCompound();
-                var4.setByte("Slot", (byte)var3);
+                var4.setByte("Slot", (byte) var3);
                 this.items[var3].save(var4);
                 var2.add(var4);
             }

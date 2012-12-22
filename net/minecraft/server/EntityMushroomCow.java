@@ -16,7 +16,7 @@ public class EntityMushroomCow extends EntityCow
     {
         ItemStack var2 = par1EntityPlayer.inventory.getItemInHand();
 
-        if (var2 != null && var2.id == Item.BOWL.id && this.aE() >= 0)
+        if (var2 != null && var2.id == Item.BOWL.id && this.getAge() >= 0)
         {
             if (var2.count == 1)
             {
@@ -31,7 +31,7 @@ public class EntityMushroomCow extends EntityCow
             }
         }
 
-        if (var2 != null && var2.id == Item.SHEARS.id && this.aE() >= 0)
+        if (var2 != null && var2.id == Item.SHEARS.id && this.getAge() >= 0)
         {
             this.die();
             this.world.addParticle("largeexplode", this.locX, this.locY + (double) (this.length / 2.0F), this.locZ, 0.0D, 0.0D, 0.0D);
@@ -41,7 +41,7 @@ public class EntityMushroomCow extends EntityCow
                 EntityCow var3 = new EntityCow(this.world);
                 var3.setPositionRotation(this.locX, this.locY, this.locZ, this.yaw, this.pitch);
                 var3.setHealth(this.getHealth());
-                var3.aw = this.aw;
+                var3.ax = this.ax;
                 this.world.addEntity(var3);
 
                 for (int var4 = 0; var4 < 5; ++var4)

@@ -75,7 +75,7 @@ public class BlockBed extends BlockDirectional
 
                         if (var13.isSleeping())
                         {
-                            ChunkCoordinates var14 = var13.bZ;
+                            ChunkCoordinates var14 = var13.ca;
 
                             if (var14.x == par2 && var14.y == par3 && var14.z == par4)
                             {

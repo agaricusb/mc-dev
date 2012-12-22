@@ -13,15 +13,15 @@ public class EntityZombie extends EntityMonster
     {
         super(par1World);
         this.texture = "/mob/zombie.png";
-        this.bG = 0.23F;
+        this.bH = 0.23F;
         this.getNavigation().b(true);
         this.goalSelector.a(0, new PathfinderGoalFloat(this));
         this.goalSelector.a(1, new PathfinderGoalBreakDoor(this));
-        this.goalSelector.a(2, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bG, false));
-        this.goalSelector.a(3, new PathfinderGoalMeleeAttack(this, EntityVillager.class, this.bG, true));
-        this.goalSelector.a(4, new PathfinderGoalMoveTowardsRestriction(this, this.bG));
-        this.goalSelector.a(5, new PathfinderGoalMoveThroughVillage(this, this.bG, false));
-        this.goalSelector.a(6, new PathfinderGoalRandomStroll(this, this.bG));
+        this.goalSelector.a(2, new PathfinderGoalMeleeAttack(this, EntityHuman.class, this.bH, false));
+        this.goalSelector.a(3, new PathfinderGoalMeleeAttack(this, EntityVillager.class, this.bH, true));
+        this.goalSelector.a(4, new PathfinderGoalMoveTowardsRestriction(this, this.bH));
+        this.goalSelector.a(5, new PathfinderGoalMoveThroughVillage(this, this.bH, false));
+        this.goalSelector.a(6, new PathfinderGoalRandomStroll(this, this.bH));
         this.goalSelector.a(7, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
         this.goalSelector.a(7, new PathfinderGoalRandomLookaround(this));
         this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, false));
@@ -176,7 +176,7 @@ public class EntityZombie extends EntityMonster
 
         if (var2 != null)
         {
-            var3 += var2.a((Entity)this); // getDamageVsEntity
+            var3 += var2.a((Entity) this);
         }
 
         return var3;
@@ -344,7 +344,7 @@ public class EntityZombie extends EntityMonster
      */
     public void bG()
     {
-        this.canPickUpLoot = this.random.nextFloat() < as[this.world.difficulty];
+        this.canPickUpLoot = this.random.nextFloat() < at[this.world.difficulty];
 
         if (this.world.random.nextFloat() < 0.05F)
         {
@@ -371,7 +371,7 @@ public class EntityZombie extends EntityMonster
      */
     public boolean a(EntityHuman par1EntityPlayer)
     {
-        ItemStack var2 = par1EntityPlayer.bT();
+        ItemStack var2 = par1EntityPlayer.bS();
 
         if (var2 != null && var2.getItem() == Item.GOLDEN_APPLE && var2.getData() == 0 && this.isVillager() && this.hasEffect(MobEffectList.WEAKNESS))
         {

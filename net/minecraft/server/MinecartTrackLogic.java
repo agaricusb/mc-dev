@@ -483,7 +483,7 @@ class MinecartTrackLogic
     }
 
     /**
-     * get number of adjacent tracks
+     * Get the number of adjacent tracks.
      */
     static int a(MinecartTrackLogic par0RailLogic)
     {

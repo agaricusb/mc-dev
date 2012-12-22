@@ -1,6 +1,6 @@
 package net.minecraft.server;
 
-public abstract class NetHandler
+public abstract class Connection
 {
     /**
      * determine if it is a server handler
@@ -78,11 +78,6 @@ public abstract class NetHandler
     public void a(Packet29DestroyEntity par1Packet29DestroyEntity)
     {
         this.onUnhandledPacket(par1Packet29DestroyEntity);
-    }
-
-    public void a(Packet21PickupSpawn par1Packet21PickupSpawn)
-    {
-        this.onUnhandledPacket(par1Packet21PickupSpawn);
     }
 
     public void a(Packet22Collect par1Packet22Collect)
@@ -415,7 +410,9 @@ public abstract class NetHandler
     }
 
     /**
-     * packet.processPacket is only called if this returns true
+     * If this returns false, all packets will be queued for the main thread to handle, even if they would otherwise be
+     * processed asynchronously. Used to avoid processing packets on the client before the world has been downloaded
+     * (which happens on the main thread)
      */
     public boolean b()
     {

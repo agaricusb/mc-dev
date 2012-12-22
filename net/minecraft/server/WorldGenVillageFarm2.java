@@ -31,7 +31,7 @@ public class WorldGenVillageFarm2 extends WorldGenVillagePiece
     }
 
     /**
-     * Return a crop type to be planted on this field.
+     * Returns a crop type to be planted on this field.
      */
     private int a(Random par1Random)
     {

@@ -80,7 +80,7 @@ public class EntityPotion extends EntityProjectile
     {
         if (!this.world.isStatic)
         {
-            List var2 = Item.POTION.l(this.c);
+            List var2 = Item.POTION.g(this.c);
 
             if (var2 != null && !var2.isEmpty())
             {

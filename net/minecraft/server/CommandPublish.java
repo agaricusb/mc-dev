@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class CommandPublish extends CommandAbstract
 {
     public String c()

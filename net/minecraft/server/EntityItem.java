@@ -4,32 +4,37 @@ import java.util.Iterator;
 
 public class EntityItem extends Entity
 {
-    /** The item stack of this EntityItem. */
-    public ItemStack itemStack;
-
     /**
      * The age of this EntityItem (used to animate it up and down as well as expire it)
      */
-    public int age = 0;
+    public int age;
     public int pickupDelay;
 
     /** The health of this EntityItem. (For example, damage for tools) */
-    private int e = 5;
+    private int d;
 
     /** The EntityItem's random initial float height. */
-    public float d = (float)(Math.random() * Math.PI * 2.0D);
+    public float c;
 
-    public EntityItem(World par1World, double par2, double par4, double par6, ItemStack par8ItemStack)
+    public EntityItem(World par1World, double par2, double par4, double par6)
     {
         super(par1World);
+        this.age = 0;
+        this.d = 5;
+        this.c = (float)(Math.random() * Math.PI * 2.0D);
         this.a(0.25F, 0.25F);
         this.height = this.length / 2.0F;
         this.setPosition(par2, par4, par6);
-        this.itemStack = par8ItemStack;
         this.yaw = (float)(Math.random() * 360.0D);
         this.motX = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
         this.motY = 0.20000000298023224D;
         this.motZ = (double)((float)(Math.random() * 0.20000000298023224D - 0.10000000149011612D));
+    }
+
+    public EntityItem(World par1World, double par2, double par4, double par6, ItemStack par8ItemStack)
+    {
+        this(par1World, par2, par4, par6);
+        this.setItemStack(par8ItemStack);
     }
 
     /**
@@ -44,11 +49,17 @@ public class EntityItem extends Entity
     public EntityItem(World par1World)
     {
         super(par1World);
+        this.age = 0;
+        this.d = 5;
+        this.c = (float)(Math.random() * Math.PI * 2.0D);
         this.a(0.25F, 0.25F);
         this.height = this.length / 2.0F;
     }
 
-    protected void a() {}
+    protected void a()
+    {
+        this.getDataWatcher().a(10, 5);
+    }
 
     /**
      * Called to update the entity's position/logic.
@@ -70,7 +81,7 @@ public class EntityItem extends Entity
         this.move(this.motX, this.motY, this.motZ);
         boolean var1 = (int)this.lastX != (int)this.locX || (int)this.lastY != (int)this.locY || (int)this.lastZ != (int)this.locZ;
 
-        if (var1)
+        if (var1 || this.ticksLived % 25 == 0)
         {
             if (this.world.getMaterial(MathHelper.floor(this.locX), MathHelper.floor(this.locY), MathHelper.floor(this.locZ)) == Material.LAVA)
             {
@@ -82,7 +93,7 @@ public class EntityItem extends Entity
 
             if (!this.world.isStatic)
             {
-                this.d();
+                this.g();
             }
         }
 
@@ -116,7 +127,7 @@ public class EntityItem extends Entity
         }
     }
 
-    private void d()
+    private void g()
     {
         Iterator var1 = this.world.a(EntityItem.class, this.boundingBox.grow(0.5D, 0.0D, 0.5D)).iterator();
 
@@ -139,35 +150,39 @@ public class EntityItem extends Entity
         }
         else if (par1EntityItem.isAlive() && this.isAlive())
         {
-            if (par1EntityItem.itemStack.getItem() != this.itemStack.getItem())
+            ItemStack var2 = this.getItemStack();
+            ItemStack var3 = par1EntityItem.getItemStack();
+
+            if (var3.getItem() != var2.getItem())
             {
                 return false;
             }
-            else if (par1EntityItem.itemStack.hasTag() ^ this.itemStack.hasTag())
+            else if (var3.hasTag() ^ var2.hasTag())
             {
                 return false;
             }
-            else if (par1EntityItem.itemStack.hasTag() && !par1EntityItem.itemStack.getTag().equals(this.itemStack.getTag()))
+            else if (var3.hasTag() && !var3.getTag().equals(var2.getTag()))
             {
                 return false;
             }
-            else if (par1EntityItem.itemStack.getItem().l() && par1EntityItem.itemStack.getData() != this.itemStack.getData())
+            else if (var3.getItem().l() && var3.getData() != var2.getData())
             {
                 return false;
             }
-            else if (par1EntityItem.itemStack.count < this.itemStack.count)
+            else if (var3.count < var2.count)
             {
                 return par1EntityItem.a(this);
             }
-            else if (par1EntityItem.itemStack.count + this.itemStack.count > par1EntityItem.itemStack.getMaxStackSize())
+            else if (var3.count + var2.count > var3.getMaxStackSize())
             {
                 return false;
             }
             else
             {
-                par1EntityItem.itemStack.count += this.itemStack.count;
+                var3.count += var2.count;
                 par1EntityItem.pickupDelay = Math.max(par1EntityItem.pickupDelay, this.pickupDelay);
                 par1EntityItem.age = Math.min(par1EntityItem.age, this.age);
+                par1EntityItem.setItemStack(var3);
                 this.die();
                 return true;
             }
@@ -209,12 +224,16 @@ public class EntityItem extends Entity
         {
             return false;
         }
+        else if (this.getItemStack() != null && this.getItemStack().id == Item.NETHER_STAR.id && par1DamageSource == DamageSource.EXPLOSION)
+        {
+            return false;
+        }
         else
         {
             this.K();
-            this.e -= par2;
+            this.d -= par2;
 
-            if (this.e <= 0)
+            if (this.d <= 0)
             {
                 this.die();
             }
@@ -228,12 +247,12 @@ public class EntityItem extends Entity
      */
     public void b(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setShort("Health", (short)((byte)this.e));
-        par1NBTTagCompound.setShort("Age", (short)this.age);
+        par1NBTTagCompound.setShort("Health", (short) ((byte) this.d));
+        par1NBTTagCompound.setShort("Age", (short) this.age);
 
-        if (this.itemStack != null)
+        if (this.getItemStack() != null)
         {
-            par1NBTTagCompound.setCompound("Item", this.itemStack.save(new NBTTagCompound()));
+            par1NBTTagCompound.setCompound("Item", this.getItemStack().save(new NBTTagCompound()));
         }
     }
 
@@ -242,12 +261,12 @@ public class EntityItem extends Entity
      */
     public void a(NBTTagCompound par1NBTTagCompound)
     {
-        this.e = par1NBTTagCompound.getShort("Health") & 255;
+        this.d = par1NBTTagCompound.getShort("Health") & 255;
         this.age = par1NBTTagCompound.getShort("Age");
         NBTTagCompound var2 = par1NBTTagCompound.getCompound("Item");
-        this.itemStack = ItemStack.a(var2);
+        this.setItemStack(ItemStack.a(var2));
 
-        if (this.itemStack == null)
+        if (this.getItemStack() == null)
         {
             this.die();
         }
@@ -260,34 +279,35 @@ public class EntityItem extends Entity
     {
         if (!this.world.isStatic)
         {
-            int var2 = this.itemStack.count;
+            ItemStack var2 = this.getItemStack();
+            int var3 = var2.count;
 
-            if (this.pickupDelay == 0 && par1EntityPlayer.inventory.pickup(this.itemStack))
+            if (this.pickupDelay == 0 && par1EntityPlayer.inventory.pickup(var2))
             {
-                if (this.itemStack.id == Block.LOG.id)
+                if (var2.id == Block.LOG.id)
                 {
                     par1EntityPlayer.a(AchievementList.g);
                 }
 
-                if (this.itemStack.id == Item.LEATHER.id)
+                if (var2.id == Item.LEATHER.id)
                 {
                     par1EntityPlayer.a(AchievementList.t);
                 }
 
-                if (this.itemStack.id == Item.DIAMOND.id)
+                if (var2.id == Item.DIAMOND.id)
                 {
                     par1EntityPlayer.a(AchievementList.w);
                 }
 
-                if (this.itemStack.id == Item.BLAZE_ROD.id)
+                if (var2.id == Item.BLAZE_ROD.id)
                 {
                     par1EntityPlayer.a(AchievementList.z);
                 }
 
                 this.makeSound("random.pop", 0.2F, ((this.random.nextFloat() - this.random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                par1EntityPlayer.receive(this, var2);
+                par1EntityPlayer.receive(this, var3);
 
-                if (this.itemStack.count <= 0)
+                if (var2.count <= 0)
                 {
                     this.die();
                 }
@@ -300,7 +320,7 @@ public class EntityItem extends Entity
      */
     public String getLocalizedName()
     {
-        return LocaleI18n.get("item." + this.itemStack.a());
+        return LocaleI18n.get("item." + this.getItemStack().a());
     }
 
     /**
@@ -317,7 +337,28 @@ public class EntityItem extends Entity
 
         if (!this.world.isStatic)
         {
-            this.d();
+            this.g();
         }
+    }
+
+    public ItemStack getItemStack()
+    {
+        ItemStack var1 = this.getDataWatcher().f(10);
+
+        if (var1 == null)
+        {
+            System.out.println("Item entity " + this.id + " has no item?!");
+            return new ItemStack(Block.STONE);
+        }
+        else
+        {
+            return var1;
+        }
+    }
+
+    public void setItemStack(ItemStack par1ItemStack)
+    {
+        this.getDataWatcher().watch(10, par1ItemStack);
+        this.getDataWatcher().h(10);
     }
 }

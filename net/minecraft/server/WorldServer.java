@@ -12,32 +12,32 @@ public class WorldServer extends World
 {
     private final MinecraftServer server;
     private final EntityTracker tracker;
-    private final PlayerManager manager;
-    private Set M;
+    private final PlayerChunkMap manager;
+    private Set L;
 
     /** All work to do in future ticks. */
-    private TreeSet N;
+    private TreeSet M;
     public ChunkProviderServer chunkProviderServer;
 
     /** Whether or not level saving is enabled */
     public boolean savingDisabled;
 
     /** is false if there are no players */
-    private boolean O;
+    private boolean N;
     private int emptyTime = 0;
-    private final PortalTravelAgent Q;
+    private final PortalTravelAgent P;
 
     /**
      * Double buffer of ServerBlockEventList[] for holding pending BlockEventData's
      */
-    private NoteDataList[] R = new NoteDataList[] {new NoteDataList((EmptyClass)null), new NoteDataList((EmptyClass)null)};
+    private NoteDataList[] Q = new NoteDataList[] {new NoteDataList((EmptyClass2)null), new NoteDataList((EmptyClass2)null)};
 
     /**
      * The index into the blockEventCache; either 0, or 1, toggled in sendBlockEventPackets  where all BlockEvent are
      * applied locally and send to clients.
      */
-    private int S = 0;
-    private static final StructurePieceTreasure[] T = new StructurePieceTreasure[] {new StructurePieceTreasure(Item.STICK.id, 0, 1, 3, 10), new StructurePieceTreasure(Block.WOOD.id, 0, 1, 3, 10), new StructurePieceTreasure(Block.LOG.id, 0, 1, 3, 10), new StructurePieceTreasure(Item.STONE_AXE.id, 0, 1, 1, 3), new StructurePieceTreasure(Item.WOOD_AXE.id, 0, 1, 1, 5), new StructurePieceTreasure(Item.STONE_PICKAXE.id, 0, 1, 1, 3), new StructurePieceTreasure(Item.WOOD_PICKAXE.id, 0, 1, 1, 5), new StructurePieceTreasure(Item.APPLE.id, 0, 2, 3, 5), new StructurePieceTreasure(Item.BREAD.id, 0, 2, 3, 3)};
+    private int R = 0;
+    private static final StructurePieceTreasure[] S = new StructurePieceTreasure[] {new StructurePieceTreasure(Item.STICK.id, 0, 1, 3, 10), new StructurePieceTreasure(Block.WOOD.id, 0, 1, 3, 10), new StructurePieceTreasure(Block.LOG.id, 0, 1, 3, 10), new StructurePieceTreasure(Item.STONE_AXE.id, 0, 1, 1, 3), new StructurePieceTreasure(Item.WOOD_AXE.id, 0, 1, 1, 5), new StructurePieceTreasure(Item.STONE_PICKAXE.id, 0, 1, 1, 3), new StructurePieceTreasure(Item.WOOD_PICKAXE.id, 0, 1, 1, 5), new StructurePieceTreasure(Item.APPLE.id, 0, 2, 3, 5), new StructurePieceTreasure(Item.BREAD.id, 0, 2, 3, 3)};
 
     /** An IntHashMap of entity IDs (integers) to their Entity objects. */
     private IntHashMap entitiesById;
@@ -47,24 +47,24 @@ public class WorldServer extends World
         super(par2ISaveHandler, par3Str, par5WorldSettings, WorldProvider.byDimension(par4), par6Profiler);
         this.server = par1MinecraftServer;
         this.tracker = new EntityTracker(this);
-        this.manager = new PlayerManager(this, par1MinecraftServer.getServerConfigurationManager().o());
+        this.manager = new PlayerChunkMap(this, par1MinecraftServer.getPlayerList().o());
 
         if (this.entitiesById == null)
         {
             this.entitiesById = new IntHashMap();
         }
 
+        if (this.L == null)
+        {
+            this.L = new HashSet();
+        }
+
         if (this.M == null)
         {
-            this.M = new HashSet();
+            this.M = new TreeSet();
         }
 
-        if (this.N == null)
-        {
-            this.N = new TreeSet();
-        }
-
-        this.Q = new PortalTravelAgent(this);
+        this.P = new PortalTravelAgent(this);
     }
 
     /**
@@ -127,7 +127,7 @@ public class WorldServer extends World
         this.villages.tick();
         this.siegeManager.a();
         this.methodProfiler.c("portalForcer");
-        this.Q.a(this.getTime());
+        this.P.a(this.getTime());
         this.methodProfiler.b();
         this.V();
     }
@@ -146,7 +146,7 @@ public class WorldServer extends World
      */
     public void everyoneSleeping()
     {
-        this.O = !this.players.isEmpty();
+        this.N = !this.players.isEmpty();
         Iterator var1 = this.players.iterator();
 
         while (var1.hasNext())
@@ -155,7 +155,7 @@ public class WorldServer extends World
 
             if (!var2.isSleeping())
             {
-                this.O = false;
+                this.N = false;
                 break;
             }
         }
@@ -163,7 +163,7 @@ public class WorldServer extends World
 
     protected void d()
     {
-        this.O = false;
+        this.N = false;
         Iterator var1 = this.players.iterator();
 
         while (var1.hasNext())
@@ -189,7 +189,7 @@ public class WorldServer extends World
 
     public boolean everyoneDeeplySleeping()
     {
-        if (this.O && !this.isStatic)
+        if (this.N && !this.isStatic)
         {
             Iterator var1 = this.players.iterator();
             EntityHuman var2;
@@ -251,7 +251,6 @@ public class WorldServer extends World
                 if (this.D(var9, var11, var10))
                 {
                     this.strikeLightning(new EntityLightning(this, (double) var9, (double) var11, (double) var10));
-                    this.q = 2;
                 }
             }
 
@@ -367,10 +366,10 @@ public class WorldServer extends World
                 var7.a(par6);
             }
 
-            if (!this.M.contains(var7))
+            if (!this.L.contains(var7))
             {
+                this.L.add(var7);
                 this.M.add(var7);
-                this.N.add(var7);
             }
         }
     }
@@ -387,10 +386,10 @@ public class WorldServer extends World
             var6.a((long) par5 + this.worldData.getTime());
         }
 
-        if (!this.M.contains(var6))
+        if (!this.L.contains(var6))
         {
+            this.L.add(var6);
             this.M.add(var6);
-            this.N.add(var6);
         }
     }
 
@@ -427,9 +426,9 @@ public class WorldServer extends World
      */
     public boolean a(boolean par1)
     {
-        int var2 = this.N.size();
+        int var2 = this.M.size();
 
-        if (var2 != this.M.size())
+        if (var2 != this.L.size())
         {
             throw new IllegalStateException("TickNextTick list out of synch");
         }
@@ -442,15 +441,15 @@ public class WorldServer extends World
 
             for (int var3 = 0; var3 < var2; ++var3)
             {
-                NextTickListEntry var4 = (NextTickListEntry)this.N.first();
+                NextTickListEntry var4 = (NextTickListEntry)this.M.first();
 
                 if (!par1 && var4.e > this.worldData.getTime())
                 {
                     break;
                 }
 
-                this.N.remove(var4);
                 this.M.remove(var4);
+                this.L.remove(var4);
                 byte var5 = 8;
 
                 if (this.d(var4.a - var5, var4.b - var5, var4.c - var5, var4.a + var5, var4.b + var5, var4.c + var5))
@@ -485,7 +484,7 @@ public class WorldServer extends World
                 }
             }
 
-            return !this.N.isEmpty();
+            return !this.M.isEmpty();
         }
     }
 
@@ -497,7 +496,7 @@ public class WorldServer extends World
         int var6 = var5 + 16;
         int var7 = var4.z << 4;
         int var8 = var7 + 16;
-        Iterator var9 = this.N.iterator();
+        Iterator var9 = this.M.iterator();
 
         while (var9.hasNext())
         {
@@ -507,7 +506,7 @@ public class WorldServer extends World
             {
                 if (par2)
                 {
-                    this.M.remove(var10);
+                    this.L.remove(var10);
                     var9.remove();
                 }
 
@@ -596,7 +595,7 @@ public class WorldServer extends World
             var6 = var5;
         }
 
-        return var6 > 16 || this.server.getServerConfigurationManager().isOp(par1EntityPlayer.name) || this.server.I();
+        return var6 > 16 || this.server.getPlayerList().isOp(par1EntityPlayer.name) || this.server.I();
     }
 
     protected void a(WorldSettings par1WorldSettings)
@@ -606,14 +605,14 @@ public class WorldServer extends World
             this.entitiesById = new IntHashMap();
         }
 
-        if (this.M == null)
+        if (this.L == null)
         {
-            this.M = new HashSet();
+            this.L = new HashSet();
         }
 
-        if (this.N == null)
+        if (this.M == null)
         {
-            this.N = new TreeSet();
+            this.M = new TreeSet();
         }
 
         this.b(par1WorldSettings);
@@ -679,7 +678,7 @@ public class WorldServer extends World
      */
     protected void k()
     {
-        WorldGenBonusChest var1 = new WorldGenBonusChest(T, 10);
+        WorldGenBonusChest var1 = new WorldGenBonusChest(S, 10);
 
         for (int var2 = 0; var2 < 10; ++var2)
         {
@@ -731,7 +730,7 @@ public class WorldServer extends World
     protected void a() throws ExceptionWorldConflict
     {
         this.D();
-        this.dataManager.saveWorldData(this.worldData, this.server.getServerConfigurationManager().q());
+        this.dataManager.saveWorldData(this.worldData, this.server.getPlayerList().q());
         this.worldMaps.a();
     }
 
@@ -786,7 +785,7 @@ public class WorldServer extends World
     {
         if (super.strikeLightning(par1Entity))
         {
-            this.server.getServerConfigurationManager().sendPacketNearby(par1Entity.locX, par1Entity.locY, par1Entity.locZ, 512.0D, this.worldProvider.dimension, new Packet71Weather(par1Entity));
+            this.server.getPlayerList().sendPacketNearby(par1Entity.locX, par1Entity.locY, par1Entity.locZ, 512.0D, this.worldProvider.dimension, new Packet71Weather(par1Entity));
             return true;
         }
         else
@@ -828,7 +827,7 @@ public class WorldServer extends World
 
             if (var13.e(par2, par4, par6) < 4096.0D)
             {
-                ((EntityPlayer)var13).netServerHandler.sendPacket(new Packet60Explosion(par2, par4, par6, par8, var11.blocks, (Vec3D)var11.b().get(var13)));
+                ((EntityPlayer)var13).playerConnection.sendPacket(new Packet60Explosion(par2, par4, par6, par8, var11.blocks, (Vec3D) var11.b().get(var13)));
             }
         }
 
@@ -842,14 +841,14 @@ public class WorldServer extends World
     public void playNote(int par1, int par2, int par3, int par4, int par5, int par6)
     {
         NoteBlockData var7 = new NoteBlockData(par1, par2, par3, par4, par5, par6);
-        Iterator var8 = this.R[this.S].iterator();
+        Iterator var8 = this.Q[this.R].iterator();
         NoteBlockData var9;
 
         do
         {
             if (!var8.hasNext())
             {
-                this.R[this.S].add(var7);
+                this.Q[this.R].add(var7);
                 return;
             }
 
@@ -863,11 +862,11 @@ public class WorldServer extends World
      */
     private void V()
     {
-        while (!this.R[this.S].isEmpty())
+        while (!this.Q[this.R].isEmpty())
         {
-            int var1 = this.S;
-            this.S ^= 1;
-            Iterator var2 = this.R[var1].iterator();
+            int var1 = this.R;
+            this.R ^= 1;
+            Iterator var2 = this.Q[var1].iterator();
 
             while (var2.hasNext())
             {
@@ -875,11 +874,11 @@ public class WorldServer extends World
 
                 if (this.a(var3))
                 {
-                    this.server.getServerConfigurationManager().sendPacketNearby((double) var3.a(), (double) var3.b(), (double) var3.c(), 64.0D, this.worldProvider.dimension, new Packet54PlayNoteBlock(var3.a(), var3.b(), var3.c(), var3.f(), var3.d(), var3.e()));
+                    this.server.getPlayerList().sendPacketNearby((double) var3.a(), (double) var3.b(), (double) var3.c(), 64.0D, this.worldProvider.dimension, new Packet54PlayNoteBlock(var3.a(), var3.b(), var3.c(), var3.f(), var3.d(), var3.e()));
                 }
             }
 
-            this.R[var1].clear();
+            this.Q[var1].clear();
         }
     }
 
@@ -921,11 +920,11 @@ public class WorldServer extends World
         {
             if (var1)
             {
-                this.server.getServerConfigurationManager().sendAll(new Packet70Bed(2, 0));
+                this.server.getPlayerList().sendAll(new Packet70Bed(2, 0));
             }
             else
             {
-                this.server.getServerConfigurationManager().sendAll(new Packet70Bed(1, 0));
+                this.server.getPlayerList().sendAll(new Packet70Bed(1, 0));
             }
         }
     }
@@ -946,13 +945,13 @@ public class WorldServer extends World
         return this.tracker;
     }
 
-    public PlayerManager getPlayerManager()
+    public PlayerChunkMap getPlayerChunkMap()
     {
         return this.manager;
     }
 
     public PortalTravelAgent s()
     {
-        return this.Q;
+        return this.P;
     }
 }

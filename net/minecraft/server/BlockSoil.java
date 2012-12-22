@@ -78,6 +78,11 @@ public class BlockSoil extends Block
     {
         if (!par1World.isStatic && par1World.random.nextFloat() < par6 - 0.5F)
         {
+            if (!(par5Entity instanceof EntityHuman) && !par1World.getGameRules().getBoolean("mobGriefing"))
+            {
+                return;
+            }
+
             par1World.setTypeId(par2, par3, par4, Block.DIRT.id);
         }
     }

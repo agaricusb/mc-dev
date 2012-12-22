@@ -81,6 +81,9 @@ public class BlockStairs extends Block
         }
     }
 
+    /**
+     * Checks if supplied ID is one of a BlockStairs
+     */
     public static boolean e(int par0)
     {
         return par0 > 0 && Block.byId[par0] instanceof BlockStairs;
@@ -508,6 +511,9 @@ public class BlockStairs extends Block
         }
     }
 
+    /**
+     * Called when a block is placed using its ItemBlock. Args: World, X, Y, Z, side, hitX, hitY, hitZ, block metadata
+     */
     public int getPlacedData(World par1World, int par2, int par3, int par4, int par5, float par6, float par7, float par8, int par9)
     {
         return par5 != 0 && (par5 == 1 || (double)par7 <= 0.5D) ? par9 : par9 | 4;

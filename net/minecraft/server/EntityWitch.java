@@ -18,10 +18,10 @@ public class EntityWitch extends EntityMonster implements IRangedEntity
     {
         super(par1World);
         this.texture = "/mob/villager/witch.png";
-        this.bG = 0.25F;
+        this.bH = 0.25F;
         this.goalSelector.a(1, new PathfinderGoalFloat(this));
-        this.goalSelector.a(2, new PathfinderGoalArrowAttack(this, this.bG, 60, 10.0F));
-        this.goalSelector.a(2, new PathfinderGoalRandomStroll(this, this.bG));
+        this.goalSelector.a(2, new PathfinderGoalArrowAttack(this, this.bH, 60, 10.0F));
+        this.goalSelector.a(2, new PathfinderGoalRandomStroll(this, this.bH));
         this.goalSelector.a(3, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
         this.goalSelector.a(3, new PathfinderGoalRandomLookaround(this));
         this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, false));
@@ -105,7 +105,7 @@ public class EntityWitch extends EntityMonster implements IRangedEntity
 
                     if (var1 != null && var1.id == Item.POTION.id)
                     {
-                        List var2 = Item.POTION.l(var1);
+                        List var2 = Item.POTION.g(var1);
 
                         if (var2 != null)
                         {

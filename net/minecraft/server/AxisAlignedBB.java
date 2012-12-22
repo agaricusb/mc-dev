@@ -288,6 +288,9 @@ public class AxisAlignedBB
         return par1Vec3.c > this.a && par1Vec3.c < this.d ? (par1Vec3.d > this.b && par1Vec3.d < this.e ? par1Vec3.e > this.c && par1Vec3.e < this.f : false) : false;
     }
 
+    /**
+     * Returns the average length of the edges of the bounding box.
+     */
     public double b()
     {
         double var1 = this.d - this.a;

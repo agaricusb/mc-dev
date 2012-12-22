@@ -69,7 +69,7 @@ public abstract class EntityCreature extends EntityLiving
         {
             this.pathEntity = this.world.findPath(this, this.target, var1, true, false, false, true);
         }
-        else if (!this.b && (this.pathEntity == null && this.random.nextInt(180) == 0 || this.random.nextInt(120) == 0 || this.c > 0) && this.bA < 100)
+        else if (!this.b && (this.pathEntity == null && this.random.nextInt(180) == 0 || this.random.nextInt(120) == 0 || this.c > 0) && this.bB < 100)
         {
             this.i();
         }
@@ -100,7 +100,7 @@ public abstract class EntityCreature extends EntityLiving
                 }
             }
 
-            this.bE = false;
+            this.bF = false;
 
             if (var5 != null)
             {
@@ -109,7 +109,7 @@ public abstract class EntityCreature extends EntityLiving
                 double var12 = var5.d - (double)var21;
                 float var14 = (float)(Math.atan2(var10, var8) * 180.0D / Math.PI) - 90.0F;
                 float var15 = MathHelper.g(var14 - this.yaw);
-                this.bC = this.bG;
+                this.bD = this.bH;
 
                 if (var15 > 30.0F)
                 {
@@ -130,13 +130,13 @@ public abstract class EntityCreature extends EntityLiving
                     float var20 = this.yaw;
                     this.yaw = (float)(Math.atan2(var18, var16) * 180.0D / Math.PI) - 90.0F;
                     var15 = (var20 - this.yaw + 90.0F) * (float)Math.PI / 180.0F;
-                    this.bB = -MathHelper.sin(var15) * this.bC * 1.0F;
-                    this.bC = MathHelper.cos(var15) * this.bC * 1.0F;
+                    this.bC = -MathHelper.sin(var15) * this.bD * 1.0F;
+                    this.bD = MathHelper.cos(var15) * this.bD * 1.0F;
                 }
 
                 if (var12 > 0.0D)
                 {
-                    this.bE = true;
+                    this.bF = true;
                 }
             }
 
@@ -147,12 +147,12 @@ public abstract class EntityCreature extends EntityLiving
 
             if (this.positionChanged && !this.k())
             {
-                this.bE = true;
+                this.bF = true;
             }
 
             if (this.random.nextFloat() < 0.8F && (var3 || var4))
             {
-                this.bE = true;
+                this.bF = true;
             }
 
             this.world.methodProfiler.b();

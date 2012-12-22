@@ -9,7 +9,7 @@ public class ItemMonsterEgg extends Item
         this.a(CreativeModeTab.f);
     }
 
-    public String j(ItemStack par1ItemStack)
+    public String l(ItemStack par1ItemStack)
     {
         String var2 = ("" + LocaleI18n.get(this.getName() + ".name")).trim();
         String var3 = EntityTypes.b(par1ItemStack.getData());
@@ -72,12 +72,15 @@ public class ItemMonsterEgg extends Item
             {
                 var8 = EntityTypes.a(par1, par0World);
 
-                if (var8 != null)
+                if (var8 != null && var8 instanceof EntityLiving)
                 {
-                    var8.setPositionRotation(par2, par4, par6, par0World.random.nextFloat() * 360.0F, 0.0F);
-                    ((EntityLiving)var8).bG();
+                    EntityLiving var10 = (EntityLiving)var8;
+                    var8.setPositionRotation(par2, par4, par6, MathHelper.g(par0World.random.nextFloat() * 360.0F), 0.0F);
+                    var10.az = var10.yaw;
+                    var10.ax = var10.yaw;
+                    var10.bG();
                     par0World.addEntity(var8);
-                    ((EntityLiving)var8).aO();
+                    var10.aO();
                 }
             }
 

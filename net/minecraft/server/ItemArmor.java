@@ -3,7 +3,7 @@ package net.minecraft.server;
 public class ItemArmor extends Item
 {
     /** Holds the 'base' maxDamage that each armorType have. */
-    private static final int[] cl = new int[] {11, 16, 15, 13};
+    private static final int[] co = new int[] {11, 16, 15, 13};
 
     /**
      * Stores the armor type: 0 is helmet, 1 is plate, 2 is legs and 3 is boots
@@ -20,12 +20,12 @@ public class ItemArmor extends Item
     public final int c;
 
     /** The EnumArmorMaterial used for this ItemArmor */
-    private final EnumArmorMaterial cm;
+    private final EnumArmorMaterial cp;
 
     public ItemArmor(int par1, EnumArmorMaterial par2EnumArmorMaterial, int par3, int par4)
     {
         super(par1);
-        this.cm = par2EnumArmorMaterial;
+        this.cp = par2EnumArmorMaterial;
         this.a = par4;
         this.c = par3;
         this.b = par2EnumArmorMaterial.b(par4);
@@ -39,7 +39,7 @@ public class ItemArmor extends Item
      */
     public int c()
     {
-        return this.cm.a();
+        return this.cp.a();
     }
 
     /**
@@ -47,15 +47,15 @@ public class ItemArmor extends Item
      */
     public EnumArmorMaterial d()
     {
-        return this.cm;
+        return this.cp;
     }
 
     /**
      * Return whether the specified armor ItemStack has a color.
      */
-    public boolean b_(ItemStack par1ItemStack)
+    public boolean a(ItemStack par1ItemStack)
     {
-        return this.cm != EnumArmorMaterial.CLOTH ? false : (!par1ItemStack.hasTag() ? false : (!par1ItemStack.getTag().hasKey("display") ? false : par1ItemStack.getTag().getCompound("display").hasKey("color")));
+        return this.cp != EnumArmorMaterial.CLOTH ? false : (!par1ItemStack.hasTag() ? false : (!par1ItemStack.getTag().hasKey("display") ? false : par1ItemStack.getTag().getCompound("display").hasKey("color")));
     }
 
     /**
@@ -63,7 +63,7 @@ public class ItemArmor extends Item
      */
     public int b(ItemStack par1ItemStack)
     {
-        if (this.cm != EnumArmorMaterial.CLOTH)
+        if (this.cp != EnumArmorMaterial.CLOTH)
         {
             return -1;
         }
@@ -88,7 +88,7 @@ public class ItemArmor extends Item
      */
     public void c(ItemStack par1ItemStack)
     {
-        if (this.cm == EnumArmorMaterial.CLOTH)
+        if (this.cp == EnumArmorMaterial.CLOTH)
         {
             NBTTagCompound var2 = par1ItemStack.getTag();
 
@@ -106,7 +106,7 @@ public class ItemArmor extends Item
 
     public void b(ItemStack par1ItemStack, int par2)
     {
-        if (this.cm != EnumArmorMaterial.CLOTH)
+        if (this.cp != EnumArmorMaterial.CLOTH)
         {
             throw new UnsupportedOperationException("Can\'t dye non-leather!");
         }
@@ -136,7 +136,7 @@ public class ItemArmor extends Item
      */
     public boolean a(ItemStack par1ItemStack, ItemStack par2ItemStack)
     {
-        return this.cm.b() == par2ItemStack.id ? true : super.a(par1ItemStack, par2ItemStack);
+        return this.cp.b() == par2ItemStack.id ? true : super.a(par1ItemStack, par2ItemStack);
     }
 
     /**
@@ -145,6 +145,6 @@ public class ItemArmor extends Item
      */
     static int[] e()
     {
-        return cl;
+        return co;
     }
 }

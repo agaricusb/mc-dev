@@ -21,7 +21,7 @@ public class PathfinderGoalTakeFlower extends PathfinderGoal
      */
     public boolean a()
     {
-        if (this.a.aE() >= 0)
+        if (this.a.getAge() >= 0)
         {
             return false;
         }

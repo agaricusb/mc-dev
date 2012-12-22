@@ -26,7 +26,7 @@ public class CommandDeop extends CommandAbstract
     {
         if (par2ArrayOfStr.length == 1 && par2ArrayOfStr[0].length() > 0)
         {
-            MinecraftServer.getServer().getServerConfigurationManager().removeOp(par2ArrayOfStr[0]);
+            MinecraftServer.getServer().getPlayerList().removeOp(par2ArrayOfStr[0]);
             a(par1ICommandSender, "commands.deop.success", new Object[]{par2ArrayOfStr[0]});
         }
         else
@@ -40,6 +40,6 @@ public class CommandDeop extends CommandAbstract
      */
     public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
     {
-        return par2ArrayOfStr.length == 1 ? a(par2ArrayOfStr, MinecraftServer.getServer().getServerConfigurationManager().getOPs()) : null;
+        return par2ArrayOfStr.length == 1 ? a(par2ArrayOfStr, MinecraftServer.getServer().getPlayerList().getOPs()) : null;
     }
 }

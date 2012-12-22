@@ -27,7 +27,7 @@ public class CommandSay extends CommandAbstract
         if (par2ArrayOfStr.length > 0 && par2ArrayOfStr[0].length() > 0)
         {
             String var3 = a(par1ICommandSender, par2ArrayOfStr, 0, true);
-            MinecraftServer.getServer().getServerConfigurationManager().sendAll(new Packet3Chat(String.format("[%s] %s", new Object[]{par1ICommandSender.getName(), var3})));
+            MinecraftServer.getServer().getPlayerList().k(String.format("[%s] %s", new Object[]{par1ICommandSender.getName(), var3}));
         }
         else
         {

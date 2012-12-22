@@ -17,8 +17,8 @@ public class TileEntitySkull extends TileEntity
     public void b(NBTTagCompound par1NBTTagCompound)
     {
         super.b(par1NBTTagCompound);
-        par1NBTTagCompound.setByte("SkullType", (byte)(this.a & 255));
-        par1NBTTagCompound.setByte("Rot", (byte)(this.b & 255));
+        par1NBTTagCompound.setByte("SkullType", (byte) (this.a & 255));
+        par1NBTTagCompound.setByte("Rot", (byte) (this.b & 255));
         par1NBTTagCompound.setString("ExtraType", this.c);
     }
 
@@ -47,22 +47,34 @@ public class TileEntitySkull extends TileEntity
         return new Packet132TileEntityData(this.x, this.y, this.z, 4, var1);
     }
 
+    /**
+     * Set the entity type for the skull
+     */
     public void setSkullType(int par1, String par2Str)
     {
         this.a = par1;
         this.c = par2Str;
     }
 
+    /**
+     * Get the entity type for the skull
+     */
     public int getSkullType()
     {
         return this.a;
     }
 
+    /**
+     * Set the skull's rotation
+     */
     public void setRotation(int par1)
     {
         this.b = par1;
     }
 
+    /**
+     * Get the extra data foor this skull, used as player username by player heads
+     */
     public String getExtraType()
     {
         return this.c;

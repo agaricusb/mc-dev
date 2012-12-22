@@ -42,7 +42,7 @@ public class BlockDeadBush extends BlockFlower
      */
     public void a(World par1World, EntityHuman par2EntityPlayer, int par3, int par4, int par5, int par6)
     {
-        if (!par1World.isStatic && par2EntityPlayer.bT() != null && par2EntityPlayer.bT().id == Item.SHEARS.id)
+        if (!par1World.isStatic && par2EntityPlayer.bS() != null && par2EntityPlayer.bS().id == Item.SHEARS.id)
         {
             par2EntityPlayer.a(StatisticList.C[this.id], 1);
             this.b(par1World, par3, par4, par5, new ItemStack(Block.DEAD_BUSH, 1, par6));

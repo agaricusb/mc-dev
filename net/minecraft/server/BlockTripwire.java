@@ -128,7 +128,7 @@ public class BlockTripwire extends Block
     {
         if (!par1World.isStatic)
         {
-            if (par6EntityPlayer.bT() != null && par6EntityPlayer.bT().id == Item.SHEARS.id)
+            if (par6EntityPlayer.bS() != null && par6EntityPlayer.bS().id == Item.SHEARS.id)
             {
                 par1World.setData(par2, par3, par4, par5 | 8);
             }

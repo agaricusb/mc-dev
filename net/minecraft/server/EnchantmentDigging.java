@@ -31,4 +31,9 @@ public class EnchantmentDigging extends Enchantment
     {
         return 5;
     }
+
+    public boolean canEnchant(ItemStack par1ItemStack)
+    {
+        return par1ItemStack.getItem().id == Item.SHEARS.id ? true : super.canEnchant(par1ItemStack);
+    }
 }

@@ -83,8 +83,8 @@ public class EntityCreeper extends EntityMonster
             par1NBTTagCompound.setBoolean("powered", true);
         }
 
-        par1NBTTagCompound.setShort("Fuse", (short)this.maxFuseTicks);
-        par1NBTTagCompound.setByte("ExplosionRadius", (byte)this.explosionRadius);
+        par1NBTTagCompound.setShort("Fuse", (short) this.maxFuseTicks);
+        par1NBTTagCompound.setByte("ExplosionRadius", (byte) this.explosionRadius);
     }
 
     /**

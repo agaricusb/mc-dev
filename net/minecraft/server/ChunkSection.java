@@ -39,13 +39,17 @@ public class ChunkSection
     /** The NibbleArray containing a block of Sky-light data. */
     private NibbleArray skyLight;
 
-    public ChunkSection(int par1)
+    public ChunkSection(int par1, boolean par2)
     {
         this.yPos = par1;
         this.blockIds = new byte[4096];
         this.blockData = new NibbleArray(this.blockIds.length, 4);
-        this.skyLight = new NibbleArray(this.blockIds.length, 4);
         this.blockLight = new NibbleArray(this.blockIds.length, 4);
+
+        if (par2)
+        {
+            this.skyLight = new NibbleArray(this.blockIds.length, 4);
+        }
     }
 
     /**

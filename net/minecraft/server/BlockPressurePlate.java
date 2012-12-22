@@ -214,7 +214,7 @@ public class BlockPressurePlate extends Block
     /**
      * Returns true if the block is emitting indirect/weak redstone power on the specified side. If isBlockNormalCube
      * returns true, standard redstone propagation rules will apply instead and this will not be called. Args: World, X,
-     * Y, Z, side
+     * Y, Z, side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
      */
     public boolean b(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {
@@ -223,7 +223,7 @@ public class BlockPressurePlate extends Block
 
     /**
      * Returns true if the block is emitting direct/strong redstone power on the specified side. Args: World, X, Y, Z,
-     * side
+     * side. Note that the side is reversed - eg it is 1 (up) when checking the bottom of the block.
      */
     public boolean c(IBlockAccess par1IBlockAccess, int par2, int par3, int par4, int par5)
     {

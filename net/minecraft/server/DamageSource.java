@@ -29,6 +29,10 @@ public class DamageSource
 
     /** This kind of damage is based on a projectile or not. */
     private boolean v;
+
+    /**
+     * Whether this damage source will have its damage amount scaled based on the current difficulty.
+     */
     private boolean w;
 
     /** Whether the damage is magic based. */
@@ -72,6 +76,11 @@ public class DamageSource
     public static DamageSource b(Entity par0Entity, Entity par1Entity)
     {
         return (new EntityDamageSourceIndirect("indirectMagic", par0Entity, par1Entity)).h().p();
+    }
+
+    public static DamageSource a(Entity par0Entity)
+    {
+        return (new EntityDamageSource("thorns", par0Entity)).p();
     }
 
     /**
@@ -170,12 +179,18 @@ public class DamageSource
         return this.translationIndex;
     }
 
+    /**
+     * Set whether this damage source will have its damage amount scaled based on the current difficulty.
+     */
     public DamageSource m()
     {
         this.w = true;
         return this;
     }
 
+    /**
+     * Return whether this damage source will have its damage amount scaled based on the current difficulty.
+     */
     public boolean n()
     {
         return this.w;

@@ -62,7 +62,7 @@ public abstract class Container
     }
 
     /**
-     * Updates crafting matrix; called from onCraftMatrixChanged. Args: none
+     * Looks for changes made in the container, sends them to every listener.
      */
     public void b()
     {
@@ -228,7 +228,7 @@ public abstract class Container
                         }
                         else if (var7.isAllowed(var13))
                         {
-                            if (var8.id == var13.id && (!var8.usesData() || var8.getData() == var13.getData()) && ItemStack.equals(var8, var13))
+                            if (var8.id == var13.id && var8.getData() == var13.getData() && ItemStack.equals(var8, var13))
                             {
                                 var10 = par2 == 0 ? var13.count : 1;
 
@@ -306,12 +306,14 @@ public abstract class Container
                         if (var10 > -1)
                         {
                             var6.pickup(var8);
+                            var7.a(var11.count);
                             var7.set((ItemStack) null);
                             var7.a(par4EntityPlayer, var11);
                         }
                     }
                     else
                     {
+                        var7.a(var11.count);
                         var7.set(var8);
                         var7.a(par4EntityPlayer, var11);
                     }

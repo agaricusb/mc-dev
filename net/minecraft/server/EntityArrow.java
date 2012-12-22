@@ -20,21 +20,23 @@ public class EntityArrow extends Entity implements IProjectile
     /** The owner of this arrow. */
     public Entity shooter;
     private int j;
-    private int as = 0;
+    private int at = 0;
     private double damage = 2.0D;
 
     /** The amount of knockback an arrow applies when it hits a mob. */
-    private int au;
+    private int av;
 
     public EntityArrow(World par1World)
     {
         super(par1World);
+        this.l = 10.0D;
         this.a(0.5F, 0.5F);
     }
 
     public EntityArrow(World par1World, double par2, double par4, double par6)
     {
         super(par1World);
+        this.l = 10.0D;
         this.a(0.5F, 0.5F);
         this.setPosition(par2, par4, par6);
         this.height = 0.0F;
@@ -43,6 +45,7 @@ public class EntityArrow extends Entity implements IProjectile
     public EntityArrow(World par1World, EntityLiving par2EntityLiving, EntityLiving par3EntityLiving, float par4, float par5)
     {
         super(par1World);
+        this.l = 10.0D;
         this.shooter = par2EntityLiving;
 
         if (par2EntityLiving instanceof EntityHuman)
@@ -72,6 +75,7 @@ public class EntityArrow extends Entity implements IProjectile
     public EntityArrow(World par1World, EntityLiving par2EntityLiving, float par3)
     {
         super(par1World);
+        this.l = 10.0D;
         this.shooter = par2EntityLiving;
 
         if (par2EntityLiving instanceof EntityHuman)
@@ -174,12 +178,12 @@ public class EntityArrow extends Entity implements IProjectile
                 this.motY *= (double)(this.random.nextFloat() * 0.2F);
                 this.motZ *= (double)(this.random.nextFloat() * 0.2F);
                 this.j = 0;
-                this.as = 0;
+                this.at = 0;
             }
         }
         else
         {
-            ++this.as;
+            ++this.at;
             Vec3D var17 = this.world.getVec3DPool().create(this.locX, this.locY, this.locZ);
             Vec3D var3 = this.world.getVec3DPool().create(this.locX + this.motX, this.locY + this.motY, this.locZ + this.motZ);
             MovingObjectPosition var4 = this.world.rayTrace(var17, var3, false, true);
@@ -201,7 +205,7 @@ public class EntityArrow extends Entity implements IProjectile
             {
                 Entity var10 = (Entity)var6.get(var9);
 
-                if (var10.L() && (var10 != this.shooter || this.as >= 5))
+                if (var10.L() && (var10 != this.shooter || this.at >= 5))
                 {
                     var11 = 0.3F;
                     AxisAlignedBB var12 = var10.boundingBox.grow((double) var11, (double) var11, (double) var11);
@@ -226,6 +230,7 @@ public class EntityArrow extends Entity implements IProjectile
             }
 
             float var20;
+            float var26;
 
             if (var4 != null)
             {
@@ -250,7 +255,7 @@ public class EntityArrow extends Entity implements IProjectile
                         var21 = DamageSource.arrow(this, this.shooter);
                     }
 
-                    if (this.isBurning())
+                    if (this.isBurning() && !(var4.entity instanceof EntityEnderman))
                     {
                         var4.entity.setOnFire(5);
                     }
@@ -259,25 +264,37 @@ public class EntityArrow extends Entity implements IProjectile
                     {
                         if (var4.entity instanceof EntityLiving)
                         {
+                            EntityLiving var24 = (EntityLiving)var4.entity;
+
                             if (!this.world.isStatic)
                             {
-                                EntityLiving var24 = (EntityLiving)var4.entity;
                                 var24.r(var24.bJ() + 1);
                             }
 
-                            if (this.au > 0)
+                            if (this.av > 0)
                             {
-                                float var25 = MathHelper.sqrt(this.motX * this.motX + this.motZ * this.motZ);
+                                var26 = MathHelper.sqrt(this.motX * this.motX + this.motZ * this.motZ);
 
-                                if (var25 > 0.0F)
+                                if (var26 > 0.0F)
                                 {
-                                    var4.entity.g(this.motX * (double) this.au * 0.6000000238418579D / (double) var25, 0.1D, this.motZ * (double) this.au * 0.6000000238418579D / (double) var25);
+                                    var4.entity.g(this.motX * (double) this.av * 0.6000000238418579D / (double) var26, 0.1D, this.motZ * (double) this.av * 0.6000000238418579D / (double) var26);
                                 }
+                            }
+
+                            EnchantmentThorns.a(this.shooter, var24, this.random);
+
+                            if (this.shooter != null && var4.entity != this.shooter && var4.entity instanceof EntityHuman && this.shooter instanceof EntityPlayer)
+                            {
+                                ((EntityPlayer)this.shooter).playerConnection.sendPacket(new Packet70Bed(6, 0));
                             }
                         }
 
                         this.makeSound("random.bowhit", 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
-                        this.die();
+
+                        if (!(var4.entity instanceof EntityEnderman))
+                        {
+                            this.die();
+                        }
                     }
                     else
                     {
@@ -286,7 +303,7 @@ public class EntityArrow extends Entity implements IProjectile
                         this.motZ *= -0.10000000149011612D;
                         this.yaw += 180.0F;
                         this.lastYaw += 180.0F;
-                        this.as = 0;
+                        this.at = 0;
                     }
                 }
                 else
@@ -356,10 +373,10 @@ public class EntityArrow extends Entity implements IProjectile
 
             if (this.H())
             {
-                for (int var26 = 0; var26 < 4; ++var26)
+                for (int var25 = 0; var25 < 4; ++var25)
                 {
-                    float var27 = 0.25F;
-                    this.world.addParticle("bubble", this.locX - this.motX * (double) var27, this.locY - this.motY * (double) var27, this.locZ - this.motZ * (double) var27, this.motX, this.motY, this.motZ);
+                    var26 = 0.25F;
+                    this.world.addParticle("bubble", this.locX - this.motX * (double) var26, this.locY - this.motY * (double) var26, this.locZ - this.motZ * (double) var26, this.motX, this.motY, this.motZ);
                 }
 
                 var22 = 0.8F;
@@ -379,14 +396,14 @@ public class EntityArrow extends Entity implements IProjectile
      */
     public void b(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setShort("xTile", (short)this.d);
-        par1NBTTagCompound.setShort("yTile", (short)this.e);
-        par1NBTTagCompound.setShort("zTile", (short)this.f);
-        par1NBTTagCompound.setByte("inTile", (byte)this.g);
-        par1NBTTagCompound.setByte("inData", (byte)this.h);
-        par1NBTTagCompound.setByte("shake", (byte)this.shake);
-        par1NBTTagCompound.setByte("inGround", (byte)(this.inGround ? 1 : 0));
-        par1NBTTagCompound.setByte("pickup", (byte)this.fromPlayer);
+        par1NBTTagCompound.setShort("xTile", (short) this.d);
+        par1NBTTagCompound.setShort("yTile", (short) this.e);
+        par1NBTTagCompound.setShort("zTile", (short) this.f);
+        par1NBTTagCompound.setByte("inTile", (byte) this.g);
+        par1NBTTagCompound.setByte("inData", (byte) this.h);
+        par1NBTTagCompound.setByte("shake", (byte) this.shake);
+        par1NBTTagCompound.setByte("inGround", (byte) (this.inGround ? 1 : 0));
+        par1NBTTagCompound.setByte("pickup", (byte) this.fromPlayer);
         par1NBTTagCompound.setDouble("damage", this.damage);
     }
 
@@ -465,7 +482,7 @@ public class EntityArrow extends Entity implements IProjectile
      */
     public void a(int par1)
     {
-        this.au = par1;
+        this.av = par1;
     }
 
     /**

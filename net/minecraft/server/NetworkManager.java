@@ -56,7 +56,7 @@ public class NetworkManager implements INetworkManager
     private List lowPriorityQueue = Collections.synchronizedList(new ArrayList());
 
     /** A reference to the NetHandler object. */
-    private NetHandler packetListener;
+    private Connection connection;
 
     /**
      * Whether this server is currently terminating. If this is a client, this is always false.
@@ -85,14 +85,18 @@ public class NetworkManager implements INetworkManager
     boolean g = false;
     private SecretKey z = null;
     private PrivateKey A = null;
+
+    /**
+     * Delay for sending pending chunk data packets (as opposed to pending non-chunk data packets)
+     */
     private int lowPriorityQueueDelay = 50;
 
-    public NetworkManager(Socket par1Socket, String par2Str, NetHandler par3NetHandler, PrivateKey par4PrivateKey) throws IOException
+    public NetworkManager(Socket par1Socket, String par2Str, Connection par3NetHandler, PrivateKey par4PrivateKey) throws IOException
     {
         this.A = par4PrivateKey;
         this.socket = par1Socket;
         this.j = par1Socket.getRemoteSocketAddress();
-        this.packetListener = par3NetHandler;
+        this.connection = par3NetHandler;
 
         try
         {
@@ -115,9 +119,9 @@ public class NetworkManager implements INetworkManager
     /**
      * Sets the NetHandler for this NetworkManager. Server-only.
      */
-    public void a(NetHandler par1NetHandler)
+    public void a(Connection par1NetHandler)
     {
-        this.packetListener = par1NetHandler;
+        this.connection = par1NetHandler;
     }
 
     /**
@@ -161,7 +165,7 @@ public class NetworkManager implements INetworkManager
 
                     if (var2 instanceof Packet252KeyResponse && !this.g)
                     {
-                        if (!this.packetListener.a())
+                        if (!this.connection.a())
                         {
                             this.z = ((Packet252KeyResponse)var2).d();
                         }
@@ -280,13 +284,13 @@ public class NetworkManager implements INetworkManager
 
         try
         {
-            Packet var2 = Packet.a(this.input, this.packetListener.a(), this.socket);
+            Packet var2 = Packet.a(this.input, this.connection.a(), this.socket);
 
             if (var2 != null)
             {
                 if (var2 instanceof Packet252KeyResponse && !this.f)
                 {
-                    if (this.packetListener.a())
+                    if (this.connection.a())
                     {
                         this.z = ((Packet252KeyResponse)var2).a(this.A);
                     }
@@ -300,10 +304,10 @@ public class NetworkManager implements INetworkManager
 
                 if (!this.s)
                 {
-                    if (var2.a_() && this.packetListener.b())
+                    if (var2.a_() && this.connection.b())
                     {
                         this.x = 0;
-                        var2.handle(this.packetListener);
+                        var2.handle(this.connection);
                     }
                     else
                     {
@@ -414,14 +418,14 @@ public class NetworkManager implements INetworkManager
         while (!this.inboundQueue.isEmpty() && var1-- >= 0)
         {
             Packet var2 = (Packet)this.inboundQueue.remove(0);
-            var2.handle(this.packetListener);
+            var2.handle(this.connection);
         }
 
         this.a();
 
         if (this.n && this.inboundQueue.isEmpty())
         {
-            this.packetListener.a(this.v, this.w);
+            this.connection.a(this.v, this.w);
         }
     }
 

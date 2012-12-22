@@ -28,7 +28,7 @@ public class ItemPotion extends Item
     /**
      * Returns a list of potion effects for the specified itemstack.
      */
-    public List l(ItemStack par1ItemStack)
+    public List g(ItemStack par1ItemStack)
     {
         if (par1ItemStack.hasTag() && par1ItemStack.getTag().hasKey("CustomPotionEffects"))
         {
@@ -82,7 +82,7 @@ public class ItemPotion extends Item
 
         if (!par2World.isStatic)
         {
-            List var4 = this.l(par1ItemStack);
+            List var4 = this.g(par1ItemStack);
 
             if (var4 != null)
             {
@@ -112,7 +112,7 @@ public class ItemPotion extends Item
     /**
      * How long it takes to use or consume an item
      */
-    public int a(ItemStack par1ItemStack)
+    public int c_(ItemStack par1ItemStack)
     {
         return 32;
     }
@@ -120,7 +120,7 @@ public class ItemPotion extends Item
     /**
      * returns the action that specifies what animation to play when the items is being used
      */
-    public EnumAnimation d_(ItemStack par1ItemStack)
+    public EnumAnimation b_(ItemStack par1ItemStack)
     {
         return EnumAnimation.c;
     }
@@ -148,7 +148,7 @@ public class ItemPotion extends Item
         }
         else
         {
-            par3EntityPlayer.a(par1ItemStack, this.a(par1ItemStack));
+            par3EntityPlayer.a(par1ItemStack, this.c_(par1ItemStack));
             return par1ItemStack;
         }
     }
@@ -170,7 +170,7 @@ public class ItemPotion extends Item
         return (par0 & 16384) != 0;
     }
 
-    public String j(ItemStack par1ItemStack)
+    public String l(ItemStack par1ItemStack)
     {
         if (par1ItemStack.getData() == 0)
         {
@@ -185,7 +185,7 @@ public class ItemPotion extends Item
                 var2 = LocaleI18n.get("potion.prefix.grenade").trim() + " ";
             }
 
-            List var3 = Item.POTION.l(par1ItemStack);
+            List var3 = Item.POTION.g(par1ItemStack);
             String var4;
 
             if (var3 != null && !var3.isEmpty())
@@ -197,7 +197,7 @@ public class ItemPotion extends Item
             else
             {
                 var4 = PotionBrewer.c(par1ItemStack.getData());
-                return LocaleI18n.get(var4).trim() + " " + super.j(par1ItemStack);
+                return LocaleI18n.get(var4).trim() + " " + super.l(par1ItemStack);
             }
         }
     }

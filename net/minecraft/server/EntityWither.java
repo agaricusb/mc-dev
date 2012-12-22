@@ -13,7 +13,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity
     private int j;
 
     /** Selector used to determine the entities a wither boss should attack. */
-    private static final IEntitySelector bI = new EntitySelectorNotUndead();
+    private static final IEntitySelector bJ = new EntitySelectorNotUndead();
 
     public EntityWither(World par1World)
     {
@@ -22,16 +22,16 @@ public class EntityWither extends EntityMonster implements IRangedEntity
         this.texture = "/mob/wither.png";
         this.a(0.9F, 4.0F);
         this.fireProof = true;
-        this.bG = 0.6F;
+        this.bH = 0.6F;
         this.getNavigation().e(true);
         this.goalSelector.a(0, new PathfinderGoalFloat(this));
-        this.goalSelector.a(2, new PathfinderGoalArrowAttack(this, this.bG, 40, 20.0F));
-        this.goalSelector.a(5, new PathfinderGoalRandomStroll(this, this.bG));
+        this.goalSelector.a(2, new PathfinderGoalArrowAttack(this, this.bH, 40, 20.0F));
+        this.goalSelector.a(5, new PathfinderGoalRandomStroll(this, this.bH));
         this.goalSelector.a(6, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
         this.goalSelector.a(7, new PathfinderGoalRandomLookaround(this));
         this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, false));
-        this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget(this, EntityLiving.class, 30.0F, 0, false, false, bI));
-        this.bc = 50;
+        this.targetSelector.a(2, new PathfinderGoalNearestAttackableTarget(this, EntityLiving.class, 30.0F, 0, false, false, bJ));
+        this.bd = 50;
     }
 
     protected void a()
@@ -174,7 +174,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity
             }
             else
             {
-                this.e[var20] = this.b(this.e[var20], this.aw, 10.0F);
+                this.e[var20] = this.b(this.e[var20], this.ax, 10.0F);
             }
         }
 
@@ -271,7 +271,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity
                     }
                     else
                     {
-                        List var14 = this.world.a(EntityLiving.class, this.boundingBox.grow(20.0D, 8.0D, 20.0D), bI);
+                        List var14 = this.world.a(EntityLiving.class, this.boundingBox.grow(20.0D, 8.0D, 20.0D), bJ);
 
                         for (int var17 = 0; var17 < 10 && !var14.isEmpty(); ++var17)
                         {
@@ -384,7 +384,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity
         }
         else
         {
-            float var2 = (this.aw + (float)(180 * (par1 - 1))) / 180.0F * (float)Math.PI;
+            float var2 = (this.ax + (float)(180 * (par1 - 1))) / 180.0F * (float)Math.PI;
             float var3 = MathHelper.cos(var2);
             return this.locX + (double)var3 * 1.3D;
         }
@@ -403,7 +403,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity
         }
         else
         {
-            float var2 = (this.aw + (float)(180 * (par1 - 1))) / 180.0F * (float)Math.PI;
+            float var2 = (this.ax + (float)(180 * (par1 - 1))) / 180.0F * (float)Math.PI;
             float var3 = MathHelper.sin(var2);
             return this.locZ + (double)var3 * 1.3D;
         }
@@ -528,7 +528,7 @@ public class EntityWither extends EntityMonster implements IRangedEntity
      */
     protected void bk()
     {
-        this.bA = 0;
+        this.bB = 0;
     }
 
     /**

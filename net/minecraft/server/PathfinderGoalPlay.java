@@ -22,7 +22,7 @@ public class PathfinderGoalPlay extends PathfinderGoal
      */
     public boolean a()
     {
-        if (this.a.aE() >= 0)
+        if (this.a.getAge() >= 0)
         {
             return false;
         }
@@ -40,7 +40,7 @@ public class PathfinderGoalPlay extends PathfinderGoal
             {
                 EntityVillager var5 = (EntityVillager)var4.next();
 
-                if (var5 != this.a && !var5.o() && var5.aE() < 0)
+                if (var5 != this.a && !var5.o() && var5.getAge() < 0)
                 {
                     double var6 = var5.e(this.a);
 

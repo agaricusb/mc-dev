@@ -12,6 +12,7 @@ public class EntityGhast extends EntityFlying implements IMonster
     private int i = 0;
     public int f = 0;
     public int g = 0;
+    private int explosionPower = 1;
 
     public EntityGhast(World par1World)
     {
@@ -19,7 +20,7 @@ public class EntityGhast extends EntityFlying implements IMonster
         this.texture = "/mob/ghast.png";
         this.a(4.0F, 4.0F);
         this.fireProof = true;
-        this.bc = 5;
+        this.bd = 5;
     }
 
     /**
@@ -126,7 +127,7 @@ public class EntityGhast extends EntityFlying implements IMonster
             double var11 = this.target.locX - this.locX;
             double var13 = this.target.boundingBox.b + (double)(this.target.length / 2.0F) - (this.locY + (double)(this.length / 2.0F));
             double var15 = this.target.locZ - this.locZ;
-            this.aw = this.yaw = -((float)Math.atan2(var11, var15)) * 180.0F / (float)Math.PI;
+            this.ax = this.yaw = -((float)Math.atan2(var11, var15)) * 180.0F / (float)Math.PI;
 
             if (this.n(this.target))
             {
@@ -141,6 +142,7 @@ public class EntityGhast extends EntityFlying implements IMonster
                 {
                     this.world.a((EntityHuman) null, 1008, (int) this.locX, (int) this.locY, (int) this.locZ, 0);
                     EntityLargeFireball var17 = new EntityLargeFireball(this.world, this, var11, var13, var15);
+                    var17.e = this.explosionPower;
                     double var18 = 4.0D;
                     Vec3D var20 = this.i(1.0F);
                     var17.locX = this.locX + var20.c * var18;
@@ -157,7 +159,7 @@ public class EntityGhast extends EntityFlying implements IMonster
         }
         else
         {
-            this.aw = this.yaw = -((float)Math.atan2(this.motX, this.motZ)) * 180.0F / (float)Math.PI;
+            this.ax = this.yaw = -((float)Math.atan2(this.motX, this.motZ)) * 180.0F / (float)Math.PI;
 
             if (this.g > 0)
             {
@@ -275,5 +277,27 @@ public class EntityGhast extends EntityFlying implements IMonster
     public int bv()
     {
         return 1;
+    }
+
+    /**
+     * (abstract) Protected helper method to write subclass entity data to NBT.
+     */
+    public void b(NBTTagCompound par1NBTTagCompound)
+    {
+        super.b(par1NBTTagCompound);
+        par1NBTTagCompound.setInt("ExplosionPower", this.explosionPower);
+    }
+
+    /**
+     * (abstract) Protected helper method to read subclass entity data from NBT.
+     */
+    public void a(NBTTagCompound par1NBTTagCompound)
+    {
+        super.a(par1NBTTagCompound);
+
+        if (par1NBTTagCompound.hasKey("ExplosionPower"))
+        {
+            this.explosionPower = par1NBTTagCompound.getInt("ExplosionPower");
+        }
     }
 }

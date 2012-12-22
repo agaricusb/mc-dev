@@ -27,14 +27,14 @@ public class CommandPardon extends CommandAbstract
      */
     public boolean b(ICommandListener par1ICommandSender)
     {
-        return MinecraftServer.getServer().getServerConfigurationManager().getNameBans().isEnabled() && super.b(par1ICommandSender);
+        return MinecraftServer.getServer().getPlayerList().getNameBans().isEnabled() && super.b(par1ICommandSender);
     }
 
     public void b(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
     {
         if (par2ArrayOfStr.length == 1 && par2ArrayOfStr[0].length() > 0)
         {
-            MinecraftServer.getServer().getServerConfigurationManager().getNameBans().remove(par2ArrayOfStr[0]);
+            MinecraftServer.getServer().getPlayerList().getNameBans().remove(par2ArrayOfStr[0]);
             a(par1ICommandSender, "commands.unban.success", new Object[]{par2ArrayOfStr[0]});
         }
         else
@@ -48,6 +48,6 @@ public class CommandPardon extends CommandAbstract
      */
     public List a(ICommandListener par1ICommandSender, String[] par2ArrayOfStr)
     {
-        return par2ArrayOfStr.length == 1 ? a(par2ArrayOfStr, MinecraftServer.getServer().getServerConfigurationManager().getNameBans().getEntries().keySet()) : null;
+        return par2ArrayOfStr.length == 1 ? a(par2ArrayOfStr, MinecraftServer.getServer().getPlayerList().getNameBans().getEntries().keySet()) : null;
     }
 }

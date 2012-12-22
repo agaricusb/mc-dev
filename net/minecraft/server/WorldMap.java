@@ -95,8 +95,8 @@ public class WorldMap extends WorldMapBase
         par1NBTTagCompound.setInt("xCenter", this.centerX);
         par1NBTTagCompound.setInt("zCenter", this.centerZ);
         par1NBTTagCompound.setByte("scale", this.scale);
-        par1NBTTagCompound.setShort("width", (short)128);
-        par1NBTTagCompound.setShort("height", (short)128);
+        par1NBTTagCompound.setShort("width", (short) 128);
+        par1NBTTagCompound.setShort("height", (short) 128);
         par1NBTTagCompound.setByteArray("colors", this.colors);
     }
 
@@ -197,6 +197,9 @@ public class WorldMap extends WorldMapBase
         this.g.put(par3Str, new WorldMapDecoration(this, (byte)par1, var13, var14, var15));
     }
 
+    /**
+     * Get byte array of packet data to send to players on map for updating map data
+     */
     public byte[] getUpdatePacket(ItemStack par1ItemStack, World par2World, EntityHuman par3EntityPlayer)
     {
         WorldMapHumanTracker var4 = (WorldMapHumanTracker)this.i.get(par3EntityPlayer);

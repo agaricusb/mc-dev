@@ -29,6 +29,16 @@ public abstract class EntityAgeable extends EntityCreature
                     var4.setAge(-24000);
                     var4.setPositionRotation(this.locX, this.locY, this.locZ, 0.0F, 0.0F);
                     this.world.addEntity(var4);
+
+                    if (!par1EntityPlayer.abilities.canInstantlyBuild)
+                    {
+                        --var2.count;
+
+                        if (var2.count <= 0)
+                        {
+                            par1EntityPlayer.inventory.setItem(par1EntityPlayer.inventory.itemInHandIndex, (ItemStack) null);
+                        }
+                    }
                 }
             }
         }
@@ -67,7 +77,7 @@ public abstract class EntityAgeable extends EntityCreature
     public void b(NBTTagCompound par1NBTTagCompound)
     {
         super.b(par1NBTTagCompound);
-        par1NBTTagCompound.setInt("Age", this.aE());
+        par1NBTTagCompound.setInt("Age", this.getAge());
     }
 
     /**
@@ -86,7 +96,7 @@ public abstract class EntityAgeable extends EntityCreature
     public void c()
     {
         super.c();
-        int var1 = this.aE();
+        int var1 = this.getAge();
 
         if (var1 < 0)
         {
@@ -105,6 +115,6 @@ public abstract class EntityAgeable extends EntityCreature
      */
     public boolean isBaby()
     {
-        return this.aE() < 0;
+        return this.getAge() < 0;
     }
 }

@@ -1,6 +1,5 @@
 package net.minecraft.server;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -54,7 +53,7 @@ public class ContainerEnchantTable extends Container
     }
 
     /**
-     * Updates crafting matrix; called from onCraftMatrixChanged. Args: none
+     * Looks for changes made in the container, sends them to every listener.
      */
     public void b()
     {
@@ -160,16 +159,34 @@ public class ContainerEnchantTable extends Container
             if (!this.world.isStatic)
             {
                 List var4 = EnchantmentManager.b(this.l, var3, this.costs[par2]);
+                boolean var5 = var3.id == Item.BOOK.id;
 
                 if (var4 != null)
                 {
                     par1EntityPlayer.levelDown(-this.costs[par2]);
-                    Iterator var5 = var4.iterator();
 
-                    while (var5.hasNext())
+                    if (var5)
                     {
-                        EnchantmentInstance var6 = (EnchantmentInstance)var5.next();
-                        var3.addEnchantment(var6.enchantment, var6.level);
+                        var3.id = Item.ENCHANTED_BOOK.id;
+                    }
+
+                    int var6 = var5 ? this.l.nextInt(var4.size()) : -1;
+
+                    for (int var7 = 0; var7 < var4.size(); ++var7)
+                    {
+                        EnchantmentInstance var8 = (EnchantmentInstance)var4.get(var7);
+
+                        if (!var5 || var7 == var6)
+                        {
+                            if (var5)
+                            {
+                                Item.ENCHANTED_BOOK.a(var3, var8);
+                            }
+                            else
+                            {
+                                var3.addEnchantment(var8.enchantment, var8.level);
+                            }
+                        }
                     }
 
                     this.a(this.enchantSlots);

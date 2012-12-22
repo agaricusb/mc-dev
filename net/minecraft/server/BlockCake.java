@@ -100,7 +100,7 @@ public class BlockCake extends Block
      */
     private void b(World par1World, int par2, int par3, int par4, EntityHuman par5EntityPlayer)
     {
-        if (par5EntityPlayer.f(false))
+        if (par5EntityPlayer.g(false))
         {
             par5EntityPlayer.getFoodData().eat(2, 0.1F);
             int var6 = par1World.getData(par2, par3, par4) + 1;

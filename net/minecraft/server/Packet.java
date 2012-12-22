@@ -244,7 +244,7 @@ public abstract class Packet
     /**
      * Passes this Packet on to the NetHandler for processing.
      */
-    public abstract void handle(NetHandler var1);
+    public abstract void handle(Connection var1);
 
     /**
      * Abstract. Return the size of the packet (not counting the header).
@@ -269,7 +269,8 @@ public abstract class Packet
     }
 
     /**
-     * if this returns false, processPacket is deffered for processReadPackets to handle
+     * If this returns true, the packet may be processed on any thread; otherwise it is queued for the main thread to
+     * handle.
      */
     public boolean a_()
     {
@@ -380,12 +381,11 @@ public abstract class Packet
         a(13, true, true, Packet13PlayerLookMove.class);
         a(14, false, true, Packet14BlockDig.class);
         a(15, false, true, Packet15Place.class);
-        a(16, false, true, Packet16BlockItemSwitch.class);
+        a(16, true, true, Packet16BlockItemSwitch.class);
         a(17, true, false, Packet17EntityLocationAction.class);
         a(18, true, true, Packet18ArmAnimation.class);
         a(19, false, true, Packet19EntityAction.class);
         a(20, true, false, Packet20NamedEntitySpawn.class);
-        a(21, true, false, Packet21PickupSpawn.class);
         a(22, true, false, Packet22Collect.class);
         a(23, true, false, Packet23VehicleSpawn.class);
         a(24, true, false, Packet24MobSpawn.class);

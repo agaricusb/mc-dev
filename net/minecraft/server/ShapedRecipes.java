@@ -16,6 +16,7 @@ public class ShapedRecipes implements IRecipe
 
     /** Is the itemID of the output item that you get when craft the recipe. */
     public final int a;
+    private boolean f = false;
 
     public ShapedRecipes(int par1, int par2, ItemStack[] par3ArrayOfItemStack, ItemStack par4ItemStack)
     {
@@ -110,7 +111,22 @@ public class ShapedRecipes implements IRecipe
      */
     public ItemStack a(InventoryCrafting par1InventoryCrafting)
     {
-        return this.b().cloneItemStack();
+        ItemStack var2 = this.b().cloneItemStack();
+
+        if (this.f)
+        {
+            for (int var3 = 0; var3 < par1InventoryCrafting.getSize(); ++var3)
+            {
+                ItemStack var4 = par1InventoryCrafting.getItem(var3);
+
+                if (var4 != null && var4.hasTag())
+                {
+                    var2.setTag((NBTTagCompound) var4.tag.clone());
+                }
+            }
+        }
+
+        return var2;
     }
 
     /**
@@ -119,5 +135,11 @@ public class ShapedRecipes implements IRecipe
     public int a()
     {
         return this.width * this.height;
+    }
+
+    public ShapedRecipes c()
+    {
+        this.f = true;
+        return this;
     }
 }

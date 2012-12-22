@@ -16,12 +16,12 @@ public class EnchantmentManager
     /**
      * Used to calculate the extra armor of enchantments on armors equipped on player.
      */
-    private static final EnchantmentModifierProtection b = new EnchantmentModifierProtection((EmptyClass2)null);
+    private static final EnchantmentModifierProtection b = new EnchantmentModifierProtection((EmptyClass)null);
 
     /**
      * Used to calculate the (magic) extra damage done by enchantments on current equipped item of player.
      */
-    private static final EnchantmentModifierDamage c = new EnchantmentModifierDamage((EmptyClass2)null);
+    private static final EnchantmentModifierDamage c = new EnchantmentModifierDamage((EmptyClass)null);
 
     /**
      * Returns the level of enchantment on the ItemStack passed.
@@ -64,7 +64,7 @@ public class EnchantmentManager
     public static Map a(ItemStack par0ItemStack)
     {
         LinkedHashMap var1 = new LinkedHashMap();
-        NBTTagList var2 = par0ItemStack.getEnchantments();
+        NBTTagList var2 = par0ItemStack.id == Item.ENCHANTED_BOOK.id ? Item.ENCHANTED_BOOK.g(par0ItemStack) : par0ItemStack.getEnchantments();
 
         if (var2 != null)
         {
@@ -91,14 +91,22 @@ public class EnchantmentManager
         {
             int var4 = ((Integer)var3.next()).intValue();
             NBTTagCompound var5 = new NBTTagCompound();
-            var5.setShort("id", (short)var4);
-            var5.setShort("lvl", (short)((Integer)par0Map.get(Integer.valueOf(var4))).intValue());
+            var5.setShort("id", (short) var4);
+            var5.setShort("lvl", (short) ((Integer) par0Map.get(Integer.valueOf(var4))).intValue());
             var2.add(var5);
+
+            if (par1ItemStack.id == Item.ENCHANTED_BOOK.id)
+            {
+                Item.ENCHANTED_BOOK.a(par1ItemStack, new EnchantmentInstance(var4, ((Integer) par0Map.get(Integer.valueOf(var4))).intValue()));
+            }
         }
 
         if (var2.size() > 0)
         {
-            par1ItemStack.a("ench", var2);
+            if (par1ItemStack.id != Item.ENCHANTED_BOOK.id)
+            {
+                par1ItemStack.a("ench", var2);
+            }
         }
         else if (par1ItemStack.hasTag())
         {
@@ -109,24 +117,31 @@ public class EnchantmentManager
     /**
      * Returns the biggest level of the enchantment on the array of ItemStack passed.
      */
-    private static int getEnchantmentLevel(int par0, ItemStack[] par1ArrayOfItemStack)
+    public static int getEnchantmentLevel(int par0, ItemStack[] par1ArrayOfItemStack)
     {
-        int var2 = 0;
-        ItemStack[] var3 = par1ArrayOfItemStack;
-        int var4 = par1ArrayOfItemStack.length;
-
-        for (int var5 = 0; var5 < var4; ++var5)
+        if (par1ArrayOfItemStack == null)
         {
-            ItemStack var6 = var3[var5];
-            int var7 = getEnchantmentLevel(par0, var6);
-
-            if (var7 > var2)
-            {
-                var2 = var7;
-            }
+            return 0;
         }
+        else
+        {
+            int var2 = 0;
+            ItemStack[] var3 = par1ArrayOfItemStack;
+            int var4 = par1ArrayOfItemStack.length;
 
-        return var2;
+            for (int var5 = 0; var5 < var4; ++var5)
+            {
+                ItemStack var6 = var3[var5];
+                int var7 = getEnchantmentLevel(par0, var6);
+
+                if (var7 > var2)
+                {
+                    var2 = var7;
+                }
+            }
+
+            return var2;
+        }
     }
 
     /**
@@ -227,14 +242,6 @@ public class EnchantmentManager
     }
 
     /**
-     * Returns the unbreaking enchantment modifier on current equipped item of player.
-     */
-    public static int getDurabilityEnchantmentLevel(EntityLiving par0EntityLiving)
-    {
-        return getEnchantmentLevel(Enchantment.DURABILITY.id, par0EntityLiving.bD());
-    }
-
-    /**
      * Returns the silk touch status of enchantments on current equipped item of player.
      */
     public static boolean hasSilkTouchEnchantment(EntityLiving par0EntityLiving)
@@ -264,6 +271,29 @@ public class EnchantmentManager
     public static boolean hasWaterWorkerEnchantment(EntityLiving par0EntityLiving)
     {
         return getEnchantmentLevel(Enchantment.WATER_WORKER.id, par0EntityLiving.getEquipment()) > 0;
+    }
+
+    public static int getThornsEnchantmentLevel(EntityLiving par0EntityLiving)
+    {
+        return getEnchantmentLevel(Enchantment.THORNS.id, par0EntityLiving.getEquipment());
+    }
+
+    public static ItemStack a(Enchantment par0Enchantment, EntityLiving par1EntityLiving)
+    {
+        ItemStack[] var2 = par1EntityLiving.getEquipment();
+        int var3 = var2.length;
+
+        for (int var4 = 0; var4 < var3; ++var4)
+        {
+            ItemStack var5 = var2[var4];
+
+            if (var5 != null && getEnchantmentLevel(par0Enchantment.id, var5) > 0)
+            {
+                return var5;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -297,15 +327,29 @@ public class EnchantmentManager
     public static ItemStack a(Random par0Random, ItemStack par1ItemStack, int par2)
     {
         List var3 = b(par0Random, par1ItemStack, par2);
+        boolean var4 = par1ItemStack.id == Item.BOOK.id;
+
+        if (var4)
+        {
+            par1ItemStack.id = Item.ENCHANTED_BOOK.id;
+        }
 
         if (var3 != null)
         {
-            Iterator var4 = var3.iterator();
+            Iterator var5 = var3.iterator();
 
-            while (var4.hasNext())
+            while (var5.hasNext())
             {
-                EnchantmentInstance var5 = (EnchantmentInstance)var4.next();
-                par1ItemStack.addEnchantment(var5.enchantment, var5.level);
+                EnchantmentInstance var6 = (EnchantmentInstance)var5.next();
+
+                if (var4)
+                {
+                    Item.ENCHANTED_BOOK.a(par1ItemStack, var6);
+                }
+                else
+                {
+                    par1ItemStack.addEnchantment(var6.enchantment, var6.level);
+                }
             }
         }
 
@@ -404,25 +448,26 @@ public class EnchantmentManager
     {
         Item var2 = par1ItemStack.getItem();
         HashMap var3 = null;
-        Enchantment[] var4 = Enchantment.byId;
-        int var5 = var4.length;
+        boolean var4 = par1ItemStack.id == Item.BOOK.id;
+        Enchantment[] var5 = Enchantment.byId;
+        int var6 = var5.length;
 
-        for (int var6 = 0; var6 < var5; ++var6)
+        for (int var7 = 0; var7 < var6; ++var7)
         {
-            Enchantment var7 = var4[var6];
+            Enchantment var8 = var5[var7];
 
-            if (var7 != null && var7.slot.canEnchant(var2))
+            if (var8 != null && (var8.slot.canEnchant(var2) || var4))
             {
-                for (int var8 = var7.getStartLevel(); var8 <= var7.getMaxLevel(); ++var8)
+                for (int var9 = var8.getStartLevel(); var9 <= var8.getMaxLevel(); ++var9)
                 {
-                    if (par0 >= var7.a(var8) && par0 <= var7.b(var8))
+                    if (par0 >= var8.a(var9) && par0 <= var8.b(var9))
                     {
                         if (var3 == null)
                         {
                             var3 = new HashMap();
                         }
 
-                        var3.put(Integer.valueOf(var7.id), new EnchantmentInstance(var7, var8));
+                        var3.put(Integer.valueOf(var8.id), new EnchantmentInstance(var8, var9));
                     }
                 }
             }

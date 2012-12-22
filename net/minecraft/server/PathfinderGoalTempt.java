@@ -61,7 +61,7 @@ public class PathfinderGoalTempt extends PathfinderGoal
             }
             else
             {
-                ItemStack var1 = this.h.bT();
+                ItemStack var1 = this.h.bS();
                 return var1 == null ? false : var1.id == this.k;
             }
         }

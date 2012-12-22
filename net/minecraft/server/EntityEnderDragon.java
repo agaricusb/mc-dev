@@ -29,35 +29,35 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
     public EntityComplexPart h;
     public EntityComplexPart i;
     public EntityComplexPart j;
-    public EntityComplexPart bI;
     public EntityComplexPart bJ;
     public EntityComplexPart bK;
+    public EntityComplexPart bL;
 
     /** Animation time at previous tick. */
-    public float bL = 0.0F;
+    public float bM = 0.0F;
 
     /**
      * Animation time, used to control the speed of the animation cycles (wings flapping, jaw opening, etc.)
      */
-    public float bM = 0.0F;
+    public float bN = 0.0F;
 
     /** Force selecting a new flight target at next tick if set to true. */
-    public boolean bN = false;
+    public boolean bO = false;
 
     /**
      * Activated if the dragon is flying though obsidian, white stone or bedrock. Slows movement and animation speed.
      */
-    public boolean bO = false;
-    private Entity bR;
-    public int bP = 0;
+    public boolean bP = false;
+    private Entity bS;
+    public int bQ = 0;
 
     /** The current endercrystal that is healing this dragon */
-    public EntityEnderCrystal bQ = null;
+    public EntityEnderCrystal bR = null;
 
     public EntityEnderDragon(World par1World)
     {
         super(par1World);
-        this.children = new EntityComplexPart[] {this.g = new EntityComplexPart(this, "head", 6.0F, 6.0F), this.h = new EntityComplexPart(this, "body", 8.0F, 8.0F), this.i = new EntityComplexPart(this, "tail", 4.0F, 4.0F), this.j = new EntityComplexPart(this, "tail", 4.0F, 4.0F), this.bI = new EntityComplexPart(this, "tail", 4.0F, 4.0F), this.bJ = new EntityComplexPart(this, "wing", 4.0F, 4.0F), this.bK = new EntityComplexPart(this, "wing", 4.0F, 4.0F)};
+        this.children = new EntityComplexPart[] {this.g = new EntityComplexPart(this, "head", 6.0F, 6.0F), this.h = new EntityComplexPart(this, "body", 8.0F, 8.0F), this.i = new EntityComplexPart(this, "tail", 4.0F, 4.0F), this.j = new EntityComplexPart(this, "tail", 4.0F, 4.0F), this.bJ = new EntityComplexPart(this, "tail", 4.0F, 4.0F), this.bK = new EntityComplexPart(this, "wing", 4.0F, 4.0F), this.bL = new EntityComplexPart(this, "wing", 4.0F, 4.0F)};
         this.setHealth(this.getMaxHealth());
         this.texture = "/mob/enderdragon/ender.png";
         this.a(16.0F, 8.0F);
@@ -118,16 +118,16 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
         }
         else
         {
-            var1 = MathHelper.cos(this.bM * (float) Math.PI * 2.0F);
-            var2 = MathHelper.cos(this.bL * (float) Math.PI * 2.0F);
+            var1 = MathHelper.cos(this.bN * (float) Math.PI * 2.0F);
+            var2 = MathHelper.cos(this.bM * (float) Math.PI * 2.0F);
 
             if (var2 <= -0.3F && var1 >= -0.3F)
             {
-                this.world.b(this.locX, this.locY, this.locZ, "mob.enderdragon.wings", 5.0F, 0.8F + this.random.nextFloat() * 0.3F);
+                this.world.a(this.locX, this.locY, this.locZ, "mob.enderdragon.wings", 5.0F, 0.8F + this.random.nextFloat() * 0.3F, false);
             }
         }
 
-        this.bL = this.bM;
+        this.bM = this.bN;
         float var3;
 
         if (this.health <= 0)
@@ -143,13 +143,13 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
             var1 = 0.2F / (MathHelper.sqrt(this.motX * this.motX + this.motZ * this.motZ) * 10.0F + 1.0F);
             var1 *= (float)Math.pow(2.0D, this.motY);
 
-            if (this.bO)
+            if (this.bP)
             {
-                this.bM += var1 * 0.5F;
+                this.bN += var1 * 0.5F;
             }
             else
             {
-                this.bM += var1;
+                this.bN += var1;
             }
 
             this.yaw = MathHelper.g(this.yaw);
@@ -178,15 +178,15 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
 
             if (this.world.isStatic)
             {
-                if (this.bs > 0)
+                if (this.bt > 0)
                 {
-                    var26 = this.locX + (this.bt - this.locX) / (double)this.bs;
-                    var4 = this.locY + (this.bu - this.locY) / (double)this.bs;
-                    var6 = this.locZ + (this.bv - this.locZ) / (double)this.bs;
-                    var8 = MathHelper.g(this.bw - (double) this.yaw);
-                    this.yaw = (float)((double)this.yaw + var8 / (double)this.bs);
-                    this.pitch = (float)((double)this.pitch + (this.bx - (double)this.pitch) / (double)this.bs);
-                    --this.bs;
+                    var26 = this.locX + (this.bu - this.locX) / (double)this.bt;
+                    var4 = this.locY + (this.bv - this.locY) / (double)this.bt;
+                    var6 = this.locZ + (this.bw - this.locZ) / (double)this.bt;
+                    var8 = MathHelper.g(this.bx - (double) this.yaw);
+                    this.yaw = (float)((double)this.yaw + var8 / (double)this.bt);
+                    this.pitch = (float)((double)this.pitch + (this.by - (double)this.pitch) / (double)this.bt);
+                    --this.bt;
                     this.setPosition(var26, var4, var6);
                     this.b(this.yaw, this.pitch);
                 }
@@ -198,10 +198,10 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
                 var6 = this.c - this.locZ;
                 var8 = var26 * var26 + var4 * var4 + var6 * var6;
 
-                if (this.bR != null)
+                if (this.bS != null)
                 {
-                    this.a = this.bR.locX;
-                    this.c = this.bR.locZ;
+                    this.a = this.bS.locX;
+                    this.c = this.bS.locZ;
                     double var10 = this.a - this.locX;
                     double var12 = this.c - this.locZ;
                     double var14 = Math.sqrt(var10 * var10 + var12 * var12);
@@ -212,7 +212,7 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
                         var16 = 10.0D;
                     }
 
-                    this.b = this.bR.boundingBox.b + var16;
+                    this.b = this.bS.boundingBox.b + var16;
                 }
                 else
                 {
@@ -220,7 +220,7 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
                     this.c += this.random.nextGaussian() * 2.0D;
                 }
 
-                if (this.bN || var8 < 100.0D || var8 > 22500.0D || this.positionChanged || this.G)
+                if (this.bO || var8 < 100.0D || var8 > 22500.0D || this.positionChanged || this.G)
                 {
                     this.i();
                 }
@@ -262,7 +262,7 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
                     var17 = 0.0F;
                 }
 
-                this.bD *= 0.8F;
+                this.bE *= 0.8F;
                 float var18 = MathHelper.sqrt(this.motX * this.motX + this.motZ * this.motZ) * 1.0F + 1.0F;
                 double var19 = Math.sqrt(this.motX * this.motX + this.motZ * this.motZ) * 1.0D + 1.0D;
 
@@ -271,13 +271,13 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
                     var19 = 40.0D;
                 }
 
-                this.bD = (float)((double)this.bD + var13 * (0.699999988079071D / var19 / (double)var18));
-                this.yaw += this.bD * 0.1F;
+                this.bE = (float)((double)this.bE + var13 * (0.699999988079071D / var19 / (double)var18));
+                this.yaw += this.bE * 0.1F;
                 float var21 = (float)(2.0D / (var19 + 1.0D));
                 float var22 = 0.06F;
                 this.a(0.0F, -1.0F, var22 * (var17 * var21 + (1.0F - var21)));
 
-                if (this.bO)
+                if (this.bP)
                 {
                     this.move(this.motX * 0.800000011920929D, this.motY * 0.800000011920929D, this.motZ * 0.800000011920929D);
                 }
@@ -294,17 +294,17 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
                 this.motY *= 0.9100000262260437D;
             }
 
-            this.aw = this.yaw;
+            this.ax = this.yaw;
             this.g.width = this.g.length = 3.0F;
             this.i.width = this.i.length = 2.0F;
             this.j.width = this.j.length = 2.0F;
-            this.bI.width = this.bI.length = 2.0F;
+            this.bJ.width = this.bJ.length = 2.0F;
             this.h.length = 3.0F;
             this.h.width = 5.0F;
-            this.bJ.length = 2.0F;
-            this.bJ.width = 4.0F;
-            this.bK.length = 3.0F;
+            this.bK.length = 2.0F;
             this.bK.width = 4.0F;
+            this.bL.length = 3.0F;
+            this.bL.width = 4.0F;
             var2 = (float)(this.a(5, 1.0F)[1] - this.a(10, 1.0F)[1]) * 10.0F / 180.0F * (float)Math.PI;
             var3 = MathHelper.cos(var2);
             float var28 = -MathHelper.sin(var2);
@@ -313,22 +313,22 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
             float var7 = MathHelper.cos(var5);
             this.h.j_();
             this.h.setPositionRotation(this.locX + (double) (var27 * 0.5F), this.locY, this.locZ - (double) (var7 * 0.5F), 0.0F, 0.0F);
-            this.bJ.j_();
-            this.bJ.setPositionRotation(this.locX + (double) (var7 * 4.5F), this.locY + 2.0D, this.locZ + (double) (var27 * 4.5F), 0.0F, 0.0F);
             this.bK.j_();
-            this.bK.setPositionRotation(this.locX - (double) (var7 * 4.5F), this.locY + 2.0D, this.locZ - (double) (var27 * 4.5F), 0.0F, 0.0F);
+            this.bK.setPositionRotation(this.locX + (double) (var7 * 4.5F), this.locY + 2.0D, this.locZ + (double) (var27 * 4.5F), 0.0F, 0.0F);
+            this.bL.j_();
+            this.bL.setPositionRotation(this.locX - (double) (var7 * 4.5F), this.locY + 2.0D, this.locZ - (double) (var27 * 4.5F), 0.0F, 0.0F);
 
             if (!this.world.isStatic && this.hurtTicks == 0)
             {
-                this.a(this.world.getEntities(this, this.bJ.boundingBox.grow(4.0D, 2.0D, 4.0D).d(0.0D, -2.0D, 0.0D)));
                 this.a(this.world.getEntities(this, this.bK.boundingBox.grow(4.0D, 2.0D, 4.0D).d(0.0D, -2.0D, 0.0D)));
+                this.a(this.world.getEntities(this, this.bL.boundingBox.grow(4.0D, 2.0D, 4.0D).d(0.0D, -2.0D, 0.0D)));
                 this.b(this.world.getEntities(this, this.g.boundingBox.grow(1.0D, 1.0D, 1.0D)));
             }
 
             double[] var29 = this.a(5, 1.0F);
             double[] var9 = this.a(0, 1.0F);
-            var33 = MathHelper.sin(this.yaw * (float) Math.PI / 180.0F - this.bD * 0.01F);
-            float var32 = MathHelper.cos(this.yaw * (float) Math.PI / 180.0F - this.bD * 0.01F);
+            var33 = MathHelper.sin(this.yaw * (float) Math.PI / 180.0F - this.bE * 0.01F);
+            float var32 = MathHelper.cos(this.yaw * (float) Math.PI / 180.0F - this.bE * 0.01F);
             this.g.j_();
             this.g.setPositionRotation(this.locX + (double) (var33 * 5.5F * var3), this.locY + (var9[1] - var29[1]) * 1.0D + (double) (var28 * 5.5F), this.locZ - (double) (var32 * 5.5F * var3), 0.0F, 0.0F);
 
@@ -348,7 +348,7 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
 
                 if (var30 == 2)
                 {
-                    var31 = this.bI;
+                    var31 = this.bJ;
                 }
 
                 double[] var35 = this.a(12 + var30 * 2, 1.0F);
@@ -363,7 +363,7 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
 
             if (!this.world.isStatic)
             {
-                this.bO = this.a(this.g.boundingBox) | this.a(this.h.boundingBox);
+                this.bP = this.a(this.g.boundingBox) | this.a(this.h.boundingBox);
             }
         }
     }
@@ -373,16 +373,16 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
      */
     private void h()
     {
-        if (this.bQ != null)
+        if (this.bR != null)
         {
-            if (this.bQ.dead)
+            if (this.bR.dead)
             {
                 if (!this.world.isStatic)
                 {
                     this.a(this.g, DamageSource.EXPLOSION, 10);
                 }
 
-                this.bQ = null;
+                this.bR = null;
             }
             else if (this.ticksLived % 10 == 0 && this.health < this.getMaxHealth())
             {
@@ -410,7 +410,7 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
                 }
             }
 
-            this.bQ = var3;
+            this.bR = var3;
         }
     }
 
@@ -458,11 +458,11 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
      */
     private void i()
     {
-        this.bN = false;
+        this.bO = false;
 
         if (this.random.nextInt(2) == 0 && !this.world.players.isEmpty())
         {
-            this.bR = (Entity)this.world.players.get(this.random.nextInt(this.world.players.size()));
+            this.bS = (Entity)this.world.players.get(this.random.nextInt(this.world.players.size()));
         }
         else
         {
@@ -482,7 +482,7 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
             }
             while (!var1);
 
-            this.bR = null;
+            this.bS = null;
         }
     }
 
@@ -556,7 +556,7 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
         this.a = this.locX + (double)(var5 * 5.0F) + (double)((this.random.nextFloat() - 0.5F) * 2.0F);
         this.b = this.locY + (double)(this.random.nextFloat() * 3.0F) + 1.0D;
         this.c = this.locZ - (double)(var6 * 5.0F) + (double)((this.random.nextFloat() - 0.5F) * 2.0F);
-        this.bR = null;
+        this.bS = null;
 
         if (par2DamageSource.getEntity() instanceof EntityHuman || par2DamageSource == DamageSource.EXPLOSION)
         {
@@ -584,9 +584,9 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
      */
     protected void aP()
     {
-        ++this.bP;
+        ++this.bQ;
 
-        if (this.bP >= 180 && this.bP <= 200)
+        if (this.bQ >= 180 && this.bQ <= 200)
         {
             float var1 = (this.random.nextFloat() - 0.5F) * 8.0F;
             float var2 = (this.random.nextFloat() - 0.5F) * 4.0F;
@@ -599,7 +599,7 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
 
         if (!this.world.isStatic)
         {
-            if (this.bP > 150 && this.bP % 5 == 0)
+            if (this.bQ > 150 && this.bQ % 5 == 0)
             {
                 var4 = 1000;
 
@@ -611,16 +611,16 @@ public class EntityEnderDragon extends EntityLiving implements IComplex
                 }
             }
 
-            if (this.bP == 1)
+            if (this.bQ == 1)
             {
                 this.world.e(1018, (int) this.locX, (int) this.locY, (int) this.locZ, 0);
             }
         }
 
         this.move(0.0D, 0.10000000149011612D, 0.0D);
-        this.aw = this.yaw += 20.0F;
+        this.ax = this.yaw += 20.0F;
 
-        if (this.bP == 200 && !this.world.isStatic)
+        if (this.bQ == 200 && !this.world.isStatic)
         {
             var4 = 2000;
 

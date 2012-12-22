@@ -13,7 +13,11 @@ public class EntityFallingBlock extends Entity
     public boolean dropItem;
     private boolean e;
     private boolean hurtEntities;
+
+    /** Maximum amount of damage dealt to entities hit by falling block */
     private int fallHurtMax;
+
+    /** Actual damage dealt to entities hit by falling block */
     private float fallHurtAmount;
 
     public EntityFallingBlock(World par1World)
@@ -23,7 +27,7 @@ public class EntityFallingBlock extends Entity
         this.dropItem = true;
         this.e = false;
         this.hurtEntities = false;
-        this.fallHurtMax = 20;
+        this.fallHurtMax = 40;
         this.fallHurtAmount = 2.0F;
     }
 
@@ -39,7 +43,7 @@ public class EntityFallingBlock extends Entity
         this.dropItem = true;
         this.e = false;
         this.hurtEntities = false;
-        this.fallHurtMax = 20;
+        this.fallHurtMax = 40;
         this.fallHurtAmount = 2.0F;
         this.id = par8;
         this.data = par9;
@@ -103,14 +107,13 @@ public class EntityFallingBlock extends Entity
 
                 if (this.c == 1)
                 {
-                    if (this.c == 1 && this.world.getTypeId(var1, var2, var3) == this.id)
-                    {
-                        this.world.setTypeId(var1, var2, var3, 0);
-                    }
-                    else
+                    if (this.c != 1 || this.world.getTypeId(var1, var2, var3) != this.id)
                     {
                         this.die();
+                        return;
                     }
+
+                    this.world.setTypeId(var1, var2, var3, 0);
                 }
 
                 if (this.onGround)
@@ -194,9 +197,9 @@ public class EntityFallingBlock extends Entity
      */
     protected void b(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setByte("Tile", (byte)this.id);
-        par1NBTTagCompound.setByte("Data", (byte)this.data);
-        par1NBTTagCompound.setByte("Time", (byte)this.c);
+        par1NBTTagCompound.setByte("Tile", (byte) this.id);
+        par1NBTTagCompound.setByte("Data", (byte) this.data);
+        par1NBTTagCompound.setByte("Time", (byte) this.c);
         par1NBTTagCompound.setBoolean("DropItem", this.dropItem);
         par1NBTTagCompound.setBoolean("HurtEntities", this.hurtEntities);
         par1NBTTagCompound.setFloat("FallHurtAmount", this.fallHurtAmount);
@@ -237,5 +240,12 @@ public class EntityFallingBlock extends Entity
     public void e(boolean par1)
     {
         this.hurtEntities = par1;
+    }
+
+    public void a(CrashReportSystemDetails par1CrashReportCategory)
+    {
+        super.a(par1CrashReportCategory);
+        par1CrashReportCategory.a("Immitating block ID", Integer.valueOf(this.id));
+        par1CrashReportCategory.a("Immitating block data", Integer.valueOf(this.data));
     }
 }

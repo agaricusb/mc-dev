@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class DispenseBehaviorArrow extends DispenseBehaviorProjectile
 {
     /** Reference to the MinecraftServer object. */

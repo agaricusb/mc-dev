@@ -37,7 +37,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         var1.setDaemon(true);
         var1.start();
         ConsoleLogManager.init();
-        log.info("Starting minecraft server version 1.4.5");
+        log.info("Starting minecraft server version 1.4.6");
 
         if (Runtime.getRuntime().maxMemory() / 1024L / 1024L < 512L)
         {
@@ -113,7 +113,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
             log.warning("To change this, set \"online-mode\" to \"true\" in the server.properties file.");
         }
 
-        this.a(new ServerConfigurationManager(this));
+        this.a(new DedicatedPlayerList(this));
         long var4 = System.nanoTime();
 
         if (this.J() == null)
@@ -292,9 +292,9 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         return true;
     }
 
-    public ServerConfigurationManager am()
+    public DedicatedPlayerList am()
     {
-        return (ServerConfigurationManager)super.getServerConfigurationManager();
+        return (DedicatedPlayerList)super.getPlayerList();
     }
 
     public ServerConnection ae()
@@ -386,7 +386,7 @@ public class DedicatedServer extends MinecraftServer implements IMinecraftServer
         return this.propertyManager.getInt("spawn-protection", super.getSpawnProtection());
     }
 
-    public ServerConfigurationManagerAbstract getServerConfigurationManager()
+    public PlayerList getPlayerList()
     {
         return this.am();
     }

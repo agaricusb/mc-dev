@@ -11,8 +11,14 @@ import java.util.Map.Entry;
 public class WorldGenLargeFeature extends StructureGenerator
 {
     private static List e = Arrays.asList(new BiomeBase[] {BiomeBase.DESERT, BiomeBase.DESERT_HILLS, BiomeBase.JUNGLE, BiomeBase.JUNGLE_HILLS, BiomeBase.SWAMPLAND});
+
+    /** contains possible spawns for scattered features */
     private List f;
+
+    /** the maximum distance between scattered features */
     private int g;
+
+    /** the minimum distance between scattered features */
     private int h;
 
     public WorldGenLargeFeature()
@@ -86,6 +92,9 @@ public class WorldGenLargeFeature extends StructureGenerator
         return new WorldGenLargeFeatureStart(this.c, this.b, par1, par2);
     }
 
+    /**
+     * returns possible spawns for scattered features
+     */
     public List a()
     {
         return this.f;

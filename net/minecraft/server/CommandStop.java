@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class CommandStop extends CommandAbstract
 {
     public String c()

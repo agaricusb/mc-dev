@@ -9,6 +9,13 @@ public class Packet16BlockItemSwitch extends Packet
     /** The block/item id to be equipped. */
     public int itemInHandIndex;
 
+    public Packet16BlockItemSwitch() {}
+
+    public Packet16BlockItemSwitch(int par1)
+    {
+        this.itemInHandIndex = par1;
+    }
+
     /**
      * Abstract. Reads the raw packet data from the data stream.
      */
@@ -28,7 +35,7 @@ public class Packet16BlockItemSwitch extends Packet
     /**
      * Passes this Packet on to the NetHandler for processing.
      */
-    public void handle(NetHandler par1NetHandler)
+    public void handle(Connection par1NetHandler)
     {
         par1NetHandler.a(this);
     }

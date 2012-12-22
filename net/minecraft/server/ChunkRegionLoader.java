@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class ChunkRegionLoader implements IAsyncChunkSaver, IChunkLoader
+public class ChunkRegionLoader implements IChunkLoader, IAsyncChunkSaver
 {
     private List a = new ArrayList();
     private Set b = new HashSet();
@@ -54,7 +54,7 @@ public class ChunkRegionLoader implements IAsyncChunkSaver, IChunkLoader
                 return null;
             }
 
-            var4 = NBTCompressedStreamTools.a((DataInput) var10); // read
+            var4 = NBTCompressedStreamTools.a((DataInput) var10);
         }
 
         return this.a(par1World, par2, par3, var4);
@@ -170,7 +170,7 @@ public class ChunkRegionLoader implements IAsyncChunkSaver, IChunkLoader
     private void a(PendingChunkToSave par1AnvilChunkLoaderPending) throws IOException
     {
         DataOutputStream var2 = RegionFileCache.d(this.d, par1AnvilChunkLoaderPending.a.x, par1AnvilChunkLoaderPending.a.z);
-        NBTCompressedStreamTools.a(par1AnvilChunkLoaderPending.b, (DataOutput) var2); // write
+        NBTCompressedStreamTools.a(par1AnvilChunkLoaderPending.b, (DataOutput) var2);
         var2.close();
     }
 
@@ -204,89 +204,99 @@ public class ChunkRegionLoader implements IAsyncChunkSaver, IChunkLoader
         par3NBTTagCompound.setBoolean("TerrainPopulated", par1Chunk.done);
         ChunkSection[] var4 = par1Chunk.i();
         NBTTagList var5 = new NBTTagList("Sections");
-        ChunkSection[] var6 = var4;
-        int var7 = var4.length;
-        NBTTagCompound var10;
+        boolean var6 = !par2World.worldProvider.f;
+        ChunkSection[] var7 = var4;
+        int var8 = var4.length;
+        NBTTagCompound var11;
 
-        for (int var8 = 0; var8 < var7; ++var8)
+        for (int var9 = 0; var9 < var8; ++var9)
         {
-            ChunkSection var9 = var6[var8];
+            ChunkSection var10 = var7[var9];
 
-            if (var9 != null)
+            if (var10 != null)
             {
-                var10 = new NBTTagCompound();
-                var10.setByte("Y", (byte)(var9.d() >> 4 & 255));
-                var10.setByteArray("Blocks", var9.g());
+                var11 = new NBTTagCompound();
+                var11.setByte("Y", (byte) (var10.d() >> 4 & 255));
+                var11.setByteArray("Blocks", var10.g());
 
-                if (var9.i() != null)
+                if (var10.i() != null)
                 {
-                    var10.setByteArray("Add", var9.i().a);
+                    var11.setByteArray("Add", var10.i().a);
                 }
 
-                var10.setByteArray("Data", var9.j().a);
-                var10.setByteArray("SkyLight", var9.l().a);
-                var10.setByteArray("BlockLight", var9.k().a);
-                var5.add(var10);
+                var11.setByteArray("Data", var10.j().a);
+                var11.setByteArray("BlockLight", var10.k().a);
+
+                if (var6)
+                {
+                    var11.setByteArray("SkyLight", var10.l().a);
+                }
+                else
+                {
+                    var11.setByteArray("SkyLight", new byte[var10.k().a.length]);
+                }
+
+                var5.add(var11);
             }
         }
 
         par3NBTTagCompound.set("Sections", var5);
         par3NBTTagCompound.setByteArray("Biomes", par1Chunk.m());
         par1Chunk.m = false;
-        NBTTagList var15 = new NBTTagList();
-        Iterator var17;
+        NBTTagList var16 = new NBTTagList();
+        Iterator var18;
 
-        for (var7 = 0; var7 < par1Chunk.entitySlices.length; ++var7)
+        for (var8 = 0; var8 < par1Chunk.entitySlices.length; ++var8)
         {
-            var17 = par1Chunk.entitySlices[var7].iterator();
+            var18 = par1Chunk.entitySlices[var8].iterator();
 
-            while (var17.hasNext())
+            while (var18.hasNext())
             {
-                Entity var19 = (Entity)var17.next();
+                Entity var21 = (Entity)var18.next();
                 par1Chunk.m = true;
-                var10 = new NBTTagCompound();
+                var11 = new NBTTagCompound();
 
-                if (var19.c(var10))
+                if (var21.c(var11))
                 {
-                    var15.add(var10);
+                    var16.add(var11);
                 }
             }
         }
 
-        par3NBTTagCompound.set("Entities", var15);
-        NBTTagList var16 = new NBTTagList();
-        var17 = par1Chunk.tileEntities.values().iterator();
+        par3NBTTagCompound.set("Entities", var16);
+        NBTTagList var17 = new NBTTagList();
+        var18 = par1Chunk.tileEntities.values().iterator();
 
-        while (var17.hasNext())
+        while (var18.hasNext())
         {
-            TileEntity var21 = (TileEntity)var17.next();
-            var10 = new NBTTagCompound();
-            var21.b(var10);
-            var16.add(var10);
+            TileEntity var22 = (TileEntity)var18.next();
+            var11 = new NBTTagCompound();
+            var22.b(var11);
+            var17.add(var11);
         }
 
-        par3NBTTagCompound.set("TileEntities", var16);
-        List var18 = par2World.a(par1Chunk, false);
+        par3NBTTagCompound.set("TileEntities", var17);
+        List var20 = par2World.a(par1Chunk, false);
 
-        if (var18 != null)
+        if (var20 != null)
         {
-            long var20 = par2World.getTime();
-            NBTTagList var11 = new NBTTagList();
-            Iterator var12 = var18.iterator();
+            long var19 = par2World.getTime();
+            NBTTagList var12 = new NBTTagList();
+            Iterator var13 = var20.iterator();
 
-            while (var12.hasNext())
+            while (var13.hasNext())
             {
-                NextTickListEntry var13 = (NextTickListEntry)var12.next();
-                NBTTagCompound var14 = new NBTTagCompound();
-                var14.setInt("i", var13.d);
-                var14.setInt("x", var13.a);
-                var14.setInt("y", var13.b);
-                var14.setInt("z", var13.c);
-                var14.setInt("t", (int) (var13.e - var20));
-                var11.add(var14);
+                NextTickListEntry var14 = (NextTickListEntry)var13.next();
+                NBTTagCompound var15 = new NBTTagCompound();
+                var15.setInt("i", var14.d);
+                var15.setInt("x", var14.a);
+                var15.setInt("y", var14.b);
+                var15.setInt("z", var14.c);
+                var15.setInt("t", (int) (var14.e - var19));
+                var12.add(var15);
             }
 
-            par3NBTTagCompound.set("TileTicks", var11);
+            par3NBTTagCompound.set("TileTicks", var12);
         }
     }
 
@@ -304,24 +314,30 @@ public class ChunkRegionLoader implements IAsyncChunkSaver, IChunkLoader
         NBTTagList var6 = par2NBTTagCompound.getList("Sections");
         byte var7 = 16;
         ChunkSection[] var8 = new ChunkSection[var7];
+        boolean var9 = !par1World.worldProvider.f;
 
-        for (int var9 = 0; var9 < var6.size(); ++var9)
+        for (int var10 = 0; var10 < var6.size(); ++var10)
         {
-            NBTTagCompound var10 = (NBTTagCompound)var6.get(var9);
-            byte var11 = var10.getByte("Y");
-            ChunkSection var12 = new ChunkSection(var11 << 4);
-            var12.a(var10.getByteArray("Blocks"));
+            NBTTagCompound var11 = (NBTTagCompound)var6.get(var10);
+            byte var12 = var11.getByte("Y");
+            ChunkSection var13 = new ChunkSection(var12 << 4, var9);
+            var13.a(var11.getByteArray("Blocks"));
 
-            if (var10.hasKey("Add"))
+            if (var11.hasKey("Add"))
             {
-                var12.a(new NibbleArray(var10.getByteArray("Add"), 4));
+                var13.a(new NibbleArray(var11.getByteArray("Add"), 4));
             }
 
-            var12.b(new NibbleArray(var10.getByteArray("Data"), 4));
-            var12.d(new NibbleArray(var10.getByteArray("SkyLight"), 4));
-            var12.c(new NibbleArray(var10.getByteArray("BlockLight"), 4));
-            var12.recalcBlockCounts();
-            var8[var11] = var12;
+            var13.b(new NibbleArray(var11.getByteArray("Data"), 4));
+            var13.c(new NibbleArray(var11.getByteArray("BlockLight"), 4));
+
+            if (var9)
+            {
+                var13.d(new NibbleArray(var11.getByteArray("SkyLight"), 4));
+            }
+
+            var13.recalcBlockCounts();
+            var8[var12] = var13;
         }
 
         var5.a(var8);
@@ -331,49 +347,49 @@ public class ChunkRegionLoader implements IAsyncChunkSaver, IChunkLoader
             var5.a(par2NBTTagCompound.getByteArray("Biomes"));
         }
 
-        NBTTagList var14 = par2NBTTagCompound.getList("Entities");
+        NBTTagList var16 = par2NBTTagCompound.getList("Entities");
 
-        if (var14 != null)
+        if (var16 != null)
         {
-            for (int var17 = 0; var17 < var14.size(); ++var17)
+            for (int var15 = 0; var15 < var16.size(); ++var15)
             {
-                NBTTagCompound var16 = (NBTTagCompound)var14.get(var17);
-                Entity var18 = EntityTypes.a(var16, par1World);
+                NBTTagCompound var17 = (NBTTagCompound)var16.get(var15);
+                Entity var22 = EntityTypes.a(var17, par1World);
                 var5.m = true;
 
-                if (var18 != null)
+                if (var22 != null)
                 {
-                    var5.a(var18);
+                    var5.a(var22);
                 }
             }
         }
 
-        NBTTagList var15 = par2NBTTagCompound.getList("TileEntities");
+        NBTTagList var19 = par2NBTTagCompound.getList("TileEntities");
 
-        if (var15 != null)
+        if (var19 != null)
         {
-            for (int var21 = 0; var21 < var15.size(); ++var21)
+            for (int var18 = 0; var18 < var19.size(); ++var18)
             {
-                NBTTagCompound var20 = (NBTTagCompound)var15.get(var21);
-                TileEntity var13 = TileEntity.c(var20);
+                NBTTagCompound var20 = (NBTTagCompound)var19.get(var18);
+                TileEntity var14 = TileEntity.c(var20);
 
-                if (var13 != null)
+                if (var14 != null)
                 {
-                    var5.a(var13);
+                    var5.a(var14);
                 }
             }
         }
 
         if (par2NBTTagCompound.hasKey("TileTicks"))
         {
-            NBTTagList var19 = par2NBTTagCompound.getList("TileTicks");
+            NBTTagList var23 = par2NBTTagCompound.getList("TileTicks");
 
-            if (var19 != null)
+            if (var23 != null)
             {
-                for (int var22 = 0; var22 < var19.size(); ++var22)
+                for (int var21 = 0; var21 < var23.size(); ++var21)
                 {
-                    NBTTagCompound var23 = (NBTTagCompound)var19.get(var22);
-                    par1World.b(var23.getInt("x"), var23.getInt("y"), var23.getInt("z"), var23.getInt("i"), var23.getInt("t"));
+                    NBTTagCompound var24 = (NBTTagCompound)var23.get(var21);
+                    par1World.b(var24.getInt("x"), var24.getInt("y"), var24.getInt("z"), var24.getInt("i"), var24.getInt("t"));
                 }
             }
         }

@@ -17,7 +17,7 @@ public class ItemLeaves extends ItemBlock
         return par1 | 4;
     }
 
-    public String c_(ItemStack par1ItemStack)
+    public String d(ItemStack par1ItemStack)
     {
         int var2 = par1ItemStack.getData();
 

@@ -38,7 +38,7 @@ public class ContainerFurnace extends Container
     }
 
     /**
-     * Updates crafting matrix; called from onCraftMatrixChanged. Args: none
+     * Looks for changes made in the container, sends them to every listener.
      */
     public void b()
     {

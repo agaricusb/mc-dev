@@ -9,16 +9,33 @@ import java.util.regex.Pattern;
 
 public class PlayerSelector
 {
+    /**
+     * This matches the at-tokens introduced for command blocks, including their arguments, if any.
+     */
     private static final Pattern a = Pattern.compile("^@([parf])(?:\\[([\\w=,-]*)\\])?$");
+
+    /**
+     * This matches things like "-1,,4", and is used for getting x,y,z,range from the token's argument list.
+     */
     private static final Pattern b = Pattern.compile("\\G(-?\\w*)(?:$|,)");
+
+    /**
+     * This matches things like "rm=4,c=2" and is used for handling named token arguments.
+     */
     private static final Pattern c = Pattern.compile("\\G(\\w{1,2})=(-?\\w+)(?:$|,)");
 
+    /**
+     * Returns the one player that matches the given at-token.  Returns null if more than one player matches.
+     */
     public static EntityPlayer getPlayer(ICommandListener par0ICommandSender, String par1Str)
     {
         EntityPlayer[] var2 = getPlayers(par0ICommandSender, par1Str);
         return var2 != null && var2.length == 1 ? var2[0] : null;
     }
 
+    /**
+     * Returns a nicely-formatted string listing the matching players.
+     */
     public static String getPlayerNames(ICommandListener par0ICommandSender, String par1Str)
     {
         EntityPlayer[] var2 = getPlayers(par0ICommandSender, par1Str);
@@ -40,6 +57,9 @@ public class PlayerSelector
         }
     }
 
+    /**
+     * Returns an array of all players matched by the given at-token.
+     */
     public static EntityPlayer[] getPlayers(ICommandListener par0ICommandSender, String par1Str)
     {
         Matcher var2 = a.matcher(par1Str);
@@ -111,7 +131,7 @@ public class PlayerSelector
                 }
                 else
                 {
-                    var12 = MinecraftServer.getServer().getServerConfigurationManager().a(var11, var5, var6, 0, var10, var7, var8);
+                    var12 = MinecraftServer.getServer().getPlayerList().a(var11, var5, var6, 0, var10, var7, var8);
                     Collections.shuffle(var12);
                     var12 = var12.subList(0, Math.min(var9, var12.size()));
                     return var12 != null && !var12.isEmpty() ? (EntityPlayer[])var12.toArray(new EntityPlayer[0]) : new EntityPlayer[0];
@@ -119,7 +139,7 @@ public class PlayerSelector
             }
             else
             {
-                var12 = MinecraftServer.getServer().getServerConfigurationManager().a(var11, var5, var6, var9, var10, var7, var8);
+                var12 = MinecraftServer.getServer().getPlayerList().a(var11, var5, var6, var9, var10, var7, var8);
                 return var12 != null && !var12.isEmpty() ? (EntityPlayer[])var12.toArray(new EntityPlayer[0]) : new EntityPlayer[0];
             }
         }
@@ -129,6 +149,9 @@ public class PlayerSelector
         }
     }
 
+    /**
+     * Returns whether the given pattern can match more than one player.
+     */
     public static boolean isList(String par0Str)
     {
         Matcher var1 = a.matcher(par0Str);
@@ -152,6 +175,9 @@ public class PlayerSelector
         }
     }
 
+    /**
+     * Returns whether the given token (parameter 1) has exactly the given arguments (parameter 2).
+     */
     public static boolean isPattern(String par0Str, String par1Str)
     {
         Matcher var2 = a.matcher(par0Str);
@@ -167,36 +193,57 @@ public class PlayerSelector
         }
     }
 
+    /**
+     * Returns whether the given token has any arguments set.
+     */
     public static boolean isPattern(String par0Str)
     {
         return isPattern(par0Str, (String) null);
     }
 
+    /**
+     * Gets the default minimum range (argument rm).
+     */
     private static final int c(String par0Str)
     {
         return 0;
     }
 
+    /**
+     * Gets the default maximum range (argument r).
+     */
     private static final int d(String par0Str)
     {
         return 0;
     }
 
+    /**
+     * Gets the default maximum experience level (argument l)
+     */
     private static final int e(String par0Str)
     {
         return Integer.MAX_VALUE;
     }
 
+    /**
+     * Gets the default minimum experience level (argument lm)
+     */
     private static final int f(String par0Str)
     {
         return 0;
     }
 
+    /**
+     * Gets the default number of players to return (argument c, 0 for infinite)
+     */
     private static final int g(String par0Str)
     {
         return par0Str.equals("a") ? 0 : 1;
     }
 
+    /**
+     * Parses the given argument string, turning it into a HashMap&lt;String, String&gt; of name-&gt;value.
+     */
     private static Map h(String par0Str)
     {
         HashMap var1 = new HashMap();

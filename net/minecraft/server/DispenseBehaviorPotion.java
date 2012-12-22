@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+
 public class DispenseBehaviorPotion implements IDispenseBehavior
 {
     /** Reference to the BehaviorDefaultDispenseItem object. */

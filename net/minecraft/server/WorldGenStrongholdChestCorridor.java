@@ -68,7 +68,7 @@ public class WorldGenStrongholdChestCorridor extends WorldGenStrongholdPiece
                 if (par3StructureBoundingBox.b(var5, var4, var6))
                 {
                     this.c = true;
-                    this.a(par1World, par3StructureBoundingBox, par2Random, 3, 2, 3, a, 2 + par2Random.nextInt(2));
+                    this.a(par1World, par3StructureBoundingBox, par2Random, 3, 2, 3, StructurePieceTreasure.a(a, new StructurePieceTreasure[]{Item.ENCHANTED_BOOK.b(par2Random)}), 2 + par2Random.nextInt(2));
                 }
             }
 

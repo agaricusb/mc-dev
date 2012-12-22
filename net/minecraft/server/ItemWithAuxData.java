@@ -34,16 +34,16 @@ public class ItemWithAuxData extends ItemBlock
         return this;
     }
 
-    public String c_(ItemStack par1ItemStack)
+    public String d(ItemStack par1ItemStack)
     {
         if (this.b == null)
         {
-            return super.c_(par1ItemStack);
+            return super.d(par1ItemStack);
         }
         else
         {
             int var2 = par1ItemStack.getData();
-            return var2 >= 0 && var2 < this.b.length ? super.c_(par1ItemStack) + "." + this.b[var2] : super.c_(par1ItemStack);
+            return var2 >= 0 && var2 < this.b.length ? super.d(par1ItemStack) + "." + this.b[var2] : super.d(par1ItemStack);
         }
     }
 }

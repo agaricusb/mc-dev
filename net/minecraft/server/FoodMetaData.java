@@ -54,7 +54,7 @@ public class FoodMetaData
             }
         }
 
-        if (this.foodLevel >= 18 && par1EntityPlayer.ce())
+        if (this.foodLevel >= 18 && par1EntityPlayer.cd())
         {
             ++this.foodTickTimer;
 
@@ -72,7 +72,7 @@ public class FoodMetaData
             {
                 if (par1EntityPlayer.getHealth() > 10 || var2 >= 3 || par1EntityPlayer.getHealth() > 1 && var2 >= 2)
                 {
-                    par1EntityPlayer.d(DamageSource.STARVE, 1);
+                    par1EntityPlayer.damageEntity(DamageSource.STARVE, 1);
                 }
 
                 this.foodTickTimer = 0;

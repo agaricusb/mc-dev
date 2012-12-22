@@ -13,12 +13,13 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class DataWatcher
 {
-    private static final HashMap a = new HashMap();
-    private final Map b = new HashMap();
+    private boolean a = true;
+    private static final HashMap b = new HashMap();
+    private final Map c = new HashMap();
 
     /** true if one or more object was changed */
-    private boolean c;
-    private ReadWriteLock d = new ReentrantReadWriteLock();
+    private boolean d;
+    private ReadWriteLock e = new ReentrantReadWriteLock();
 
     /**
      * adds a new object to dataWatcher to watch, to update an already existing object see updateObject. Arguments: data
@@ -26,7 +27,7 @@ public class DataWatcher
      */
     public void a(int par1, Object par2Obj)
     {
-        Integer var3 = (Integer) a.get(par2Obj.getClass());
+        Integer var3 = (Integer) b.get(par2Obj.getClass());
 
         if (var3 == null)
         {
@@ -36,16 +37,17 @@ public class DataWatcher
         {
             throw new IllegalArgumentException("Data value id is too big with " + par1 + "! (Max is " + 31 + ")");
         }
-        else if (this.b.containsKey(Integer.valueOf(par1)))
+        else if (this.c.containsKey(Integer.valueOf(par1)))
         {
             throw new IllegalArgumentException("Duplicate id value for " + par1 + "!");
         }
         else
         {
             WatchableObject var4 = new WatchableObject(var3.intValue(), par1, par2Obj);
-            this.d.writeLock().lock();
-            this.b.put(Integer.valueOf(par1), var4);
-            this.d.writeLock().unlock();
+            this.e.writeLock().lock();
+            this.c.put(Integer.valueOf(par1), var4);
+            this.e.writeLock().unlock();
+            this.a = false;
         }
     }
 
@@ -55,9 +57,10 @@ public class DataWatcher
     public void a(int par1, int par2)
     {
         WatchableObject var3 = new WatchableObject(par2, par1, (Object)null);
-        this.d.writeLock().lock();
-        this.b.put(Integer.valueOf(par1), var3);
-        this.d.writeLock().unlock();
+        this.e.writeLock().lock();
+        this.c.put(Integer.valueOf(par1), var3);
+        this.e.writeLock().unlock();
+        this.a = false;
     }
 
     /**
@@ -102,12 +105,12 @@ public class DataWatcher
      */
     private WatchableObject i(int par1)
     {
-        this.d.readLock().lock();
+        this.e.readLock().lock();
         WatchableObject var2;
 
         try
         {
-            var2 = (WatchableObject)this.b.get(Integer.valueOf(par1));
+            var2 = (WatchableObject)this.c.get(Integer.valueOf(par1));
         }
         catch (Throwable var6)
         {
@@ -117,7 +120,7 @@ public class DataWatcher
             throw new ReportedException(var4);
         }
 
-        this.d.readLock().unlock();
+        this.e.readLock().unlock();
         return var2;
     }
 
@@ -132,14 +135,14 @@ public class DataWatcher
         {
             var3.a(par2Obj);
             var3.a(true);
-            this.c = true;
+            this.d = true;
         }
     }
 
     public void h(int par1)
     {
         WatchableObject.a(this.i(par1), true);
-        this.c = true;
+        this.d = true;
     }
 
     /**
@@ -147,7 +150,7 @@ public class DataWatcher
      */
     public boolean a()
     {
-        return this.c;
+        return this.d;
     }
 
     /**
@@ -173,10 +176,10 @@ public class DataWatcher
     {
         ArrayList var1 = null;
 
-        if (this.c)
+        if (this.d)
         {
-            this.d.readLock().lock();
-            Iterator var2 = this.b.values().iterator();
+            this.e.readLock().lock();
+            Iterator var2 = this.c.values().iterator();
 
             while (var2.hasNext())
             {
@@ -195,17 +198,17 @@ public class DataWatcher
                 }
             }
 
-            this.d.readLock().unlock();
+            this.e.readLock().unlock();
         }
 
-        this.c = false;
+        this.d = false;
         return var1;
     }
 
     public void a(DataOutputStream par1DataOutputStream) throws IOException
     {
-        this.d.readLock().lock();
-        Iterator var2 = this.b.values().iterator();
+        this.e.readLock().lock();
+        Iterator var2 = this.c.values().iterator();
 
         while (var2.hasNext())
         {
@@ -213,17 +216,17 @@ public class DataWatcher
             a(par1DataOutputStream, var3);
         }
 
-        this.d.readLock().unlock();
+        this.e.readLock().unlock();
         par1DataOutputStream.writeByte(127);
     }
 
     public List c()
     {
         ArrayList var1 = null;
-        this.d.readLock().lock();
+        this.e.readLock().lock();
         WatchableObject var3;
 
-        for (Iterator var2 = this.b.values().iterator(); var2.hasNext(); var1.add(var3))
+        for (Iterator var2 = this.c.values().iterator(); var2.hasNext(); var1.add(var3))
         {
             var3 = (WatchableObject)var2.next();
 
@@ -233,7 +236,7 @@ public class DataWatcher
             }
         }
 
-        this.d.readLock().unlock();
+        this.e.readLock().unlock();
         return var1;
     }
 
@@ -331,14 +334,19 @@ public class DataWatcher
         return var1;
     }
 
+    public boolean d()
+    {
+        return this.a;
+    }
+
     static
     {
-        a.put(Byte.class, Integer.valueOf(0));
-        a.put(Short.class, Integer.valueOf(1));
-        a.put(Integer.class, Integer.valueOf(2));
-        a.put(Float.class, Integer.valueOf(3));
-        a.put(String.class, Integer.valueOf(4));
-        a.put(ItemStack.class, Integer.valueOf(5));
-        a.put(ChunkCoordinates.class, Integer.valueOf(6));
+        b.put(Byte.class, Integer.valueOf(0));
+        b.put(Short.class, Integer.valueOf(1));
+        b.put(Integer.class, Integer.valueOf(2));
+        b.put(Float.class, Integer.valueOf(3));
+        b.put(String.class, Integer.valueOf(4));
+        b.put(ItemStack.class, Integer.valueOf(5));
+        b.put(ChunkCoordinates.class, Integer.valueOf(6));
     }
 }

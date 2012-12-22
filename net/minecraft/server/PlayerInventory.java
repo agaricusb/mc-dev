@@ -36,6 +36,9 @@ public class PlayerInventory implements IInventory
         return this.itemInHandIndex < 9 && this.itemInHandIndex >= 0 ? this.items[this.itemInHandIndex] : null;
     }
 
+    /**
+     * Get the size of the player hotbar inventory
+     */
     public static int getHotbarSize()
     {
         return 9;
@@ -411,7 +414,7 @@ public class PlayerInventory implements IInventory
             if (this.items[var2] != null)
             {
                 var3 = new NBTTagCompound();
-                var3.setByte("Slot", (byte)var2);
+                var3.setByte("Slot", (byte) var2);
                 this.items[var2].save(var3);
                 par1NBTTagList.add(var3);
             }
@@ -422,7 +425,7 @@ public class PlayerInventory implements IInventory
             if (this.armor[var2] != null)
             {
                 var3 = new NBTTagCompound();
-                var3.setByte("Slot", (byte)(var2 + 100));
+                var3.setByte("Slot", (byte) (var2 + 100));
                 this.armor[var2].save(var3);
                 par1NBTTagList.add(var3);
             }
@@ -677,5 +680,7 @@ public class PlayerInventory implements IInventory
         {
             this.armor[var2] = ItemStack.b(par1InventoryPlayer.armor[var2]);
         }
+
+        this.itemInHandIndex = par1InventoryPlayer.itemInHandIndex;
     }
 }

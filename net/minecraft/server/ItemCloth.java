@@ -17,7 +17,7 @@ public class ItemCloth extends ItemBlock
         return par1;
     }
 
-    public String c_(ItemStack par1ItemStack)
+    public String d(ItemStack par1ItemStack)
     {
         return super.getName() + "." + ItemDye.a[BlockCloth.e_(par1ItemStack.getData())];
     }

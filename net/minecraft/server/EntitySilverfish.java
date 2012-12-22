@@ -12,7 +12,7 @@ public class EntitySilverfish extends EntityMonster
         super(par1World);
         this.texture = "/mob/silverfish.png";
         this.a(0.3F, 0.7F);
-        this.bG = 0.6F;
+        this.bH = 0.6F;
     }
 
     public int getMaxHealth()
@@ -91,7 +91,7 @@ public class EntitySilverfish extends EntityMonster
         if (this.attackTicks <= 0 && par2 < 1.2F && par1Entity.boundingBox.e > this.boundingBox.b && par1Entity.boundingBox.b < this.boundingBox.e)
         {
             this.attackTicks = 20;
-            par1Entity.damageEntity(DamageSource.mobAttack(this), this.c(par1Entity));
+            this.m(par1Entity);
         }
     }
 
@@ -116,7 +116,7 @@ public class EntitySilverfish extends EntityMonster
      */
     public void j_()
     {
-        this.aw = this.yaw;
+        this.ax = this.yaw;
         super.j_();
     }
 

@@ -77,25 +77,25 @@ public class ControllerLook
             float var9 = (float)(Math.atan2(var5, var1) * 180.0D / Math.PI) - 90.0F;
             float var10 = (float)(-(Math.atan2(var3, var7) * 180.0D / Math.PI));
             this.a.pitch = this.a(this.a.pitch, var10, this.c);
-            this.a.ay = this.a(this.a.ay, var9, this.b);
+            this.a.az = this.a(this.a.az, var9, this.b);
         }
         else
         {
-            this.a.ay = this.a(this.a.ay, this.a.aw, 10.0F);
+            this.a.az = this.a(this.a.az, this.a.ax, 10.0F);
         }
 
-        float var11 = MathHelper.g(this.a.ay - this.a.aw);
+        float var11 = MathHelper.g(this.a.az - this.a.ax);
 
         if (!this.a.getNavigation().f())
         {
             if (var11 < -75.0F)
             {
-                this.a.ay = this.a.aw - 75.0F;
+                this.a.az = this.a.ax - 75.0F;
             }
 
             if (var11 > 75.0F)
             {
-                this.a.ay = this.a.aw + 75.0F;
+                this.a.az = this.a.ax + 75.0F;
             }
         }
     }

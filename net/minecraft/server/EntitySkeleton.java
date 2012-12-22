@@ -11,11 +11,11 @@ public class EntitySkeleton extends EntityMonster implements IRangedEntity
     {
         super(par1World);
         this.texture = "/mob/skeleton.png";
-        this.bG = 0.25F;
+        this.bH = 0.25F;
         this.goalSelector.a(1, new PathfinderGoalFloat(this));
         this.goalSelector.a(2, new PathfinderGoalRestrictSun(this));
-        this.goalSelector.a(3, new PathfinderGoalFleeSun(this, this.bG));
-        this.goalSelector.a(5, new PathfinderGoalRandomStroll(this, this.bG));
+        this.goalSelector.a(3, new PathfinderGoalFleeSun(this, this.bH));
+        this.goalSelector.a(5, new PathfinderGoalRandomStroll(this, this.bH));
         this.goalSelector.a(6, new PathfinderGoalLookAtPlayer(this, EntityHuman.class, 8.0F));
         this.goalSelector.a(6, new PathfinderGoalRandomLookaround(this));
         this.targetSelector.a(1, new PathfinderGoalHurtByTarget(this, false));
@@ -107,7 +107,7 @@ public class EntitySkeleton extends EntityMonster implements IRangedEntity
 
             if (var2 != null)
             {
-                var3 += var2.a((Entity)this); // getDamageVsEntity
+                var3 += var2.a((Entity) this);
             }
 
             return var3;
@@ -262,12 +262,7 @@ public class EntitySkeleton extends EntityMonster implements IRangedEntity
             this.bF();
         }
 
-        if (this.random.nextFloat() >= as[this.world.difficulty])
-        {
-            ;
-        }
-
-        this.canPickUpLoot = true;
+        this.canPickUpLoot = this.random.nextFloat() < at[this.world.difficulty];
 
         if (this.getEquipment(4) == null)
         {
@@ -373,7 +368,7 @@ public class EntitySkeleton extends EntityMonster implements IRangedEntity
     public void b(NBTTagCompound par1NBTTagCompound)
     {
         super.b(par1NBTTagCompound);
-        par1NBTTagCompound.setByte("SkeletonType", (byte)this.getSkeletonType());
+        par1NBTTagCompound.setByte("SkeletonType", (byte) this.getSkeletonType());
     }
 
     /**

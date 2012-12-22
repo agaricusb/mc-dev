@@ -3,7 +3,7 @@ package net.minecraft.server;
 import java.util.ArrayList;
 import java.util.List;
 
-class PlayerInstance
+class PlayerChunk
 {
     /** the list of all players in this instance (chunk) */
     private final List b;
@@ -18,11 +18,11 @@ class PlayerInstance
     private int dirtyCount;
     private int f;
 
-    final PlayerManager playerManager;
+    final PlayerChunkMap playerChunkMap;
 
-    public PlayerInstance(PlayerManager par1PlayerManager, int par2, int par3)
+    public PlayerChunk(PlayerChunkMap par1PlayerManager, int par2, int par3)
     {
-        this.playerManager = par1PlayerManager;
+        this.playerChunkMap = par1PlayerManager;
         this.b = new ArrayList();
         this.dirtyBlocks = new short[64];
         this.dirtyCount = 0;
@@ -53,21 +53,21 @@ class PlayerInstance
     {
         if (this.b.contains(par1EntityPlayerMP))
         {
-            par1EntityPlayerMP.netServerHandler.sendPacket(new Packet51MapChunk(PlayerManager.a(this.playerManager).getChunkAt(this.location.x, this.location.z), true, 0));
+            par1EntityPlayerMP.playerConnection.sendPacket(new Packet51MapChunk(PlayerChunkMap.a(this.playerChunkMap).getChunkAt(this.location.x, this.location.z), true, 0));
             this.b.remove(par1EntityPlayerMP);
             par1EntityPlayerMP.chunkCoordIntPairQueue.remove(this.location);
 
             if (this.b.isEmpty())
             {
                 long var2 = (long)this.location.x + 2147483647L | (long)this.location.z + 2147483647L << 32;
-                PlayerManager.b(this.playerManager).remove(var2);
+                PlayerChunkMap.b(this.playerChunkMap).remove(var2);
 
                 if (this.dirtyCount > 0)
                 {
-                    PlayerManager.c(this.playerManager).remove(this);
+                    PlayerChunkMap.c(this.playerChunkMap).remove(this);
                 }
 
-                this.playerManager.a().chunkProviderServer.queueUnload(this.location.x, this.location.z);
+                this.playerChunkMap.a().chunkProviderServer.queueUnload(this.location.x, this.location.z);
             }
         }
     }
@@ -79,7 +79,7 @@ class PlayerInstance
     {
         if (this.dirtyCount == 0)
         {
-            PlayerManager.c(this.playerManager).add(this);
+            PlayerChunkMap.c(this.playerChunkMap).add(this);
         }
 
         this.f |= 1 << (par2 >> 4);
@@ -111,7 +111,7 @@ class PlayerInstance
 
             if (!var3.chunkCoordIntPairQueue.contains(this.location))
             {
-                var3.netServerHandler.sendPacket(par1Packet);
+                var3.playerConnection.sendPacket(par1Packet);
             }
         }
     }
@@ -129,11 +129,11 @@ class PlayerInstance
                 var1 = this.location.x * 16 + (this.dirtyBlocks[0] >> 12 & 15);
                 var2 = this.dirtyBlocks[0] & 255;
                 var3 = this.location.z * 16 + (this.dirtyBlocks[0] >> 8 & 15);
-                this.sendAll(new Packet53BlockChange(var1, var2, var3, PlayerManager.a(this.playerManager)));
+                this.sendAll(new Packet53BlockChange(var1, var2, var3, PlayerChunkMap.a(this.playerChunkMap)));
 
-                if (PlayerManager.a(this.playerManager).isTileEntity(var1, var2, var3))
+                if (PlayerChunkMap.a(this.playerChunkMap).isTileEntity(var1, var2, var3))
                 {
-                    this.sendTileEntity(PlayerManager.a(this.playerManager).getTileEntity(var1, var2, var3));
+                    this.sendTileEntity(PlayerChunkMap.a(this.playerChunkMap).getTileEntity(var1, var2, var3));
                 }
             }
             else
@@ -144,14 +144,14 @@ class PlayerInstance
                 {
                     var1 = this.location.x * 16;
                     var2 = this.location.z * 16;
-                    this.sendAll(new Packet51MapChunk(PlayerManager.a(this.playerManager).getChunkAt(this.location.x, this.location.z), false, this.f));
+                    this.sendAll(new Packet51MapChunk(PlayerChunkMap.a(this.playerChunkMap).getChunkAt(this.location.x, this.location.z), false, this.f));
 
                     for (var3 = 0; var3 < 16; ++var3)
                     {
                         if ((this.f & 1 << var3) != 0)
                         {
                             var4 = var3 << 4;
-                            List var5 = PlayerManager.a(this.playerManager).getTileEntities(var1, var4, var2, var1 + 16, var4 + 16, var2 + 16);
+                            List var5 = PlayerChunkMap.a(this.playerChunkMap).getTileEntities(var1, var4, var2, var1 + 16, var4 + 16, var2 + 16);
 
                             for (int var6 = 0; var6 < var5.size(); ++var6)
                             {
@@ -162,7 +162,7 @@ class PlayerInstance
                 }
                 else
                 {
-                    this.sendAll(new Packet52MultiBlockChange(this.location.x, this.location.z, this.dirtyBlocks, this.dirtyCount, PlayerManager.a(this.playerManager)));
+                    this.sendAll(new Packet52MultiBlockChange(this.location.x, this.location.z, this.dirtyBlocks, this.dirtyCount, PlayerChunkMap.a(this.playerChunkMap)));
 
                     for (var1 = 0; var1 < this.dirtyCount; ++var1)
                     {
@@ -170,9 +170,9 @@ class PlayerInstance
                         var3 = this.dirtyBlocks[var1] & 255;
                         var4 = this.location.z * 16 + (this.dirtyBlocks[var1] >> 8 & 15);
 
-                        if (PlayerManager.a(this.playerManager).isTileEntity(var2, var3, var4))
+                        if (PlayerChunkMap.a(this.playerChunkMap).isTileEntity(var2, var3, var4))
                         {
-                            this.sendTileEntity(PlayerManager.a(this.playerManager).getTileEntity(var2, var3, var4));
+                            this.sendTileEntity(PlayerChunkMap.a(this.playerChunkMap).getTileEntity(var2, var3, var4));
                         }
                     }
                 }
@@ -199,12 +199,12 @@ class PlayerInstance
         }
     }
 
-    static ChunkCoordIntPair a(PlayerInstance par0PlayerInstance)
+    static ChunkCoordIntPair a(PlayerChunk par0PlayerInstance)
     {
         return par0PlayerInstance.location;
     }
 
-    static List b(PlayerInstance par0PlayerInstance)
+    static List b(PlayerChunk par0PlayerInstance)
     {
         return par0PlayerInstance.b;
     }

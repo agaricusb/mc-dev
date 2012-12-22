@@ -21,6 +21,8 @@ public class PotionBrewer
     public static final String k;
     public static final String l;
     private static final HashMap effectDurations = new HashMap();
+
+    /** Potion effect amplifier map */
     private static final HashMap effectAmplifiers = new HashMap();
     private static final HashMap o;
 

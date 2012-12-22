@@ -123,7 +123,7 @@ public abstract class CommandAbstract implements ICommand
         }
         else
         {
-            var2 = MinecraftServer.getServer().getServerConfigurationManager().f(par1Str);
+            var2 = MinecraftServer.getServer().getPlayerList().f(par1Str);
 
             if (var2 == null)
             {

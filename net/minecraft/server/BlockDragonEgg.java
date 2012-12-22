@@ -7,6 +7,7 @@ public class BlockDragonEgg extends Block
     public BlockDragonEgg(int par1, int par2)
     {
         super(par1, par2, Material.DRAGON_EGG);
+        this.a(0.0625F, 0.0F, 0.0625F, 0.9375F, 1.0F, 0.9375F);
     }
 
     /**

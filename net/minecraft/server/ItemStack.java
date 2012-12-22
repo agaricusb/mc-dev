@@ -139,9 +139,9 @@ public final class ItemStack
      */
     public NBTTagCompound save(NBTTagCompound par1NBTTagCompound)
     {
-        par1NBTTagCompound.setShort("id", (short)this.id);
-        par1NBTTagCompound.setByte("Count", (byte)this.count);
-        par1NBTTagCompound.setShort("Damage", (short)this.damage);
+        par1NBTTagCompound.setShort("id", (short) this.id);
+        par1NBTTagCompound.setByte("Count", (byte) this.count);
+        par1NBTTagCompound.setShort("Damage", (short) this.damage);
 
         if (this.tag != null)
         {
@@ -244,9 +244,20 @@ public final class ItemStack
         {
             if (par1 > 0 && par2EntityLiving instanceof EntityHuman)
             {
-                int var3 = EnchantmentManager.getDurabilityEnchantmentLevel(par2EntityLiving);
+                int var3 = EnchantmentManager.getEnchantmentLevel(Enchantment.DURABILITY.id, this);
+                int var4 = 0;
 
-                if (var3 > 0 && par2EntityLiving.world.random.nextInt(var3 + 1) > 0)
+                for (int var5 = 0; var3 > 0 && var5 < par1; ++var5)
+                {
+                    if (EnchantmentDurability.a(this, var3, par2EntityLiving.world.random))
+                    {
+                        ++var4;
+                    }
+                }
+
+                par1 -= var4;
+
+                if (par1 <= 0)
                 {
                     return;
                 }
@@ -369,7 +380,7 @@ public final class ItemStack
 
     public String a()
     {
-        return Item.byId[this.id].c_(this);
+        return Item.byId[this.id].d(this);
     }
 
     /**
@@ -407,12 +418,12 @@ public final class ItemStack
 
     public int m()
     {
-        return this.getItem().a(this);
+        return this.getItem().c_(this);
     }
 
     public EnumAnimation n()
     {
-        return this.getItem().d_(this);
+        return this.getItem().b_(this);
     }
 
     /**
@@ -457,7 +468,7 @@ public final class ItemStack
      */
     public String r()
     {
-        String var1 = this.getItem().j(this);
+        String var1 = this.getItem().l(this);
 
         if (this.tag != null && this.tag.hasKey("display"))
         {
@@ -503,7 +514,7 @@ public final class ItemStack
      */
     public boolean v()
     {
-        return !this.getItem().k(this) ? false : !this.hasEnchantments();
+        return !this.getItem().d_(this) ? false : !this.hasEnchantments();
     }
 
     /**
@@ -523,8 +534,8 @@ public final class ItemStack
 
         NBTTagList var3 = (NBTTagList)this.tag.get("ench");
         NBTTagCompound var4 = new NBTTagCompound();
-        var4.setShort("id", (short)par1Enchantment.id);
-        var4.setShort("lvl", (short)((byte)par2));
+        var4.setShort("id", (short) par1Enchantment.id);
+        var4.setShort("lvl", (short) ((byte) par2));
         var3.add(var4);
     }
 

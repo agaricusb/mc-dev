@@ -42,12 +42,15 @@ public class WorldManager implements IWorldAccess
      */
     public void a(String par1Str, double par2, double par4, double par6, float par8, float par9)
     {
-        this.server.getServerConfigurationManager().sendPacketNearby(par2, par4, par6, par8 > 1.0F ? (double) (16.0F * par8) : 16.0D, this.world.worldProvider.dimension, new Packet62NamedSoundEffect(par1Str, par2, par4, par6, par8, par9));
+        this.server.getPlayerList().sendPacketNearby(par2, par4, par6, par8 > 1.0F ? (double) (16.0F * par8) : 16.0D, this.world.worldProvider.dimension, new Packet62NamedSoundEffect(par1Str, par2, par4, par6, par8, par9));
     }
 
+    /**
+     * Plays sound to all near players except the player reference given
+     */
     public void a(EntityHuman par1EntityPlayer, String par2Str, double par3, double par5, double par7, float par9, float par10)
     {
-        this.server.getServerConfigurationManager().sendPacketNearby(par1EntityPlayer, par3, par5, par7, par9 > 1.0F ? (double) (16.0F * par9) : 16.0D, this.world.worldProvider.dimension, new Packet62NamedSoundEffect(par2Str, par3, par5, par7, par9, par10));
+        this.server.getPlayerList().sendPacketNearby(par1EntityPlayer, par3, par5, par7, par9 > 1.0F ? (double) (16.0F * par9) : 16.0D, this.world.worldProvider.dimension, new Packet62NamedSoundEffect(par2Str, par3, par5, par7, par9, par10));
     }
 
     /**
@@ -62,7 +65,7 @@ public class WorldManager implements IWorldAccess
      */
     public void a(int par1, int par2, int par3)
     {
-        this.world.getPlayerManager().flagDirty(par1, par2, par3);
+        this.world.getPlayerChunkMap().flagDirty(par1, par2, par3);
     }
 
     /**
@@ -80,12 +83,12 @@ public class WorldManager implements IWorldAccess
      */
     public void a(EntityHuman par1EntityPlayer, int par2, int par3, int par4, int par5, int par6)
     {
-        this.server.getServerConfigurationManager().sendPacketNearby(par1EntityPlayer, (double) par3, (double) par4, (double) par5, 64.0D, this.world.worldProvider.dimension, new Packet61WorldEvent(par2, par3, par4, par5, par6, false));
+        this.server.getPlayerList().sendPacketNearby(par1EntityPlayer, (double) par3, (double) par4, (double) par5, 64.0D, this.world.worldProvider.dimension, new Packet61WorldEvent(par2, par3, par4, par5, par6, false));
     }
 
     public void a(int par1, int par2, int par3, int par4, int par5)
     {
-        this.server.getServerConfigurationManager().sendAll(new Packet61WorldEvent(par1, par2, par3, par4, par5, true));
+        this.server.getPlayerList().sendAll(new Packet61WorldEvent(par1, par2, par3, par4, par5, true));
     }
 
     /**
@@ -94,7 +97,7 @@ public class WorldManager implements IWorldAccess
      */
     public void b(int par1, int par2, int par3, int par4, int par5)
     {
-        Iterator var6 = this.server.getServerConfigurationManager().players.iterator();
+        Iterator var6 = this.server.getPlayerList().players.iterator();
 
         while (var6.hasNext())
         {
@@ -108,7 +111,7 @@ public class WorldManager implements IWorldAccess
 
                 if (var8 * var8 + var10 * var10 + var12 * var12 < 1024.0D)
                 {
-                    var7.netServerHandler.sendPacket(new Packet55BlockBreakAnimation(par1, par2, par3, par4, par5));
+                    var7.playerConnection.sendPacket(new Packet55BlockBreakAnimation(par1, par2, par3, par4, par5));
                 }
             }
         }

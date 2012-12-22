@@ -22,7 +22,7 @@ public abstract class EntityAnimal extends EntityAgeable implements IAnimal
      */
     protected void bm()
     {
-        if (this.aE() != 0)
+        if (this.getAge() != 0)
         {
             this.love = 0;
         }
@@ -38,7 +38,7 @@ public abstract class EntityAnimal extends EntityAgeable implements IAnimal
     {
         super.c();
 
-        if (this.aE() != 0)
+        if (this.getAge() != 0)
         {
             this.love = 0;
         }
@@ -79,7 +79,7 @@ public abstract class EntityAnimal extends EntityAgeable implements IAnimal
 
             EntityHuman var7 = (EntityHuman)par1Entity;
 
-            if (var7.bT() == null || !this.c(var7.bT()))
+            if (var7.bS() == null || !this.c(var7.bS()))
             {
                 this.target = null;
             }
@@ -88,7 +88,7 @@ public abstract class EntityAnimal extends EntityAgeable implements IAnimal
         {
             EntityAnimal var8 = (EntityAnimal)par1Entity;
 
-            if (this.aE() > 0 && var8.aE() < 0)
+            if (this.getAge() > 0 && var8.getAge() < 0)
             {
                 if ((double)par2 < 2.5D)
                 {
@@ -240,7 +240,7 @@ public abstract class EntityAnimal extends EntityAgeable implements IAnimal
                     }
                 }
             }
-            else if (this.aE() == 0)
+            else if (this.getAge() == 0)
             {
                 var2 = this.world.a(EntityHuman.class, this.boundingBox.grow((double) var1, (double) var1, (double) var1));
 
@@ -248,13 +248,13 @@ public abstract class EntityAnimal extends EntityAgeable implements IAnimal
                 {
                     EntityHuman var5 = (EntityHuman)var2.get(var3);
 
-                    if (var5.bT() != null && this.c(var5.bT()))
+                    if (var5.bS() != null && this.c(var5.bS()))
                     {
                         return var5;
                     }
                 }
             }
-            else if (this.aE() > 0)
+            else if (this.getAge() > 0)
             {
                 var2 = this.world.a(this.getClass(), this.boundingBox.grow((double) var1, (double) var1, (double) var1));
 
@@ -262,7 +262,7 @@ public abstract class EntityAnimal extends EntityAgeable implements IAnimal
                 {
                     var4 = (EntityAnimal)var2.get(var3);
 
-                    if (var4 != this && var4.aE() < 0)
+                    if (var4 != this && var4.getAge() < 0)
                     {
                         return var4;
                     }
@@ -324,7 +324,7 @@ public abstract class EntityAnimal extends EntityAgeable implements IAnimal
     {
         ItemStack var2 = par1EntityPlayer.inventory.getItemInHand();
 
-        if (var2 != null && this.c(var2) && this.aE() == 0)
+        if (var2 != null && this.c(var2) && this.getAge() == 0)
         {
             if (!par1EntityPlayer.abilities.canInstantlyBuild)
             {

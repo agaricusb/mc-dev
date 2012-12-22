@@ -62,6 +62,9 @@ public class GenLayerZoom extends GenLayer
         return this.a(2) == 0 ? par1 : par2;
     }
 
+    /**
+     * returns the mode (most frequently occuring number) or a random number from the 4 integers provided
+     */
     protected int b(int par1, int par2, int par3, int par4)
     {
         if (par2 == par3 && par3 == par4)

@@ -7,12 +7,12 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.Iterator;
 
-public class ServerConfigurationManager extends ServerConfigurationManagerAbstract
+public class DedicatedPlayerList extends PlayerList
 {
     private File e;
     private File f;
 
-    public ServerConfigurationManager(DedicatedServer par1DedicatedServer)
+    public DedicatedPlayerList(DedicatedServer par1DedicatedServer)
     {
         super(par1DedicatedServer);
         this.e = par1DedicatedServer.e("ops.txt");
@@ -186,7 +186,7 @@ public class ServerConfigurationManager extends ServerConfigurationManagerAbstra
         return (DedicatedServer)super.getServer();
     }
 
-    /* 
+    /* CBMCP - remove synthetic method
     public MinecraftServer getServer()
     {
         return this.getServer();

@@ -27,6 +27,8 @@ public class Packet51MapChunk extends Packet
 
     /** The transmitted chunk data, decompressed. */
     private byte[] buffer;
+
+    /** The compressed chunk data */
     private byte[] inflatedBuffer;
 
     /**
@@ -138,7 +140,7 @@ public class Packet51MapChunk extends Packet
     /**
      * Passes this Packet on to the NetHandler for processing.
      */
-    public void handle(NetHandler par1NetHandler)
+    public void handle(Connection par1NetHandler)
     {
         par1NetHandler.a(this);
     }
@@ -212,13 +214,16 @@ public class Packet51MapChunk extends Packet
             }
         }
 
-        for (var8 = 0; var8 < var4.length; ++var8)
+        if (!par0Chunk.world.worldProvider.f)
         {
-            if (var4[var8] != null && (!par1 || !var4[var8].a()) && (par2 & 1 << var8) != 0)
+            for (var8 = 0; var8 < var4.length; ++var8)
             {
-                var10 = var4[var8].l();
-                System.arraycopy(var10.a, 0, var7, var3, var10.a.length);
-                var3 += var10.a.length;
+                if (var4[var8] != null && (!par1 || !var4[var8].a()) && (par2 & 1 << var8) != 0)
+                {
+                    var10 = var4[var8].l();
+                    System.arraycopy(var10.a, 0, var7, var3, var10.a.length);
+                    var3 += var10.a.length;
+                }
             }
         }
 

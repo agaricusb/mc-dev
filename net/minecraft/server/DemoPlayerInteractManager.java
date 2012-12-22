@@ -1,13 +1,13 @@
 package net.minecraft.server;
 
-public class DemoItemInWorldManager extends ItemInWorldManager
+public class DemoPlayerInteractManager extends PlayerInteractManager
 {
     private boolean c = false;
     private boolean d = false;
     private int e = 0;
     private int f = 0;
 
-    public DemoItemInWorldManager(World par1World)
+    public DemoPlayerInteractManager(World par1World)
     {
         super(par1World);
     }
@@ -22,7 +22,7 @@ public class DemoItemInWorldManager extends ItemInWorldManager
         if (!this.c && this.f > 20)
         {
             this.c = true;
-            this.player.netServerHandler.sendPacket(new Packet70Bed(5, 0));
+            this.player.playerConnection.sendPacket(new Packet70Bed(5, 0));
         }
 
         this.d = var1 > 120500L;
@@ -43,15 +43,15 @@ public class DemoItemInWorldManager extends ItemInWorldManager
         {
             if (var1 == 100L)
             {
-                this.player.netServerHandler.sendPacket(new Packet70Bed(5, 101));
+                this.player.playerConnection.sendPacket(new Packet70Bed(5, 101));
             }
             else if (var1 == 175L)
             {
-                this.player.netServerHandler.sendPacket(new Packet70Bed(5, 102));
+                this.player.playerConnection.sendPacket(new Packet70Bed(5, 102));
             }
             else if (var1 == 250L)
             {
-                this.player.netServerHandler.sendPacket(new Packet70Bed(5, 103));
+                this.player.playerConnection.sendPacket(new Packet70Bed(5, 103));
             }
         }
         else if (var3 == 5L && var1 % 24000L == 22000L)
@@ -72,6 +72,10 @@ public class DemoItemInWorldManager extends ItemInWorldManager
         }
     }
 
+    /**
+     * if not creative, it calls destroyBlockInWorldPartially untill the block is broken first. par4 is the specific
+     * side. tryHarvestBlock can also be the result of this call
+     */
     public void dig(int par1, int par2, int par3, int par4)
     {
         if (this.d)

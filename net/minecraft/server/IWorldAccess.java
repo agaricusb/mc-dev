@@ -24,6 +24,9 @@ public interface IWorldAccess
      */
     void a(String var1, double var2, double var4, double var6, float var8, float var9);
 
+    /**
+     * Plays sound to all near players except the player reference given
+     */
     void a(EntityHuman var1, String var2, double var3, double var5, double var7, float var9, float var10);
 
     /**

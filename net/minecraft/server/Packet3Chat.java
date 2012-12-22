@@ -55,7 +55,7 @@ public class Packet3Chat extends Packet
     /**
      * Passes this Packet on to the NetHandler for processing.
      */
-    public void handle(NetHandler par1NetHandler)
+    public void handle(Connection par1NetHandler)
     {
         par1NetHandler.a(this);
     }
@@ -68,13 +68,17 @@ public class Packet3Chat extends Packet
         return 2 + this.message.length() * 2;
     }
 
+    /**
+     * Get whether this is a server
+     */
     public boolean isServer()
     {
         return this.c;
     }
 
     /**
-     * if this returns false, processPacket is deffered for processReadPackets to handle
+     * If this returns true, the packet may be processed on any thread; otherwise it is queued for the main thread to
+     * handle.
      */
     public boolean a_()
     {

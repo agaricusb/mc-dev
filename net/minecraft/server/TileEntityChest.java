@@ -161,7 +161,7 @@ public class TileEntityChest extends TileEntity implements IInventory
             if (this.items[var3] != null)
             {
                 NBTTagCompound var4 = new NBTTagCompound();
-                var4.setByte("Slot", (byte)var3);
+                var4.setByte("Slot", (byte) var3);
                 this.items[var3].save(var4);
                 var2.add(var4);
             }

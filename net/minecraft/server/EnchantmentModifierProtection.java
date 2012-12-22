@@ -23,7 +23,7 @@ final class EnchantmentModifierProtection implements EnchantmentModifier
         this.a += par1Enchantment.a(par2, this.b);
     }
 
-    EnchantmentModifierProtection(EmptyClass2 par1Empty3)
+    EnchantmentModifierProtection(EmptyClass par1Empty3)
     {
         this();
     }

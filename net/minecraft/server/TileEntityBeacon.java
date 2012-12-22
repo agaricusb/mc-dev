@@ -86,7 +86,7 @@ public class TileEntityBeacon extends TileEntity implements IInventory
             {
                 int var2 = this.y - var1;
 
-                if (var2 < 1)
+                if (var2 < 0)
                 {
                     break;
                 }

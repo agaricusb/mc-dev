@@ -3,7 +3,7 @@ package net.minecraft.server;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PlayerManager
+public class PlayerChunkMap
 {
     private final WorldServer world;
 
@@ -24,7 +24,7 @@ public class PlayerManager
     /** x, z direction vectors: east, south, west, north */
     private final int[][] f = new int[][] {{1, 0}, {0, 1}, { -1, 0}, {0, -1}};
 
-    public PlayerManager(WorldServer par1WorldServer, int par2)
+    public PlayerChunkMap(WorldServer par1WorldServer, int par2)
     {
         if (par2 > 15)
         {
@@ -56,7 +56,7 @@ public class PlayerManager
     {
         for (int var1 = 0; var1 < this.d.size(); ++var1)
         {
-            ((PlayerInstance)this.d.get(var1)).a();
+            ((PlayerChunk)this.d.get(var1)).a();
         }
 
         this.d.clear();
@@ -75,14 +75,14 @@ public class PlayerManager
     /**
      * passi n the chunk x and y and a flag as to whether or not the instance should be made if it doesnt exist
      */
-    private PlayerInstance a(int par1, int par2, boolean par3)
+    private PlayerChunk a(int par1, int par2, boolean par3)
     {
         long var4 = (long)par1 + 2147483647L | (long)par2 + 2147483647L << 32;
-        PlayerInstance var6 = (PlayerInstance)this.c.getEntry(var4);
+        PlayerChunk var6 = (PlayerChunk)this.c.getEntry(var4);
 
         if (var6 == null && par3)
         {
-            var6 = new PlayerInstance(this, par1, par2);
+            var6 = new PlayerChunk(this, par1, par2);
             this.c.put(var4, var6);
         }
 
@@ -93,7 +93,7 @@ public class PlayerManager
     {
         int var4 = par1 >> 4;
         int var5 = par3 >> 4;
-        PlayerInstance var6 = this.a(var4, var5, false);
+        PlayerChunk var6 = this.a(var4, var5, false);
 
         if (var6 != null)
         {
@@ -135,7 +135,7 @@ public class PlayerManager
         int var6 = (int)par1EntityPlayerMP.locZ >> 4;
         int var7 = 0;
         int var8 = 0;
-        ChunkCoordIntPair var9 = PlayerInstance.a(this.a(var5, var6, true));
+        ChunkCoordIntPair var9 = PlayerChunk.a(this.a(var5, var6, true));
         par1EntityPlayerMP.chunkCoordIntPairQueue.clear();
 
         if (var2.contains(var9))
@@ -155,7 +155,7 @@ public class PlayerManager
                 {
                     var7 += var12[0];
                     var8 += var12[1];
-                    var9 = PlayerInstance.a(this.a(var5 + var7, var6 + var8, true));
+                    var9 = PlayerChunk.a(this.a(var5 + var7, var6 + var8, true));
 
                     if (var2.contains(var9))
                     {
@@ -171,7 +171,7 @@ public class PlayerManager
         {
             var7 += this.f[var3][0];
             var8 += this.f[var3][1];
-            var9 = PlayerInstance.a(this.a(var5 + var7, var6 + var8, true));
+            var9 = PlayerChunk.a(this.a(var5 + var7, var6 + var8, true));
 
             if (var2.contains(var9))
             {
@@ -192,7 +192,7 @@ public class PlayerManager
         {
             for (int var5 = var3 - this.e; var5 <= var3 + this.e; ++var5)
             {
-                PlayerInstance var6 = this.a(var4, var5, false);
+                PlayerChunk var6 = this.a(var4, var5, false);
 
                 if (var6 != null)
                 {
@@ -243,7 +243,7 @@ public class PlayerManager
 
                         if (!this.a(var15 - var13, var16 - var14, var2, var3, var12))
                         {
-                            PlayerInstance var17 = this.a(var15 - var13, var16 - var14, false);
+                            PlayerChunk var17 = this.a(var15 - var13, var16 - var14, false);
 
                             if (var17 != null)
                             {
@@ -262,26 +262,29 @@ public class PlayerManager
 
     public boolean a(EntityPlayer par1EntityPlayerMP, int par2, int par3)
     {
-        PlayerInstance var4 = this.a(par2, par3, false);
-        return var4 == null ? false : PlayerInstance.b(var4).contains(par1EntityPlayerMP) && !par1EntityPlayerMP.chunkCoordIntPairQueue.contains(PlayerInstance.a(var4));
+        PlayerChunk var4 = this.a(par2, par3, false);
+        return var4 == null ? false : PlayerChunk.b(var4).contains(par1EntityPlayerMP) && !par1EntityPlayerMP.chunkCoordIntPairQueue.contains(PlayerChunk.a(var4));
     }
 
+    /**
+     * Get the furthest viewable block given player's view distance
+     */
     public static int getFurthestViewableBlock(int par0)
     {
         return par0 * 16 - 16;
     }
 
-    static WorldServer a(PlayerManager par0PlayerManager)
+    static WorldServer a(PlayerChunkMap par0PlayerManager)
     {
         return par0PlayerManager.world;
     }
 
-    static LongHashMap b(PlayerManager par0PlayerManager)
+    static LongHashMap b(PlayerChunkMap par0PlayerManager)
     {
         return par0PlayerManager.c;
     }
 
-    static List c(PlayerManager par0PlayerManager)
+    static List c(PlayerChunkMap par0PlayerManager)
     {
         return par0PlayerManager.d;
     }

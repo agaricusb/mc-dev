@@ -20,7 +20,7 @@ public class PathfinderGoalPanic extends PathfinderGoal
      */
     public boolean a()
     {
-        if (this.a.aC() == null)
+        if (this.a.aC() == null && !this.a.isBurning())
         {
             return false;
         }

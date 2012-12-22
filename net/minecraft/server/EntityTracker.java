@@ -21,7 +21,7 @@ public class EntityTracker
     public EntityTracker(WorldServer par1WorldServer)
     {
         this.world = par1WorldServer;
-        this.d = par1WorldServer.getMinecraftServer().getServerConfigurationManager().a();
+        this.d = par1WorldServer.getMinecraftServer().getPlayerList().a();
     }
 
     public void track(Entity par1Entity)
@@ -79,6 +79,10 @@ public class EntityTracker
             this.addEntity(par1Entity, 64, 10, true);
         }
         else if (par1Entity instanceof EntityThrownExpBottle)
+        {
+            this.addEntity(par1Entity, 64, 10, true);
+        }
+        else if (par1Entity instanceof EntityFireworks)
         {
             this.addEntity(par1Entity, 64, 10, true);
         }

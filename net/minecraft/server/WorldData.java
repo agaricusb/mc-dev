@@ -533,11 +533,17 @@ public class WorldData
         par1CrashReportCategory.a("Level game mode", new CrashReportLevelGameMode(this));
     }
 
+    /**
+     * Return the terrain type of a world
+     */
     static WorldType a(WorldData par0WorldInfo)
     {
         return par0WorldInfo.type;
     }
 
+    /**
+     * Return the map feautures enabled of a world
+     */
     static boolean b(WorldData par0WorldInfo)
     {
         return par0WorldInfo.useMapFeatures;

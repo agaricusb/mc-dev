@@ -1,6 +1,6 @@
 package net.minecraft.server;
 
-public class RecipesMapClone implements IRecipe
+public class RecipeMapClone implements IRecipe
 {
     /**
      * Used to check if a recipe matches current crafting inventory
